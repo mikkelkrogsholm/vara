@@ -9,6 +9,7 @@ enum VaraSpeechBackendChoice: String, CaseIterable, Codable, Identifiable {
     case openAIGPT4OMiniTranscribe20251215
     case localHviske
     case localWhisperKit
+    case appleSpeech
 
     var id: String { rawValue }
 
@@ -21,6 +22,7 @@ enum VaraSpeechBackendChoice: String, CaseIterable, Codable, Identifiable {
         case .openAIGPT4OMiniTranscribe20251215: "OpenAI GPT-4o Mini Transcribe 2025-12-15"
         case .localHviske: "Local Hviske v5.3"
         case .localWhisperKit: "Local WhisperKit (large-v3 turbo)"
+        case .appleSpeech: "Apple Speech (on-device)"
         }
     }
 
@@ -34,7 +36,7 @@ enum VaraSpeechBackendChoice: String, CaseIterable, Codable, Identifiable {
             String(localized: "Realtime network transcription via OpenAI", comment: "Privacy panel: where audio is processed")
         case .openAIGPT4OTranscribe, .openAIGPT4OMiniTranscribe20251215:
             String(localized: "Network file transcription via OpenAI", comment: "Privacy panel: where audio is processed")
-        case .localHviske, .localWhisperKit:
+        case .localHviske, .localWhisperKit, .appleSpeech:
             String(localized: "Local transcription on this Mac", comment: "Privacy panel: where audio is processed")
         }
     }

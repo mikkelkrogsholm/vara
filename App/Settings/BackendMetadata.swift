@@ -30,13 +30,24 @@ extension VaraSpeechBackendChoice {
              .openAIGPT4OTranscribe,
              .openAIGPT4OMiniTranscribe20251215:
             .recommended
-        case .elevenLabsScribe, .localHviske, .localWhisperKit:
+        case .elevenLabsScribe, .localHviske, .localWhisperKit, .appleSpeech:
             .advanced
         }
     }
 
     var isLocal: Bool {
-        self == .localHviske || self == .localWhisperKit
+        self == .localHviske || self == .localWhisperKit || self == .appleSpeech
+    }
+
+    /// Engines that only exist on certain OS versions. Apple Speech needs
+    /// macOS 26 (SpeechAnalyzer/SpeechTranscriber); the UI hides it otherwise.
+    var isAvailableOnThisOS: Bool {
+        switch self {
+        case .appleSpeech:
+            if #available(macOS 26, *) { return true } else { return false }
+        default:
+            return true
+        }
     }
 
     var symbolName: String {
@@ -47,6 +58,7 @@ extension VaraSpeechBackendChoice {
         case .openAIGPT4OTranscribe, .openAIGPT4OMiniTranscribe20251215: "cloud"
         case .localHviske: "internaldrive"
         case .localWhisperKit: "cpu"
+        case .appleSpeech: "apple.logo"
         }
     }
 
@@ -56,7 +68,7 @@ extension VaraSpeechBackendChoice {
         case .elevenLabsScribe: .elevenLabs
         case .groqWhisper: .groq
         case .openAIRealtimeWhisper, .openAIGPT4OTranscribe, .openAIGPT4OMiniTranscribe20251215: .openAI
-        case .localHviske, .localWhisperKit: nil
+        case .localHviske, .localWhisperKit, .appleSpeech: nil
         }
     }
 
@@ -72,6 +84,8 @@ extension VaraSpeechBackendChoice {
             String(localized: "Runs on this Mac — Danish", comment: "Engine latency hint")
         case .localWhisperKit:
             String(localized: "Runs on this Mac — Neural Engine", comment: "Engine latency hint")
+        case .appleSpeech:
+            String(localized: "Runs on this Mac — English + more (not Danish yet)", comment: "Engine latency hint — Apple Speech is on-device but Apple has no Danish model yet")
         }
     }
 
@@ -85,6 +99,7 @@ extension VaraSpeechBackendChoice {
         // Localized "Local" tag instead of the hardcoded Danish "(lokal)" leak.
         case .localHviske: "Hviske (\(String(localized: "Local", comment: "Engine name suffix marking an on-device engine")))"
         case .localWhisperKit: "WhisperKit (\(String(localized: "Local", comment: "Engine name suffix marking an on-device engine")))"
+        case .appleSpeech: "Apple Speech (\(String(localized: "Local", comment: "Engine name suffix marking an on-device engine")))"
         }
     }
 
@@ -93,6 +108,7 @@ extension VaraSpeechBackendChoice {
     var onboardingTitle: String {
         switch self {
         case .localWhisperKit: "WhisperKit"
+        case .appleSpeech: "Apple Speech"
         case .localHviske: "Hviske"
         case .groqWhisper: "Groq"
         case .openAIRealtimeWhisper, .openAIGPT4OTranscribe, .openAIGPT4OMiniTranscribe20251215: "OpenAI"
@@ -107,6 +123,8 @@ extension VaraSpeechBackendChoice {
         switch self {
         case .localWhisperKit:
             String(localized: "Built in · downloads a model once, then runs entirely on your Mac", comment: "Onboarding engine subtitle: WhisperKit")
+        case .appleSpeech:
+            String(localized: "Built into macOS · fully on-device, strong Danish", comment: "Onboarding engine subtitle: Apple Speech")
         case .localHviske:
             String(localized: "Offline · needs one setup command in Terminal", comment: "Onboarding engine subtitle: Hviske")
         case .groqWhisper:
@@ -165,7 +183,7 @@ extension LLMProvider {
         switch self {
         case .groq, .openAI:
             .recommended
-        case .anthropic, .ollama, .custom, .gemini, .claudeCLI, .codexCLI, .geminiCLI:
+        case .anthropic, .ollama, .custom, .gemini, .claudeCLI, .codexCLI, .geminiCLI, .foundationModels:
             .advanced
         }
     }

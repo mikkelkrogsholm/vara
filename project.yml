@@ -68,6 +68,11 @@ targets:
         NSMicrophoneUsageDescription: >-
           Vara listens to your voice to turn speech into text. Audio is
           transcribed by the engine you choose in Settings.
+        # Required by the Apple Speech (on-device) engine — SpeechAnalyzer /
+        # SpeechTranscriber, macOS 26+. Transcription stays on-device.
+        NSSpeechRecognitionUsageDescription: >-
+          Vara uses on-device speech recognition to turn your dictation into
+          text. With the Apple Speech engine this happens entirely on your Mac.
         # Allow plaintext HTTP to local-network hosts (.local, *.local,
         # private/link-local addresses, localhost) so the LOCAL-PRIVATE chain
         # can reach a DGX/LAN LLM endpoint such as http://spark.local:11434.

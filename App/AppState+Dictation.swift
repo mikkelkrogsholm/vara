@@ -6,6 +6,20 @@ import VaraCore
 // The push-to-talk dictation flow: begin/end/toggle/cancel, the DictationSession
 // builder and LLM processor, HUD presentation, and the audio instrumentation,
 // timeout and redaction helpers those use.
+
+/// Errors surfaced by the file-import transcription path (`transcribeFile`).
+enum FileTranscriptionError: LocalizedError {
+    case noEngineConfigured
+
+    var errorDescription: String? {
+        switch self {
+        case .noEngineConfigured:
+            return String(localized: "No speech engine is configured. Pick one under Settings › Engine.",
+                          comment: "Shown when the user transcribes a file but no STT engine is set up")
+        }
+    }
+}
+
 extension AppState {
     func cancelDictation() {
         guard let dictationSession else { return }
@@ -275,6 +289,36 @@ extension AppState {
         )
     }
 
+    /// Transcribes an existing audio OR video file the user picked — the
+    /// file-import counterpart to live dictation. Any input (video/audio, any
+    /// format) is normalized locally to 16 kHz mono first (WAV for on-device
+    /// engines, compact AAC for cloud engines), so even formats an engine can't
+    /// read directly — notably video — just work. Returns the RAW transcript: a
+    /// recorded file wants a faithful transcription, not dictation-mode cleanup.
+    ///
+    /// No timeout wrapper (unlike live dictation): a long recording legitimately
+    /// takes minutes, and this is a deliberate user action, not a hotkey.
+    /// `MediaNormalizer.normalize` is a `nonisolated async` call, so its blocking
+    /// decode/resample runs off the main actor.
+    func transcribeFile(at url: URL) async throws -> TranscriptionResult {
+        guard let backend else { throw FileTranscriptionError.noEngineConfigured }
+
+        let container = NormalizedAudioContainer.forLocalBackend(backend.capabilities.runsLocally)
+        log("Transcribing file \(url.lastPathComponent) via \(backend.shortName) — normalizing → \(container == .wav ? "wav" : "m4a")")
+
+        let normalized = try await MediaNormalizer.normalize(input: url, to: container)
+        defer { try? FileManager.default.removeItem(at: normalized) }
+
+        let request = SpeechToTextRequest(
+            audio: .file(normalized),
+            languageCode: settings.language.languageCode,
+            vocabulary: settings.vocabulary
+        )
+        let result = try await backend.transcribe(request)
+        log("File transcription complete — \(result.text.count) chars in \(String(format: "%.1f", result.elapsedSeconds))s")
+        return result
+    }
+
     /// Builds the LLM processor with credentials resolved lazily so keychain
     /// access happens off the hot path only when a mode actually needs an LLM.
     private func makeModeProcessor() -> DictationModeProcessor {
@@ -337,6 +381,14 @@ extension AppState {
                     throw LLMConfigurationError.unknownCustomEndpoint
                 }
                 return CLIChatClient(tool: tool, model: selection.model)
+            case .foundationModels:
+                // On-device Apple LLM (macOS 26 + Apple Intelligence). The UI
+                // hides it below macOS 26; guard here too. Any throw — including
+                // runtime unavailability inside the client — falls back to raw.
+                if #available(macOS 26, *) {
+                    return FoundationModelsChatClient()
+                }
+                throw LLMConfigurationError.providerUnavailable(reason: "Apple (on-device) cleanup requires macOS 26.")
             case .custom(let endpointID):
                 guard let endpoint = customEndpoints.first(where: { $0.id == endpointID }),
                       let baseURL = endpoint.baseURL else {

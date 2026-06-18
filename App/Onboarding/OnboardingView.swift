@@ -332,6 +332,11 @@ struct OnboardingView: View {
             )
 
             switch selectedEngine {
+            case .appleSpeech:
+                // Apple Speech needs no setup (no key, no model picker); the
+                // per-locale model installs on first use. Not offered in onboarding
+                // today, but the switch must stay exhaustive.
+                EmptyView()
             case .localWhisperKit:
                 EmbeddedSettingsForm {
                     WhisperKitModelSection(
@@ -551,6 +556,14 @@ struct OnboardingView: View {
     private var aiProviderNote: some View {
         if let provider = draft.defaultLLM?.provider {
             switch provider {
+            case .foundationModels:
+                Label {
+                    Text("Apple's on-device model — no key, nothing leaves your Mac. Needs macOS 26 + Apple Intelligence.", comment: "Onboarding Apple Foundation Models note")
+                } icon: {
+                    Image(systemName: "lock.fill")
+                }
+                .font(.caption)
+                .foregroundStyle(.green)
             case .ollama:
                 Label {
                     Text("On this Mac or your network — e.g. your DGX. Nothing goes to the cloud.", comment: "Onboarding Ollama note")
@@ -590,7 +603,7 @@ struct OnboardingView: View {
     private var currentLLMIsGated: Bool {
         guard let provider = draft.defaultLLM?.provider else { return false }
         switch provider {
-        case .ollama, .groq:
+        case .ollama, .groq, .foundationModels:
             return false
         case .openAI, .anthropic, .gemini, .claudeCLI, .codexCLI, .geminiCLI, .custom:
             return true
@@ -993,7 +1006,7 @@ struct OnboardingView: View {
             bundledLLM = LLMSelection(provider: .groq, model: LLMProvider.groq.defaultModel)
         case .openAIGPT4OMiniTranscribe20251215, .openAIGPT4OTranscribe, .openAIRealtimeWhisper:
             bundledLLM = LLMSelection(provider: .openAI, model: LLMProvider.openAI.defaultModel)
-        case .localWhisperKit, .localHviske, .elevenLabsScribe:
+        case .localWhisperKit, .localHviske, .elevenLabsScribe, .appleSpeech:
             bundledLLM = nil
         }
         state.updateSettings { settings in
@@ -1062,6 +1075,8 @@ struct OnboardingView: View {
         _ = keyStateRevision
         guard let provider = selection?.provider else { return true }
         switch provider {
+        case .foundationModels:
+            if #available(macOS 26, *) { return true } else { return false }
         case .ollama:
             return state.ollamaReachable ?? true
         case .claudeCLI:
@@ -1319,6 +1334,9 @@ private struct EngineRow: View {
             result.append(Badge(text: String(localized: "Free", comment: "Onboarding engine badge: free"), tint: .green))
             result.append(Badge(text: String(localized: "Recommended", comment: "Onboarding engine badge: recommended"), tint: BSTheme.emberGlow))
         case .localHviske:
+            result.append(Badge(text: String(localized: "Advanced", comment: "Onboarding engine badge: advanced"), tint: BSTheme.tealLight))
+        case .appleSpeech:
+            result.append(Badge(text: String(localized: "Free", comment: "Onboarding engine badge: free"), tint: .green))
             result.append(Badge(text: String(localized: "Advanced", comment: "Onboarding engine badge: advanced"), tint: BSTheme.tealLight))
         case .groqWhisper:
             result.append(Badge(text: String(localized: "Free", comment: "Onboarding engine badge: free"), tint: .green))

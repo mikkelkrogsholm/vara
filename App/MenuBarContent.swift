@@ -7,6 +7,7 @@ import SwiftUI
 struct MenuBarContent: View {
     let state: AppState
     let updater: SPUUpdater
+    let fileTranscription: FileTranscriptionModel
     @Environment(\.openWindow) private var openWindow
     @Environment(\.openSettings) private var openSettings
 
@@ -15,6 +16,7 @@ struct MenuBarContent: View {
             statusHeader
             modeQuickSwitch
             toggleButton
+            transcribeFileButton
 
             if state.settings.keepRecentTranscript, !state.lastTranscript.isEmpty {
                 latestTranscript
@@ -124,6 +126,28 @@ struct MenuBarContent: View {
         .buttonStyle(.borderedProminent)
         .tint(state.isRecording ? BSTheme.ember : BSTheme.teal)
         .disabled(state.isTranscribing)
+    }
+
+    /// Opens the file-transcription window and immediately prompts for a file.
+    /// Distinct from live dictation: this transcribes an existing audio/video file.
+    private var transcribeFileButton: some View {
+        Button {
+            openWindow(id: "file-transcription")
+            if let url = MediaFilePicker.pick() {
+                fileTranscription.start(url: url, appState: state)
+            }
+        } label: {
+            Label {
+                Text("Transcribe a file…", comment: "Menu bar button: import an audio/video file")
+            } icon: {
+                Image(systemName: "doc.badge.arrow.up")
+            }
+            .frame(maxWidth: .infinity)
+        }
+        .controlSize(.large)
+        .buttonStyle(.bordered)
+        .disabled(state.backend == nil)
+        .help(String(localized: "Transcribe an existing audio or video file", comment: "Tooltip for the file-transcription button"))
     }
 
     private var latestTranscript: some View {

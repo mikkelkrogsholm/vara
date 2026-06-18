@@ -8,6 +8,9 @@ struct VaraApp: App {
     /// Created once for the app's lifetime; does scheduled background checks AND a
     /// silent launch check so the dashboard can show a visible update prompt.
     @StateObject private var updateModel = VaraUpdateModel()
+    /// Drives the "transcribe a file" window (audio/video file import). Lives for
+    /// the app's lifetime so the menu action and the window share one run state.
+    @State private var fileTranscription = FileTranscriptionModel()
 
     var body: some Scene {
         WindowGroup("Vara", id: "main") {
@@ -16,7 +19,7 @@ struct VaraApp: App {
         .defaultSize(width: 860, height: 620)
 
         MenuBarExtra {
-            MenuBarContent(state: state, updater: updateModel.updater)
+            MenuBarContent(state: state, updater: updateModel.updater, fileTranscription: fileTranscription)
         } label: {
             Label(
                 state.isRecording ? "Vara •" : "Vara",
@@ -29,6 +32,11 @@ struct VaraApp: App {
             DiagnosticsView(state: state)
         }
         .defaultSize(width: 640, height: 420)
+
+        Window("Transcribe a File", id: "file-transcription") {
+            FileTranscriptionView(model: fileTranscription, state: state)
+        }
+        .defaultSize(width: 600, height: 500)
 
         Settings {
             // Inject AppState so WhisperKitModelSection can read the warm state.

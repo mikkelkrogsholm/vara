@@ -27,6 +27,8 @@ extension AppState {
             return configureLocalHviskeBackend()
         case .localWhisperKit:
             return configureWhisperKitBackend()
+        case .appleSpeech:
+            return configureAppleSpeechBackend()
         }
     }
 
@@ -184,6 +186,36 @@ extension AppState {
         // Kick off the one-time ANE specialization in the background and return
         // immediately — prewarm MUST NOT block configureBackend/launch/dictation.
         startWhisperKitPrewarmIfNeeded(backend, model: model)
+        return true
+    }
+
+    @discardableResult
+    private func configureAppleSpeechBackend() -> Bool {
+        // SpeechAnalyzer/SpeechTranscriber are macOS 26 only. The engine is hidden
+        // from the UI below macOS 26 (BackendMetadata.isAvailableOnThisOS), but
+        // guard here too in case a settings value selects it on an older OS.
+        guard #available(macOS 26, *) else {
+            backend = nil
+            dictationSession = nil
+            hotkey?.uninstall()
+            hotkey = nil
+            statusMessage = String(localized: "Apple Speech needs macOS 26 — pick another engine.", comment: "Status message when Apple Speech is selected on an older macOS")
+            lastError = "Apple Speech (on-device) requires macOS 26."
+            log("Apple Speech backend unavailable: requires macOS 26.")
+            return false
+        }
+        // No key, no Terminal setup: the per-locale model installs on first use
+        // (logged via the diagnostic log). Wire it up eagerly like WhisperKit.
+        let backend = AppleSpeechTranscriberBackend(
+            diagnosticLog: { [weak self] message in
+                await MainActor.run { self?.log(message) }
+            }
+        )
+        self.backend = backend
+        dictationSession = makeDictationSession(backend: backend)
+        lastError = nil
+        statusMessage = readyStatusMessage
+        log("Apple Speech (on-device) backend ready. Per-locale model installs on first use.")
         return true
     }
 

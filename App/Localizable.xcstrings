@@ -4092,6 +4092,193 @@
           }
         }
       }
+    },
+    "Runs on this Mac — English + more (not Danish yet)": {
+      "extractionState": "manual",
+      "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kører på din Mac — engelsk + flere (ikke dansk endnu)"
+          }
+        }
+      }
+    },
+    "This engine couldn't handle this dictation. Pick another engine under Settings › Engine.": {
+      "extractionState": "manual",
+      "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Denne motor kunne ikke håndtere dikteringen. Vælg en anden motor under Indstillinger › Motor."
+          }
+        }
+      }
+    },
+    "Choose an audio or video file to transcribe": {
+      "extractionState": "manual",
+      "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vælg en lyd- eller videofil, der skal transskriberes"
+          }
+        }
+      }
+    },
+    "Transcribe a file": {
+      "extractionState": "manual",
+      "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Transskribér en fil"
+          }
+        }
+      }
+    },
+    "Transcribe a File": {
+      "extractionState": "manual",
+      "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Transskribér en fil"
+          }
+        }
+      }
+    },
+    "Transcribe a file…": {
+      "extractionState": "manual",
+      "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Transskribér en fil…"
+          }
+        }
+      }
+    },
+    "Audio or video — converted on your Mac, then transcribed by your engine.": {
+      "extractionState": "manual",
+      "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lyd eller video — konverteres på din Mac og transskriberes derefter af din motor."
+          }
+        }
+      }
+    },
+    "Choose File…": {
+      "extractionState": "manual",
+      "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vælg fil…"
+          }
+        }
+      }
+    },
+    "Pick a recording to transcribe": {
+      "extractionState": "manual",
+      "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vælg en optagelse, der skal transskriberes"
+          }
+        }
+      }
+    },
+    "Works with audio and video files of any common format.": {
+      "extractionState": "manual",
+      "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Virker med lyd- og videofiler i alle gængse formater."
+          }
+        }
+      }
+    },
+    "Save…": {
+      "extractionState": "manual",
+      "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gem…"
+          }
+        }
+      }
+    },
+    "Couldn't transcribe this file": {
+      "extractionState": "manual",
+      "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kunne ikke transskribere denne fil"
+          }
+        }
+      }
+    },
+    "Try another file": {
+      "extractionState": "manual",
+      "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prøv en anden fil"
+          }
+        }
+      }
+    },
+    "%@ · %.1fs": {
+      "extractionState": "manual",
+      "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · %.1fs"
+          }
+        }
+      }
+    },
+    "No engine": {
+      "extractionState": "manual",
+      "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ingen motor"
+          }
+        }
+      }
+    },
+    "Transcribe an existing audio or video file": {
+      "extractionState": "manual",
+      "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Transskribér en eksisterende lyd- eller videofil"
+          }
+        }
+      }
+    },
+    "No speech engine is configured. Pick one under Settings › Engine.": {
+      "extractionState": "manual",
+      "localizations": {
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der er ikke konfigureret nogen talemotor. Vælg en under Indstillinger › Motor."
+          }
+        }
+      }
     }
   },
   "version": "1.0"

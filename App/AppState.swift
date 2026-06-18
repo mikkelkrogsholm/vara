@@ -102,6 +102,11 @@ final class AppState {
             return hasLLMKey(.anthropic)
         case .gemini:
             return hasLLMKey(.gemini)
+        case .foundationModels:
+            // Apple's on-device model: ready on macOS 26 (no key). If the Mac
+            // isn't Apple-Intelligence-eligible, the client falls back to raw at
+            // runtime rather than the mode being marked not-ready here.
+            if #available(macOS 26, *) { return true } else { return false }
         case .ollama:
             // Only "ready" if a probe has actually reached the local endpoint.
             // Before the first probe (nil) we optimistically allow it so the
@@ -398,6 +403,12 @@ struct DictationTranscriptionFailure: Error, CustomStringConvertible, Sendable {
     let recoveredAudioPath: String?
 
     var description: String {
+        // An engine that can't process this request (e.g. Apple Speech selected
+        // for a language Apple has no model for, or a sample-rate mismatch) — point
+        // the user at choosing another engine rather than a vague "try again".
+        if underlying is SpeechToTextBackendError {
+            return String(localized: "This engine couldn't handle this dictation. Pick another engine under Settings › Engine.", comment: "Dictation error: the selected STT backend can't process this request (e.g. unsupported language)")
+        }
         // Prefer a specific, actionable reason (bad key / no credit / rate limit /
         // no access / offline). Falls back to the generic recoverable message for
         // anything we can't classify — and we never echo a raw provider body, which
@@ -735,6 +746,7 @@ extension DictationHistoryItem {
 enum LLMConfigurationError: Error, CustomStringConvertible {
     case missingAPIKey(provider: String)
     case unknownCustomEndpoint
+    case providerUnavailable(reason: String)
 
     var description: String {
         switch self {
@@ -742,6 +754,8 @@ enum LLMConfigurationError: Error, CustomStringConvertible {
             return "Missing API key for LLM provider '\(provider)'. Add it in Settings → Intelligence."
         case .unknownCustomEndpoint:
             return "The custom LLM endpoint for this mode no longer exists."
+        case .providerUnavailable(let reason):
+            return reason
         }
     }
 }

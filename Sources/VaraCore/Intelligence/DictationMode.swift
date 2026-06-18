@@ -9,6 +9,10 @@ public enum LLMProvider: Codable, Hashable, Sendable {
     case custom(endpointID: UUID)
     /// Google Gemini via its OpenAI-compatible endpoint (a GEMINI_API_KEY).
     case gemini
+    /// Apple's on-device Foundation Models (macOS 26 + Apple Intelligence). No
+    /// API key, no network — fully local cleanup. The app-side client is gated to
+    /// macOS 26; the factory throws on older OS so the modes layer falls back.
+    case foundationModels
     /// Cleanup shelled out to an installed coding CLI under the user's own
     /// subscription — no API key. The associated `model` defaults the picker and
     /// display; `LLMSelection.model` stays the authoritative model string passed
@@ -26,6 +30,7 @@ public enum LLMProvider: Codable, Hashable, Sendable {
         case .ollama: "Ollama (local)"
         case .custom: "Custom endpoint"
         case .gemini: "Gemini"
+        case .foundationModels: "Apple (on-device)"
         case .claudeCLI: "Claude Code (CLI)"
         case .codexCLI: "Codex (CLI)"
         case .geminiCLI: "Gemini CLI"
@@ -35,7 +40,7 @@ public enum LLMProvider: Codable, Hashable, Sendable {
     public var requiresAPIKey: Bool {
         switch self {
         case .openAI, .groq, .anthropic, .gemini: true
-        case .ollama, .custom, .claudeCLI, .codexCLI, .geminiCLI: false
+        case .ollama, .custom, .claudeCLI, .codexCLI, .geminiCLI, .foundationModels: false
         }
     }
 
@@ -43,7 +48,7 @@ public enum LLMProvider: Codable, Hashable, Sendable {
         switch self {
         // The CLIs run on this Mac (under the user's subscription); Gemini's API
         // is cloud like the other keyed providers.
-        case .ollama, .claudeCLI, .codexCLI, .geminiCLI: true
+        case .ollama, .claudeCLI, .codexCLI, .geminiCLI, .foundationModels: true
         case .openAI, .groq, .anthropic, .custom, .gemini: false
         }
     }
@@ -56,6 +61,7 @@ public enum LLMProvider: Codable, Hashable, Sendable {
         case .ollama: "gemma3"
         case .custom: ""
         case .gemini: "gemini-2.5-flash"
+        case .foundationModels: "Apple on-device"
         case .claudeCLI(let model): model.isEmpty ? VaraCLITool.claude.defaultModel : model
         case .codexCLI(let model): model.isEmpty ? VaraCLITool.codex.defaultModel : model
         case .geminiCLI(let model): model.isEmpty ? VaraCLITool.gemini.defaultModel : model
@@ -71,7 +77,7 @@ public enum LLMProvider: Codable, Hashable, Sendable {
         // Google's OpenAI-compatible route; OpenAICompatibleChatClient appends
         // `chat/completions` to this base.
         case .gemini: URL(string: "https://generativelanguage.googleapis.com/v1beta/openai")
-        case .anthropic, .custom, .claudeCLI, .codexCLI, .geminiCLI: nil
+        case .anthropic, .custom, .claudeCLI, .codexCLI, .geminiCLI, .foundationModels: nil
         }
     }
 
@@ -87,7 +93,7 @@ public enum LLMProvider: Codable, Hashable, Sendable {
         case .claudeCLI: .claude
         case .codexCLI: .codex
         case .geminiCLI: .gemini
-        case .openAI, .groq, .anthropic, .ollama, .custom, .gemini: nil
+        case .openAI, .groq, .anthropic, .ollama, .custom, .gemini, .foundationModels: nil
         }
     }
 }

@@ -29,6 +29,11 @@ struct VaraSettingsView: View {
     @State private var editingModeIndex: Int?
     // Optional so the #Preview / `store: nil` path (no injected AppState) yields
     // nil instead of trapping; the warming/failed rows just fall back to .notNeeded.
+    /// Apple SpeechTranscriber's supported language codes, loaded async. Used to
+    /// hide the Apple Speech engine for languages Apple can't do (e.g. Danish on
+    /// macOS 26.2) so it never silently fails on the user's dictation language.
+    @State private var appleSpeechLanguages: Set<String> = []
+
     @Environment(AppState.self) private var appState: AppState?
     private let store: VaraSettingsStore?
     private let credentialStore: VaraCredentialStoring?
@@ -314,7 +319,7 @@ struct VaraSettingsView: View {
     /// the zero-cost default; the rest keep their declaration order.
     private func engineGrid(for tier: VaraEngineTier) -> some View {
         let backends = VaraSpeechBackendChoice.allCases
-            .filter { $0.tier == tier }
+            .filter { $0.tier == tier && $0.isAvailableOnThisOS && appleSpeechSupportsLanguage($0) }
             .sorted { lhs, _ in lhs == .groqWhisper }
         return LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
             ForEach(backends) { backend in
@@ -326,6 +331,24 @@ struct VaraSettingsView: View {
                     draft.speechBackend = backend
                 }
             }
+        }
+        .task { await loadAppleSpeechLanguages() }
+    }
+
+    /// Apple Speech is hidden unless SpeechTranscriber actually supports the
+    /// current dictation language — Apple has no Danish model on macOS 26.2, so
+    /// offering it for Danish would just fail. Automatic (nil code) hides it too,
+    /// since auto-detect could be Danish. Other engines are unaffected.
+    private func appleSpeechSupportsLanguage(_ choice: VaraSpeechBackendChoice) -> Bool {
+        guard choice == .appleSpeech else { return true }
+        guard let code = draft.language.languageCode else { return false }
+        return appleSpeechLanguages.contains(code)
+    }
+
+    private func loadAppleSpeechLanguages() async {
+        guard appleSpeechLanguages.isEmpty else { return }
+        if #available(macOS 26, *) {
+            appleSpeechLanguages = await AppleSpeechTranscriberBackend.supportedLanguageCodes()
         }
     }
 
@@ -520,7 +543,7 @@ struct VaraSettingsView: View {
     private func providerNeedsKeySection(_ provider: LLMProvider) -> Bool {
         switch provider {
         case .openAI, .groq, .anthropic, .gemini: true
-        case .ollama, .custom, .claudeCLI, .codexCLI, .geminiCLI: false
+        case .ollama, .custom, .claudeCLI, .codexCLI, .geminiCLI, .foundationModels: false
         }
     }
 
@@ -530,7 +553,7 @@ struct VaraSettingsView: View {
         case .groq: .groq
         case .anthropic: .anthropic
         case .gemini: .gemini
-        case .ollama, .custom, .claudeCLI, .codexCLI, .geminiCLI: nil
+        case .ollama, .custom, .claudeCLI, .codexCLI, .geminiCLI, .foundationModels: nil
         }
     }
 
@@ -541,7 +564,7 @@ struct VaraSettingsView: View {
     /// qualify.
     private func isLocalLLMChain(_ provider: LLMProvider?) -> Bool {
         switch provider {
-        case .ollama, .custom, .claudeCLI, .codexCLI, .geminiCLI: true
+        case .ollama, .custom, .claudeCLI, .codexCLI, .geminiCLI, .foundationModels: true
         case .openAI, .groq, .anthropic, .gemini, .none: false
         }
     }

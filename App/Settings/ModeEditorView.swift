@@ -206,6 +206,11 @@ struct LLMSelectionPicker: View {
     @ViewBuilder
     private var localProviderRows: some View {
         Text(LLMProvider.ollama.displayTitle).tag(ProviderTag.provider(.ollama))
+        if #available(macOS 26, *) {
+            // Apple's on-device model — no key, no network. Offered on macOS 26;
+            // if the Mac isn't Apple-Intelligence-eligible the factory falls back.
+            Text(LLMProvider.foundationModels.displayTitle).tag(ProviderTag.provider(.foundationModels))
+        }
         if !recommendedOnly {
             ForEach(VaraCLITool.allCases, id: \.self) { tool in
                 if installedCLITools.contains(tool) {
