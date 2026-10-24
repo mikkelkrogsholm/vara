@@ -1,51 +1,38 @@
-# Releasing Vara
+# Releasing Vara desktop
 
-Vara ships as a Developer ID–signed DMG and auto-updates via **Sparkle**.
-Existing installs poll `https://vara.dk/appcast.xml` (the `SUFeedURL`) and offer
-the user any newer version listed there.
+The current delivery artifact is a Developer ID–signed macOS app built from the
+Rust/Tauri workspace. Its bundle identifier is `dk.vara.desktop`.
 
-## One-time setup
+## Verify and build
 
-1. **Developer ID Application cert** — already installed (Team `3B7KHK6C9K`).
-2. **EdDSA signing key** — already generated; the private key lives in the login
-   keychain (service *"Private key for signing Sparkle updates"*), the public
-   key is `SUPublicEDKey` in `project.yml`.
-   - ⚠️ **Back it up now.** If lost, no future update can be signed in a way
-     existing installs accept — you'd lose the ability to update users.
-     Export: `…/Sparkle/bin/generate_keys -x sparkle_private_key.pem` and store
-     it somewhere safe (a password manager / offline), **never** in a repo.
-3. **Notarytool profile** (still TODO) — without it `build-dmg.sh` produces an
-   un-notarized DMG (Gatekeeper warns on download). Set up once:
+1. Run the optimized workspace tests from the repository root:
    ```sh
-   xcrun notarytool store-credentials vara-notary \
-       --apple-id "you@example.com" --team-id 3B7KHK6C9K --password <app-specific-pw>
+   CARGO_INCREMENTAL=0 CARGO_PROFILE_RELEASE_DEBUG=0 cargo test --release --workspace --locked
    ```
-
-## Per release
-
-1. **Bump the version** in `project.yml` (`info.properties`), then
-   `xcodegen generate`:
-   - `CFBundleShortVersionString` — marketing version (e.g. `0.2.0`)
-   - `CFBundleVersion` — build number, **must strictly increase** (this is
-     Sparkle's `<sparkle:version>`; updates are detected by it)
-2. **Build + sign + notarize + appcast item:**
+2. Build with the existing Apple Developer ID identity:
    ```sh
-   bash scripts/build-dmg.sh
+   sh scripts/build-desktop-macos.sh
    ```
-   With the notarytool profile present it notarizes, staples, EdDSA-signs the
-   final DMG, and **prints a ready-to-paste `<item>`**.
-3. **Publish on vara.dk** (the `~/Projekter/vara-www` repo):
-   - Copy the DMG to `public/download/Vara-<version>.dmg`
-   - Paste the printed `<item>` at the top of `public/appcast.xml`
-   - Deploy vara-www to dgx-spark
-4. Done — existing Sparkle installs pick it up on their next scheduled check (or
-   via **Vara menu → Check for Updates…**).
+   The script selects an installed Developer ID Application certificate, or uses
+   `APPLE_SIGNING_IDENTITY` when set. It verifies the signature and audio-input
+   entitlement. Use the same identity across rebuilds to keep macOS permissions
+   associated with the app.
+3. Inspect `target/release/bundle/macos/Vara.app`. Quit the installed app before
+   replacing `/Applications/Vara.app`, then launch that installed copy. Preserve
+   user data and OS credential-store entries; installation is not a profile reset.
+4. Verify microphone, the chosen global shortcut and insertion into another app.
+   Input Monitoring, Accessibility and microphone access are separate permissions.
 
-## How the pieces connect
+For a version change, keep the workspace version in `Cargo.toml`, the package
+version in `desktop/src-tauri/Cargo.toml` and `desktop/src-tauri/tauri.conf.json`
+consistent, and update `Cargo.lock` as necessary.
 
-| Piece | Where |
-|---|---|
-| Updater + "Check for Updates…" | `App/VaraApp.swift`, `App/CheckForUpdates.swift`, `App/MenuBarContent.swift` |
-| Feed URL + public key | `project.yml` → `SUFeedURL`, `SUPublicEDKey` (baked into `App/Info.plist`) |
-| Signing + appcast item | `scripts/build-dmg.sh` |
-| Hosted feed + DMG | `vara-www/public/appcast.xml`, `vara-www/public/download/` → `https://vara.dk/` |
+## Distribution status
+
+The app is signed but is not currently notarized. Public download packaging,
+notarization and automatic updates need their own implementation and verification
+before a public release. The retired Swift app's Sparkle feed and DMG script do
+not release this app. Windows/Linux release acceptance remains open.
+
+After verification, generated `target` output can be removed to reclaim disk
+space. Keep the installed app and user profile; do not commit build output or keys.

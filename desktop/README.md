@@ -1,7 +1,7 @@
 # Vara — Rust desktop
 
 The desktop app follows [DESIGN.md](../gdd/DESIGN.md) and the selected Warm
-precision mockup. The existing Swift app is preserved alongside this clean-write.
+precision mockup. This is the sole active application implementation in this repository.
 
 ## Build and run
 
@@ -12,7 +12,7 @@ line tools. Install the Tauri CLI with `cargo install tauri-cli --locked`.
 From the repository root:
 
 ```sh
-cargo test --workspace
+CARGO_INCREMENTAL=0 CARGO_PROFILE_RELEASE_DEBUG=0 cargo test --release --workspace --locked
 cargo tauri dev
 sh scripts/build-desktop-macos.sh # macOS: stable Apple signing identity
 ```
@@ -44,43 +44,19 @@ no Tauri dependency. Native focus, audio capture, credentials and HUD stay behin
 
 ## Verification and remaining work
 
-[UI review](../gdd/reports/DESKTOP-UI-REVIEW.md) records screens, states and native
-inspection. `cargo test --workspace` covers 30 domain/storage/model-integrity and HTTP protocol
-contracts. The browser suite renders actual production UI with test-only IPC
-fixtures; fixtures are outside the packaged UI directory.
+See [implementation status](../IMPLEMENTATION.md) for current limits and
+[gdd/reports](../gdd/reports) for detailed verification evidence. The user has
+confirmed macOS global shortcuts, insertion in TextEdit/Codex, OpenAI and local
+Parakeet + Qwen. Windows/Linux native integration remains unfinished.
 
 For browser checks, serve `desktop` on localhost port 18770 and execute
 `desktop/tests/ui.playwright.js` through the Playwright tool's file runner. The
-script creates its own isolated context and writes screenshots under gdd/reports.
+suite renders the production UI with isolated test-only IPC fixtures.
 
 For a microphone-free native pipeline test, build with the explicit developer
-feature `test-harness` and set `VARA_TEST_WAV` to a local WAV, together with an
-isolated `VARA_DATA_DIR`. Normal builds exclude this feature and ignore that WAV
-setting. Never distribute the harness build.
-
-Current limits:
-
-- macOS is the tested development target. Windows/Linux focus insertion and native
-  floating HUD adapters are unfinished; their current safe fallback is manual
-  insertion in the main UI. Cross-platform release acceptance remains open.
-- Real microphone-to-field insertion and physical global-hotkey activation still
-  need hands-on verification; synthetic app-bound keys did not exercise the OS
-  hotkey in the UI automation. The native fixture verified inference, history,
-  manual delivery and successful audio cleanup.
-- Cloud adapters require the user's own keys and have not been exercised against
-  live accounts. Claude/Gemini CLI paths are optional and restricted to verified
-  text-only capabilities. Codex CLI stays unavailable until a tools-off contract
-  can be verified; installation alone does not imply a working integration.
-- Local Danish sample inference works, but Redux and Whisper made recognition errors.
-  No broad accuracy benchmark or human model-quality acceptance is claimed.
-
-Current Redux integration evidence: [acceptance report](../gdd/reports/REDUX-INTEGRATION.md).
-
-Groq setup and current model/API verification: [Groq integration](../gdd/reports/GROQ-INTEGRATION.md).
-
-OpenAI: current GPT-Transcribe speech and Responses API / GPT-6 Luna text, with OS-key catalogue check. See [integration evidence](../gdd/reports/OPENAI-INTEGRATION.md). Saved model overrides remain unchanged.
-
-Headless verification: 30 workspace tests plus the real Redux cancellation/reuse test and 13 browser groups pass. See [verification report](../gdd/reports/HEADLESS-VERIFICATION-2026-10-23.md).
+feature `test-harness`, set `VARA_TEST_WAV` to a local WAV and use an isolated
+`VARA_DATA_DIR`. Normal builds exclude this feature. Never distribute a harness
+build. Do not use fixture profiles as personal profiles.
 
 Mac permission troubleshooting: microphone, Input Monitoring (global physical
 shortcuts) and Accessibility (focus/automatic insertion) are separate permissions.

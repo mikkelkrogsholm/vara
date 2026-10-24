@@ -3,18 +3,11 @@
 # Local secrets and environment overrides.
 .env
 .env.*
-!.env.example
-
-# Swift/Xcode build output and machine-local metadata.
-.build/
-.derivedData/
-.swiftpm/
-xcuserdata/
-*.xcuserstate
 
 # Local assistant/editor state.
 .agents/
 .claude/
+/.playwright-mcp/
 
 # graphify knowledge-graph output (auto-rebuilt by post-commit hook)
 graphify-out/

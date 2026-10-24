@@ -1,8 +1,8 @@
 # Existing Vara provider inventory — captured 2026-10-23
 
 This describes provider choices and wiring observed in local Swift files, not a
-claim that every service/model is current, available or tested. Captured files and
-hashes are registered as `source.provider_code_1` through `_4` in `gdd.json`.
+claim that every service/model is current, available or tested. The original source registrations and hashes are retained in historical GDD
+revisions. The captured Swift files are now available through Git history.
 
 | Purpose | Observed provider options | Intended handling |
 | --- | --- | --- |
@@ -29,3 +29,11 @@ no endpoint conformance or platform compatibility was tested.
 ElevenLabs project guidance was read and the official docs index checked at
 https://elevenlabs.io/docs/llms.txt. This inventory uses local provider wiring;
 it makes no current API-schema/model/price assertions.
+
+## Retired implementation
+
+The Swift source captures were removed from the working tree on 2026-10-25.
+They remain available in Git at revision
+`3eb56eb8dce1edff66f8b371acd9fb62ff08ecf5` under
+`gdd/sources/provider-inventory/`. This inventory is historical evidence, not
+a dependency of the Rust application.
