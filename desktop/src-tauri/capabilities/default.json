@@ -1,0 +1,11 @@
+{
+  "identifier": "main-window",
+  "description": "Local UI may receive state changes and invoke the explicitly implemented Vara commands.",
+  "windows": [
+    "main"
+  ],
+  "permissions": [
+    "core:default",
+    "core:window:allow-start-dragging"
+  ]
+}

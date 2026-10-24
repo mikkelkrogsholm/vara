@@ -1,0 +1,26 @@
+{
+  "format": "gdd-records/0.2",
+  "project_id": "vara.clean-write",
+  "records": {
+    "decision.audience.2026-10-23": {
+      "kind": "decision",
+      "topic": "model_change",
+      "description": "Resolve question.audience from the direct human answer; this accepts an audience/setup constraint, not all proposed features or an implementation.",
+      "scope": [
+        "action.use_vara",
+        "action.first_success",
+        "action.recommended_setup",
+        "rule.approachable_setup",
+        "scenario.first_use"
+      ],
+      "spec_revision": "sha256:1ae64952d9616f3d2f06655b80554c5f0048d69a51488e431d07f9dd19b0cf24",
+      "policy_revision": "trusted-chat-audience-answer-2026-10-23",
+      "actor": {
+        "id": "human.mikkel",
+        "kind": "human"
+      },
+      "outcome": "accepted",
+      "rationale": "The user explicitly selected themselves first and required easy first use for others without technical setup. Source: source.audience. Base model: sha256:36551d4cc6468c562b696e985d0ebbecc6e65bc6c813dc5661e6efdf768ab532. Product implementation remains outside this modeling conversation."
+    }
+  }
+}

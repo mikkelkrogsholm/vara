@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="da">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <title>Vara</title>
+    <link rel="stylesheet" href="design/styles/tokens.css" />
+    <link rel="stylesheet" href="design/styles/app.css" />
+    <link rel="stylesheet" href="desktop.css" />
+    <script src="boot.js" defer></script>
+    <script src="design/js/components.js" defer></script>
+    <script src="components.js" defer></script>
+    <script src="views.js" defer></script>
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <div
+      class="native-drag-region"
+      data-tauri-drag-region
+      aria-hidden="true"
+    ></div>
+    <a class="skip" href="#workspace">Gå til indhold</a>
+    <div class="app-window" id="app-window">
+      <aside class="sidebar" id="sidebar" aria-label="Hovednavigation"></aside>
+      <main id="workspace" class="workspace" tabindex="-1">
+        <div class="empty-state" id="startup">
+          <h1>Vara starter</h1>
+          <p>Åbner din lokale historik…</p>
+        </div>
+      </main>
+    </div>
+    <dialog id="modal" aria-labelledby="dialog-title"></dialog>
+    <div id="toast" class="toast" hidden></div>
+    <div class="sr-only" role="status" aria-live="polite" id="live"></div>
+  </body>
+</html>

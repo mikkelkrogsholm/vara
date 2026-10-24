@@ -1,0 +1,60 @@
+{
+  "date": "2026-10-23",
+  "default": "local.parakeet",
+  "existing_selected_engine_preserved": true,
+  "runtime": {
+    "crate": "voxrt",
+    "git_rev": "4fab626c00708d9bc97f837d309e0d362094282b",
+    "apple_feature": "metal",
+    "other_targets": "CPU; not runtime verified"
+  },
+  "model": {
+    "revision": "2bf128600aac4b16946f7ed8372e56117fe5e23b",
+    "files": [
+      {
+        "file": "config.json",
+        "bytes": 12988,
+        "sha256": "503c653b2e3bb788adbcb04f5abdee532d958686564081baeed133ff10143f6e"
+      },
+      {
+        "file": "model.safetensors",
+        "bytes": 177774490,
+        "sha256": "78ec25733ee0d0c1586d1346fc86db9d0c2e436e3a8ab1d32a82d1bb8f848d21"
+      },
+      {
+        "file": "ternary.json",
+        "bytes": 57970,
+        "sha256": "1221c6d3ce901ffe09c089da758a8db8b76189f80cff41c5afc244fc61e2051d"
+      },
+      {
+        "file": "tokenizer.json",
+        "bytes": 1159960,
+        "sha256": "bd321b096832a3f270bd3b2a88823957920f1a5c5ada71114a26ea729d0cbe91"
+      }
+    ]
+  },
+  "acceptance": {
+    "download_and_inference": "PASS using production installer/adapter; cold cached-shader ASR 1.23s",
+    "regular_rust_tests": 17,
+    "real_weight_test": "PASS: inference, accepted cancellation, next inference with same cached runtime",
+    "ui_groups": 11,
+    "gdd_model": "PASS",
+    "gdd_visualization": "PASS",
+    "release_bundle_mib": 24.77,
+    "test_harness_in_release": false,
+    "notices_bundled": true,
+    "native_ui": "SKIPPED at explicit user request after Mac locked",
+    "microphone_to_field": "not exercised",
+    "windows_linux_mobile": "not verified"
+  },
+  "changes": [
+    "new-profile default Redux",
+    "optional Whisper retained",
+    "older selected settings preserved",
+    "isolated tokenizer namespace",
+    "model-selected readiness",
+    "automatic language UI",
+    "local inference avoids keyring access",
+    "cooperative cancellation and panic recovery"
+  ]
+}

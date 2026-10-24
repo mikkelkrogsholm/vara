@@ -1,0 +1,24 @@
+{
+  "format": "gdd-records/0.2",
+  "project_id": "vara.clean-write",
+  "records": {
+    "decision.redux_default.2026-10-23": {
+      "kind": "decision",
+      "topic": "model_change",
+      "description": "Integrate Parakeet Redux as the new-profile default local speech model, retaining saved engine choices and optional Whisper.",
+      "scope": [
+        "component.engines",
+        "component.preferences",
+        "component.experience"
+      ],
+      "spec_revision": "sha256:2e76768e5626941591ce648f8d47cb77478b1ad32a735720527d1f9b0843af33",
+      "policy_revision": "trusted-user-approval-redux-default-2026-10-23",
+      "actor": {
+        "id": "agent.codex",
+        "kind": "agent"
+      },
+      "outcome": "accepted",
+      "rationale": "The user approved the proposed Redux integration. This record tracks the authored implementation/default change; it is not broad model-quality, native microphone or cross-platform release acceptance."
+    }
+  }
+}

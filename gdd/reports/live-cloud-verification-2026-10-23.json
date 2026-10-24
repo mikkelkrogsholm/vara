@@ -1,0 +1,48 @@
+{
+  "credential_sources": {
+    "groq": "legacy_project_env"
+  },
+  "keychain_read": "timed_out_after_15s_without_UI",
+  "results": [
+    {
+      "catalogue": "pass",
+      "configured_models": [
+        {
+          "available": true,
+          "id": "groq.speech",
+          "model": "whisper-large-v3-turbo"
+        },
+        {
+          "available": true,
+          "id": "groq.speech.accurate",
+          "model": "whisper-large-v3"
+        },
+        {
+          "available": true,
+          "id": "groq.text",
+          "model": "openai/gpt-oss-120b"
+        }
+      ],
+      "groq.speech": {
+        "characters": 160,
+        "seconds": 0.264555334,
+        "status": "pass"
+      },
+      "groq.speech.accurate": {
+        "characters": 158,
+        "seconds": 0.390533583,
+        "status": "pass"
+      },
+      "groq.text": {
+        "characters": 36,
+        "seconds": 0.360819041,
+        "status": "pass"
+      },
+      "provider": "groq"
+    },
+    {
+      "provider": "openai",
+      "status": "no_accessible_key"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+[package]
+name = "vara-desktop"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+build = "build.rs"
+
+[lib]
+name = "vara_desktop"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+vara-core = { path = "../../crates/vara-core" }
+vara-engine = { path = "../../crates/vara-engine" }
+vara-platform = { path = "../../crates/vara-platform" }
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+uuid.workspace = true
+tokio.workspace = true
+parking_lot.workspace = true
+tauri = { version = "2", features = ["tray-icon", "macos-private-api"] }
+tauri-plugin-global-shortcut = "2"
+
+[features]
+# Developer fixture replay only. Excluded from normal debug/release builds and distributed apps.
+test-harness = []

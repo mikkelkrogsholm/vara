@@ -1,0 +1,49 @@
+{
+  "format": "gdd-records/0.2",
+  "project_id": "vara.clean-write",
+  "records": {
+    "decision.platforms.2026-10-23": {
+      "kind": "decision",
+      "topic": "model_change",
+      "description": "Current combined product direction: retain audience, daily dictation scope and modular contracts; add all-platform target with Mac-first development and final Windows/Linux verification.",
+      "scope": [
+        "action.answer",
+        "action.app_rules",
+        "action.cancel",
+        "action.capture",
+        "action.cleanup",
+        "action.desktop_support",
+        "action.export_text",
+        "action.file_control",
+        "action.file_queue",
+        "action.first_success",
+        "action.import_media",
+        "action.input_device",
+        "action.insert",
+        "action.permissions",
+        "action.recommended_setup",
+        "action.retry",
+        "action.retry_delivery",
+        "action.session_feedback",
+        "action.timed_export",
+        "action.transcribe",
+        "action.use_vara",
+        "action.verbatim",
+        "action.wake_word",
+        "entity.capability_matrix",
+        "rule.approachable_setup",
+        "rule.crossplatform",
+        "rule.modularity",
+        "rule.module_contracts"
+      ],
+      "spec_revision": "sha256:8f778e15e7f45623746da9d3acf3d7a1b0167cff8799ef7da027063a1f107449",
+      "policy_revision": "trusted-chat-platform-answer-2026-10-23",
+      "actor": {
+        "id": "human.mikkel",
+        "kind": "human"
+      },
+      "outcome": "accepted",
+      "rationale": "The user explicitly targets all three platforms from the beginning, while developing on Mac and testing the others at the end. Source: source.platforms. Prior audience/scope answers remain unchanged and are carried forward from source.audience/source.release_scope. Original immutable records remain in reports/history. Base revision: sha256:b97647a5e5f4abed18a5c0bd3d3c1b864f913fcb45a76377bc8d2bee79af7ea3. No runtime/platform validation or application implementation authorization is implied."
+    }
+  }
+}

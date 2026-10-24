@@ -1,0 +1,24 @@
+{
+  "format": "gdd-records/0.2",
+  "project_id": "vara.clean-write",
+  "records": {
+    "decision.openai_update.2026-10-23": {
+      "kind": "decision",
+      "topic": "model_change",
+      "description": "OpenAI speech uses current GPT-Transcribe; optional text uses Responses API and GPT-6 Luna. Add OS-key model catalogue check.",
+      "scope": [
+        "component.engines",
+        "component.preferences",
+        "component.experience"
+      ],
+      "spec_revision": "sha256:25c7caec5d6bb6a4acbdb94a35c8bb4d5b9e5ca049d9dd0d9b32ee71cfa175d6",
+      "policy_revision": "trusted-user-request-add-openai-latest-endpoints-2026-10-23",
+      "actor": {
+        "id": "agent.codex",
+        "kind": "agent"
+      },
+      "outcome": "accepted",
+      "rationale": "User requested OpenAI with latest endpoints. Local tests and build support the adapter change; no live-account or release acceptance is asserted."
+    }
+  }
+}

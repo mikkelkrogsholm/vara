@@ -1,0 +1,19 @@
+{
+  "executed": true,
+  "scope": "Generated GDD viewer only; no application behavior tested.",
+  "spec_revision": "sha256:36551d4cc6468c562b696e985d0ebbecc6e65bc6c813dc5661e6efdf768ab532",
+  "tool": "Playwright browser automation",
+  "result": "PASS",
+  "observations": {
+    "title": "Vara \u2014 ideal product graph \u00b7 GDD",
+    "initial_visible_nodes": 81,
+    "initial_hidden_scenarios": 34,
+    "search_action_cancel_included": true,
+    "search_reduced_visible_nodes": true,
+    "inspector_opened_action_cancel": true,
+    "show_scenarios_revealed": 34,
+    "expanded_visible_nodes": 115,
+    "reset_control_executed": true
+  },
+  "transport": "Temporary loopback HTTP server; direct file navigation is blocked by the browser tool."
+}

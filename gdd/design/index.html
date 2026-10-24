@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="da">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <link rel="icon" href="data:," />
+    <title>Vara — Warm precision</title>
+    <link rel="stylesheet" href="styles/tokens.css" />
+    <link rel="stylesheet" href="styles/app.css" />
+    <!-- Classic deferred scripts keep the prototype usable directly over file://. -->
+    <script src="js/components.js" defer></script>
+    <script src="js/data.js" defer></script>
+    <script src="js/views.js" defer></script>
+    <script src="js/app.js" defer></script>
+  </head>
+  <body>
+    <a class="skip" href="#workspace">Gå til indhold</a>
+    <div class="app-window" id="app-window">
+      <aside class="sidebar" id="sidebar" aria-label="Hovednavigation"></aside>
+      <main id="workspace" class="workspace" tabindex="-1"></main>
+    </div>
+    <div
+      id="hud-region"
+      class="hud-region"
+      aria-label="Dikteringsstatus — simuleret"
+    ></div>
+    <footer class="prototype-footer">
+      <span
+        >Interaktiv prototype · eksempeldata · ingen lyd eller varig
+        lagring</span
+      >
+      <button class="text-button" data-action="open-demo">Afprøv forløb</button>
+      <a href="../DESIGN.md">DESIGN.md</a>
+      <a href="mockups/01-warm-precision.png">Visuel reference ↗</a>
+    </footer>
+    <dialog id="modal" aria-labelledby="dialog-title"></dialog>
+    <div id="toast" class="toast" hidden></div>
+    <div class="sr-only" role="status" aria-live="polite" id="live"></div>
+    <noscript
+      >Denne klikbare prototype kræver JavaScript. Den sender ingen data til en
+      server.</noscript
+    >
+  </body>
+</html>

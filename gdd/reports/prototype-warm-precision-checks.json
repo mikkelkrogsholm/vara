@@ -1,0 +1,68 @@
+{
+  "result": "PASS",
+  "checks": [
+    "Mockup column geometry and default disclosure",
+    "Grouped history, original/direct representations and selection focus",
+    "Search, no-match and app filter",
+    "App AI save, unsaved edits and invalid draft",
+    "Activation mode and shortcut capture/conflict",
+    "Opt-in retention and period validation",
+    "Key validation and secret clearing",
+    "Endpoint configuration and strict-local guard",
+    "Direct, app-override and general-prompt sessions",
+    "Focus-safe manual outcome and AI fallback",
+    "Recognition recovery, retry cancellation and fixed deadline",
+    "Cancellation invalidates late provider response",
+    "Async completion preserves settings editing",
+    "Deliberate delete confirmation",
+    "Local/cloud onboarding, install cancellation and trial gates",
+    "Long result retains full text",
+    "History/detail/settings reflow at 1280, 900, 600 and 320px",
+    "Reduced-motion state feedback",
+    "Direct file URL loading and keyboard navigation",
+    "Modal keyboard focus containment and Escape",
+    "320px listening/processing HUD labels and controls fit",
+    "Narrow master/detail navigation preserves list scroll position"
+  ],
+  "layouts": [
+    {
+      "width": 1280,
+      "content": 1280,
+      "scroll": 1280
+    },
+    {
+      "width": 900,
+      "content": 900,
+      "scroll": 900
+    },
+    {
+      "width": 600,
+      "content": 585,
+      "scroll": 585
+    },
+    {
+      "width": 320,
+      "content": 305,
+      "scroll": 305
+    }
+  ],
+  "columns": [
+    {
+      "x": 39,
+      "width": 271
+    },
+    {
+      "x": 310,
+      "width": 498
+    },
+    {
+      "x": 808,
+      "width": 739
+    }
+  ],
+  "javascriptErrors": [],
+  "scope": "Interactive static prototype only. No native microphone, focus handoff, clipboard, provider, storage or platform-runtime behavior is claimed.",
+  "tested_at": "2026-10-23",
+  "spec_revision": "sha256:bec5246fcd5b3634cfbed0f21a53943cc5c59b3273b229b594528ccc2c39f6e7",
+  "asset_manifest": "prototype-warm-precision-assets.json"
+}

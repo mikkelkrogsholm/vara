@@ -1,0 +1,57 @@
+{
+  "scope": "Static prototype sources, token generator, fixtures, artwork, tests and current design document.",
+  "assets": [
+    {
+      "path": "design/README.md",
+      "sha256": "1524885a525660401caf178450a38692ddf46b451bb69d2863c4960ee8ec35f4"
+    },
+    {
+      "path": "design/assets/mail.png",
+      "sha256": "582b0f86693b63d1be63f696d4c8392488484aefce108acb33a1003fe443a4a6"
+    },
+    {
+      "path": "design/assets/notes.png",
+      "sha256": "d1c17b7e0e4d4fa8a0e881b1d67cdbfcfa7f87b3dcbfe0dcc2bf31919aa62862"
+    },
+    {
+      "path": "design/index.html",
+      "sha256": "64c1d5db8184586237c71fe4c152932bd20c4cc526373fe7533f970ae389df45"
+    },
+    {
+      "path": "design/js/app.js",
+      "sha256": "693a7af589aeab13f865fb752ad6ad8521ecdcef29a344a0642577c5fe551135"
+    },
+    {
+      "path": "design/js/components.js",
+      "sha256": "4e4ae6177e75dc58852c4cdcb90c7263104c062a7796e42427b7919790bdb3bd"
+    },
+    {
+      "path": "design/js/data.js",
+      "sha256": "0249899b08deeb8382cb1ca1961d2182409bbd164a817cc2b32cc3c1d7421eea"
+    },
+    {
+      "path": "design/js/views.js",
+      "sha256": "d3f49d7ec5701c152c1f182ea9f6a7bb37ee91911e8a5348d8044e1d77ed7884"
+    },
+    {
+      "path": "design/scripts/generate_tokens.py",
+      "sha256": "059dabef54603c98eeb8e4095b876b4cf23da6eb3c55d72d5cc22ada98285ce1"
+    },
+    {
+      "path": "design/styles/app.css",
+      "sha256": "7c7d0d9ecb0538f3e584e97df1ca961e8d3b99c9e2692388e3f69a37a2bc8332"
+    },
+    {
+      "path": "design/styles/tokens.css",
+      "sha256": "7c9a9587c1e193a3d17a00b889bcdb11c08cf6a1086040482e0bb27db424750c"
+    },
+    {
+      "path": "design/tests/smoke.playwright.js",
+      "sha256": "8544cb583117d2ccc886fc12e0e6ffba03b74cdc766edfed52c2a2b89193f8d4"
+    },
+    {
+      "path": "DESIGN.md",
+      "sha256": "d1c26adc0bc060a4a006ee7a8869f882705c838ab1bf7cfa2082454d5d1e3df1"
+    }
+  ]
+}

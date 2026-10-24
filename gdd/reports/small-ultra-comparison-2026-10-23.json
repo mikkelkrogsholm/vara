@@ -1,0 +1,327 @@
+{
+  "date": "2026-10-23",
+  "hardware": "Apple M3 Max",
+  "os": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "audio": {
+    "path": "Samples/da_test.wav",
+    "duration_s": 10.312125,
+    "sha256": "8862255dcb95588079350d0fb087b594c51ebb06c0c6bbc0fe2d74dc02709e8a"
+  },
+  "scope": "Isolated local inference; app choices, installed models and defaults unchanged",
+  "runtimes": {
+    "whisper": {
+      "rust_crate": "whisper-rs 0.16",
+      "backend": "whisper.cpp",
+      "language": "da",
+      "strategy": "greedy best_of=1",
+      "threads": 8,
+      "gpu": false,
+      "probe": "crates/vara-engine/examples/whisper_bench.rs"
+    },
+    "ultra": {
+      "repository": "https://github.com/altunenes/parakeet-rs",
+      "commit": "187dbf3e81d869483cf6daa8ee4a97b2aa458835",
+      "version": "0.4.3",
+      "ort_crate": "2.0.0-rc.15",
+      "backend": "ONNX Runtime CPU",
+      "intra_threads": 8,
+      "probe": "scripts/bench-parakeet-ultra.rs",
+      "export": "float32 ONNX, not quantized"
+    },
+    "redux": {
+      "repository": "https://github.com/lmaksym/voxrt",
+      "commit": "4fab626c00708d9bc97f837d309e0d362094282b",
+      "version": "0.2.1"
+    }
+  },
+  "verified_artifacts": [
+    {
+      "repo": "ggerganov/whisper.cpp",
+      "revision": "5359861c739e955e79d9a303bcbc70fb988958b1",
+      "file": "ggml-small.bin",
+      "bytes": 487601967,
+      "sha256": "1be3a9b2063867b937e64e2ec7483364a79917e157fa98c5d94b5c1fffea987b"
+    },
+    {
+      "repo": "altunenes/parakeet-rs",
+      "revision": "b53b9101fa87271041773b5036aeb8db9d810d40",
+      "file": "parakeet-ultra/encoder-model.onnx",
+      "bytes": 3437572,
+      "sha256": "8f72233edd8175da74950bbcec59f4fe8405455f6e038cdb2e530c54ab0d46ed"
+    },
+    {
+      "repo": "altunenes/parakeet-rs",
+      "revision": "b53b9101fa87271041773b5036aeb8db9d810d40",
+      "file": "parakeet-ultra/encoder-model.onnx.data",
+      "bytes": 2476376064,
+      "sha256": "3db5bc7e87d76459d8999f320318a00652d8021f24519ffd50d45e624a88b64f"
+    },
+    {
+      "repo": "altunenes/parakeet-rs",
+      "revision": "b53b9101fa87271041773b5036aeb8db9d810d40",
+      "file": "parakeet-ultra/decoder_joint-model.onnx",
+      "bytes": 72584074,
+      "sha256": "6b7c1aa9afa87b24c1aaf1f18ce0d25d1d65ef1a31a9b9f4cee9286d79467414"
+    },
+    {
+      "repo": "altunenes/parakeet-rs",
+      "revision": "b53b9101fa87271041773b5036aeb8db9d810d40",
+      "file": "parakeet-ultra/vocab.txt",
+      "bytes": 93939,
+      "sha256": "d58544679ea4bc6ac563d1f545eb7d474bd6cfa467f0a6e2c1dc1c7d37e3c35d"
+    }
+  ],
+  "model_sizes_bytes": {
+    "whisper-small": 487601967,
+    "parakeet-ultra": 2552491649,
+    "parakeet-redux": 179005408
+  },
+  "method": "Warm median of five runs after a first transcription. Models loaded once per process. Final measured runs sequential after compilation/download finished. Early Small run during compilation excluded. Ultra transcribe_file includes file decoding, Whisper reads PCM before timing, Redux bench predecodes input. Device/backend/precision differ, so this compares tested configurations, not model-only speed.",
+  "limits": [
+    "Only one Danish clip; no independently reviewed reference or WER",
+    "Small and Ultra text stable across six runs, not proof of broad accuracy",
+    "Load timings single observations affected by caching and runtime setup",
+    "Redux transcript reused from preceding probe, warm timings remeasured here",
+    "No cloud calls or audio uploads",
+    "No Windows/Linux/mobile runtime verification; no new app provider/default selected"
+  ],
+  "results": {
+    "whisper-small": {
+      "device": "cpu",
+      "threads": 8,
+      "load_ms": 198.49937500000001,
+      "first_ms": 845.2654160000001,
+      "warm_median_ms": 851.6792909999999,
+      "transcript": "Hej med dig, det er det er en lille test af Edictoringsværdøj, som jeg er ved at bygge. Det hedder LSTNR og bruger eleden Ladt skrepe til at omdane tale til tekst.",
+      "stable_text_in_six_runs": true,
+      "runs": [
+        {
+          "audio_s": 10.312125,
+          "device": "cpu",
+          "elapsed_ms": 845.2654160000001,
+          "load_ms": 198.49937500000001,
+          "model": "target/experiments/model-candidates/whisper-small/ggml-small.bin",
+          "run": 0,
+          "text": "Hej med dig, det er det er en lille test af Edictoringsværdøj, som jeg er ved at bygge. Det hedder LSTNR og bruger eleden Ladt skrepe til at omdane tale til tekst.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device": "cpu",
+          "elapsed_ms": 862.137125,
+          "load_ms": 198.49937500000001,
+          "model": "target/experiments/model-candidates/whisper-small/ggml-small.bin",
+          "run": 1,
+          "text": "Hej med dig, det er det er en lille test af Edictoringsværdøj, som jeg er ved at bygge. Det hedder LSTNR og bruger eleden Ladt skrepe til at omdane tale til tekst.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device": "cpu",
+          "elapsed_ms": 843.2239999999999,
+          "load_ms": 198.49937500000001,
+          "model": "target/experiments/model-candidates/whisper-small/ggml-small.bin",
+          "run": 2,
+          "text": "Hej med dig, det er det er en lille test af Edictoringsværdøj, som jeg er ved at bygge. Det hedder LSTNR og bruger eleden Ladt skrepe til at omdane tale til tekst.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device": "cpu",
+          "elapsed_ms": 842.510792,
+          "load_ms": 198.49937500000001,
+          "model": "target/experiments/model-candidates/whisper-small/ggml-small.bin",
+          "run": 3,
+          "text": "Hej med dig, det er det er en lille test af Edictoringsværdøj, som jeg er ved at bygge. Det hedder LSTNR og bruger eleden Ladt skrepe til at omdane tale til tekst.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device": "cpu",
+          "elapsed_ms": 851.6792909999999,
+          "load_ms": 198.49937500000001,
+          "model": "target/experiments/model-candidates/whisper-small/ggml-small.bin",
+          "run": 4,
+          "text": "Hej med dig, det er det er en lille test af Edictoringsværdøj, som jeg er ved at bygge. Det hedder LSTNR og bruger eleden Ladt skrepe til at omdane tale til tekst.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device": "cpu",
+          "elapsed_ms": 920.180041,
+          "load_ms": 198.49937500000001,
+          "model": "target/experiments/model-candidates/whisper-small/ggml-small.bin",
+          "run": 5,
+          "text": "Hej med dig, det er det er en lille test af Edictoringsværdøj, som jeg er ved at bygge. Det hedder LSTNR og bruger eleden Ladt skrepe til at omdane tale til tekst.",
+          "threads": 8
+        }
+      ]
+    },
+    "whisper-base": {
+      "device": "cpu",
+      "threads": 8,
+      "load_ms": 88.947334,
+      "first_ms": 663.501417,
+      "warm_median_ms": 507.26083300000005,
+      "transcript": "Hej med dig, det er en lille test af et dett tøjens hvertag, som jeg er ved at bygge. Det hedder LSTNR og bruger i linjen land, Skribe til at omdane tale til et tekst.",
+      "stable_text_in_six_runs": true,
+      "runs": [
+        {
+          "audio_s": 10.312125,
+          "device": "cpu",
+          "elapsed_ms": 663.501417,
+          "load_ms": 88.947334,
+          "model": "target/probe-models/ggml-base.bin",
+          "run": 0,
+          "text": "Hej med dig, det er en lille test af et dett tøjens hvertag, som jeg er ved at bygge. Det hedder LSTNR og bruger i linjen land, Skribe til at omdane tale til et tekst.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device": "cpu",
+          "elapsed_ms": 507.26083300000005,
+          "load_ms": 88.947334,
+          "model": "target/probe-models/ggml-base.bin",
+          "run": 1,
+          "text": "Hej med dig, det er en lille test af et dett tøjens hvertag, som jeg er ved at bygge. Det hedder LSTNR og bruger i linjen land, Skribe til at omdane tale til et tekst.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device": "cpu",
+          "elapsed_ms": 861.904959,
+          "load_ms": 88.947334,
+          "model": "target/probe-models/ggml-base.bin",
+          "run": 2,
+          "text": "Hej med dig, det er en lille test af et dett tøjens hvertag, som jeg er ved at bygge. Det hedder LSTNR og bruger i linjen land, Skribe til at omdane tale til et tekst.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device": "cpu",
+          "elapsed_ms": 605.354833,
+          "load_ms": 88.947334,
+          "model": "target/probe-models/ggml-base.bin",
+          "run": 3,
+          "text": "Hej med dig, det er en lille test af et dett tøjens hvertag, som jeg er ved at bygge. Det hedder LSTNR og bruger i linjen land, Skribe til at omdane tale til et tekst.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device": "cpu",
+          "elapsed_ms": 418.145875,
+          "load_ms": 88.947334,
+          "model": "target/probe-models/ggml-base.bin",
+          "run": 4,
+          "text": "Hej med dig, det er en lille test af et dett tøjens hvertag, som jeg er ved at bygge. Det hedder LSTNR og bruger i linjen land, Skribe til at omdane tale til et tekst.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device": "cpu",
+          "elapsed_ms": 375.887875,
+          "load_ms": 88.947334,
+          "model": "target/probe-models/ggml-base.bin",
+          "run": 5,
+          "text": "Hej med dig, det er en lille test af et dett tøjens hvertag, som jeg er ved at bygge. Det hedder LSTNR og bruger i linjen land, Skribe til at omdane tale til et tekst.",
+          "threads": 8
+        }
+      ]
+    },
+    "parakeet-ultra-cpu": {
+      "device": "cpu",
+      "threads": 8,
+      "load_ms": 9059.406417,
+      "first_ms": 407.54825,
+      "warm_median_ms": 379.159583,
+      "transcript": "Hej med dig, dette er en lille test af edektoringsværktøj, som jeg er ved at bygge. Det hedder lstnr og bruger Elenen Landskribe til at omdanne tale til tekst.",
+      "stable_text_in_six_runs": true,
+      "runs": [
+        {
+          "device": "cpu",
+          "elapsed_ms": 407.54825,
+          "load_ms": 9059.406417,
+          "run": 0,
+          "text": "Hej med dig, dette er en lille test af edektoringsværktøj, som jeg er ved at bygge. Det hedder lstnr og bruger Elenen Landskribe til at omdanne tale til tekst.",
+          "threads": 8
+        },
+        {
+          "device": "cpu",
+          "elapsed_ms": 397.771875,
+          "load_ms": 9059.406417,
+          "run": 1,
+          "text": "Hej med dig, dette er en lille test af edektoringsværktøj, som jeg er ved at bygge. Det hedder lstnr og bruger Elenen Landskribe til at omdanne tale til tekst.",
+          "threads": 8
+        },
+        {
+          "device": "cpu",
+          "elapsed_ms": 379.159583,
+          "load_ms": 9059.406417,
+          "run": 2,
+          "text": "Hej med dig, dette er en lille test af edektoringsværktøj, som jeg er ved at bygge. Det hedder lstnr og bruger Elenen Landskribe til at omdanne tale til tekst.",
+          "threads": 8
+        },
+        {
+          "device": "cpu",
+          "elapsed_ms": 398.48375000000004,
+          "load_ms": 9059.406417,
+          "run": 3,
+          "text": "Hej med dig, dette er en lille test af edektoringsværktøj, som jeg er ved at bygge. Det hedder lstnr og bruger Elenen Landskribe til at omdanne tale til tekst.",
+          "threads": 8
+        },
+        {
+          "device": "cpu",
+          "elapsed_ms": 375.374209,
+          "load_ms": 9059.406417,
+          "run": 4,
+          "text": "Hej med dig, dette er en lille test af edektoringsværktøj, som jeg er ved at bygge. Det hedder lstnr og bruger Elenen Landskribe til at omdanne tale til tekst.",
+          "threads": 8
+        },
+        {
+          "device": "cpu",
+          "elapsed_ms": 370.56175,
+          "load_ms": 9059.406417,
+          "run": 5,
+          "text": "Hej med dig, dette er en lille test af edektoringsværktøj, som jeg er ved at bygge. Det hedder lstnr og bruger Elenen Landskribe til at omdanne tale til tekst.",
+          "threads": 8
+        }
+      ]
+    },
+    "parakeet-redux-cpu": {
+      "device": "cpu",
+      "threads": 8,
+      "load_ms": 4323.0,
+      "first_ms": 226.5,
+      "warm_median_ms": 187.0,
+      "transcript_from_previous_probe": "Hej med dig, dette er en lille test af et toinsværdig, som jeg er ved at bygge. Det hedder LSTNR og bruger elægen Land skribe til at omdanne tale til tekst.",
+      "benchmark": {
+        "audio_s": 10.312125,
+        "cpu_cores_busy": 6.9,
+        "cpu_ms_per_run": 1287.0,
+        "device": "cpu",
+        "first_ms": 226.5,
+        "load_ms": 4323.0,
+        "rtf": 55.0,
+        "warm_ms": 187.0
+      }
+    },
+    "parakeet-redux-gpu": {
+      "device": "gpu",
+      "threads": 8,
+      "load_ms": 884.0,
+      "first_ms": 93.8,
+      "warm_median_ms": 60.4,
+      "transcript_from_previous_probe": "Hej med dig, dette er en lille test af en diktoringsværdøj, som jeg er ved at bygge. Det hedder LSTNR og bruger elægen Land skribe til at omdanne tale til tekst.",
+      "benchmark": {
+        "audio_s": 10.312125,
+        "cpu_cores_busy": 0.9,
+        "cpu_ms_per_run": 54.4,
+        "device": "gpu",
+        "first_ms": 93.8,
+        "load_ms": 884.0,
+        "rtf": 171.0,
+        "warm_ms": 60.4
+      }
+    }
+  }
+}

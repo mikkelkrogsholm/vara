@@ -1,0 +1,47 @@
+{
+  "date": "2026-10-23",
+  "platform": "macOS arm64",
+  "build": {
+    "command": "cargo tauri build --bundles app",
+    "result": "PASS",
+    "artifact": "target/release/bundle/macos/Vara.app",
+    "size_mib": 23.59,
+    "test_harness": false,
+    "signing": "local unsigned development build"
+  },
+  "rust_tests": {
+    "command": "cargo test --workspace",
+    "result": "PASS",
+    "contract_tests": 9,
+    "model_integrity_tests": 4
+  },
+  "format": {
+    "command": "cargo fmt --all --check",
+    "result": "PASS"
+  },
+  "browser_ui": {
+    "result": "PASS",
+    "groups": 10,
+    "fixture_transport": true
+  },
+  "gdd": {
+    "model": "PASS",
+    "visualization": "PASS",
+    "release_acceptance": "not established"
+  },
+  "native": {
+    "main_window": "inspected",
+    "settings_selects": "WebKit styling fixed and visually verified",
+    "close_reopen": "verified",
+    "fixture_pipeline": "real local ASR; manual_ready; no remaining audio/recovery/staging",
+    "fresh_profile": "Verified empty onboarding; no test history or models",
+    "startup_driver_regression": "PASS: UI no longer waits for device enumeration; native metadata adapter avoids AudioUnit probes"
+  },
+  "remaining": [
+    "Physical hotkey and microphone-to-field insertion verification",
+    "Windows/Linux native focus and HUD adapters",
+    "Live cloud credentials/provider checks",
+    "Codex CLI text-only capability contract",
+    "Broader speech quality validation"
+  ]
+}

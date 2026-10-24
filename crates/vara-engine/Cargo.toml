@@ -1,0 +1,33 @@
+[package]
+name = "vara-engine"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+vara-core = { path = "../vara-core" }
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+tokio.workspace = true
+reqwest.workspace = true
+parking_lot.workspace = true
+rayon = "1"
+whisper-rs = "0.16"
+candle-core = "0.11"
+candle-transformers = "0.11"
+tokenizers = { version = "0.22", default-features = false, features = ["onig"] }
+sha2 = "0.10"
+futures-util = "0.3"
+hound = "3.5"
+encoding_rs = "0.8"
+tempfile = "3"
+
+[dev-dependencies]
+tempfile = "3"
+
+[target.'cfg(target_vendor = "apple")'.dependencies]
+voxrt = { git = "https://github.com/lmaksym/voxrt", rev = "4fab626c00708d9bc97f837d309e0d362094282b", features = ["metal"] }
+
+[target.'cfg(not(target_vendor = "apple"))'.dependencies]
+voxrt = { git = "https://github.com/lmaksym/voxrt", rev = "4fab626c00708d9bc97f837d309e0d362094282b" }

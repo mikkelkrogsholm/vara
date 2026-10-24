@@ -1,0 +1,27 @@
+{
+  "format": "gdd-records/0.2",
+  "project_id": "vara.clean-write",
+  "records": {
+    "decision.warm_precision_prototype.2026-10-23": {
+      "kind": "decision",
+      "topic": "model_change",
+      "description": "Implement the requested reference-aligned component-based clickable prototype and reconcile its visual rules with DESIGN.md.",
+      "scope": [
+        "component.experience",
+        "screen.history",
+        "screen.apps",
+        "screen.settings",
+        "screen.onboarding",
+        "screen.hud"
+      ],
+      "spec_revision": "sha256:bec5246fcd5b3634cfbed0f21a53943cc5c59b3273b229b594528ccc2c39f6e7",
+      "policy_revision": "trusted-user-request-prototype-parity-components-2026-10-23",
+      "actor": {
+        "id": "agent.codex",
+        "kind": "agent"
+      },
+      "outcome": "accepted",
+      "rationale": "The user explicitly requested the prototype follow DESIGN.md and the first mockup with reusable components. This records the authored prototype/model update and its browser-only verification; it is not native application acceptance or a human readiness_review of every component. Previous revision-bound records remain archived."
+    }
+  }
+}

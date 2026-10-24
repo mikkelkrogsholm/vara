@@ -18,3 +18,8 @@ xcuserdata/
 
 # graphify knowledge-graph output (auto-rebuilt by post-commit hook)
 graphify-out/
+
+# Rust desktop build output.
+/target/
+/desktop/src-tauri/gen/
+/desktop/ui/design/

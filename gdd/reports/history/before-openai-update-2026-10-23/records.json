@@ -1,0 +1,24 @@
+{
+  "format": "gdd-records/0.2",
+  "project_id": "vara.clean-write",
+  "records": {
+    "decision.groq_update.2026-10-23": {
+      "kind": "decision",
+      "topic": "model_change",
+      "description": "Complete the optional Groq integration with current default models, explicit key/catalogue check and HTTP contract verification.",
+      "scope": [
+        "component.engines",
+        "component.preferences",
+        "component.experience"
+      ],
+      "spec_revision": "sha256:0f18a34b9950a658b6e3aad9c257cf96f74f672835dfebe21305ccef80499822",
+      "policy_revision": "trusted-user-request-add-groq-2026-10-23",
+      "actor": {
+        "id": "agent.codex",
+        "kind": "agent"
+      },
+      "outcome": "accepted",
+      "rationale": "The user requested Groq. This records the authored adapter/UI update and local verification, without asserting live-account, native microphone or release acceptance."
+    }
+  }
+}

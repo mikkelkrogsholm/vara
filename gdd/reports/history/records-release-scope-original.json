@@ -1,0 +1,46 @@
+{
+  "format": "gdd-records/0.2",
+  "project_id": "vara.clean-write",
+  "records": {
+    "decision.release_scope.2026-10-23": {
+      "kind": "decision",
+      "topic": "model_change",
+      "description": "Current product direction: retain the previously accepted audience unchanged and accept first-release dictation scope with modular GDD contracts.",
+      "scope": [
+        "action.use_vara",
+        "rule.modularity",
+        "rule.module_contracts",
+        "action.first_success",
+        "action.permissions",
+        "action.recommended_setup",
+        "action.capture",
+        "action.input_device",
+        "action.session_feedback",
+        "action.transcribe",
+        "action.insert",
+        "action.cleanup",
+        "action.verbatim",
+        "action.cancel",
+        "action.retry",
+        "action.retry_delivery",
+        "action.import_media",
+        "action.file_control",
+        "action.export_text",
+        "action.timed_export",
+        "action.file_queue",
+        "action.answer",
+        "action.wake_word",
+        "action.app_rules",
+        "rule.approachable_setup"
+      ],
+      "spec_revision": "sha256:b97647a5e5f4abed18a5c0bd3d3c1b864f913fcb45a76377bc8d2bee79af7ea3",
+      "policy_revision": "trusted-chat-release-scope-answer-2026-10-23",
+      "actor": {
+        "id": "human.mikkel",
+        "kind": "human"
+      },
+      "outcome": "accepted",
+      "rationale": "The direct human answer accepts the proposed first version subject to modular construction and clear GDD contracts. Source: source.release_scope. Base revision: sha256:1ae64952d9616f3d2f06655b80554c5f0048d69a51488e431d07f9dd19b0cf24. Existing audience decision remains applicable. Other product proposals and implementation authorization remain separate. The unchanged audience answer is carried forward from source.audience and its original immutable record retained in reports/history/records-audience-original.json. Both resolved questions point to this current combined direction; no new audience answer or implementation approval is claimed."
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "result": "PASS",
+  "executed": true,
+  "checks": [
+    "App filter and original disclosure",
+    "Per-app AI saved",
+    "Activation and opt-in retention",
+    "Fake key form validation and clearing",
+    "Default direct session",
+    "One-session direct/general-prompt choices",
+    "Processed result with changed focus",
+    "AI error preserves original",
+    "Failed recognition and explicit safe retry",
+    "Escape cancellation rejects late completion",
+    "Cloud onboarding key and trial gates",
+    "Local onboarding independent of cloud key",
+    "Empty history"
+  ],
+  "width": 585,
+  "noHorizontalOverflow": true,
+  "scope": "In-memory HTML prototype only; no microphone, real account, OS clipboard/focus, persistence or native desktop test",
+  "prototype_sha256": "fb7c554b83e430b966420e05cb224584b701b941616bfce338706af1bf4ec6fe",
+  "tested_at": "2026-10-23",
+  "tool": "Playwright browser_evaluate",
+  "viewport_css_width": 600
+}

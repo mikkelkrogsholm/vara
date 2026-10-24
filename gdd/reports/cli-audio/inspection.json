@@ -1,0 +1,25 @@
+{
+  "executed": true,
+  "kind": "local_static_inspection",
+  "codex_version": "0.145.0",
+  "claude_version": "2.1.186",
+  "gemini_installed_package_version": "0.29.5",
+  "codex_generator": "codex app-server generate-json-schema --experimental --out /tmp/vara-codex-audio-schema",
+  "observed_experimental_methods": [
+    "thread/realtime/start",
+    "thread/realtime/appendAudio",
+    "thread/realtime/appendText",
+    "thread/realtime/appendSpeech",
+    "thread/realtime/stop",
+    "thread/realtime/listVoices"
+  ],
+  "observed_notification": "thread realtime transcript completion (role/text/threadId)",
+  "account_entitlements": "NOT TESTED",
+  "audio_transcription": "NOT TESTED",
+  "credential_access": "NONE",
+  "schema_assets": {
+    "ThreadRealtimeTranscriptDoneNotification.json": "a242b3528f8fae45830c9b1ff65037bd240a327c5f7b2212fd42b3819c02d4ca",
+    "ThreadRealtimeAppendAudioParams.json": "8ccd8d35542f7e2f072858218a32bc778d1508e908ef39d95db4e57a98d7a6c4",
+    "ThreadRealtimeStartParams.json": "73742076156f526d7de0cb9fd62e23eb2bb1b5601ba37b9282e205d93ee8187a"
+  }
+}

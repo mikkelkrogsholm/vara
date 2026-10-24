@@ -1,0 +1,46 @@
+{
+  "format": "gdd-report/0.2",
+  "tool": {
+    "name": "gdd-validator",
+    "version": "0.8.0"
+  },
+  "spec_revision": "sha256:812cd0f47ac92abf1983bbb40087d9ee6ddd23749baf36403cbf87d2ff5e6831",
+  "profiles": [
+    "model"
+  ],
+  "scope": [],
+  "checks": [
+    {
+      "check_id": "representation.schema",
+      "dimension": "model",
+      "result": "PASS",
+      "scope": [],
+      "reason": "Local JSON Schema validation.",
+      "diagnostics": []
+    },
+    {
+      "check_id": "representation.schema",
+      "dimension": "model",
+      "result": "PASS",
+      "scope": [],
+      "reason": "Local JSON Schema validation.",
+      "diagnostics": []
+    },
+    {
+      "check_id": "model.semantics",
+      "dimension": "model",
+      "result": "PASS",
+      "scope": [],
+      "reason": "Core references, endpoints, identity, refinement, machines, types and declared extension data checked.",
+      "diagnostics": []
+    },
+    {
+      "check_id": "records.integrity",
+      "dimension": "model",
+      "result": "PASS",
+      "scope": [],
+      "reason": "Record identities, references, supersession and current snapshot scopes checked.",
+      "diagnostics": []
+    }
+  ]
+}

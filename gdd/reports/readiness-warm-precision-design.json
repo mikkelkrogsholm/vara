@@ -1,0 +1,69 @@
+{
+  "format": "gdd-report/0.2",
+  "tool": {
+    "name": "gdd-validator",
+    "version": "0.8.0"
+  },
+  "spec_revision": "sha256:6c3f357d5efbd0a144797a6770f28066903731d25ca360297e781c851fa012b7",
+  "profiles": [
+    "readiness"
+  ],
+  "scope": [
+    "screen.history"
+  ],
+  "checks": [
+    {
+      "check_id": "representation.schema",
+      "dimension": "model",
+      "result": "PASS",
+      "scope": [],
+      "reason": "Local JSON Schema validation.",
+      "diagnostics": []
+    },
+    {
+      "check_id": "representation.schema",
+      "dimension": "model",
+      "result": "PASS",
+      "scope": [],
+      "reason": "Local JSON Schema validation.",
+      "diagnostics": []
+    },
+    {
+      "check_id": "model.semantics",
+      "dimension": "model",
+      "result": "PASS",
+      "scope": [],
+      "reason": "Core references, endpoints, identity, refinement, machines, types and declared extension data checked.",
+      "diagnostics": []
+    },
+    {
+      "check_id": "records.integrity",
+      "dimension": "model",
+      "result": "PASS",
+      "scope": [],
+      "reason": "Record identities, references, supersession and current snapshot scopes checked.",
+      "diagnostics": []
+    },
+    {
+      "check_id": "check.record_invalid",
+      "dimension": "readiness",
+      "result": "UNKNOWN",
+      "scope": [],
+      "reason": "Screen requires current trusted readiness_review decision.",
+      "diagnostics": [
+        {
+          "code": "RECORD_INVALID",
+          "severity": "warning",
+          "message": "Screen requires current trusted readiness_review decision.",
+          "location": {
+            "file": "gdd.json",
+            "pointer": "/nodes/screen.history"
+          },
+          "related_ids": [
+            "screen.history"
+          ]
+        }
+      ]
+    }
+  ]
+}

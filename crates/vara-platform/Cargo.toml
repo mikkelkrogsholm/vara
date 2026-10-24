@@ -1,0 +1,19 @@
+[package]
+name = "vara-platform"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+build = "build.rs"
+
+[dependencies]
+vara-core = { path = "../vara-core" }
+serde.workspace = true
+serde_json.workspace = true
+parking_lot.workspace = true
+cpal = "0.16"
+hound = "3.5"
+arboard = "3.6"
+keyring = { version = "3.6.3", features = ["apple-native", "windows-native", "sync-secret-service", "crypto-rust"] }
+
+[build-dependencies]
+cc = "1"

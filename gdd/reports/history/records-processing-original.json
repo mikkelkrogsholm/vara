@@ -1,0 +1,53 @@
+{
+  "format": "gdd-records/0.2",
+  "project_id": "vara.clean-write",
+  "records": {
+    "decision.processing.2026-10-23": {
+      "kind": "decision",
+      "topic": "model_change",
+      "description": "Current product direction, retaining prior audience/scope/platform decisions and adding local-default processing with explicit cloud choice.",
+      "scope": [
+        "action.answer",
+        "action.app_rules",
+        "action.cancel",
+        "action.capture",
+        "action.cleanup",
+        "action.desktop_support",
+        "action.export_text",
+        "action.file_control",
+        "action.file_queue",
+        "action.first_success",
+        "action.import_media",
+        "action.input_device",
+        "action.insert",
+        "action.permissions",
+        "action.processing_policy",
+        "action.recommended_setup",
+        "action.retry",
+        "action.retry_delivery",
+        "action.session_feedback",
+        "action.strict_local",
+        "action.timed_export",
+        "action.transcribe",
+        "action.use_vara",
+        "action.verbatim",
+        "action.wake_word",
+        "entity.capability_matrix",
+        "rule.approachable_setup",
+        "rule.crossplatform",
+        "rule.locality",
+        "rule.modularity",
+        "rule.module_contracts",
+        "scenario.local_default"
+      ],
+      "spec_revision": "sha256:c4a061eb35fe9cf3fc734f6ad79af46c4d9d13dd94381a269a21568518673f79",
+      "policy_revision": "trusted-chat-processing-answer-2026-10-23",
+      "actor": {
+        "id": "human.mikkel",
+        "kind": "human"
+      },
+      "outcome": "accepted",
+      "rationale": "The user explicitly chose both local and cloud, local by default and easy first use. Source: source.processing. Earlier direct answers remain unchanged and their immutable records are archived under reports/history. Base revision: sha256:8f778e15e7f45623746da9d3acf3d7a1b0167cff8799ef7da027063a1f107449. No cloud provider/service, payment mechanism or application implementation is approved here."
+    }
+  }
+}

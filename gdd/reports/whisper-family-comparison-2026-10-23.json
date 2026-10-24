@@ -1,0 +1,937 @@
+{
+  "date": "2026-10-23",
+  "hardware": "Apple M3 Max, 128 GiB unified memory",
+  "audio": {
+    "file": "Samples/da_test.wav",
+    "duration_s": 10.312125,
+    "sha256": "8862255dcb95588079350d0fb087b594c51ebb06c0c6bbc0fe2d74dc02709e8a"
+  },
+  "runtime": {
+    "crate": "whisper-rs 0.16.0",
+    "sys_crate": "whisper-rs-sys 0.15.0",
+    "features": [
+      "whisper-rs/metal"
+    ],
+    "threads": 8,
+    "strategy": "greedy best_of=1",
+    "language": "da",
+    "no_context": true,
+    "fresh_state_per_transcription": true
+  },
+  "method": "All 12 configurations sequential after builds/download finished; six runs with one loaded context, warm median of runs 1–5. Audio decoded to float PCM before timing. Full unquantized multilingual models. Native logs confirm Metal backend in all six GPU configurations. No cloud or audio upload.",
+  "artifacts": [
+    {
+      "file": "ggml-tiny.bin",
+      "bytes": 77691713,
+      "sha256": "be07e048e1e599ad46341c8d2a135645097a538221678b7acdd1b1919c6e1b21",
+      "revision": "5359861c739e955e79d9a303bcbc70fb988958b1"
+    },
+    {
+      "file": "ggml-base.bin",
+      "bytes": 147951465,
+      "sha256": "60ed5bc3dd14eea856493d334349b405782ddcaf0028d4b5df4088345fba2efe",
+      "revision": "5359861c739e955e79d9a303bcbc70fb988958b1"
+    },
+    {
+      "file": "ggml-small.bin",
+      "bytes": 487601967,
+      "sha256": "1be3a9b2063867b937e64e2ec7483364a79917e157fa98c5d94b5c1fffea987b",
+      "revision": "5359861c739e955e79d9a303bcbc70fb988958b1"
+    },
+    {
+      "file": "ggml-medium.bin",
+      "bytes": 1533763059,
+      "sha256": "6c14d5adee5f86394037b4e4e8b59f1673b6cee10e3cf0b11bbdbee79c156208",
+      "revision": "5359861c739e955e79d9a303bcbc70fb988958b1"
+    },
+    {
+      "file": "ggml-large-v3.bin",
+      "bytes": 3095033483,
+      "sha256": "64d182b440b98d5203c4f9bd541544d84c605196c4f7b845dfa11fb23594d1e2",
+      "revision": "5359861c739e955e79d9a303bcbc70fb988958b1"
+    },
+    {
+      "file": "ggml-large-v3-turbo.bin",
+      "bytes": 1624555275,
+      "sha256": "1fc70f774d38eb169993ac391eea357ef47c88757ef72ee5943879b7e8e2bc69",
+      "revision": "5359861c739e955e79d9a303bcbc70fb988958b1"
+    }
+  ],
+  "results": {
+    "tiny-cpu": {
+      "model": "tiny",
+      "device": "cpu",
+      "backend_confirmed": true,
+      "load_ms": 98.45675,
+      "first_ms": 496.24866699999995,
+      "warm_median_ms": 499.143167,
+      "text": "Hvad har jeg med dig, det er en lille test af et et tøngsverter, som jeg er ved at bygge. Det hedder LST-in er opråder eller en lætteskribet til at omdannet tale tidigt.",
+      "stable_text": true,
+      "runs": [
+        {
+          "audio_s": 10.312125,
+          "device_requested": "cpu",
+          "elapsed_ms": 496.24866699999995,
+          "load_ms": 98.45675,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/experiments/model-candidates/whisper-family/ggml-tiny.bin",
+          "run": 0,
+          "text": "Hvad har jeg med dig, det er en lille test af et et tøngsverter, som jeg er ved at bygge. Det hedder LST-in er opråder eller en lætteskribet til at omdannet tale tidigt.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device_requested": "cpu",
+          "elapsed_ms": 543.5967499999999,
+          "load_ms": 98.45675,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/experiments/model-candidates/whisper-family/ggml-tiny.bin",
+          "run": 1,
+          "text": "Hvad har jeg med dig, det er en lille test af et et tøngsverter, som jeg er ved at bygge. Det hedder LST-in er opråder eller en lætteskribet til at omdannet tale tidigt.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device_requested": "cpu",
+          "elapsed_ms": 534.0065000000001,
+          "load_ms": 98.45675,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/experiments/model-candidates/whisper-family/ggml-tiny.bin",
+          "run": 2,
+          "text": "Hvad har jeg med dig, det er en lille test af et et tøngsverter, som jeg er ved at bygge. Det hedder LST-in er opråder eller en lætteskribet til at omdannet tale tidigt.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device_requested": "cpu",
+          "elapsed_ms": 490.497041,
+          "load_ms": 98.45675,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/experiments/model-candidates/whisper-family/ggml-tiny.bin",
+          "run": 3,
+          "text": "Hvad har jeg med dig, det er en lille test af et et tøngsverter, som jeg er ved at bygge. Det hedder LST-in er opråder eller en lætteskribet til at omdannet tale tidigt.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device_requested": "cpu",
+          "elapsed_ms": 486.624958,
+          "load_ms": 98.45675,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/experiments/model-candidates/whisper-family/ggml-tiny.bin",
+          "run": 4,
+          "text": "Hvad har jeg med dig, det er en lille test af et et tøngsverter, som jeg er ved at bygge. Det hedder LST-in er opråder eller en lætteskribet til at omdannet tale tidigt.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device_requested": "cpu",
+          "elapsed_ms": 499.143167,
+          "load_ms": 98.45675,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/experiments/model-candidates/whisper-family/ggml-tiny.bin",
+          "run": 5,
+          "text": "Hvad har jeg med dig, det er en lille test af et et tøngsverter, som jeg er ved at bygge. Det hedder LST-in er opråder eller en lætteskribet til at omdannet tale tidigt.",
+          "threads": 8
+        }
+      ]
+    },
+    "tiny-metal": {
+      "model": "tiny",
+      "device": "metal",
+      "backend_confirmed": true,
+      "load_ms": 94.116333,
+      "first_ms": 632.651708,
+      "warm_median_ms": 600.5650420000001,
+      "text": "Hvad har jeg med dig, det er en lille test af et et tøngsverter, som jeg er ved at bygge. Det hedder LST-in er opråder eller en lætteskribet til at omdannet tale tidigt.",
+      "stable_text": true,
+      "runs": [
+        {
+          "audio_s": 10.312125,
+          "device_requested": "metal",
+          "elapsed_ms": 632.651708,
+          "load_ms": 94.116333,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/experiments/model-candidates/whisper-family/ggml-tiny.bin",
+          "run": 0,
+          "text": "Hvad har jeg med dig, det er en lille test af et et tøngsverter, som jeg er ved at bygge. Det hedder LST-in er opråder eller en lætteskribet til at omdannet tale tidigt.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device_requested": "metal",
+          "elapsed_ms": 608.1907090000001,
+          "load_ms": 94.116333,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/experiments/model-candidates/whisper-family/ggml-tiny.bin",
+          "run": 1,
+          "text": "Hvad har jeg med dig, det er en lille test af et et tøngsverter, som jeg er ved at bygge. Det hedder LST-in er opråder eller en lætteskribet til at omdannet tale tidigt.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device_requested": "metal",
+          "elapsed_ms": 609.360917,
+          "load_ms": 94.116333,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/experiments/model-candidates/whisper-family/ggml-tiny.bin",
+          "run": 2,
+          "text": "Hvad har jeg med dig, det er en lille test af et et tøngsverter, som jeg er ved at bygge. Det hedder LST-in er opråder eller en lætteskribet til at omdannet tale tidigt.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device_requested": "metal",
+          "elapsed_ms": 600.5650420000001,
+          "load_ms": 94.116333,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/experiments/model-candidates/whisper-family/ggml-tiny.bin",
+          "run": 3,
+          "text": "Hvad har jeg med dig, det er en lille test af et et tøngsverter, som jeg er ved at bygge. Det hedder LST-in er opråder eller en lætteskribet til at omdannet tale tidigt.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device_requested": "metal",
+          "elapsed_ms": 586.932542,
+          "load_ms": 94.116333,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/experiments/model-candidates/whisper-family/ggml-tiny.bin",
+          "run": 4,
+          "text": "Hvad har jeg med dig, det er en lille test af et et tøngsverter, som jeg er ved at bygge. Det hedder LST-in er opråder eller en lætteskribet til at omdannet tale tidigt.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device_requested": "metal",
+          "elapsed_ms": 560.784958,
+          "load_ms": 94.116333,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/experiments/model-candidates/whisper-family/ggml-tiny.bin",
+          "run": 5,
+          "text": "Hvad har jeg med dig, det er en lille test af et et tøngsverter, som jeg er ved at bygge. Det hedder LST-in er opråder eller en lætteskribet til at omdannet tale tidigt.",
+          "threads": 8
+        }
+      ]
+    },
+    "base-cpu": {
+      "model": "base",
+      "device": "cpu",
+      "backend_confirmed": true,
+      "load_ms": 134.634166,
+      "first_ms": 321.231041,
+      "warm_median_ms": 312.651167,
+      "text": "Hej med dig, det er en lille test af et dett tøjens hvertag, som jeg er ved at bygge. Det hedder LSTNR og bruger i linjen land, Skribe til at omdane tale til et tekst.",
+      "stable_text": true,
+      "runs": [
+        {
+          "audio_s": 10.312125,
+          "device_requested": "cpu",
+          "elapsed_ms": 321.231041,
+          "load_ms": 134.634166,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/probe-models/ggml-base.bin",
+          "run": 0,
+          "text": "Hej med dig, det er en lille test af et dett tøjens hvertag, som jeg er ved at bygge. Det hedder LSTNR og bruger i linjen land, Skribe til at omdane tale til et tekst.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device_requested": "cpu",
+          "elapsed_ms": 313.051875,
+          "load_ms": 134.634166,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/probe-models/ggml-base.bin",
+          "run": 1,
+          "text": "Hej med dig, det er en lille test af et dett tøjens hvertag, som jeg er ved at bygge. Det hedder LSTNR og bruger i linjen land, Skribe til at omdane tale til et tekst.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device_requested": "cpu",
+          "elapsed_ms": 310.966334,
+          "load_ms": 134.634166,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/probe-models/ggml-base.bin",
+          "run": 2,
+          "text": "Hej med dig, det er en lille test af et dett tøjens hvertag, som jeg er ved at bygge. Det hedder LSTNR og bruger i linjen land, Skribe til at omdane tale til et tekst.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device_requested": "cpu",
+          "elapsed_ms": 307.729125,
+          "load_ms": 134.634166,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/probe-models/ggml-base.bin",
+          "run": 3,
+          "text": "Hej med dig, det er en lille test af et dett tøjens hvertag, som jeg er ved at bygge. Det hedder LSTNR og bruger i linjen land, Skribe til at omdane tale til et tekst.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device_requested": "cpu",
+          "elapsed_ms": 312.76741699999997,
+          "load_ms": 134.634166,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/probe-models/ggml-base.bin",
+          "run": 4,
+          "text": "Hej med dig, det er en lille test af et dett tøjens hvertag, som jeg er ved at bygge. Det hedder LSTNR og bruger i linjen land, Skribe til at omdane tale til et tekst.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device_requested": "cpu",
+          "elapsed_ms": 312.651167,
+          "load_ms": 134.634166,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/probe-models/ggml-base.bin",
+          "run": 5,
+          "text": "Hej med dig, det er en lille test af et dett tøjens hvertag, som jeg er ved at bygge. Det hedder LSTNR og bruger i linjen land, Skribe til at omdane tale til et tekst.",
+          "threads": 8
+        }
+      ]
+    },
+    "base-metal": {
+      "model": "base",
+      "device": "metal",
+      "backend_confirmed": true,
+      "load_ms": 139.357584,
+      "first_ms": 164.88637500000002,
+      "warm_median_ms": 139.606125,
+      "text": "Hej med dig, det er en lille test af et dett tøjens hvertag, som jeg er ved at bygge. Det hedder LSTNR og bruger i linjen land, Skribe til at omdane tale til et tekst.",
+      "stable_text": true,
+      "runs": [
+        {
+          "audio_s": 10.312125,
+          "device_requested": "metal",
+          "elapsed_ms": 164.88637500000002,
+          "load_ms": 139.357584,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/probe-models/ggml-base.bin",
+          "run": 0,
+          "text": "Hej med dig, det er en lille test af et dett tøjens hvertag, som jeg er ved at bygge. Det hedder LSTNR og bruger i linjen land, Skribe til at omdane tale til et tekst.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device_requested": "metal",
+          "elapsed_ms": 139.606125,
+          "load_ms": 139.357584,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/probe-models/ggml-base.bin",
+          "run": 1,
+          "text": "Hej med dig, det er en lille test af et dett tøjens hvertag, som jeg er ved at bygge. Det hedder LSTNR og bruger i linjen land, Skribe til at omdane tale til et tekst.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device_requested": "metal",
+          "elapsed_ms": 141.339583,
+          "load_ms": 139.357584,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/probe-models/ggml-base.bin",
+          "run": 2,
+          "text": "Hej med dig, det er en lille test af et dett tøjens hvertag, som jeg er ved at bygge. Det hedder LSTNR og bruger i linjen land, Skribe til at omdane tale til et tekst.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device_requested": "metal",
+          "elapsed_ms": 139.984417,
+          "load_ms": 139.357584,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/probe-models/ggml-base.bin",
+          "run": 3,
+          "text": "Hej med dig, det er en lille test af et dett tøjens hvertag, som jeg er ved at bygge. Det hedder LSTNR og bruger i linjen land, Skribe til at omdane tale til et tekst.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device_requested": "metal",
+          "elapsed_ms": 135.304083,
+          "load_ms": 139.357584,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/probe-models/ggml-base.bin",
+          "run": 4,
+          "text": "Hej med dig, det er en lille test af et dett tøjens hvertag, som jeg er ved at bygge. Det hedder LSTNR og bruger i linjen land, Skribe til at omdane tale til et tekst.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device_requested": "metal",
+          "elapsed_ms": 138.459667,
+          "load_ms": 139.357584,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/probe-models/ggml-base.bin",
+          "run": 5,
+          "text": "Hej med dig, det er en lille test af et dett tøjens hvertag, som jeg er ved at bygge. Det hedder LSTNR og bruger i linjen land, Skribe til at omdane tale til et tekst.",
+          "threads": 8
+        }
+      ]
+    },
+    "small-cpu": {
+      "model": "small",
+      "device": "cpu",
+      "backend_confirmed": true,
+      "load_ms": 261.63012499999996,
+      "first_ms": 834.616916,
+      "warm_median_ms": 840.662167,
+      "text": "Hej med dig, det er det er en lille test af Edictoringsværdøj, som jeg er ved at bygge. Det hedder LSTNR og bruger eleden Ladt skrepe til at omdane tale til tekst.",
+      "stable_text": true,
+      "runs": [
+        {
+          "audio_s": 10.312125,
+          "device_requested": "cpu",
+          "elapsed_ms": 834.616916,
+          "load_ms": 261.63012499999996,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/experiments/model-candidates/whisper-small/ggml-small.bin",
+          "run": 0,
+          "text": "Hej med dig, det er det er en lille test af Edictoringsværdøj, som jeg er ved at bygge. Det hedder LSTNR og bruger eleden Ladt skrepe til at omdane tale til tekst.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device_requested": "cpu",
+          "elapsed_ms": 832.470375,
+          "load_ms": 261.63012499999996,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/experiments/model-candidates/whisper-small/ggml-small.bin",
+          "run": 1,
+          "text": "Hej med dig, det er det er en lille test af Edictoringsværdøj, som jeg er ved at bygge. Det hedder LSTNR og bruger eleden Ladt skrepe til at omdane tale til tekst.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device_requested": "cpu",
+          "elapsed_ms": 959.923958,
+          "load_ms": 261.63012499999996,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/experiments/model-candidates/whisper-small/ggml-small.bin",
+          "run": 2,
+          "text": "Hej med dig, det er det er en lille test af Edictoringsværdøj, som jeg er ved at bygge. Det hedder LSTNR og bruger eleden Ladt skrepe til at omdane tale til tekst.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device_requested": "cpu",
+          "elapsed_ms": 851.534,
+          "load_ms": 261.63012499999996,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/experiments/model-candidates/whisper-small/ggml-small.bin",
+          "run": 3,
+          "text": "Hej med dig, det er det er en lille test af Edictoringsværdøj, som jeg er ved at bygge. Det hedder LSTNR og bruger eleden Ladt skrepe til at omdane tale til tekst.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device_requested": "cpu",
+          "elapsed_ms": 833.456792,
+          "load_ms": 261.63012499999996,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/experiments/model-candidates/whisper-small/ggml-small.bin",
+          "run": 4,
+          "text": "Hej med dig, det er det er en lille test af Edictoringsværdøj, som jeg er ved at bygge. Det hedder LSTNR og bruger eleden Ladt skrepe til at omdane tale til tekst.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device_requested": "cpu",
+          "elapsed_ms": 840.662167,
+          "load_ms": 261.63012499999996,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/experiments/model-candidates/whisper-small/ggml-small.bin",
+          "run": 5,
+          "text": "Hej med dig, det er det er en lille test af Edictoringsværdøj, som jeg er ved at bygge. Det hedder LSTNR og bruger eleden Ladt skrepe til at omdane tale til tekst.",
+          "threads": 8
+        }
+      ]
+    },
+    "small-metal": {
+      "model": "small",
+      "device": "metal",
+      "backend_confirmed": true,
+      "load_ms": 246.18175,
+      "first_ms": 299.57579200000004,
+      "warm_median_ms": 303.01625,
+      "text": "Hej med dig, det er det er en lille test af Edictoringsværdøj, som jeg er ved at bygge. Det hedder LSTNR og bruger eleden Ladt skrepe til at omdane tale til tekst.",
+      "stable_text": true,
+      "runs": [
+        {
+          "audio_s": 10.312125,
+          "device_requested": "metal",
+          "elapsed_ms": 299.57579200000004,
+          "load_ms": 246.18175,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/experiments/model-candidates/whisper-small/ggml-small.bin",
+          "run": 0,
+          "text": "Hej med dig, det er det er en lille test af Edictoringsværdøj, som jeg er ved at bygge. Det hedder LSTNR og bruger eleden Ladt skrepe til at omdane tale til tekst.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device_requested": "metal",
+          "elapsed_ms": 355.556875,
+          "load_ms": 246.18175,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/experiments/model-candidates/whisper-small/ggml-small.bin",
+          "run": 1,
+          "text": "Hej med dig, det er det er en lille test af Edictoringsværdøj, som jeg er ved at bygge. Det hedder LSTNR og bruger eleden Ladt skrepe til at omdane tale til tekst.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device_requested": "metal",
+          "elapsed_ms": 339.465959,
+          "load_ms": 246.18175,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/experiments/model-candidates/whisper-small/ggml-small.bin",
+          "run": 2,
+          "text": "Hej med dig, det er det er en lille test af Edictoringsværdøj, som jeg er ved at bygge. Det hedder LSTNR og bruger eleden Ladt skrepe til at omdane tale til tekst.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device_requested": "metal",
+          "elapsed_ms": 292.346542,
+          "load_ms": 246.18175,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/experiments/model-candidates/whisper-small/ggml-small.bin",
+          "run": 3,
+          "text": "Hej med dig, det er det er en lille test af Edictoringsværdøj, som jeg er ved at bygge. Det hedder LSTNR og bruger eleden Ladt skrepe til at omdane tale til tekst.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device_requested": "metal",
+          "elapsed_ms": 286.709167,
+          "load_ms": 246.18175,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/experiments/model-candidates/whisper-small/ggml-small.bin",
+          "run": 4,
+          "text": "Hej med dig, det er det er en lille test af Edictoringsværdøj, som jeg er ved at bygge. Det hedder LSTNR og bruger eleden Ladt skrepe til at omdane tale til tekst.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device_requested": "metal",
+          "elapsed_ms": 303.01625,
+          "load_ms": 246.18175,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/experiments/model-candidates/whisper-small/ggml-small.bin",
+          "run": 5,
+          "text": "Hej med dig, det er det er en lille test af Edictoringsværdøj, som jeg er ved at bygge. Det hedder LSTNR og bruger eleden Ladt skrepe til at omdane tale til tekst.",
+          "threads": 8
+        }
+      ]
+    },
+    "medium-cpu": {
+      "model": "medium",
+      "device": "cpu",
+      "backend_confirmed": true,
+      "load_ms": 626.097583,
+      "first_ms": 2322.701709,
+      "warm_median_ms": 2205.3867920000002,
+      "text": "Hej med dig. Dette er en lille test af et diktøjens værktøj, som jeg er ved at bygge. Det hedder \"LSTNR\" og bruger \"Elen Lad\" skribe til at omdanne tale til tekst.",
+      "stable_text": true,
+      "runs": [
+        {
+          "audio_s": 10.312125,
+          "device_requested": "cpu",
+          "elapsed_ms": 2322.701709,
+          "load_ms": 626.097583,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/experiments/model-candidates/whisper-family/ggml-medium.bin",
+          "run": 0,
+          "text": "Hej med dig. Dette er en lille test af et diktøjens værktøj, som jeg er ved at bygge. Det hedder \"LSTNR\" og bruger \"Elen Lad\" skribe til at omdanne tale til tekst.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device_requested": "cpu",
+          "elapsed_ms": 2209.5883750000003,
+          "load_ms": 626.097583,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/experiments/model-candidates/whisper-family/ggml-medium.bin",
+          "run": 1,
+          "text": "Hej med dig. Dette er en lille test af et diktøjens værktøj, som jeg er ved at bygge. Det hedder \"LSTNR\" og bruger \"Elen Lad\" skribe til at omdanne tale til tekst.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device_requested": "cpu",
+          "elapsed_ms": 2205.3867920000002,
+          "load_ms": 626.097583,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/experiments/model-candidates/whisper-family/ggml-medium.bin",
+          "run": 2,
+          "text": "Hej med dig. Dette er en lille test af et diktøjens værktøj, som jeg er ved at bygge. Det hedder \"LSTNR\" og bruger \"Elen Lad\" skribe til at omdanne tale til tekst.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device_requested": "cpu",
+          "elapsed_ms": 2213.6410419999997,
+          "load_ms": 626.097583,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/experiments/model-candidates/whisper-family/ggml-medium.bin",
+          "run": 3,
+          "text": "Hej med dig. Dette er en lille test af et diktøjens værktøj, som jeg er ved at bygge. Det hedder \"LSTNR\" og bruger \"Elen Lad\" skribe til at omdanne tale til tekst.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device_requested": "cpu",
+          "elapsed_ms": 2193.1751249999998,
+          "load_ms": 626.097583,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/experiments/model-candidates/whisper-family/ggml-medium.bin",
+          "run": 4,
+          "text": "Hej med dig. Dette er en lille test af et diktøjens værktøj, som jeg er ved at bygge. Det hedder \"LSTNR\" og bruger \"Elen Lad\" skribe til at omdanne tale til tekst.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device_requested": "cpu",
+          "elapsed_ms": 2203.314,
+          "load_ms": 626.097583,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/experiments/model-candidates/whisper-family/ggml-medium.bin",
+          "run": 5,
+          "text": "Hej med dig. Dette er en lille test af et diktøjens værktøj, som jeg er ved at bygge. Det hedder \"LSTNR\" og bruger \"Elen Lad\" skribe til at omdanne tale til tekst.",
+          "threads": 8
+        }
+      ]
+    },
+    "medium-metal": {
+      "model": "medium",
+      "device": "metal",
+      "backend_confirmed": true,
+      "load_ms": 623.2434999999999,
+      "first_ms": 816.8078330000001,
+      "warm_median_ms": 861.709041,
+      "text": "Hej med dig. Dette er en lille test af et diktøjens værktøj, som jeg er ved at bygge. Det hedder \"LSTNR\" og bruger \"Elen Lad\" skribe til at omdanne tale til tekst.",
+      "stable_text": true,
+      "runs": [
+        {
+          "audio_s": 10.312125,
+          "device_requested": "metal",
+          "elapsed_ms": 816.8078330000001,
+          "load_ms": 623.2434999999999,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/experiments/model-candidates/whisper-family/ggml-medium.bin",
+          "run": 0,
+          "text": "Hej med dig. Dette er en lille test af et diktøjens værktøj, som jeg er ved at bygge. Det hedder \"LSTNR\" og bruger \"Elen Lad\" skribe til at omdanne tale til tekst.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device_requested": "metal",
+          "elapsed_ms": 834.778917,
+          "load_ms": 623.2434999999999,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/experiments/model-candidates/whisper-family/ggml-medium.bin",
+          "run": 1,
+          "text": "Hej med dig. Dette er en lille test af et diktøjens værktøj, som jeg er ved at bygge. Det hedder \"LSTNR\" og bruger \"Elen Lad\" skribe til at omdanne tale til tekst.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device_requested": "metal",
+          "elapsed_ms": 873.453208,
+          "load_ms": 623.2434999999999,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/experiments/model-candidates/whisper-family/ggml-medium.bin",
+          "run": 2,
+          "text": "Hej med dig. Dette er en lille test af et diktøjens værktøj, som jeg er ved at bygge. Det hedder \"LSTNR\" og bruger \"Elen Lad\" skribe til at omdanne tale til tekst.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device_requested": "metal",
+          "elapsed_ms": 862.9897090000001,
+          "load_ms": 623.2434999999999,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/experiments/model-candidates/whisper-family/ggml-medium.bin",
+          "run": 3,
+          "text": "Hej med dig. Dette er en lille test af et diktøjens værktøj, som jeg er ved at bygge. Det hedder \"LSTNR\" og bruger \"Elen Lad\" skribe til at omdanne tale til tekst.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device_requested": "metal",
+          "elapsed_ms": 861.709041,
+          "load_ms": 623.2434999999999,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/experiments/model-candidates/whisper-family/ggml-medium.bin",
+          "run": 4,
+          "text": "Hej med dig. Dette er en lille test af et diktøjens værktøj, som jeg er ved at bygge. Det hedder \"LSTNR\" og bruger \"Elen Lad\" skribe til at omdanne tale til tekst.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device_requested": "metal",
+          "elapsed_ms": 859.274667,
+          "load_ms": 623.2434999999999,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/experiments/model-candidates/whisper-family/ggml-medium.bin",
+          "run": 5,
+          "text": "Hej med dig. Dette er en lille test af et diktøjens værktøj, som jeg er ved at bygge. Det hedder \"LSTNR\" og bruger \"Elen Lad\" skribe til at omdanne tale til tekst.",
+          "threads": 8
+        }
+      ]
+    },
+    "large-v3-cpu": {
+      "model": "large-v3",
+      "device": "cpu",
+      "backend_confirmed": true,
+      "load_ms": 1557.9360840000002,
+      "first_ms": 4382.472625,
+      "warm_median_ms": 4201.315541999999,
+      "text": "Hej med dig, dette er en lille test af ediktørens værktøj, som jeg er ved at bygge. Det hedder LSTNR og bruger elenen lad skribe til at omdanne tale til tekst.",
+      "stable_text": true,
+      "runs": [
+        {
+          "audio_s": 10.312125,
+          "device_requested": "cpu",
+          "elapsed_ms": 4382.472625,
+          "load_ms": 1557.9360840000002,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/experiments/model-candidates/whisper-family/ggml-large-v3.bin",
+          "run": 0,
+          "text": "Hej med dig, dette er en lille test af ediktørens værktøj, som jeg er ved at bygge. Det hedder LSTNR og bruger elenen lad skribe til at omdanne tale til tekst.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device_requested": "cpu",
+          "elapsed_ms": 4201.315541999999,
+          "load_ms": 1557.9360840000002,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/experiments/model-candidates/whisper-family/ggml-large-v3.bin",
+          "run": 1,
+          "text": "Hej med dig, dette er en lille test af ediktørens værktøj, som jeg er ved at bygge. Det hedder LSTNR og bruger elenen lad skribe til at omdanne tale til tekst.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device_requested": "cpu",
+          "elapsed_ms": 4205.991625000001,
+          "load_ms": 1557.9360840000002,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/experiments/model-candidates/whisper-family/ggml-large-v3.bin",
+          "run": 2,
+          "text": "Hej med dig, dette er en lille test af ediktørens værktøj, som jeg er ved at bygge. Det hedder LSTNR og bruger elenen lad skribe til at omdanne tale til tekst.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device_requested": "cpu",
+          "elapsed_ms": 4166.475958999999,
+          "load_ms": 1557.9360840000002,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/experiments/model-candidates/whisper-family/ggml-large-v3.bin",
+          "run": 3,
+          "text": "Hej med dig, dette er en lille test af ediktørens værktøj, som jeg er ved at bygge. Det hedder LSTNR og bruger elenen lad skribe til at omdanne tale til tekst.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device_requested": "cpu",
+          "elapsed_ms": 4116.430375,
+          "load_ms": 1557.9360840000002,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/experiments/model-candidates/whisper-family/ggml-large-v3.bin",
+          "run": 4,
+          "text": "Hej med dig, dette er en lille test af ediktørens værktøj, som jeg er ved at bygge. Det hedder LSTNR og bruger elenen lad skribe til at omdanne tale til tekst.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device_requested": "cpu",
+          "elapsed_ms": 4504.547500000001,
+          "load_ms": 1557.9360840000002,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/experiments/model-candidates/whisper-family/ggml-large-v3.bin",
+          "run": 5,
+          "text": "Hej med dig, dette er en lille test af ediktørens værktøj, som jeg er ved at bygge. Det hedder LSTNR og bruger elenen lad skribe til at omdanne tale til tekst.",
+          "threads": 8
+        }
+      ]
+    },
+    "large-v3-metal": {
+      "model": "large-v3",
+      "device": "metal",
+      "backend_confirmed": true,
+      "load_ms": 1171.075,
+      "first_ms": 1380.45325,
+      "warm_median_ms": 1454.4764169999999,
+      "text": "Hej med dig, dette er en lille test af ediktørens værktøj, som jeg er ved at bygge. Det hedder LSTNR og bruger elenen lad skribe til at omdanne tale til tekst.",
+      "stable_text": true,
+      "runs": [
+        {
+          "audio_s": 10.312125,
+          "device_requested": "metal",
+          "elapsed_ms": 1380.45325,
+          "load_ms": 1171.075,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/experiments/model-candidates/whisper-family/ggml-large-v3.bin",
+          "run": 0,
+          "text": "Hej med dig, dette er en lille test af ediktørens værktøj, som jeg er ved at bygge. Det hedder LSTNR og bruger elenen lad skribe til at omdanne tale til tekst.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device_requested": "metal",
+          "elapsed_ms": 1441.935292,
+          "load_ms": 1171.075,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/experiments/model-candidates/whisper-family/ggml-large-v3.bin",
+          "run": 1,
+          "text": "Hej med dig, dette er en lille test af ediktørens værktøj, som jeg er ved at bygge. Det hedder LSTNR og bruger elenen lad skribe til at omdanne tale til tekst.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device_requested": "metal",
+          "elapsed_ms": 1432.0128750000001,
+          "load_ms": 1171.075,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/experiments/model-candidates/whisper-family/ggml-large-v3.bin",
+          "run": 2,
+          "text": "Hej med dig, dette er en lille test af ediktørens værktøj, som jeg er ved at bygge. Det hedder LSTNR og bruger elenen lad skribe til at omdanne tale til tekst.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device_requested": "metal",
+          "elapsed_ms": 1584.595708,
+          "load_ms": 1171.075,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/experiments/model-candidates/whisper-family/ggml-large-v3.bin",
+          "run": 3,
+          "text": "Hej med dig, dette er en lille test af ediktørens værktøj, som jeg er ved at bygge. Det hedder LSTNR og bruger elenen lad skribe til at omdanne tale til tekst.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device_requested": "metal",
+          "elapsed_ms": 1454.4764169999999,
+          "load_ms": 1171.075,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/experiments/model-candidates/whisper-family/ggml-large-v3.bin",
+          "run": 4,
+          "text": "Hej med dig, dette er en lille test af ediktørens værktøj, som jeg er ved at bygge. Det hedder LSTNR og bruger elenen lad skribe til at omdanne tale til tekst.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device_requested": "metal",
+          "elapsed_ms": 1460.889292,
+          "load_ms": 1171.075,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/experiments/model-candidates/whisper-family/ggml-large-v3.bin",
+          "run": 5,
+          "text": "Hej med dig, dette er en lille test af ediktørens værktøj, som jeg er ved at bygge. Det hedder LSTNR og bruger elenen lad skribe til at omdanne tale til tekst.",
+          "threads": 8
+        }
+      ]
+    },
+    "large-v3-turbo-cpu": {
+      "model": "large-v3-turbo",
+      "device": "cpu",
+      "backend_confirmed": true,
+      "load_ms": 642.071333,
+      "first_ms": 2702.2733749999998,
+      "warm_median_ms": 2690.983584,
+      "text": "Hej med dig. Dette er en lille test af eddiktøjens hverdøj, som jeg er ved at bygge. Det hedder LSTNR og bruger L.E.N. Lad skrive til at omdanne tale til tekst.",
+      "stable_text": true,
+      "runs": [
+        {
+          "audio_s": 10.312125,
+          "device_requested": "cpu",
+          "elapsed_ms": 2702.2733749999998,
+          "load_ms": 642.071333,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/experiments/model-candidates/whisper-family/ggml-large-v3-turbo.bin",
+          "run": 0,
+          "text": "Hej med dig. Dette er en lille test af eddiktøjens hverdøj, som jeg er ved at bygge. Det hedder LSTNR og bruger L.E.N. Lad skrive til at omdanne tale til tekst.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device_requested": "cpu",
+          "elapsed_ms": 2707.6589169999997,
+          "load_ms": 642.071333,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/experiments/model-candidates/whisper-family/ggml-large-v3-turbo.bin",
+          "run": 1,
+          "text": "Hej med dig. Dette er en lille test af eddiktøjens hverdøj, som jeg er ved at bygge. Det hedder LSTNR og bruger L.E.N. Lad skrive til at omdanne tale til tekst.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device_requested": "cpu",
+          "elapsed_ms": 2690.150708,
+          "load_ms": 642.071333,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/experiments/model-candidates/whisper-family/ggml-large-v3-turbo.bin",
+          "run": 2,
+          "text": "Hej med dig. Dette er en lille test af eddiktøjens hverdøj, som jeg er ved at bygge. Det hedder LSTNR og bruger L.E.N. Lad skrive til at omdanne tale til tekst.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device_requested": "cpu",
+          "elapsed_ms": 2690.983584,
+          "load_ms": 642.071333,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/experiments/model-candidates/whisper-family/ggml-large-v3-turbo.bin",
+          "run": 3,
+          "text": "Hej med dig. Dette er en lille test af eddiktøjens hverdøj, som jeg er ved at bygge. Det hedder LSTNR og bruger L.E.N. Lad skrive til at omdanne tale til tekst.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device_requested": "cpu",
+          "elapsed_ms": 2707.767875,
+          "load_ms": 642.071333,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/experiments/model-candidates/whisper-family/ggml-large-v3-turbo.bin",
+          "run": 4,
+          "text": "Hej med dig. Dette er en lille test af eddiktøjens hverdøj, som jeg er ved at bygge. Det hedder LSTNR og bruger L.E.N. Lad skrive til at omdanne tale til tekst.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device_requested": "cpu",
+          "elapsed_ms": 2680.151,
+          "load_ms": 642.071333,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/experiments/model-candidates/whisper-family/ggml-large-v3-turbo.bin",
+          "run": 5,
+          "text": "Hej med dig. Dette er en lille test af eddiktøjens hverdøj, som jeg er ved at bygge. Det hedder LSTNR og bruger L.E.N. Lad skrive til at omdanne tale til tekst.",
+          "threads": 8
+        }
+      ]
+    },
+    "large-v3-turbo-metal": {
+      "model": "large-v3-turbo",
+      "device": "metal",
+      "backend_confirmed": true,
+      "load_ms": 662.9303749999999,
+      "first_ms": 641.847458,
+      "warm_median_ms": 661.6258750000001,
+      "text": "Hej med dig. Dette er en lille test af eddiktøjens hverdøj, som jeg er ved at bygge. Det hedder LSTNR og bruger L.E.N. Lad skrive til at omdanne tale til tekst.",
+      "stable_text": true,
+      "runs": [
+        {
+          "audio_s": 10.312125,
+          "device_requested": "metal",
+          "elapsed_ms": 641.847458,
+          "load_ms": 662.9303749999999,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/experiments/model-candidates/whisper-family/ggml-large-v3-turbo.bin",
+          "run": 0,
+          "text": "Hej med dig. Dette er en lille test af eddiktøjens hverdøj, som jeg er ved at bygge. Det hedder LSTNR og bruger L.E.N. Lad skrive til at omdanne tale til tekst.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device_requested": "metal",
+          "elapsed_ms": 651.4053749999999,
+          "load_ms": 662.9303749999999,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/experiments/model-candidates/whisper-family/ggml-large-v3-turbo.bin",
+          "run": 1,
+          "text": "Hej med dig. Dette er en lille test af eddiktøjens hverdøj, som jeg er ved at bygge. Det hedder LSTNR og bruger L.E.N. Lad skrive til at omdanne tale til tekst.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device_requested": "metal",
+          "elapsed_ms": 661.6258750000001,
+          "load_ms": 662.9303749999999,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/experiments/model-candidates/whisper-family/ggml-large-v3-turbo.bin",
+          "run": 2,
+          "text": "Hej med dig. Dette er en lille test af eddiktøjens hverdøj, som jeg er ved at bygge. Det hedder LSTNR og bruger L.E.N. Lad skrive til at omdanne tale til tekst.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device_requested": "metal",
+          "elapsed_ms": 652.692292,
+          "load_ms": 662.9303749999999,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/experiments/model-candidates/whisper-family/ggml-large-v3-turbo.bin",
+          "run": 3,
+          "text": "Hej med dig. Dette er en lille test af eddiktøjens hverdøj, som jeg er ved at bygge. Det hedder LSTNR og bruger L.E.N. Lad skrive til at omdanne tale til tekst.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device_requested": "metal",
+          "elapsed_ms": 847.5033749999999,
+          "load_ms": 662.9303749999999,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/experiments/model-candidates/whisper-family/ggml-large-v3-turbo.bin",
+          "run": 4,
+          "text": "Hej med dig. Dette er en lille test af eddiktøjens hverdøj, som jeg er ved at bygge. Det hedder LSTNR og bruger L.E.N. Lad skrive til at omdanne tale til tekst.",
+          "threads": 8
+        },
+        {
+          "audio_s": 10.312125,
+          "device_requested": "metal",
+          "elapsed_ms": 780.095125,
+          "load_ms": 662.9303749999999,
+          "model": "/Users/mikkelfreltoftkrogsholm/Projekter/vara/target/experiments/model-candidates/whisper-family/ggml-large-v3-turbo.bin",
+          "run": 5,
+          "text": "Hej med dig. Dette er en lille test af eddiktøjens hverdøj, som jeg er ved at bygge. Det hedder LSTNR og bruger L.E.N. Lad skrive til at omdanne tale til tekst.",
+          "threads": 8
+        }
+      ]
+    }
+  },
+  "limits": [
+    "One clip; no reviewed reference transcript, WER or broad accuracy ranking",
+    "Load timings reflect already cached model files/shader caches, not fresh-install startup",
+    "First Metal smoke initialization took about 9.16 seconds before cached runs",
+    "Eight CPU threads also configured for Metal runs; CPU and GPU decoding can differ numerically",
+    "App configuration/defaults unchanged; app currently still uses Whisper CPU"
+  ],
+  "commands": [
+    "cargo build --release -p vara-engine --example whisper_bench --features whisper-rs/metal",
+    "python3 scripts/compare-whisper.py"
+  ]
+}

@@ -1,0 +1,621 @@
+{
+  "format": "gdd-report/0.2",
+  "tool": {
+    "name": "gdd-validator",
+    "version": "0.8.0"
+  },
+  "spec_revision": "sha256:1ae64952d9616f3d2f06655b80554c5f0048d69a51488e431d07f9dd19b0cf24",
+  "profiles": [
+    "records"
+  ],
+  "scope": [],
+  "checks": [
+    {
+      "check_id": "representation.schema",
+      "dimension": "model",
+      "result": "PASS",
+      "scope": [],
+      "reason": "Local JSON Schema validation.",
+      "diagnostics": []
+    },
+    {
+      "check_id": "representation.schema",
+      "dimension": "model",
+      "result": "PASS",
+      "scope": [],
+      "reason": "Local JSON Schema validation.",
+      "diagnostics": []
+    },
+    {
+      "check_id": "model.semantics",
+      "dimension": "model",
+      "result": "PASS",
+      "scope": [],
+      "reason": "Core references, endpoints, identity, refinement, machines, types and declared extension data checked.",
+      "diagnostics": []
+    },
+    {
+      "check_id": "records.integrity",
+      "dimension": "model",
+      "result": "PASS",
+      "scope": [],
+      "reason": "Record identities, references, supersession and current snapshot scopes checked.",
+      "diagnostics": []
+    },
+    {
+      "check_id": "implementation.required.0",
+      "dimension": "implementation",
+      "result": "UNKNOWN",
+      "scope": [
+        "rule.accessibility"
+      ],
+      "reason": "Applicability of recorded rule.accessibility/scenario_review; application check not executed by validator.",
+      "diagnostics": [
+        {
+          "code": "CHECK_PLAN_MISSING",
+          "severity": "warning",
+          "message": "No unambiguous active plan for rule.accessibility/scenario_review.",
+          "location": {
+            "file": null,
+            "pointer": ""
+          },
+          "related_ids": [
+            "rule.accessibility"
+          ]
+        }
+      ]
+    },
+    {
+      "check_id": "implementation.required.1",
+      "dimension": "implementation",
+      "result": "UNKNOWN",
+      "scope": [
+        "rule.accessibility"
+      ],
+      "reason": "Applicability of recorded rule.accessibility/future_behavior_test; application check not executed by validator.",
+      "diagnostics": [
+        {
+          "code": "CHECK_PLAN_MISSING",
+          "severity": "warning",
+          "message": "No unambiguous active plan for rule.accessibility/future_behavior_test.",
+          "location": {
+            "file": null,
+            "pointer": ""
+          },
+          "related_ids": [
+            "rule.accessibility"
+          ]
+        }
+      ]
+    },
+    {
+      "check_id": "implementation.required.2",
+      "dimension": "implementation",
+      "result": "UNKNOWN",
+      "scope": [
+        "rule.approachable_setup"
+      ],
+      "reason": "Applicability of recorded rule.approachable_setup/first_use_walkthrough; application check not executed by validator.",
+      "diagnostics": [
+        {
+          "code": "CHECK_PLAN_MISSING",
+          "severity": "warning",
+          "message": "No unambiguous active plan for rule.approachable_setup/first_use_walkthrough.",
+          "location": {
+            "file": null,
+            "pointer": ""
+          },
+          "related_ids": [
+            "rule.approachable_setup"
+          ]
+        }
+      ]
+    },
+    {
+      "check_id": "implementation.required.3",
+      "dimension": "implementation",
+      "result": "UNKNOWN",
+      "scope": [
+        "rule.bounded_latency"
+      ],
+      "reason": "Applicability of recorded rule.bounded_latency/scenario_review; application check not executed by validator.",
+      "diagnostics": [
+        {
+          "code": "CHECK_PLAN_MISSING",
+          "severity": "warning",
+          "message": "No unambiguous active plan for rule.bounded_latency/scenario_review.",
+          "location": {
+            "file": null,
+            "pointer": ""
+          },
+          "related_ids": [
+            "rule.bounded_latency"
+          ]
+        }
+      ]
+    },
+    {
+      "check_id": "implementation.required.4",
+      "dimension": "implementation",
+      "result": "UNKNOWN",
+      "scope": [
+        "rule.bounded_latency"
+      ],
+      "reason": "Applicability of recorded rule.bounded_latency/future_behavior_test; application check not executed by validator.",
+      "diagnostics": [
+        {
+          "code": "CHECK_PLAN_MISSING",
+          "severity": "warning",
+          "message": "No unambiguous active plan for rule.bounded_latency/future_behavior_test.",
+          "location": {
+            "file": null,
+            "pointer": ""
+          },
+          "related_ids": [
+            "rule.bounded_latency"
+          ]
+        }
+      ]
+    },
+    {
+      "check_id": "implementation.required.5",
+      "dimension": "implementation",
+      "result": "UNKNOWN",
+      "scope": [
+        "rule.cancellation"
+      ],
+      "reason": "Applicability of recorded rule.cancellation/scenario_review; application check not executed by validator.",
+      "diagnostics": [
+        {
+          "code": "CHECK_PLAN_MISSING",
+          "severity": "warning",
+          "message": "No unambiguous active plan for rule.cancellation/scenario_review.",
+          "location": {
+            "file": null,
+            "pointer": ""
+          },
+          "related_ids": [
+            "rule.cancellation"
+          ]
+        }
+      ]
+    },
+    {
+      "check_id": "implementation.required.6",
+      "dimension": "implementation",
+      "result": "UNKNOWN",
+      "scope": [
+        "rule.cancellation"
+      ],
+      "reason": "Applicability of recorded rule.cancellation/future_behavior_test; application check not executed by validator.",
+      "diagnostics": [
+        {
+          "code": "CHECK_PLAN_MISSING",
+          "severity": "warning",
+          "message": "No unambiguous active plan for rule.cancellation/future_behavior_test.",
+          "location": {
+            "file": null,
+            "pointer": ""
+          },
+          "related_ids": [
+            "rule.cancellation"
+          ]
+        }
+      ]
+    },
+    {
+      "check_id": "implementation.required.7",
+      "dimension": "implementation",
+      "result": "UNKNOWN",
+      "scope": [
+        "rule.capabilities"
+      ],
+      "reason": "Applicability of recorded rule.capabilities/scenario_review; application check not executed by validator.",
+      "diagnostics": [
+        {
+          "code": "CHECK_PLAN_MISSING",
+          "severity": "warning",
+          "message": "No unambiguous active plan for rule.capabilities/scenario_review.",
+          "location": {
+            "file": null,
+            "pointer": ""
+          },
+          "related_ids": [
+            "rule.capabilities"
+          ]
+        }
+      ]
+    },
+    {
+      "check_id": "implementation.required.8",
+      "dimension": "implementation",
+      "result": "UNKNOWN",
+      "scope": [
+        "rule.capabilities"
+      ],
+      "reason": "Applicability of recorded rule.capabilities/future_behavior_test; application check not executed by validator.",
+      "diagnostics": [
+        {
+          "code": "CHECK_PLAN_MISSING",
+          "severity": "warning",
+          "message": "No unambiguous active plan for rule.capabilities/future_behavior_test.",
+          "location": {
+            "file": null,
+            "pointer": ""
+          },
+          "related_ids": [
+            "rule.capabilities"
+          ]
+        }
+      ]
+    },
+    {
+      "check_id": "implementation.required.9",
+      "dimension": "implementation",
+      "result": "UNKNOWN",
+      "scope": [
+        "rule.crossplatform"
+      ],
+      "reason": "Applicability of recorded rule.crossplatform/scenario_review; application check not executed by validator.",
+      "diagnostics": [
+        {
+          "code": "CHECK_PLAN_MISSING",
+          "severity": "warning",
+          "message": "No unambiguous active plan for rule.crossplatform/scenario_review.",
+          "location": {
+            "file": null,
+            "pointer": ""
+          },
+          "related_ids": [
+            "rule.crossplatform"
+          ]
+        }
+      ]
+    },
+    {
+      "check_id": "implementation.required.10",
+      "dimension": "implementation",
+      "result": "UNKNOWN",
+      "scope": [
+        "rule.crossplatform"
+      ],
+      "reason": "Applicability of recorded rule.crossplatform/future_behavior_test; application check not executed by validator.",
+      "diagnostics": [
+        {
+          "code": "CHECK_PLAN_MISSING",
+          "severity": "warning",
+          "message": "No unambiguous active plan for rule.crossplatform/future_behavior_test.",
+          "location": {
+            "file": null,
+            "pointer": ""
+          },
+          "related_ids": [
+            "rule.crossplatform"
+          ]
+        }
+      ]
+    },
+    {
+      "check_id": "implementation.required.11",
+      "dimension": "implementation",
+      "result": "UNKNOWN",
+      "scope": [
+        "rule.destination"
+      ],
+      "reason": "Applicability of recorded rule.destination/scenario_review; application check not executed by validator.",
+      "diagnostics": [
+        {
+          "code": "CHECK_PLAN_MISSING",
+          "severity": "warning",
+          "message": "No unambiguous active plan for rule.destination/scenario_review.",
+          "location": {
+            "file": null,
+            "pointer": ""
+          },
+          "related_ids": [
+            "rule.destination"
+          ]
+        }
+      ]
+    },
+    {
+      "check_id": "implementation.required.12",
+      "dimension": "implementation",
+      "result": "UNKNOWN",
+      "scope": [
+        "rule.destination"
+      ],
+      "reason": "Applicability of recorded rule.destination/future_behavior_test; application check not executed by validator.",
+      "diagnostics": [
+        {
+          "code": "CHECK_PLAN_MISSING",
+          "severity": "warning",
+          "message": "No unambiguous active plan for rule.destination/future_behavior_test.",
+          "location": {
+            "file": null,
+            "pointer": ""
+          },
+          "related_ids": [
+            "rule.destination"
+          ]
+        }
+      ]
+    },
+    {
+      "check_id": "implementation.required.13",
+      "dimension": "implementation",
+      "result": "UNKNOWN",
+      "scope": [
+        "rule.fallback"
+      ],
+      "reason": "Applicability of recorded rule.fallback/scenario_review; application check not executed by validator.",
+      "diagnostics": [
+        {
+          "code": "CHECK_PLAN_MISSING",
+          "severity": "warning",
+          "message": "No unambiguous active plan for rule.fallback/scenario_review.",
+          "location": {
+            "file": null,
+            "pointer": ""
+          },
+          "related_ids": [
+            "rule.fallback"
+          ]
+        }
+      ]
+    },
+    {
+      "check_id": "implementation.required.14",
+      "dimension": "implementation",
+      "result": "UNKNOWN",
+      "scope": [
+        "rule.fallback"
+      ],
+      "reason": "Applicability of recorded rule.fallback/future_behavior_test; application check not executed by validator.",
+      "diagnostics": [
+        {
+          "code": "CHECK_PLAN_MISSING",
+          "severity": "warning",
+          "message": "No unambiguous active plan for rule.fallback/future_behavior_test.",
+          "location": {
+            "file": null,
+            "pointer": ""
+          },
+          "related_ids": [
+            "rule.fallback"
+          ]
+        }
+      ]
+    },
+    {
+      "check_id": "implementation.required.15",
+      "dimension": "implementation",
+      "result": "UNKNOWN",
+      "scope": [
+        "rule.locality"
+      ],
+      "reason": "Applicability of recorded rule.locality/scenario_review; application check not executed by validator.",
+      "diagnostics": [
+        {
+          "code": "CHECK_PLAN_MISSING",
+          "severity": "warning",
+          "message": "No unambiguous active plan for rule.locality/scenario_review.",
+          "location": {
+            "file": null,
+            "pointer": ""
+          },
+          "related_ids": [
+            "rule.locality"
+          ]
+        }
+      ]
+    },
+    {
+      "check_id": "implementation.required.16",
+      "dimension": "implementation",
+      "result": "UNKNOWN",
+      "scope": [
+        "rule.locality"
+      ],
+      "reason": "Applicability of recorded rule.locality/future_behavior_test; application check not executed by validator.",
+      "diagnostics": [
+        {
+          "code": "CHECK_PLAN_MISSING",
+          "severity": "warning",
+          "message": "No unambiguous active plan for rule.locality/future_behavior_test.",
+          "location": {
+            "file": null,
+            "pointer": ""
+          },
+          "related_ids": [
+            "rule.locality"
+          ]
+        }
+      ]
+    },
+    {
+      "check_id": "implementation.required.17",
+      "dimension": "implementation",
+      "result": "UNKNOWN",
+      "scope": [
+        "rule.meaning"
+      ],
+      "reason": "Applicability of recorded rule.meaning/scenario_review; application check not executed by validator.",
+      "diagnostics": [
+        {
+          "code": "CHECK_PLAN_MISSING",
+          "severity": "warning",
+          "message": "No unambiguous active plan for rule.meaning/scenario_review.",
+          "location": {
+            "file": null,
+            "pointer": ""
+          },
+          "related_ids": [
+            "rule.meaning"
+          ]
+        }
+      ]
+    },
+    {
+      "check_id": "implementation.required.18",
+      "dimension": "implementation",
+      "result": "UNKNOWN",
+      "scope": [
+        "rule.meaning"
+      ],
+      "reason": "Applicability of recorded rule.meaning/future_behavior_test; application check not executed by validator.",
+      "diagnostics": [
+        {
+          "code": "CHECK_PLAN_MISSING",
+          "severity": "warning",
+          "message": "No unambiguous active plan for rule.meaning/future_behavior_test.",
+          "location": {
+            "file": null,
+            "pointer": ""
+          },
+          "related_ids": [
+            "rule.meaning"
+          ]
+        }
+      ]
+    },
+    {
+      "check_id": "implementation.required.19",
+      "dimension": "implementation",
+      "result": "UNKNOWN",
+      "scope": [
+        "rule.no_content_logs"
+      ],
+      "reason": "Applicability of recorded rule.no_content_logs/scenario_review; application check not executed by validator.",
+      "diagnostics": [
+        {
+          "code": "CHECK_PLAN_MISSING",
+          "severity": "warning",
+          "message": "No unambiguous active plan for rule.no_content_logs/scenario_review.",
+          "location": {
+            "file": null,
+            "pointer": ""
+          },
+          "related_ids": [
+            "rule.no_content_logs"
+          ]
+        }
+      ]
+    },
+    {
+      "check_id": "implementation.required.20",
+      "dimension": "implementation",
+      "result": "UNKNOWN",
+      "scope": [
+        "rule.no_content_logs"
+      ],
+      "reason": "Applicability of recorded rule.no_content_logs/future_behavior_test; application check not executed by validator.",
+      "diagnostics": [
+        {
+          "code": "CHECK_PLAN_MISSING",
+          "severity": "warning",
+          "message": "No unambiguous active plan for rule.no_content_logs/future_behavior_test.",
+          "location": {
+            "file": null,
+            "pointer": ""
+          },
+          "related_ids": [
+            "rule.no_content_logs"
+          ]
+        }
+      ]
+    },
+    {
+      "check_id": "implementation.required.21",
+      "dimension": "implementation",
+      "result": "UNKNOWN",
+      "scope": [
+        "rule.no_surveillance"
+      ],
+      "reason": "Applicability of recorded rule.no_surveillance/scenario_review; application check not executed by validator.",
+      "diagnostics": [
+        {
+          "code": "CHECK_PLAN_MISSING",
+          "severity": "warning",
+          "message": "No unambiguous active plan for rule.no_surveillance/scenario_review.",
+          "location": {
+            "file": null,
+            "pointer": ""
+          },
+          "related_ids": [
+            "rule.no_surveillance"
+          ]
+        }
+      ]
+    },
+    {
+      "check_id": "implementation.required.22",
+      "dimension": "implementation",
+      "result": "UNKNOWN",
+      "scope": [
+        "rule.no_surveillance"
+      ],
+      "reason": "Applicability of recorded rule.no_surveillance/future_behavior_test; application check not executed by validator.",
+      "diagnostics": [
+        {
+          "code": "CHECK_PLAN_MISSING",
+          "severity": "warning",
+          "message": "No unambiguous active plan for rule.no_surveillance/future_behavior_test.",
+          "location": {
+            "file": null,
+            "pointer": ""
+          },
+          "related_ids": [
+            "rule.no_surveillance"
+          ]
+        }
+      ]
+    },
+    {
+      "check_id": "implementation.required.23",
+      "dimension": "implementation",
+      "result": "UNKNOWN",
+      "scope": [
+        "rule.retention"
+      ],
+      "reason": "Applicability of recorded rule.retention/scenario_review; application check not executed by validator.",
+      "diagnostics": [
+        {
+          "code": "CHECK_PLAN_MISSING",
+          "severity": "warning",
+          "message": "No unambiguous active plan for rule.retention/scenario_review.",
+          "location": {
+            "file": null,
+            "pointer": ""
+          },
+          "related_ids": [
+            "rule.retention"
+          ]
+        }
+      ]
+    },
+    {
+      "check_id": "implementation.required.24",
+      "dimension": "implementation",
+      "result": "UNKNOWN",
+      "scope": [
+        "rule.retention"
+      ],
+      "reason": "Applicability of recorded rule.retention/future_behavior_test; application check not executed by validator.",
+      "diagnostics": [
+        {
+          "code": "CHECK_PLAN_MISSING",
+          "severity": "warning",
+          "message": "No unambiguous active plan for rule.retention/future_behavior_test.",
+          "location": {
+            "file": null,
+            "pointer": ""
+          },
+          "related_ids": [
+            "rule.retention"
+          ]
+        }
+      ]
+    }
+  ]
+}

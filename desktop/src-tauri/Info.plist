@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict><key>NSMicrophoneUsageDescription</key><string>Vara bruger mikrofonen, når du starter en diktering. Lokal behandling er standard.</string></dict></plist>

@@ -1,0 +1,101 @@
+{
+  "date": "2026-10-23",
+  "scope": "Isolated local Rust inference probe; no change to app model choices or default",
+  "hardware": "Apple M3 Max",
+  "os": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "runtime": {
+    "repository": "https://github.com/lmaksym/voxrt",
+    "commit": "4fab626c00708d9bc97f837d309e0d362094282b",
+    "version": "0.2.1",
+    "build": "cargo +1.99.1 build --release --locked -p voxrt-cli --no-default-features --features metal",
+    "threads": 8
+  },
+  "model": {
+    "repository": "https://huggingface.co/moondream/parakeet-redux",
+    "revision": "2bf128600aac4b16946f7ed8372e56117fe5e23b",
+    "files": [
+      {
+        "file": "config.json",
+        "bytes": 12988,
+        "sha256": "503c653b2e3bb788adbcb04f5abdee532d958686564081baeed133ff10143f6e"
+      },
+      {
+        "file": "model.safetensors",
+        "bytes": 177774490,
+        "sha256": "78ec25733ee0d0c1586d1346fc86db9d0c2e436e3a8ab1d32a82d1bb8f848d21"
+      },
+      {
+        "file": "ternary.json",
+        "bytes": 57970,
+        "sha256": "1221c6d3ce901ffe09c089da758a8db8b76189f80cff41c5afc244fc61e2051d"
+      },
+      {
+        "file": "tokenizer.json",
+        "bytes": 1159960,
+        "sha256": "bd321b096832a3f270bd3b2a88823957920f1a5c5ada71114a26ea729d0cbe91"
+      }
+    ],
+    "download_bytes": 179005408
+  },
+  "audio": {
+    "path": "Samples/da_test.wav",
+    "sha256": "8862255dcb95588079350d0fb087b594c51ebb06c0c6bbc0fe2d74dc02709e8a",
+    "duration_s": 10.312125
+  },
+  "method": "Each device: one independent transcript; then a fresh process loads the model, runs once, and measures five additional transcriptions. warm_ms is median of five. Benchmark predecodes/resamples WAV before timing; transcription command includes WAV loading. CPU/GPU runs sequential. No microphone, cloud API, or audio upload.",
+  "results": {
+    "cpu": {
+      "transcript": {
+        "segments": [
+          {
+            "end": 10.32,
+            "start": 0.0,
+            "text": "Hej med dig, dette er en lille test af et toinsværdig, som jeg er ved at bygge. Det hedder LSTNR og bruger elægen Land skribe til at omdanne tale til tekst."
+          }
+        ],
+        "text": "Hej med dig, dette er en lille test af et toinsværdig, som jeg er ved at bygge. Det hedder LSTNR og bruger elægen Land skribe til at omdanne tale til tekst."
+      },
+      "transcribe_timing": "cpu · Int8/NeonI8mm · load 1.16s · 10.31s audio in 0.184s (56.0× real time) · 129 frames · 60 tokens · 1 segments",
+      "benchmark": {
+        "audio_s": 10.312125,
+        "cpu_cores_busy": 6.5,
+        "cpu_ms_per_run": 1186.1,
+        "device": "cpu",
+        "first_ms": 186.6,
+        "load_ms": 1144.1,
+        "rtf": 57.0,
+        "warm_ms": 181.4
+      }
+    },
+    "gpu": {
+      "transcript": {
+        "segments": [
+          {
+            "end": 10.32,
+            "start": 0.0,
+            "text": "Hej med dig, dette er en lille test af en diktoringsværdøj, som jeg er ved at bygge. Det hedder LSTNR og bruger elægen Land skribe til at omdanne tale til tekst."
+          }
+        ],
+        "text": "Hej med dig, dette er en lille test af en diktoringsværdøj, som jeg er ved at bygge. Det hedder LSTNR og bruger elægen Land skribe til at omdanne tale til tekst."
+      },
+      "transcribe_timing": "gpu · Int8/NeonI8mm · load 1.30s · 10.31s audio in 0.061s (167.8× real time) · 129 frames · 61 tokens · 1 segments",
+      "benchmark": {
+        "audio_s": 10.312125,
+        "cpu_cores_busy": 0.9,
+        "cpu_ms_per_run": 51.6,
+        "device": "gpu",
+        "first_ms": 59.1,
+        "load_ms": 865.6,
+        "rtf": 170.0,
+        "warm_ms": 60.6
+      }
+    }
+  },
+  "limits": [
+    "One Danish fixture only, no independently reviewed reference transcript or WER score",
+    "CPU and GPU produce different words on this sample",
+    "No Windows/Linux/mobile runtime testing",
+    "Runtime not integrated into Vara yet; cancellation and packaging contracts not evaluated",
+    "Previous Whisper 0.41s run included cold engine/model setup; do not treat warm Redux versus cold Whisper as a controlled speedup comparison"
+  ]
+}

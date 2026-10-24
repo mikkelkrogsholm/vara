@@ -1,0 +1,434 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic "Graph Driven Development" [ref=e3]: gdd●
+    - generic [ref=e4]:
+      - text: GRAPH DRIVEN DEVELOPMENT
+      - heading "Vara — ideal product graph" [level=1] [ref=e5]
+    - generic [ref=e6]: Read-only view · GDD 0.3
+    - button "About the model" [ref=e7] [cursor=pointer]
+  - status [ref=e8]: Model overview
+  - main [ref=e9]:
+    - complementary "Explore the graph" [ref=e10]:
+      - generic [ref=e11]:
+        - heading "Explore" [level=2] [ref=e12]
+        - generic [ref=e13]: 115 nodes
+      - generic [ref=e14]: Search nodes and relations
+      - searchbox "Search nodes and relations" [ref=e15]
+      - generic [ref=e16]:
+        - generic [ref=e17]:
+          - generic [ref=e18]: Node type
+          - combobox "Node type" [ref=e19]:
+            - option "All types" [selected]
+            - option "action"
+            - option "community"
+            - option "component"
+            - option "entity"
+            - option "machine"
+            - option "rule"
+            - option "scenario"
+        - generic [ref=e20]:
+          - generic [ref=e21]: Relation
+          - combobox "Relation" [ref=e22]:
+            - option "All relations" [selected]
+            - option "changes"
+            - option "constrains"
+            - option "creates"
+            - option "depends_on"
+            - option "exercises"
+            - option "member_of"
+            - option "owned_by"
+            - option "reads"
+            - option "refines"
+            - option "state_of"
+            - option "verifies"
+      - generic [ref=e23]: Community
+      - combobox "Community" [ref=e24]:
+        - option "Entire graph" [selected]
+        - option "Everyday dictation"
+        - option "Audio and video files"
+        - option "Personal vocabulary and control"
+        - option "Platforms and product quality"
+        - option "Privacy and data control"
+        - option "Trust and recovery"
+        - option "First successful use"
+        - option "Meaning and text processing"
+      - generic [ref=e25]:
+        - generic [ref=e26]: Show scenarios (34)
+        - checkbox "Show scenarios (34)" [ref=e27]
+      - generic [ref=e28]:
+        - generic [ref=e29]: Fold communities
+        - checkbox "Fold communities" [ref=e30]
+      - paragraph [ref=e31]: Membership is grouping, not ownership.
+      - group "Object list" [ref=e32]:
+        - button "Nodes" [pressed] [ref=e33] [cursor=pointer]
+        - button "Relations" [ref=e34] [cursor=pointer]
+      - generic "Visible objects" [ref=e35]:
+        - button [ref=e36] [cursor=pointer]:
+          - generic [ref=e37]: Use accessible controls
+          - text: action
+        - button [ref=e39] [cursor=pointer]:
+          - generic [ref=e40]: Configure advanced engines
+          - text: action
+        - button [ref=e42] [cursor=pointer]:
+          - generic [ref=e43]: Ask AI explicitly
+          - text: action
+        - button [ref=e45] [cursor=pointer]:
+          - generic [ref=e46]: Apply opt-in app preferences
+          - text: action
+        - button [ref=e48] [cursor=pointer]:
+          - generic [ref=e49]: Cancel without late effects
+          - text: action
+        - button [ref=e51] [cursor=pointer]:
+          - generic [ref=e52]: Start and stop dictation
+          - text: action
+        - button [ref=e54] [cursor=pointer]:
+          - generic [ref=e55]: Clean text without changing meaning
+          - text: action
+        - button [ref=e57] [cursor=pointer]:
+          - generic [ref=e58]: Use the same outcomes from a terminal
+          - text: action
+        - button [ref=e60] [cursor=pointer]:
+          - generic [ref=e61]: Save explicit text corrections
+          - text: action
+        - button [ref=e63] [cursor=pointer]:
+          - generic [ref=e64]: Manage provider credentials
+          - text: action
+        - button [ref=e66] [cursor=pointer]:
+          - generic [ref=e67]: Record confirmed delivery
+          - text: action
+        - button [ref=e69] [cursor=pointer]:
+          - generic [ref=e70]: Retain undelivered text
+          - text: action
+        - button [ref=e72] [cursor=pointer]:
+          - generic [ref=e73]: Use supported desktop platforms
+          - text: action
+        - button [ref=e75] [cursor=pointer]:
+          - generic [ref=e76]: Resolve actionable problems
+          - text: action
+        - button [ref=e78] [cursor=pointer]:
+          - generic [ref=e79]: Export readable transcripts
+          - text: action
+        - button [ref=e81] [cursor=pointer]:
+          - generic [ref=e82]: Control long file jobs
+          - text: action
+        - button [ref=e84] [cursor=pointer]:
+          - generic [ref=e85]: Queue several files
+          - text: action
+        - button [ref=e87] [cursor=pointer]:
+          - generic [ref=e88]: First successful dictation
+          - text: action
+        - button [ref=e90] [cursor=pointer]:
+          - generic [ref=e91]: Find and reuse results
+          - text: action
+        - button [ref=e93] [cursor=pointer]:
+          - generic [ref=e94]: Transcribe an existing file
+          - text: action
+        - button [ref=e96] [cursor=pointer]:
+          - generic [ref=e97]: Select and recover microphone
+          - text: action
+        - button [ref=e99] [cursor=pointer]:
+          - generic [ref=e100]: Deliver to intended destination
+          - text: action
+        - button [ref=e102] [cursor=pointer]:
+          - generic [ref=e103]: Bring useful existing data
+          - text: action
+        - button [ref=e105] [cursor=pointer]:
+          - generic [ref=e106]: Understand and fix permissions
+          - text: action
+        - button [ref=e108] [cursor=pointer]:
+          - generic [ref=e109]: Define personal processing presets
+          - text: action
+        - button [ref=e111] [cursor=pointer]:
+          - generic [ref=e112]: Accept text processing outcome
+          - text: action
+        - button [ref=e114] [cursor=pointer]:
+          - generic [ref=e115]: Choose where processing runs
+          - text: action
+        - button [ref=e117] [cursor=pointer]:
+          - generic [ref=e118]: Accept raw text for cleanup
+          - text: action
+        - button [ref=e120] [cursor=pointer]:
+          - generic [ref=e121]: Accept raw text for use
+          - text: action
+        - button [ref=e123] [cursor=pointer]:
+          - generic [ref=e124]: Report unrecoverable recognition failure
+          - text: action
+        - button [ref=e126] [cursor=pointer]:
+          - generic [ref=e127]: Retain recoverable recognition failure
+          - text: action
+        - button [ref=e129] [cursor=pointer]:
+          - generic [ref=e130]: Choose a working setup
+          - text: action
+        - button [ref=e132] [cursor=pointer]:
+          - generic [ref=e133]: Receive timely results
+          - text: action
+        - button [ref=e135] [cursor=pointer]:
+          - generic [ref=e136]: Control history and recovery retention
+          - text: action
+        - button [ref=e138] [cursor=pointer]:
+          - generic [ref=e139]: Recover a failed transcription
+          - text: action
+        - button [ref=e141] [cursor=pointer]:
+          - generic [ref=e142]: Recover failed delivery
+          - text: action
+        - button [ref=e144] [cursor=pointer]:
+          - generic [ref=e145]: Rewrite with explicit intent
+          - text: action
+        - button [ref=e147] [cursor=pointer]:
+          - generic [ref=e148]: Understand current status
+          - text: action
+        - button [ref=e150] [cursor=pointer]:
+          - generic [ref=e151]: Work only on this device
+          - text: action
+        - button [ref=e153] [cursor=pointer]:
+          - generic [ref=e154]: Export subtitles and speakers
+          - text: action
+        - button [ref=e156] [cursor=pointer]:
+          - generic [ref=e157]: Recognize speech accurately
+          - text: action
+        - button [ref=e159] [cursor=pointer]:
+          - generic [ref=e160]: Install and update safely
+          - text: action
+        - button [ref=e162] [cursor=pointer]:
+          - generic [ref=e163]: Speak → useful text
+          - text: action
+        - button [ref=e165] [cursor=pointer]:
+          - generic [ref=e166]: Keep the raw transcript
+          - text: action
+        - button [ref=e168] [cursor=pointer]:
+          - generic [ref=e169]: Teach personal terminology
+          - text: action
+        - button [ref=e171] [cursor=pointer]:
+          - generic [ref=e172]: Start hands-free
+          - text: action
+        - button [ref=e174] [cursor=pointer]:
+          - generic [ref=e175]: Everyday dictation
+          - text: community
+        - button [ref=e177] [cursor=pointer]:
+          - generic [ref=e178]: Audio and video files
+          - text: community
+        - button [ref=e180] [cursor=pointer]:
+          - generic [ref=e181]: Personal vocabulary and control
+          - text: community
+        - button [ref=e183] [cursor=pointer]:
+          - generic [ref=e184]: Platforms and product quality
+          - text: community
+        - button [ref=e186] [cursor=pointer]:
+          - generic [ref=e187]: Privacy and data control
+          - text: community
+        - button [ref=e189] [cursor=pointer]:
+          - generic [ref=e190]: Trust and recovery
+          - text: community
+        - button [ref=e192] [cursor=pointer]:
+          - generic [ref=e193]: First successful use
+          - text: community
+        - button [ref=e195] [cursor=pointer]:
+          - generic [ref=e196]: Meaning and text processing
+          - text: community
+        - button [ref=e198] [cursor=pointer]:
+          - generic [ref=e199]: Vara product
+          - text: component
+        - button [ref=e201] [cursor=pointer]:
+          - generic [ref=e202]: Supported environment matrix
+          - text: entity
+        - button [ref=e204] [cursor=pointer]:
+          - generic [ref=e205]: Captured speech
+          - text: entity
+        - button [ref=e207] [cursor=pointer]:
+          - generic [ref=e208]: Intended destination
+          - text: entity
+        - button [ref=e210] [cursor=pointer]:
+          - generic [ref=e211]: Engine capability profile
+          - text: entity
+        - button [ref=e213] [cursor=pointer]:
+          - generic [ref=e214]: File transcription job
+          - text: entity
+        - button [ref=e216] [cursor=pointer]:
+          - generic [ref=e217]: Personal language preferences
+          - text: entity
+        - button [ref=e219] [cursor=pointer]:
+          - generic [ref=e220]: Processing and retention policy
+          - text: entity
+        - button [ref=e222] [cursor=pointer]:
+          - generic [ref=e223]: Text result
+          - text: entity
+        - button [ref=e225] [cursor=pointer]:
+          - generic [ref=e226]: Dictation session
+          - text: entity
+        - button [ref=e228] [cursor=pointer]:
+          - generic [ref=e229]: Dictation lifecycle
+          - text: machine
+        - button [ref=e231] [cursor=pointer]:
+          - generic [ref=e232]: Essential tasks are accessible
+          - text: rule
+        - button [ref=e234] [cursor=pointer]:
+          - generic [ref=e235]: No indefinite waiting
+          - text: rule
+        - button [ref=e237] [cursor=pointer]:
+          - generic [ref=e238]: Cancellation prevents late effects
+          - text: rule
+        - button [ref=e240] [cursor=pointer]:
+          - generic [ref=e241]: Show actual capability
+          - text: rule
+        - button [ref=e243] [cursor=pointer]:
+          - generic [ref=e244]: Publish honest platform support
+          - text: rule
+        - button [ref=e246] [cursor=pointer]:
+          - generic [ref=e247]: Do not guess a destination
+          - text: rule
+        - button [ref=e249] [cursor=pointer]:
+          - generic [ref=e250]: Dry
+          - text: rule
+        - button [ref=e252] [cursor=pointer]:
+          - generic [ref=e253]: Keep raw text on AI failure
+          - text: rule
+        - button [ref=e255] [cursor=pointer]:
+          - generic [ref=e256]: Kiss
+          - text: rule
+        - button [ref=e258] [cursor=pointer]:
+          - generic [ref=e259]: No hidden network fallback
+          - text: rule
+        - button [ref=e261] [cursor=pointer]:
+          - generic [ref=e262]: Preserve meaning
+          - text: rule
+        - button [ref=e264] [cursor=pointer]:
+          - generic [ref=e265]: Modularity
+          - text: rule
+        - button [ref=e267] [cursor=pointer]:
+          - generic [ref=e268]: Diagnostics exclude content by default
+          - text: rule
+        - button [ref=e270] [cursor=pointer]:
+          - generic [ref=e271]: Personalization is deliberate
+          - text: rule
+        - button [ref=e273] [cursor=pointer]:
+          - generic [ref=e274]: Retention is explicit
+          - text: rule
+        - button [ref=e276] [cursor=pointer]:
+          - generic [ref=e277]: Separation Of Concerns
+          - text: rule
+      - button "Reset filters and folding" [ref=e279] [cursor=pointer]
+      - region "Communities" [ref=e280]:
+        - generic [ref=e281]:
+          - checkbox "Show community areas" [checked] [ref=e282]
+          - text: Show community areas
+        - generic "Highlight a community" [ref=e283]:
+          - button "1. Everyday dictation · 15" [ref=e284] [cursor=pointer]
+          - button "2. Audio and video files · 6" [ref=e285] [cursor=pointer]
+          - button "3. Personal vocabulary and control · 9" [ref=e286] [cursor=pointer]
+          - button "4. Platforms and product quality · 12" [ref=e287] [cursor=pointer]
+          - button "5. Privacy and data control · 8" [ref=e288] [cursor=pointer]
+          - button "6. Trust and recovery · 8" [ref=e289] [cursor=pointer]
+          - button "7. First successful use · 3" [ref=e290] [cursor=pointer]
+          - button "8. Meaning and text processing · 6" [ref=e291] [cursor=pointer]
+        - paragraph [ref=e292]: Outlines show community extents; highlight or inspect to confirm membership. A node can belong to several communities.
+    - region "Interactive graph" [ref=e293]:
+      - generic:
+        - status [ref=e296]: 81/115 nodes · 245/341 relations
+        - button "Download view manifest" [ref=e297] [cursor=pointer]
+      - img [aria-hidden]:
+        - generic:
+          - generic: 1. Everyday dictation
+          - generic: 2. Audio and video files
+          - generic: 3. Personal vocabulary and control
+          - generic: 4. Platforms and product quality
+          - generic: 5. Privacy and data control
+          - generic: 6. Trust and recovery
+          - generic: 7. First successful use
+          - generic: 8. Meaning and text processing
+      - img "GDD graph. Use the object list for keyboard inspection." [ref=e298]
+      - generic [ref=e303]: Drag to pan · Scroll to zoom · Select a node or connection
+      - group "Graph navigation" [ref=e304]:
+        - button "Zoom out" [ref=e305] [cursor=pointer]: −
+        - generic [ref=e306]: 26%
+        - button "Zoom in" [ref=e307] [cursor=pointer]: +
+        - button "Fit" [ref=e308] [cursor=pointer]
+    - complementary "Details" [ref=e309]:
+      - generic [ref=e310]:
+        - text: Model overview
+        - heading "Vara — ideal product graph" [level=2] [ref=e311]
+        - paragraph [ref=e312]: vara.clean-write
+        - paragraph [ref=e313]: Turn spoken intent into useful, trustworthy text in the user’s working context, with explicit control over meaning, processing and recovery across desktop platforms.
+        - paragraph [ref=e314]: Explore intent, contracts and pseudocode. This view never writes back to the model.
+        - generic [ref=e315]:
+          - heading "The graph" [level=3] [ref=e316]
+          - generic [ref=e317]:
+            - term [ref=e318]: Nodes
+            - definition [ref=e319]: "115"
+          - generic [ref=e320]:
+            - term [ref=e321]: Relations
+            - definition [ref=e322]: "341"
+          - generic [ref=e323]:
+            - term [ref=e324]: Scope
+            - definition [ref=e325]: Entire model
+        - generic [ref=e326]:
+          - heading "Node types" [level=3] [ref=e327]
+          - paragraph [ref=e328]: action
+          - paragraph [ref=e330]: community
+          - paragraph [ref=e332]: component
+          - paragraph [ref=e334]: entity
+          - paragraph [ref=e336]: machine
+          - paragraph [ref=e338]: rule
+          - paragraph [ref=e340]: scenario
+          - paragraph [ref=e342]: "Dashed border: sketch. Numbered glyph: folded community. Arrows show relation direction. ×N is an inspectable relation bundle."
+        - generic [ref=e343]:
+          - heading "Sources · separate from intent" [level=3] [ref=e344]
+          - button "source.brief" [ref=e345] [cursor=pointer]
+          - button "source.scratchpad" [ref=e346] [cursor=pointer]
+        - generic [ref=e347]:
+          - heading "Questions" [level=3] [ref=e348]
+          - group [ref=e349]:
+            - generic "question.activation" [ref=e350] [cursor=pointer]
+          - group [ref=e351]:
+            - generic "question.audience" [ref=e352] [cursor=pointer]
+          - group [ref=e353]:
+            - generic "question.data_lifecycle" [ref=e354] [cursor=pointer]
+          - group [ref=e355]:
+            - generic "question.default_processing" [ref=e356] [cursor=pointer]
+          - group [ref=e357]:
+            - generic "question.delivery" [ref=e358] [cursor=pointer]
+          - group [ref=e359]:
+            - generic "question.engine_scope" [ref=e360] [cursor=pointer]
+          - group [ref=e361]:
+            - generic "question.file_scope" [ref=e362] [cursor=pointer]
+          - group [ref=e363]:
+            - generic "question.interaction_design" [ref=e364] [cursor=pointer]
+          - group [ref=e365]:
+            - generic "question.migration_scope" [ref=e366] [cursor=pointer]
+          - group [ref=e367]:
+            - generic "question.platforms" [ref=e368] [cursor=pointer]
+          - group [ref=e369]:
+            - generic "question.quality_budgets" [ref=e370] [cursor=pointer]
+          - group [ref=e371]:
+            - generic "question.release_distribution" [ref=e372] [cursor=pointer]
+          - group [ref=e373]:
+            - generic "question.release_scope" [ref=e374] [cursor=pointer]
+          - group [ref=e375]:
+            - generic "question.specification" [ref=e376] [cursor=pointer]
+          - group [ref=e377]:
+            - generic "question.technology" [ref=e378] [cursor=pointer]
+          - group [ref=e379]:
+            - generic "question.text_modes" [ref=e380] [cursor=pointer]
+          - group [ref=e381]:
+            - generic "question.wake_viability" [ref=e382] [cursor=pointer]
+        - generic [ref=e383]:
+          - heading "Traceability" [level=3] [ref=e384]
+          - generic [ref=e385]:
+            - term [ref=e386]: Revision
+            - definition [ref=e387]: sha256:36551d4cc6468c562b696e985d0ebbecc6e65bc6c813dc5661e6efdf768ab532
+          - generic [ref=e388]:
+            - term [ref=e389]: Generator
+            - definition [ref=e390]: gdd-viewer 0.3.0
+          - generic [ref=e391]:
+            - term [ref=e392]: Observations
+            - definition [ref=e393]: No observation inputs in this projection
+          - paragraph [ref=e394]: The view displays model data. It does not calculate readiness or implementation evidence.
+        - group [ref=e395]:
+          - generic "Model snapshot" [ref=e396] [cursor=pointer]
+        - group [ref=e397]:
+          - generic "Current view manifest" [ref=e398] [cursor=pointer]
+        - group [ref=e399]:
+          - generic "Project fields" [ref=e400] [cursor=pointer]
+  - contentinfo [ref=e401]:
+    - generic "sha256:36551d4cc6468c562b696e985d0ebbecc6e65bc6c813dc5661e6efdf768ab532" [ref=e402]: Model sha256:36551d4cc6468c562b696e985d0ebbecc6e65bc6c813dc5661e6efdf768ab532
+    - generic [ref=e403]: 34 nodes and 96 relations omitted
+    - generic [ref=e404]: gdd-viewer 0.3.0 · Offline

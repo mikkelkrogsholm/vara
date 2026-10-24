@@ -1,0 +1,27 @@
+{
+  "format": "gdd-records/0.2",
+  "project_id": "vara.clean-write",
+  "records": {
+    "decision.rust_desktop_bindings.2026-10-23": {
+      "kind": "decision",
+      "topic": "model_change",
+      "description": "Bind the existing agreed module and screen contracts to the implemented Rust desktop sources, preserving explicit verification gaps.",
+      "scope": [
+        "component.session",
+        "component.preferences",
+        "component.history",
+        "component.engines",
+        "component.desktop",
+        "component.experience"
+      ],
+      "spec_revision": "sha256:0c3539e8728d81bfc5c5e2cfb35aa3aacab4f05c49264e9ef5849e4ec1a49d6c",
+      "policy_revision": "trusted-user-request-build-desktop-shared-rust-and-ui-review-2026-10-23",
+      "actor": {
+        "id": "agent.codex",
+        "kind": "agent"
+      },
+      "outcome": "accepted",
+      "rationale": "Records implementation provenance only. No human design or cross-platform release acceptance is inferred. Previous revision-bound records are archived."
+    }
+  }
+}

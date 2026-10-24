@@ -1,0 +1,27 @@
+{
+  "format": "gdd-records/0.2",
+  "project_id": "vara.clean-write",
+  "records": {
+    "decision.warm_precision_design.2026-10-23": {
+      "kind": "decision",
+      "topic": "model_change",
+      "description": "Specify the user-selected Warm precision direction as a detailed token and component design system.",
+      "scope": [
+        "component.experience",
+        "screen.history",
+        "screen.apps",
+        "screen.settings",
+        "screen.onboarding",
+        "screen.hud"
+      ],
+      "spec_revision": "sha256:6c3f357d5efbd0a144797a6770f28066903731d25ca360297e781c851fa012b7",
+      "policy_revision": "trusted-user-selected-first-mockup-designmd-2026-10-23",
+      "actor": {
+        "id": "agent.codex",
+        "kind": "agent"
+      },
+      "outcome": "accepted",
+      "rationale": "The human selected the first mockup and requested thorough component-focused DESIGN.md. This agent-authored model update records the specification within that direction. Exact tokens, invisible states and implementation details are authored choices; this is not a human readiness_review or proof of native behavior. The exact user selection and chosen image are pinned provenance sources; prior records are archived without rebinding."
+    }
+  }
+}

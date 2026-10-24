@@ -1,0 +1,198 @@
+{
+  "format": "gdd-report/0.2",
+  "tool": {
+    "name": "gdd-validator",
+    "version": "0.8.0"
+  },
+  "spec_revision": "sha256:16220b3a793b9a7fb9729e237b4c701958140adb2ffa45c7c74995ef655983c6",
+  "profiles": [
+    "model"
+  ],
+  "scope": [],
+  "checks": [
+    {
+      "check_id": "representation.schema",
+      "dimension": "model",
+      "result": "PASS",
+      "scope": [],
+      "reason": "Local JSON Schema validation.",
+      "diagnostics": []
+    },
+    {
+      "check_id": "representation.schema",
+      "dimension": "model",
+      "result": "PASS",
+      "scope": [],
+      "reason": "Local JSON Schema validation.",
+      "diagnostics": []
+    },
+    {
+      "check_id": "check.refinement_parent_ambiguous",
+      "dimension": "model",
+      "result": "FAIL",
+      "scope": [],
+      "reason": "At most one refinement parent is allowed.",
+      "diagnostics": [
+        {
+          "code": "REFINEMENT_PARENT_AMBIGUOUS",
+          "severity": "error",
+          "message": "At most one refinement parent is allowed.",
+          "location": {
+            "file": "gdd.json",
+            "pointer": "/nodes/action.use_vara"
+          },
+          "related_ids": [
+            "action.use_vara"
+          ]
+        }
+      ]
+    },
+    {
+      "check_id": "check.refinement_parent_ambiguous",
+      "dimension": "model",
+      "result": "FAIL",
+      "scope": [],
+      "reason": "At most one refinement parent is allowed.",
+      "diagnostics": [
+        {
+          "code": "REFINEMENT_PARENT_AMBIGUOUS",
+          "severity": "error",
+          "message": "At most one refinement parent is allowed.",
+          "location": {
+            "file": "gdd.json",
+            "pointer": "/nodes/action.first_success"
+          },
+          "related_ids": [
+            "action.first_success"
+          ]
+        }
+      ]
+    },
+    {
+      "check_id": "check.refinement_parent_ambiguous",
+      "dimension": "model",
+      "result": "FAIL",
+      "scope": [],
+      "reason": "At most one refinement parent is allowed.",
+      "diagnostics": [
+        {
+          "code": "REFINEMENT_PARENT_AMBIGUOUS",
+          "severity": "error",
+          "message": "At most one refinement parent is allowed.",
+          "location": {
+            "file": "gdd.json",
+            "pointer": "/nodes/action.capture"
+          },
+          "related_ids": [
+            "action.capture"
+          ]
+        }
+      ]
+    },
+    {
+      "check_id": "check.refinement_parent_ambiguous",
+      "dimension": "model",
+      "result": "FAIL",
+      "scope": [],
+      "reason": "At most one refinement parent is allowed.",
+      "diagnostics": [
+        {
+          "code": "REFINEMENT_PARENT_AMBIGUOUS",
+          "severity": "error",
+          "message": "At most one refinement parent is allowed.",
+          "location": {
+            "file": "gdd.json",
+            "pointer": "/nodes/action.import_media"
+          },
+          "related_ids": [
+            "action.import_media"
+          ]
+        }
+      ]
+    },
+    {
+      "check_id": "check.transition_ambiguous",
+      "dimension": "model",
+      "result": "FAIL",
+      "scope": [],
+      "reason": "Repeated (from,trigger): ('recognizing', 'action.transcribe').",
+      "diagnostics": [
+        {
+          "code": "TRANSITION_AMBIGUOUS",
+          "severity": "error",
+          "message": "Repeated (from,trigger): ('recognizing', 'action.transcribe').",
+          "location": {
+            "file": "gdd.json",
+            "pointer": "/nodes/machine.session"
+          },
+          "related_ids": [
+            "machine.session"
+          ]
+        }
+      ]
+    },
+    {
+      "check_id": "check.transition_ambiguous",
+      "dimension": "model",
+      "result": "FAIL",
+      "scope": [],
+      "reason": "Repeated (from,trigger): ('delivering', 'action.insert').",
+      "diagnostics": [
+        {
+          "code": "TRANSITION_AMBIGUOUS",
+          "severity": "error",
+          "message": "Repeated (from,trigger): ('delivering', 'action.insert').",
+          "location": {
+            "file": "gdd.json",
+            "pointer": "/nodes/machine.session"
+          },
+          "related_ids": [
+            "machine.session"
+          ]
+        }
+      ]
+    },
+    {
+      "check_id": "check.transition_ambiguous",
+      "dimension": "model",
+      "result": "FAIL",
+      "scope": [],
+      "reason": "Repeated (from,trigger): ('recognizing', 'action.transcribe').",
+      "diagnostics": [
+        {
+          "code": "TRANSITION_AMBIGUOUS",
+          "severity": "error",
+          "message": "Repeated (from,trigger): ('recognizing', 'action.transcribe').",
+          "location": {
+            "file": "gdd.json",
+            "pointer": "/nodes/machine.session"
+          },
+          "related_ids": [
+            "machine.session"
+          ]
+        }
+      ]
+    },
+    {
+      "check_id": "check.transition_ambiguous",
+      "dimension": "model",
+      "result": "FAIL",
+      "scope": [],
+      "reason": "Repeated (from,trigger): ('recognizing', 'action.transcribe').",
+      "diagnostics": [
+        {
+          "code": "TRANSITION_AMBIGUOUS",
+          "severity": "error",
+          "message": "Repeated (from,trigger): ('recognizing', 'action.transcribe').",
+          "location": {
+            "file": "gdd.json",
+            "pointer": "/nodes/machine.session"
+          },
+          "related_ids": [
+            "machine.session"
+          ]
+        }
+      ]
+    }
+  ]
+}

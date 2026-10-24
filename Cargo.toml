@@ -1,0 +1,27 @@
+[workspace]
+members = ["crates/vara-core", "crates/vara-engine", "crates/vara-platform", "desktop/src-tauri"]
+default-members = ["crates/vara-core", "crates/vara-engine", "crates/vara-platform"]
+resolver = "2"
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+rust-version = "1.94"
+
+[workspace.dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "2"
+uuid = { version = "1", features = ["v4", "serde"] }
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "sync", "time", "fs", "process", "io-util"] }
+reqwest = { version = "0.12", default-features = false, features = ["json", "multipart", "stream", "rustls-tls"] }
+parking_lot = "0.12"
+
+# The tensor hot paths must stay optimized even when debugging the desktop shell.
+[profile.dev.package.candle-core]
+opt-level = 3
+[profile.dev.package.candle-nn]
+opt-level = 3
+[profile.dev.package.candle-transformers]
+opt-level = 3

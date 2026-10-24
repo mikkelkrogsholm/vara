@@ -1,0 +1,61 @@
+{
+  "format": "gdd-records/0.2",
+  "project_id": "vara.clean-write",
+  "records": {
+    "decision.activation.2026-10-23": {
+      "kind": "decision",
+      "topic": "model_change",
+      "description": "Current product direction plus both activation styles, hold-to-talk default and user-configurable shortcut.",
+      "scope": [
+        "action.answer",
+        "action.app_rules",
+        "action.cancel",
+        "action.capture",
+        "action.cleanup",
+        "action.configure_shortcut",
+        "action.desktop_support",
+        "action.export_text",
+        "action.file_control",
+        "action.file_queue",
+        "action.first_success",
+        "action.import_media",
+        "action.input_device",
+        "action.insert",
+        "action.permissions",
+        "action.processing_policy",
+        "action.recommended_setup",
+        "action.responsive_use",
+        "action.retry",
+        "action.retry_delivery",
+        "action.session_feedback",
+        "action.strict_local",
+        "action.timed_export",
+        "action.transcribe",
+        "action.use_vara",
+        "action.verbatim",
+        "action.wake_word",
+        "entity.capability_matrix",
+        "entity.engine",
+        "machine.session",
+        "rule.approachable_setup",
+        "rule.bounded_latency",
+        "rule.crossplatform",
+        "rule.locality",
+        "rule.modularity",
+        "rule.module_contracts",
+        "scenario.hold_default",
+        "scenario.local_default",
+        "scenario.shortcut_conflict",
+        "scenario.toggle_selected"
+      ],
+      "spec_revision": "sha256:4f969bd90c8f89a73184f47e1fb3824122f8d7483f31b3aee85c7cf009229062",
+      "policy_revision": "trusted-chat-activation-answer-2026-10-23",
+      "actor": {
+        "id": "human.mikkel",
+        "kind": "human"
+      },
+      "outcome": "accepted",
+      "rationale": "Direct user acceptance of both modes, hold default and personal key choice: source.activation. Prior user directions remain unchanged and are carried forward; immutable prior records remain in reports/history. Base revision: sha256:34824b87e8423604ba20385f0b1d6bebe31f0009a0dcd371475f9ffeb4f15dfa. Platform-specific key mechanics and default factory key remain unspecified; no application implementation/tests occurred."
+    }
+  }
+}
