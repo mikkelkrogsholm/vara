@@ -1,0 +1,22 @@
+{
+  "format": "gdd-records/0.2",
+  "project_id": "vara.clean-write",
+  "records": {
+    "decision.web_text_insertion.2026-10-24": {
+      "kind": "decision",
+      "topic": "model_change",
+      "description": "Document focus-checked Unicode insertion for Mac web editors, preserving the clipboard and uncertain-delivery semantics.",
+      "scope": [
+        "component.desktop"
+      ],
+      "spec_revision": "sha256:aec521778ad33394c74da9d9e950e039f56d76750bd90343dc5bc95a50543522",
+      "policy_revision": "trusted-user-request-fix-codex-insertion-2026-10-24",
+      "actor": {
+        "id": "agent.codex",
+        "kind": "agent"
+      },
+      "outcome": "accepted",
+      "rationale": "User confirmed TextEdit works and Codex does not. This records the implementation/provenance update; live Codex acceptance is pending and is not asserted."
+    }
+  }
+}

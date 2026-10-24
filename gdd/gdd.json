@@ -9480,7 +9480,7 @@
       "format": "text/markdown",
       "normative": true,
       "revision": {
-        "sha256": "d1c26adc0bc060a4a006ee7a8869f882705c838ab1bf7cfa2082454d5d1e3df1"
+        "sha256": "1b38f594b9033e62ecbb4dc54740aecd4b481b77865924fa1208441e31d0bec4"
       }
     },
     "source.design_selection": {
@@ -9520,7 +9520,7 @@
       "format": "text/markdown",
       "normative": false,
       "revision": {
-        "sha256": "222ee512a18c7c1023b14c839991e0dd5cfab66cc1566f306d21c956245cb3f2"
+        "sha256": "fa72a94c4572aec7322ee3ec96dd2edd26106ff246d01ec7bee75e3f690ae8c2"
       }
     }
   },

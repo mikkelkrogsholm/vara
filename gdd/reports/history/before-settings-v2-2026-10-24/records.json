@@ -1,0 +1,22 @@
+{
+  "format": "gdd-records/0.2",
+  "project_id": "vara.clean-write",
+  "records": {
+    "decision.connection_status.2026-10-24": {
+      "kind": "decision",
+      "topic": "model_change",
+      "description": "Expose metadata-only stored-key status and explicit OpenAI/Groq API-access checks in connections.",
+      "scope": [
+        "component.experience"
+      ],
+      "spec_revision": "sha256:8a034e20cacb5ccdc24348aade44538cd3ef76a08502c3d3e765dce47cd650ce",
+      "policy_revision": "trusted-user-request-visible-key-status-and-test-2026-10-24",
+      "actor": {
+        "id": "agent.codex",
+        "kind": "agent"
+      },
+      "outcome": "accepted",
+      "rationale": "User requested visible stored-key status and an accessible key test. Documents implementation provenance, not speech inference or human release acceptance."
+    }
+  }
+}

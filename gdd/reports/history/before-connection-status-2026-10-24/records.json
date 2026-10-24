@@ -1,0 +1,23 @@
+{
+  "format": "gdd-records/0.2",
+  "project_id": "vara.clean-write",
+  "records": {
+    "decision.history_actions.2026-10-24": {
+      "kind": "decision",
+      "topic": "model_change",
+      "description": "Use local installed-app artwork and direct copy/delete icon actions in history and selected results.",
+      "scope": [
+        "component.desktop",
+        "component.experience"
+      ],
+      "spec_revision": "sha256:1f4bb94d2cdb1642b0c53618bdac0f6d26d8f84b42868cc7505aaec23e77d04d",
+      "policy_revision": "trusted-user-request-native-logos-direct-copy-delete-2026-10-24",
+      "actor": {
+        "id": "agent.codex",
+        "kind": "agent"
+      },
+      "outcome": "accepted",
+      "rationale": "User requested actual local app logos and two direct action icons. Documents implementation and design changes; no human release acceptance is asserted."
+    }
+  }
+}

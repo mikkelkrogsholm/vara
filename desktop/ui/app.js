@@ -22,6 +22,8 @@
     devices: [],
     deviceError: null,
     cli: {},
+    keyStates: {},
+    connectionChecks: {},
     setupStep: "prepare",
     uiError: null,
     shortcutDraft: null,
@@ -129,12 +131,28 @@
     if (h) h.scrollTop = history;
     if (d) d.scrollTop = detail;
     renderedPage = viewKey;
+    refreshModelControls();
+    if (state.page === "settings" && state.tab === "connections") {
+      for (const [id] of Vara.views.providersList) if (!state.keyStates[id]) loadKeyStatus(id);
+    }
+  }
+  const requestedIcons = new Set();
+  function loadAppArtwork() {
+    const ids = Vara.views.appsList(state).map(([id]) => id).filter(id => !requestedIcons.has(id));
+    for (let offset = 0; offset < ids.length; offset += 128) {
+      const batch = ids.slice(offset, offset + 128);
+      batch.forEach(id => requestedIcons.add(id));
+      api("application_icons", { ids: batch }).then(Vara.desktopUi.setAppArtwork).catch(() => {
+        batch.forEach(id => requestedIcons.delete(id));
+      });
+    }
   }
   function apply(data) {
     const previous = state.data?.history[0]?.id;
     if (state.data && JSON.stringify(state.data) === JSON.stringify(data))
       return;
     state.data = data;
+    loadAppArtwork();
     if (!state.selected && data.history.length)
       state.selected = data.history[0].id;
     if (data.history[0]?.id && previous !== data.history[0].id) {
@@ -168,12 +186,14 @@
           progress.max = d.total || 1;
         }
       });
+      refreshModelControls();
     }
   }
   const refresh = async (force = false) => {
     const data = await api("snapshot");
     if (force) {
       state.data = data;
+      loadAppArtwork();
       render();
     } else apply(data);
   };
@@ -236,39 +256,76 @@
       `<p>Gem først dine ændringer, eller kassér dem for at fortsætte.</p><div class="actions">${b("Bliv her", "close-modal", { variant: "primary" })}${b("Kassér ændringer", "discard-route", { variant: "quiet" })}</div>`,
     );
   }
-  async function saveSettings() {
+  function settingsDraft() {
     const p = structuredClone(state.data.settings);
-    if (state.tab === "dictation") {
+    if ($("activation")) {
       p.activation = value("activation");
       p.shortcut = value("shortcut").trim();
       p.input_device = value("input-device") || null;
-      p.language = value("language") || null;
+      p.speech_engine = value("speech-engine");
+      p.language = p.speech_engine === "local.parakeet" ? null : value("language") || null;
       p.general_ai_enabled = checked("general-ai");
       p.general_prompt = value("general-prompt");
       p.general_engine = value("general-engine");
-      if (p.general_ai_enabled)
-        requireValue(
-          "general-prompt",
-          "Skriv en systemprompt, før du slår AI til.",
-        );
     }
-    if (state.tab === "connections") {
-      p.speech_engine = value("speech-engine");
-      p.strict_local = checked("strict-local");
-    }
-    if (state.tab === "privacy")
-      p.retention_days = value("retention") ? Number(value("retention")) : null;
+    if ($("strict-local")) p.strict_local = checked("strict-local");
+    if ($("retention")) p.retention_days = value("retention") ? Number(value("retention")) : null;
+    return p;
+  }
+  function refreshModelControls() {
+    if (!state.data) return;
+    if ($("text-processing-fields")) $("text-processing-fields").hidden = !checked("general-ai");
+    if ($("app-ai-fields")) $("app-ai-fields").hidden = !checked("app-ai");
+    const p = settingsDraft();
+    document.querySelectorAll(".model-feedback[data-model-field]").forEach(node => {
+      if (node.closest("[hidden]")) return;
+      const engine = p.engines.find(e => e.id === value(node.dataset.modelField));
+      node.innerHTML = Vara.views.modelFeedback(state, engine, p);
+      if (!engine || engine.locality === "on_device" || ["claude_cli", "codex_cli", "gemini_cli"].includes(engine.provider)) return;
+      const id = ["custom", "ollama"].includes(engine.provider) ? engine.id : engine.provider;
+      if (!state.keyStates[id]) loadKeyStatus(id);
+    });
+    if ($("privacy-processing-summary")) $("privacy-processing-summary").innerHTML = Vara.views.privacySummary(state, p);
+  }
+  async function saveSettings() {
+    const p = settingsDraft();
+    if (state.tab === "dictation" && p.general_ai_enabled)
+      requireValue("general-prompt", "Skriv instruktioner, før du slår AI til.");
     await api("save_settings", p);
     state.dirty = false;
     await refresh(true);
     toast("Indstillinger gemt.");
   }
+  function renderConnections() {
+    const list = document.querySelector("[data-connections]");
+    if (list) {
+      const focus = focusIdentity();
+      list.innerHTML = Vara.views.providers(state);
+      restoreFocus(focus);
+    }
+    refreshModelControls();
+  }
+  async function loadKeyStatus(id) {
+    state.keyStates[id] = { ...state.keyStates[id], loading: true };
+    try {
+      const present = await api("key_status", { id });
+      if (state.keyStates[id]?.present !== present) delete state.connectionChecks[id];
+      state.keyStates[id] = { present };
+    } catch (error) {
+      state.keyStates[id] = { error: String(error?.message || error) };
+    }
+    renderConnections();
+  }
   async function keyDialog(id, name) {
-    if (!canLeave()) return;
-    const exists = await api("key_status", { id });
+    let exists;
+    try { exists = await api("key_status", { id }); state.keyStates[id] = { present: exists }; renderConnections(); }
+    catch (error) {
+      modal(name, `<p role="alert">${e(String(error))}</p><div class="actions">${b("Prøv igen", "open-key", { variant: "primary", attrs: `data-id="${e(id)}" data-name="${e(name)}"` })}</div>`);
+      return;
+    }
     modal(
       name,
-      `<form id="key-form" data-key-id="${e(id)}"><p>${exists ? "En nøgle er gemt i systemets nøglelager. Du kan erstatte eller slette den." : "Tilføj din egen API-nøgle. Den gemmes i systemets nøglelager."}</p>${["groq", "open_ai"].includes(id) ? "<p>Udbyderen kan transskribere din lyd og bearbejde tekst med AI. Data til de valgte funktioner behandles i cloud.</p>" : ""}${f({ id: "api-key", label: "API-nøgle", type: "password", attrs: 'autocomplete="off" spellcheck="false" autocapitalize="off"' })}<div class="actions">${b("Gem nøgle", "save-key", { variant: "primary", attrs: `data-id="${e(id)}"` })}${exists ? b("Slet nøgle", "delete-key", { variant: "quiet", attrs: `data-id="${e(id)}"` }) : ""}${["groq", "open_ai"].includes(id) && exists ? b("Kontrollér adgang", id === "groq" ? "check-groq" : "check-openai", { variant: "quiet" }) : ""}</div>${["groq", "open_ai"].includes(id) ? `<p id="${id === "groq" ? "groq" : "openai"}-access-status" role="status" class="muted"></p>` : ""}</form>`,
+      `<form id="key-form" data-key-id="${e(id)}"><p>${exists ? "En nøgle er gemt i systemets nøglelager. Du kan erstatte eller slette den." : "Tilføj din egen API-nøgle. Den gemmes i systemets nøglelager."}</p>${["groq", "open_ai"].includes(id) ? "<p>Udbyderen kan transskribere din lyd og bearbejde tekst med AI. Data til de valgte funktioner behandles i cloud.</p>" : ""}${f({ id: "api-key", label: "API-nøgle", type: "password", attrs: 'autocomplete="off" spellcheck="false" autocapitalize="off"' })}<div class="actions">${b("Gem nøgle", "save-key", { variant: "primary", attrs: `data-id="${e(id)}"` })}${exists ? b("Slet nøgle", "delete-key", { variant: "quiet", attrs: `data-id="${e(id)}"` }) : ""}${["groq", "open_ai"].includes(id) && exists ? b("Test nøgle", id === "groq" ? "check-groq" : "check-openai", { variant: "quiet" }) : ""}${b("Prøv igen", "open-key", { variant: "quiet", attrs: `id="retry-key-store" hidden data-id="${e(id)}" data-name="${e(name)}"` })}</div>${["groq", "open_ai"].includes(id) ? `<p id="${id === "groq" ? "groq" : "openai"}-access-status" role="status" class="muted"></p>` : ""}</form>`,
     );
   }
   function engineDialog(id) {
@@ -340,7 +397,7 @@
         break;
       case "check-cli":
         state.cli[id] = await api("check_cli", { provider: id });
-        render();
+        if (state.dirty) refreshModelControls(); else render();
         break;
       case "record-shortcut":
         state.nativeCapture = !!(await api("shortcut_capture", { enabled: true }))?.native;
@@ -395,11 +452,12 @@
           render();
         }
         break;
-      case "open-connections":
+      case "open-dictation":
         if (canLeave()) {
           state.page = "settings";
-          state.tab = "connections";
+          state.tab = "dictation";
           render();
+          $("speech-engine")?.focus();
         }
         break;
       case "settings-tab":
@@ -444,12 +502,6 @@
       case "copy-unsaved":
         await api("copy", { unsaved: true });
         toast("Teksten er kopieret.");
-        break;
-      case "result-menu":
-        modal(
-          "Diktering",
-          `<div class="actions">${b("Kopiér", "copy", { attrs: `data-id="${e(id)}"` })}${b("Slet diktering", "confirm-delete", { variant: "quiet", attrs: `data-id="${e(id)}"` })}</div>`,
-        );
         break;
       case "confirm-delete":
         modal(
@@ -510,6 +562,8 @@
         try {
           await api("set_key", { id, key: value("api-key") });
           closeModal();
+          delete state.connectionChecks[id];
+          await loadKeyStatus(id);
           toast("Nøglen er gemt i systemets nøglelager.");
         } finally {
           if ($("api-key")) $("api-key").value = "";
@@ -517,18 +571,32 @@
         break;
       case "check-groq":
       case "check-openai": {
-        const openai = a === "check-openai";
+        const openai = a === "check-openai", provider = openai ? "open_ai" : "groq";
+        if (state.connectionChecks[provider]?.phase === "testing") break;
         const status = $(openai ? "openai-access-status" : "groq-access-status");
-        if (status) status.textContent = "Kontrollerer nøgle og modeladgang…";
-        let result;
-        try { result = await api(openai ? "check_openai" : "check_groq"); }
-        catch (error) { if (status?.isConnected) status.textContent = ""; throw error; }
-        if (status?.isConnected) status.textContent = `Nøglen accepteres. Tale (${result.speech_model}): ${result.speech_available ? "i modelkataloget" : "mangler i modelkataloget"}. Tekst (${result.text_model}): ${result.text_available ? "i modelkataloget" : "mangler i modelkataloget"}. Ingen lyd eller tekst blev sendt ved kontrollen.${!result.speech_available || !result.text_available ? " Ret eventuelt modelnavnet under Modeller og egne endpoints." : ""}`;
+        const check = { phase: "testing", message: "Tester nøgle og modeladgang…" };
+        state.connectionChecks[provider] = check;
+        renderConnections();
+        if (status) status.textContent = "Tester nøgle og modeladgang…";
+        try {
+          const result = await api(openai ? "check_openai" : "check_groq");
+          if (state.connectionChecks[provider] !== check) break;
+          const message = `Nøglen accepteres. Tale (${result.speech_model}): ${result.speech_available ? "i modelkataloget" : "mangler i modelkataloget"}. Tekst (${result.text_model}): ${result.text_available ? "i modelkataloget" : "mangler i modelkataloget"}. Ingen lyd eller tekst blev sendt. Testen kontrollerer API-adgang og modelkatalog; diktering testes separat.`;
+          state.connectionChecks[provider] = { phase: "success", message };
+          if (status?.isConnected) status.textContent = message;
+        } catch (error) {
+          if (state.connectionChecks[provider] !== check) break;
+          state.connectionChecks[provider] = { phase: "error", message: String(error?.message || error) };
+          if (status?.isConnected) { status.textContent = ""; throw error; }
+          $("live").textContent = state.connectionChecks[provider].message;
+        } finally { renderConnections(); }
         break;
       }
       case "delete-key":
         await api("delete_key", { id });
         closeModal();
+        delete state.connectionChecks[id];
+        await loadKeyStatus(id);
         toast("Nøglen er slettet.");
         break;
       case "add-endpoint":
@@ -635,6 +703,7 @@
     try {
       await action(button);
     } catch (error) {
+      if ($("retry-key-store")) $("retry-key-store").hidden = false;
       if ($("modal").open)
         $("dialog-error").innerHTML = notice(
           String(error?.message || error),
@@ -672,6 +741,14 @@
       state.filter = event.target.value;
       render();
     } else if (event.target.closest("#settings-form,#app-form")) {
+      if (event.target.id === "speech-engine") {
+        const language = $("language"), automatic = value("speech-engine") === "local.parakeet";
+        if (automatic && !language.disabled) { language.dataset.previousLanguage = language.value; language.value = ""; }
+        if (!automatic && language.disabled) language.value = language.dataset.previousLanguage || "";
+        language.disabled = automatic;
+        document.getElementById("language-help").textContent = automatic ? "Parakeet registrerer automatisk sproget." : "";
+      }
+      if (["speech-engine", "general-engine", "general-ai", "direct-text", "app-engine", "app-ai", "strict-local"].includes(event.target.id)) refreshModelControls();
       state.dirty = true;
       document.querySelectorAll(".unsaved").forEach((e) => (e.hidden = false));
       document

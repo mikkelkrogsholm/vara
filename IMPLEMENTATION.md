@@ -52,3 +52,45 @@ Free shortcuts (2026-10-24): Mac physical single-key/side-specific/chord recordi
 Mac global shortcuts (2026-10-24): added separate Input Monitoring preflight/request/UI, retry on focus after grant, and stable Developer ID signing script. 15 UI groups and native matcher tests pass; signed app rebuilt and verified. User must authorize the signed identity; other-app physical activation remains pending. See gdd/reports/MAC-GLOBAL-SHORTCUT-PERMISSIONS-2026-10-24.md.
 
 Mac web-editor insertion now uses focus-checked targeted Unicode input with uncertain-delivery handling; native TextEdit keeps AX insertion. See gdd/reports/WEB-TEXT-INSERTION-2026-10-24.md for verification and pending live Codex test.
+
+## Credential hardening — 2026-10-24
+
+Credential presence now queries attributes. The Mac adapter uses explicit signed-app
+ACLs for new/replaced keys and an authenticated worker with a 15-second deadline.
+Locked/denied access and uncertain mutation timeouts have actionable errors and
+metadata retry; entered secrets clear after failed saves. Disposable native/Rust
+probes and all 16 UI groups pass. See
+[gdd/reports/CREDENTIAL-HARDENING-2026-10-24.md](gdd/reports/CREDENTIAL-HARDENING-2026-10-24.md).
+Live OpenAI testing awaits a user-created key. Existing keys were not read or
+silently rewritten. Build intermediates are removed after verification.
+
+## Local app artwork and direct actions — 2026-10-24
+
+History, selected results and app preferences use a shared local app-artwork
+component. Mac icons come from NSWorkspace by app identity, with monogram fallback.
+Copy/delete icons now act directly from rows and selected-result headers; deletion
+still confirms, and the intermediate two-option modal is removed. Native icons,
+all 17 UI groups and the signed app build pass; the actual ChatGPT/TextEdit icons
+and action buttons were visually checked in the reopened app. See
+[gdd/reports/HISTORY-ACTIONS-2026-10-24.md](gdd/reports/HISTORY-ACTIONS-2026-10-24.md).
+
+## Visible connection status and key test — 2026-10-24
+
+Connections now shows metadata-only stored/missing/unavailable key states and
+exposes Test nøgle directly for OpenAI/Groq. Saving/deleting invalidates cached or
+pending validation; settings edits remain intact. All 18 UI groups and the signed
+Mac build pass. A live test through the native button confirmed the user's OpenAI
+key and both configured models in the catalogue, without sending audio/text.
+Speech/text inference remains a separate test. See
+[gdd/reports/CONNECTION-STATUS-2026-10-24.md](gdd/reports/CONNECTION-STATUS-2026-10-24.md).
+
+## Settings v2 — 2026-10-24
+
+Implemented the approved Diktering / Modeller og nøgler / Privatliv structure and
+shared section, model, processing-choice and policy components. Both active models
+now live on Diktering; strict locality and retention live on Privatliv. Existing
+provider, endpoint, CLI, permission, history and app-rule capabilities remain.
+Contextual setup preserves pending edits. DESIGN.md §18/§19 and Rust bindings
+updated; all 23 UI groups and the signed Mac build pass. Native pages visually
+checked without changing saved preferences. See
+[gdd/reports/SETTINGS-V2-2026-10-24.md](gdd/reports/SETTINGS-V2-2026-10-24.md).

@@ -1,4 +1,6 @@
 //! Desktop capabilities. No platform assumptions escape these adapters into vara-core.
+mod credentials;
+pub use credentials::*;
 mod shortcut;
 pub use shortcut::*;
 mod recorder;
@@ -17,6 +19,7 @@ pub struct Permissions {
 #[cfg(target_os = "macos")]
 unsafe extern "C" {
     fn vara_applications() -> *mut std::ffi::c_char;
+    fn vara_application_icons(ids: *const std::ffi::c_char) -> *mut std::ffi::c_char;
     fn vara_capture_target() -> *mut std::ffi::c_char;
     fn vara_insert(token: *const std::ffi::c_char, text: *const std::ffi::c_char) -> i32;
     fn vara_release_target(token: *const std::ffi::c_char);
@@ -164,34 +167,6 @@ pub fn copy(text: &str) -> Result<()> {
         .and_then(|mut c| c.set_text(text))
         .map_err(|_| "Teksten kunne ikke kopieres. Markér den og brug systemets Kopiér.".into())
 }
-fn entry(id: &str) -> Result<keyring::Entry> {
-    if id.is_empty() || id.len() > 160 {
-        return Err("Ugyldigt forbindelses-id.".into());
-    }
-    keyring::Entry::new("dk.vara.desktop", id)
-        .map_err(|_| "Systemets nøglelager er ikke tilgængeligt.".into())
-}
-pub fn secret(id: &str) -> Result<Option<String>> {
-    match entry(id)?.get_password() {
-        Ok(s) => Ok(Some(s)),
-        Err(keyring::Error::NoEntry) => Ok(None),
-        Err(_) => Err("API-nøglen kunne ikke læses i systemets nøglelager.".into()),
-    }
-}
-pub fn set_secret(id: &str, key: &str) -> Result<()> {
-    if key.trim().is_empty() {
-        return Err("Indtast en API-nøgle.".into());
-    }
-    entry(id)?
-        .set_password(key.trim())
-        .map_err(|_| "API-nøglen kunne ikke gemmes i systemets nøglelager.".into())
-}
-pub fn delete_secret(id: &str) -> Result<()> {
-    match entry(id)?.delete_credential() {
-        Ok(()) | Err(keyring::Error::NoEntry) => Ok(()),
-        Err(_) => Err("API-nøglen kunne ikke slettes.".into()),
-    }
-}
 
 pub fn applications() -> Result<serde_json::Value> {
     #[cfg(target_os = "macos")]
@@ -208,5 +183,36 @@ pub fn applications() -> Result<serde_json::Value> {
     #[cfg(not(target_os = "macos"))]
     {
         Ok(serde_json::json!([]))
+    }
+}
+
+/// Optional local artwork, addressed by app identity; absence uses a UI monogram.
+pub fn application_icons(ids: &[String]) -> Result<serde_json::Value> {
+    if ids.len() > 128
+        || ids.iter().any(|id| {
+            id.is_empty()
+                || id.len() > 255
+                || id.chars().any(|c| c.is_control() || c == '/' || c == '\\')
+        })
+    {
+        return Err("Ugyldige app-id’er.".into());
+    }
+    #[cfg(target_os = "macos")]
+    unsafe {
+        let input =
+            CString::new(serde_json::to_string(ids).map_err(|_| "App-id’er kunne ikke læses.")?)
+                .map_err(|_| "Ugyldige app-id’er.")?;
+        let raw = vara_application_icons(input.as_ptr());
+        if raw.is_null() {
+            return Err("Appikoner kunne ikke læses.".into());
+        }
+        let result = serde_json::from_slice(CStr::from_ptr(raw).to_bytes())
+            .map_err(|_| "Appikoner kunne ikke læses.".into());
+        vara_free(raw);
+        result
+    }
+    #[cfg(not(target_os = "macos"))]
+    {
+        Ok(serde_json::json!({}))
     }
 }

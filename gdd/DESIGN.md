@@ -339,7 +339,11 @@ starts original text collapsed and uses **“dikteringer”** for completed hist
 there is no retained audio attachment. Generated dates, durations and app icons are
 illustrative. Do not infer new features or data requirements from them.
 
-The [HTML prototype](design/index.html) implements this visual direction with shared
+The settings-v2 mockups extend this direction; the native desktop UI implements
+their accepted settings organization. The earlier HTML interaction prototype
+predates settings v2 and is not the current settings reference.
+
+The [HTML prototype](design/index.html) implements the original visual direction with shared
 components and CSS tokens generated from this file. It remains a simulation, not
 evidence of native OS integration. The previous interaction study is archived.
 The imagegen gallery is visual exploration. This document is the current authority
@@ -670,6 +674,12 @@ Do not move focus into a result automatically on each typed character.
 
 ### 4. App group header
 
+Resolve app artwork from the installed/running app by its OS identity. On Mac,
+use the actual NSWorkspace app icon, preserving its colors, proportions and alpha.
+Share the artwork across history, reading pane and app preferences. Fetch locally
+and asynchronously; a missing/uninstalled app uses its initial as a monogram.
+Do not guess an icon from the app name or fetch logos from external services.
+
 **Anatomy:** native icon/monogram, full originating app name, optional actual count,
 expand/collapse affordance. Label count as “dikteringer”; no audio-play implication.
 Use label type for name and caption for count. Icons and counts do not compete
@@ -685,10 +695,10 @@ Group order follows each app's newest result; rows are newest first. Preserve
 meaningful invocation-app association even when focus changed later. A renamed or
 uninstalled app retains its stored label and fallback icon rather than losing history.
 
-### 5. History row and contextual menu
+### 5. History row and direct actions
 
 **Anatomy:** one/two-line finished-text preview, localized date/time beneath,
-optional delivery/processing indicator, separate overflow button. No automatically
+optional delivery/processing indicator, separate copy and delete icon buttons. No automatically
 generated title or artificial summary is required. Preview processed text if it
 exists; direct/fallback shows original. Do not rewrite previews for style.
 
@@ -699,11 +709,14 @@ icon and explicit status such as “Klar til indsættelse”. Successfully inser
 results can use quieter status; absence of a warning is not confirmation.
 
 **Behavior:** selecting opens detail immediately; Tab/Enter/Space work through
-native semantics. Do not put a menu button inside a button. Structure a semantic
-list item with a primary open/select button and sibling overflow button, or a
-proven equivalent native list component. Do not adopt an ARIA listbox while also
-nesting arbitrary controls in options. A named overflow menu exposes secondary
-copy/delete actions, not missing core recovery information. Keyboard focus is not
+native semantics. Structure a semantic list item with a primary open/select
+button and a sibling shared action group containing copy and trash icons. Give
+each action an accessible Danish label and tooltip, and a 36px target. Copy acts
+on the clicked row immediately, preserving selection and without opening a dialog.
+Delete opens the existing destructive confirmation directly. Do not use an extra
+two-option overflow modal or nest buttons inside the selection button. Use the
+same action component beside the selected result. Do not adopt an ARIA listbox
+while also nesting arbitrary controls in options. Keyboard focus is not
 silently moved when an arriving result changes the list.
 
 **Content:** long app names may wrap; previews truncate, full content remains in
@@ -943,37 +956,112 @@ Empty surfaces use typography and whitespace, not stock illustrations or enormou
 calls to action. Loading can use a small spinner plus text; do not rely on animation
 to communicate work. Keep user input/results during refresh failures.
 
-### 18. Settings section and app-AI form
+### 18. Settings and app preferences
 
-Settings has three task sections: “Diktering”, “Modeller & forbindelser”, “Historik
-& privatliv”. Use a page subnavigation appropriate to the toolkit: if real tabs,
-implement tab semantics, arrow navigation and panel associations; otherwise use
-ordinary labeled section navigation. Do not mix the two keyboard models.
+The user approved the settings-v2 imagegen mockups on 2026-10-24:
+[Dictation](design/mockups/settings-v2/01-diktering.png),
+[Models and keys](design/mockups/settings-v2/02-modeller-og-noegler.png), and
+[Privacy](design/mockups/settings-v2/03-privatliv.png). These extend Warm precision
+with an editorial settings layout. The images demonstrate optional AI enabled;
+direct transcription remains the default. Illustrated model selections, statuses
+and retention periods must never overwrite a user's saved configuration.
 
-A form section has a clear heading, short explanation when needed, labeled fields,
-then its explicit save action. Group activation style/shortcut/input device;
-general prompt and deliberate enablement; connections; retention. Avoid individual
-cards around every setting. At narrow width labels and controls stack; action rows
-wrap, with primary action first in reading order.
+**Information architecture:** keep exactly three settings destinations:
 
-The App AI surface has app selection, explicit enable switch, system prompt,
-text-engine choice, visible locality/readiness, Save and “Fortryd ændringer”. Default
-is off. Prompt presence alone does not enable AI. Unsaved edits are distinguishable
-from saved state; navigating away with edits offers Save/Discard/Stay in one small
-dialog rather than silently losing work. Saving invalid/unavailable choices keeps
-the prior working preference. Changes affect future invocations, not active sessions.
+| Destination | Purpose and content |
+| --- | --- |
+| Diktering | Complete invocation flow: recording controls, speech model, optional text AI, instructions and OS permissions |
+| Modeller og nøgler | Local model downloads, stored-key status/tests, editing model names/custom endpoints, and optional installed CLI connections |
+| Privatliv | Strict on-device rule, actual default processing destinations, text-history retention, and fixed audio deletion/recovery policies |
 
-History cleanup is opt-in. With the checkbox off, clearly show “Gemt, indtil du
-sletter”. When enabled, use a labeled positive period with its unit and explain
-that both original and processed text are removed. Failed-audio recovery's 24h
-maximum is separate and is not changed by this control.
+Choose both active models on Diktering, never on the model-management page. First-use
+cloud preference leads directly to the speech selector on Diktering. Local defaults,
+all provider choices, custom endpoints, CLI adapters, one-shot processing and app
+rules remain available. No provider is silently selected, enabled or removed.
+
+**Shared settings section:** `settingsSection` composes a semantic section, a heading
+and short description, and a control/content region. On wide windows use a left
+explanation column and wider right form column, separated by 32px. The left column
+has a 180px minimum; the right column permits shrinking/wrapping. Section padding
+is 26px vertically, with a single divider and no card background. Download/provider
+management uses the same component's full-width variant so aligned rows remain
+comparable. Below 760px stack the explanation above controls. The recording grid
+uses two columns when space permits; below 540px all fields and processing choices
+stack. Keep native controls, persistent labels and readable text; scroll vertically
+rather than compressing controls to fit a screenshot.
+
+The settings page title uses the existing serif family at the reading-wide size
+(36px), weight 500 and line-height 1.15; use 30px below 540px. Settings-section
+headings use the same family at 24px, weight 500, line-height 1.25. This is an
+intentional display-heading exception for settings, matching the accepted mockups;
+field labels, control contents, status text and navigation retain the sans-serif
+roles. Preserve the existing olive/paper/orange tokens and focus treatments.
+
+**Diktering, in order:**
+
+1. Optagelse: activation style, configurable shortcut, microphone and language.
+   Preserve side-specific shortcuts and all existing key combinations. Parakeet
+   uses automatic language; switching back to a model with language choice restores
+   the pending language selection. Native permission controls remain reachable
+   in a clearly named Tilladelser section on this page.
+2. Tale til tekst: shared model selector labeled Transskriptionsmodel, followed by
+   true locality/readiness and a contextual action when setup is missing.
+3. Efter transskription: native radio group with Behold transskriptionen and
+   Bearbejd med AI. The latter reveals Tekstmodel and Instruktioner til AI. Hidden
+   fields retain their values; switching mode never enables AI merely because a
+   prompt exists. A visible note explains app overrides and offers Administrer apps.
+
+**Shared model picker and feedback:** speech, general text and app text selectors
+use the same model control. Show configured model identifiers for remote/custom
+engines alongside their labels. Display Cloud, on-device, LAN or unknown locality
+explicitly. Ready/missing/download progress and credential status are distinct.
+Offer Hent model/Annuller, Tilføj nøgle/Administrer nøgle, Test nøgle, or Kontrollér
+CLI only where applicable. Key setup and downloads must work in context while
+preserving an unsaved form. Only required dependent controls update on a change;
+do not rebuild a hint button when a textarea loses focus. The strict-local rule
+disables remote choices but never silently substitutes a different model.
+
+**Modeller og nøgler:** align each local-model row into identity/size, actual
+installation/progress state, and its action. Provider rows similarly align name
+and capability, metadata-only key status, and key-management/test actions. Stored
+and API-tested are separate states. Keep named disclosures for Egne endpoints og
+modelnavne and Installerede CLI-værktøjer. Custom endpoint locality, optional keys,
+model-name editing and CLI checks retain their existing behavior.
+
+**Privatliv:** Behandling contains Kun behandling på denne enhed and a truthful
+summary of default speech/text locations, including an app-override explanation
+when relevant. Warn if a pending strict-local rule conflicts with selected engines
+or enabled app rules; saving remains subject to domain validation. Historik uses
+an explicitly labeled retention dropdown defaulting to Indtil jeg selv sletter,
+preserving custom positive periods as well as standard options. Deletion removes
+both original and processed text. Lyd contains shared explanatory policy rows,
+not toggles: delete after successful transcription; retain failed audio for no
+more than 24 hours; delete earlier on successful retry or user deletion.
+
+**AI pr. app:** remains in primary navigation. The explicit Brug egne AI-indstillinger
+switch enables that app's own instructions and text model; off means follow the
+global standard, not force direct transcription. Conditional fields retain their
+values. Reuse the same text-model picker and locality/setup feedback. Preserve
+per-app model/prompt overrides, default inheritance and existing session precedence.
+
+**Save and recovery:** use a quiet Fortryd ændringer followed by primary Gem
+indstillinger in a sticky footer, right-aligned on wide screens. Show pending edits
+in text; wrap the footer at narrow widths and keep focus scroll margins above it.
+Provider keys and downloads keep their explicit immediate actions; the footer does
+not pretend to save these operations later. Navigation with unsaved edits retains
+the existing stay/discard guard. Failed saves preserve the draft and prior working
+preferences. Key dialogs, status checks, downloads and progress events must not
+discard unsaved models, instructions or recording preferences. Changes affect
+future invocations, never an already frozen dictation plan.
 
 ### 19. Engine row, model download and connections
 
 Engine row anatomy: speech/text capability, provider/model name, actual locality,
 readiness label, one relevant action. Default local setup is prominent in its
-context. Cloud options/custom endpoints/installed CLIs are progressively disclosed
-under connections, not a first-use comparison marketplace.
+context. Cloud models are selectable alongside local models on Diktering, with explicit
+locality. Setup operations belong to Modeller og nøgler and contextual model
+feedback; custom endpoints and installed CLIs use their named disclosures. Do not
+turn these controls into a first-use comparison marketplace.
 
 A model download shows model name, real transfer size/storage requirement, textual
 progress and Cancel. Progress track uses surface-muted with control-border when
@@ -984,8 +1072,8 @@ Keep retry actionable and prior valid installs intact.
 
 API-key form: named provider, password field, show/hide if needed with labeled
 state, explicit validation/save action and specific error. Clear sensitive input
-when closed or successfully stored; reopening shows a masked saved state, never
-retrieves and displays a full stored key. No key in diagnostics, transcript or UI
+when closed, successfully stored or after a failed save. Reopening shows stored-key
+status and an empty replacement field; never retrieve or display a stored key. No key in diagnostics, transcript or UI
 logs. Storage succeeded and provider validation succeeded are different messages.
 
 Custom text endpoint: name, URL, model, optional key and actual locality. LAN is a
@@ -1073,7 +1161,7 @@ into technical diagnostic notices.
 | History | Shell → grouped history → reading pane → original disclosure | Filter/select an app; inspect processed/original; direct result has one representation; copy and delete have truthful outcomes |
 | App AI | Shell → app selector → explicit enablement → prompt/engine/locality → Save | Enable for one app, save, revisit, reject invalid draft without losing saved preference |
 | Dictation settings | Shell → activation/input → binding recorder → general prompt | Choose hold/toggle, conflict-test a new binding, preserve prior binding on failure |
-| Connections | Shell → selected speech/text readiness → optional provider setup | Missing/download/error/ready differ; key stored is not key validated; remote location is explicit |
+| Settings | Diktering → both model choices and optional text processing; Modeller og nøgler → setup; Privatliv → locality and retention | Conditional drafts, app overrides, contextual recovery, key stored versus tested and all existing providers remain available |
 | Privacy | Shell → text retention opt-in → separate failed-audio policy | Indefinite by default; period has units; failed-audio deadline stays fixed |
 | First use | Compact guided setup using shared primitives | Local path needs no terminal/key; real permissions, shortcut and successful trial gate completion |
 | HUD/recovery | Native nonactivating status + persistent recoverable outcome | Direct/app/general AI, changed focus, ASR retry, AI fallback, cancellation and late completion follow domain rules |

@@ -88,3 +88,11 @@ Use the current signed Vara bundle. Older unsigned/ad-hoc entries may need to be
 removed and the current app re-added in System Settings; do not reset unrelated
 applications' privacy permissions. The app retries physical-shortcut registration
 on returning to its window after permission changes.
+
+Credential presence queries attributes rather than retrieving a password. On Mac,
+new/replaced keys have explicit application trust, and authenticated worker calls
+time out after 15 seconds. The executable must call
+`vara_platform::credential_worker_entry()` before initializing Tauri. Do not expose
+an unauthenticated credential command-line API. Store errors offer retry; timed-out
+writes may have completed and must be checked before repeating. See the
+[credential verification report](../gdd/reports/CREDENTIAL-HARDENING-2026-10-24.md).

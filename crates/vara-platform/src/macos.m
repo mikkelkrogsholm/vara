@@ -153,6 +153,35 @@ char *vara_applications(void) {
     }
 }
 
+// Resolve the installed/running application's actual Finder icon by bundle ID.
+// The caller cannot supply arbitrary filesystem paths.
+char *vara_application_icons(const char *identifiers) {
+    @autoreleasepool {
+        NSData *input=[NSData dataWithBytes:identifiers length:strlen(identifiers)];
+        NSArray *ids=[NSJSONSerialization JSONObjectWithData:input options:0 error:NULL];
+        NSMutableDictionary *result=[NSMutableDictionary dictionary];
+        for(NSString *identifier in ids) {
+            NSURL *url=nil;
+            for(NSRunningApplication *app in [NSRunningApplication runningApplicationsWithBundleIdentifier:identifier]) {
+                if(app.bundleURL) { url=app.bundleURL; break; }
+            }
+            if(!url) url=[NSWorkspace.sharedWorkspace URLForApplicationWithBundleIdentifier:identifier];
+            if(!url) continue;
+            NSImage *image=[[NSWorkspace.sharedWorkspace iconForFile:url.path] copy];
+            NSBitmapImageRep *bitmap=[[NSBitmapImageRep alloc] initWithBitmapDataPlanes:NULL pixelsWide:96 pixelsHigh:96 bitsPerSample:8 samplesPerPixel:4 hasAlpha:YES isPlanar:NO colorSpaceName:NSDeviceRGBColorSpace bytesPerRow:0 bitsPerPixel:0];
+            NSGraphicsContext *context=[NSGraphicsContext graphicsContextWithBitmapImageRep:bitmap];
+            if(!image || !context) continue;
+            [NSGraphicsContext saveGraphicsState];
+            NSGraphicsContext.currentContext=context;
+            [image drawInRect:NSMakeRect(0,0,96,96) fromRect:NSZeroRect operation:NSCompositingOperationCopy fraction:1 respectFlipped:NO hints:nil];
+            [NSGraphicsContext restoreGraphicsState];
+            NSData *png=[bitmap representationUsingType:NSBitmapImageFileTypePNG properties:@{}];
+            if(png) result[identifier]=[@"data:image/png;base64," stringByAppendingString:[png base64EncodedStringWithOptions:0]];
+        }
+        return jsonString(result);
+    }
+}
+
 // Enumerate input stream metadata without creating an AudioUnit for every device.
 // Some third-party drivers block while a supported-format probe opens their I/O.
 char *vara_input_devices(void) {

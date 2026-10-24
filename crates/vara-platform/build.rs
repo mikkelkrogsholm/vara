@@ -1,7 +1,12 @@
 use std::{env, fs, path::PathBuf};
 fn main() {
     println!("cargo:rerun-if-changed=src/macos_text_input.h");
-    for file in ["src/macos.m", "src/macos_hud.m", "src/macos_shortcut.m"] {
+    for file in [
+        "src/macos.m",
+        "src/macos_hud.m",
+        "src/macos_shortcut.m",
+        "src/macos_credentials.m",
+    ] {
         println!("cargo:rerun-if-changed={file}");
     }
     if env::var("CARGO_CFG_TARGET_OS").as_deref() == Ok("macos") {
@@ -32,7 +37,12 @@ fn main() {
         let out = PathBuf::from(env::var_os("OUT_DIR").unwrap());
         fs::write(out.join("vara_design.h"), header).expect("native design header");
         cc::Build::new()
-            .files(["src/macos.m", "src/macos_hud.m", "src/macos_shortcut.m"])
+            .files([
+                "src/macos.m",
+                "src/macos_hud.m",
+                "src/macos_shortcut.m",
+                "src/macos_credentials.m",
+            ])
             .include(out)
             .flag("-fobjc-arc")
             .compile("vara_native");
@@ -42,6 +52,7 @@ fn main() {
             "AVFoundation",
             "CoreAudio",
             "QuartzCore",
+            "Security",
         ] {
             println!("cargo:rustc-link-lib=framework={framework}");
         }

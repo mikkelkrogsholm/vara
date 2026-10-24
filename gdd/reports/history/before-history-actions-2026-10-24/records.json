@@ -1,0 +1,23 @@
+{
+  "format": "gdd-records/0.2",
+  "project_id": "vara.clean-write",
+  "records": {
+    "decision.credential_hardening.2026-10-24": {
+      "kind": "decision",
+      "topic": "model_change",
+      "description": "Document metadata-only credential presence, explicit Mac application ACL and bounded authenticated credential worker with retry.",
+      "scope": [
+        "component.desktop",
+        "component.experience"
+      ],
+      "spec_revision": "sha256:0e9930d864921d7a41d55ec9858e14b8c74298106dbd7418c400040a4d099b0f",
+      "policy_revision": "trusted-user-request-fix-three-credential-points-2026-10-24",
+      "actor": {
+        "id": "agent.codex",
+        "kind": "agent"
+      },
+      "outcome": "accepted",
+      "rationale": "User authorized the three credential fixes before creating an OpenAI key. This records implementation provenance, not human release acceptance or a live OpenAI inference test."
+    }
+  }
+}

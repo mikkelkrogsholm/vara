@@ -660,6 +660,11 @@ impl Service {
                     .map_err(|_| "Tilstanden kunne ikke læses.".into());
             }
             "applications" => return platform::applications(),
+            "application_icons" => {
+                let ids: Vec<String> =
+                    serde_json::from_value(p["ids"].clone()).map_err(|_| "Ugyldige app-id’er.")?;
+                return platform::application_icons(&ids);
+            }
             "set_next_choice" => {
                 self.inner.lock().next_choice =
                     serde_json::from_value(p["choice"].clone()).map_err(|_| "Ugyldigt valg.")?;
@@ -771,7 +776,7 @@ impl Service {
                     "text_model": text.model, "text_available": available.contains(&text.model)}),
                 );
             }
-            "key_status" => return Ok(json!(platform::secret(id()?)?.is_some())),
+            "key_status" => return Ok(json!(platform::has_secret(id()?)?)),
             "set_key" => {
                 platform::set_secret(id()?, p["key"].as_str().unwrap_or(""))?;
             }

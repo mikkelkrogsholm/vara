@@ -119,3 +119,89 @@ unconfirmed/partial delivery remains Unknown and is never automatically replayed
 Generated events are marked and ignored by Vara's shortcut listener to prevent
 single-key bindings from triggering themselves. See
 [web insertion evidence](reports/WEB-TEXT-INSERTION-2026-10-24.md).
+
+## OS credential boundary (2026-10-24)
+
+`has_secret` queries credential attributes rather than retrieving a password.
+On macOS, `credentials.rs` delegates to `macos_credentials.m` through an isolated
+instance of the signed executable, before Tauri initializes. The worker verifies
+its actual parent's designated signing requirement; invoking its command-line
+mode from another program is rejected without reading input or returning data.
+Requests and results use anonymous pipes, never arguments, environment or files.
+
+The macOS adapter uses the default user keychain and the existing service/account
+names. New/replaced keys receive an explicit trusted-application ACL for the
+signed executable. Other programs cannot silently decrypt them; normal Keychain
+access remains under the user's control. Existing entries are not silently
+rewritten; replacing a key applies the explicit ACL. Login-keychain ACL APIs are
+legacy macOS APIs, also underlying the prior keyring implementation; they are
+used deliberately for explicit per-application access on this unsandboxed app.
+
+Interactive security prompts are disabled in the worker. Locked/unavailable or
+unauthorized access produces actionable, redacted errors and a status retry in
+the key dialog. A 15-second deadline kills and reaps a stalled worker, including
+stalled pipe I/O. A timed-out mutation is reported as possibly completed; retry
+queries metadata before the user repeats it. Key fields clear on save failure.
+There is no automatic replay of credential mutations.
+
+Windows/Linux retain the native keyring adapters; presence uses their attributes
+API. macOS ACL enforcement, signed-worker authentication and deadline behavior
+are Mac-specific. Windows/Linux behavior has not been exercised on this machine.
+Test evidence: reports/CREDENTIAL-HARDENING-2026-10-24.md. No live OpenAI API test
+or user-key read is asserted by this change.
+
+## Local app artwork and direct result actions (2026-10-24)
+
+The optional `application_icons` desktop command takes up to 128 OS app identities
+and returns available PNG data URLs. On Mac, NSWorkspace resolves actual running
+or installed application icons; filesystem paths are never accepted from the UI.
+Missing apps/platform adapters return no artwork and retain a monogram. Artwork
+is cached in the UI session and fetched asynchronously, outside history/domain
+storage. No new dependency enters the shared Rust core.
+
+`desktopUi.appArtwork` owns rendering and optional image updates without replacing
+forms or moving focus. `desktopUi.resultActions` supplies direct copy/delete
+buttons to both history rows and selected-result headers. Copy uses the clicked
+result ID without changing selection. Delete directly opens the existing deletion
+confirmation; the intermediate two-option modal has been removed.
+
+## Visible credential status and explicit tests (2026-10-24)
+
+The connections view asynchronously queries metadata-only `key_status` for the
+listed providers. Stored, missing, loading and unavailable states are distinct.
+Saving/deleting a key refreshes its displayed presence and clears prior checks.
+OpenAI and Groq expose a direct Test nøgle action beside stored credentials,
+reusing the fixed-provider model-catalogue checks. Key setup also exposes that
+same test action. The native adapter, TLS policy and credential boundary are
+unchanged; no secret is returned to the UI.
+
+Test progress, success and failure are shown beside the provider. Success means
+API/catalogue access, not a completed speech/text inference. The explanatory text
+states that no audio/text is sent and dictation needs a separate trial. Test state
+is limited to this UI session. A replacement/deletion invalidates pending test
+results, so an earlier key's response cannot validate a newer key. Provider-row
+updates preserve settings fields and keyboard focus.
+
+## Settings v2 implementation (2026-10-24)
+
+`desktop/ui/views.js` implements Diktering, Modeller og nøgler and Privatliv per
+the accepted settings-v2 mockups and DESIGN.md §18. `desktopUi.settingsSection`,
+`modelSelect`/`modelLabel`, `processingChoice` and `policyRow` provide shared
+compositions; model feedback is reused by speech, general-text and app-text choices.
+Model downloads, credential setup/test and CLI checks remain the existing native
+commands. Management retains all provider/model/custom-endpoint/CLI operations.
+
+The settings controller reads controls actually present on the current page into
+a clone of saved preferences. Both active model IDs now save on Diktering; strict
+locality and retention save on Privatliv. This preserves unrelated preferences,
+custom engines and per-app rules. Conditional AI fields retain values in the DOM,
+while radios control only the saved enable flag. Missing-key setup can open over
+an unsaved model draft. Download/status events patch feedback without replacing
+editable fields; textarea blur does not rebuild a clicked contextual action.
+
+The existing domain validation, frozen plans, app-rule precedence, local default,
+secret storage, history and delivery contracts are unchanged. Strict-local model
+choices visibly disable remote options and conflict explanations do not silently
+substitute models or weaken validation. First-use cloud preference now reaches
+the speech selector directly. Native permissions and the arbitrary-shortcut
+recorder remain on Diktering. No settings-schema or database migration is added.
