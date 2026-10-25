@@ -59,7 +59,7 @@ Symphonia decoder example: https://github.com/pdeljanov/Symphonia/tree/v0.5.5.
   (`browser-checks.json`).
 - Current GDD schema, semantics and record integrity: passed (`model.json`).
   The generated graph is validated separately (`visualization.json`).
-- Native visual interaction remains pending an unlocked Mac. Native picker/save
+- Native visual interaction remains pending a manual walkthrough. Native picker/save
   dialogs and playback in macOS WebKit have not been manually exercised. The real
   native file worker itself passes with a disposable profile (`native-host.json`).
 
@@ -72,6 +72,7 @@ The existing personal profile, models and credential store were retained.
 3.43 GiB of build intermediates were removed after installation. This is a local
 signed build, not a notarized public release. No push or merge was performed.
 
-Native UI gate remains open: macOS was locked at the latest computer-use check.
+Native UI gate remains open: macOS is now unlocked, but computer use cannot
+resolve the installed Vara app (details in `native-ui-attempt.json`).
 The installed candidate is ready for file-pick → local transcription → playback
 → edit → copy/export, plus a normal dictation smoke test in another application.

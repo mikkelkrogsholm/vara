@@ -25,9 +25,12 @@ using shared DESIGN.md components while preserving existing dictation.
 
 ## Remaining delivery gate
 
-The Mac is locked. Native file-picker/save-dialog interaction and playback in
-macOS WebKit still need an unlocked-Mac walkthrough. Browser playback and native
-file processing pass separately; these are not a claim of that final walkthrough.
+The Mac has been unlocked, but computer-use app resolution rejects the installed
+`dk.vara.desktop` identity and resolves name/path to obsolete `dk.56n.vara`.
+Native file-picker/save-dialog interaction and playback in macOS WebKit still
+need a manual walkthrough. The user has received the concrete fixture steps.
+Browser playback and native file processing pass separately; these are not a
+claim of that final walkthrough. See `native-ui-attempt.json` in the report folder.
 Cloud rich-timing protocols are contract-tested, not live-account acceptance.
 Windows/Linux native acceptance and forced alignment remain explicit limitations.
 
