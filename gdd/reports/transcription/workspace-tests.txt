@@ -1,0 +1,28 @@
+Command: CARGO_INCREMENTAL=0 CARGO_PROFILE_RELEASE_DEBUG=0 cargo test --release --workspace
+
+Running unittests src/lib.rs (target/release/deps/vara_core-5d5067561b725395)
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+Running tests/contracts.rs (target/release/deps/contracts-52b5327591e04c80)
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+Running tests/transcription.rs (target/release/deps/transcription-b4cb102e6369591c)
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+Running unittests src/lib.rs (target/release/deps/vara_desktop-0b679d2fecc9ec09)
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+Running unittests src/main.rs (target/release/deps/vara_desktop-03588f73f1485f06)
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+Running unittests src/lib.rs (target/release/deps/vara_engine-d4b3586e7c069d37)
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.30s
+Running tests/media.rs (target/release/deps/media-d3d3e06d16b5ec4e)
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.12s
+Running tests/model_integrity.rs (target/release/deps/model_integrity-78f53b2506199a8c)
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+Running tests/redux_runtime.rs (target/release/deps/redux_runtime-5d7f460bb88c1a25)
+test result: ok. 0 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.00s
+Running unittests src/lib.rs (target/release/deps/vara_platform-e04cdb97b4a37ded)
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.09s
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+Optional real Redux test executed separately; see dictation-runtime.txt.

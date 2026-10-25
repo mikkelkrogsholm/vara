@@ -15,6 +15,9 @@
         })[c],
     );
   const paths = {
+    document: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M8 13h8M8 17h6"/>',
+    plus: '<path d="M12 4v16M4 12h16"/>',
+    edit: '<path d="m16 3 5 5-12 12-6 1 1-6L16 3Z"/>',
     history: '<circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/>',
     apps: '<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
     settings:

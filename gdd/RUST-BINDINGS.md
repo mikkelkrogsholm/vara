@@ -205,3 +205,29 @@ choices visibly disable remote options and conflict explanations do not silently
 substitute models or weaken validation. First-use cloud preference now reaches
 the speech selector directly. Native permissions and the arbitrary-shortcut
 recorder remain on Diktering. No settings-schema or database migration is added.
+
+## File transcription extension — 2026-10-25
+
+- `component.transcription`: `crates/vara-core/src/transcription.rs` owns the
+  document types, timing validation, export and separate SQLite store;
+  `desktop/src-tauri/src/transcription.rs` owns durable queue/control/publication.
+- Rich recognition/media: `crates/vara-engine/src/{transcription,media}.rs` plus
+  Redux/Whisper/cloud adapters. Redux returns actual runtime word times; Whisper
+  currently returns segment times; OpenAI's selected speech route may return
+  text only. Groq/ElevenLabs rich file routes parse documented word data; ElevenLabs
+  speaker IDs are scoped per independently processed chunk, not falsely matched.
+- `desktop/ui/transcription.js` composes canonical primitives for import/library,
+  timed reading, corrected text, playback and separate AI. The native asset scope
+  grants playback access only to the profile's transcription-copy directory.
+- A separate engine instance prevents long file jobs from holding the dictation
+  model mutex. Existing dictation speech and native delivery interfaces remain.
+- Normalized PCM is bounded to eight hours per file; providers/Whisper process
+  five-minute chunks, Redux streams VAD blocks. Common formats decode in Rust via
+  Symphonia. Optional installed FFmpeg widens codec coverage; it is not bundled
+  or downloaded. Unsupported/corrupt/no-audio inputs fail with a useful message.
+- A `test-harness` build can use `VARA_TEST_FILE` only with an isolated
+  `VARA_DATA_DIR`. It enqueues the actual native file pipeline without microphone
+  or shortcut registration. Never distribute this feature.
+
+Implementation evidence belongs to `reports/transcription` and its verification
+report. Model capabilities and platform acceptance are not inferred from this map.

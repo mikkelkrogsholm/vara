@@ -12,6 +12,7 @@ Derived from `gdd.json`; the graph owns action/type/scenario details. Regenerate
 | `component.preferences` | Resolve deliberate processing choices into immutable per-session plans. | Running providers, reading target app content and owning secrets. |
 | `component.history` | Own durable text, staged recovery and bounded temporary audio lifecycle. | Provider protocols and implicit paste replay. |
 | `component.experience` | Present onboarding, history, configuration and honest session status. | OS focus decisions, secret values and provider protocol logic. |
+| `component.transcription` | Own durable file jobs and document library independently from OS dictation delivery and captured-audio retention. | OS focus/insertion, provider protocols, changing or deleting user original files. |
 
 ## Main flow
 
@@ -187,6 +188,62 @@ Private recovery task data contract. Handles are opaque; references identify log
 | `payload_handle` | string |
 | `created_at` | string |
 | `expires_at` | string? |
+
+### Timed word
+`entity.file_word`
+
+An ASR/alignment estimate relative to media start; identity stable within the original. Edited text does not inherit timing.
+
+| Field | Type |
+| --- | --- |
+| `id` | string |
+| `text` | string |
+| `start_seconds` | number |
+| `end_seconds` | number |
+| `speaker_id` | string? |
+
+### File transcription document
+`entity.file_document`
+
+Own imported-source provenance, stage, preserved transcript, optional correction, separate AI and explicit timing precision. Playback copy is distinct from dictation capture.
+
+| Field | Type |
+| --- | --- |
+| `id` | string |
+| `source_name` | string |
+| `title` | string |
+| `engine` | engine ID |
+| `stage` | queued  /  decoding  /  transcribing  /  ready  /  failed  /  cancelled |
+| `edited_text` | string? |
+| `ai_text` | string? |
+| `revision` | integer |
+| `transcript` | file_transcript ID? |
+
+### Transcript segment
+`entity.file_segment`
+
+Original readable segment with optional real timing, optional speaker and stable timed words.
+
+| Field | Type |
+| --- | --- |
+| `id` | string |
+| `text` | string |
+| `start_seconds` | number? |
+| `end_seconds` | number? |
+| `speaker_id` | string? |
+| `words` | list<file_word ID> |
+
+### Original file transcript
+`entity.file_transcript`
+
+Original text and actual timing precision. Corrections and AI never mutate this object.
+
+| Field | Type |
+| --- | --- |
+| `text` | string |
+| `timing` | none  /  segment  /  word |
+| `timing_source` | none  /  asr  /  alignment |
+| `segments` | list<file_segment ID> |
 
 ## Session
 
@@ -572,6 +629,25 @@ Inspect real installed tool/version/authentication and supported noninteractive 
 
 Scenario IDs: `scenario.cli_processing.unavailable`, `scenario.cli_processing.executionfailed`, `scenario.cli_processing.normal`, `scenario.cli_processing.authorization`, `scenario.cli_processing.concurrency`.
 
+### Recognize file with real timing
+`action.file_recognize`
+
+**Input:** `document`: file_document ID.
+
+**Output:** file_transcript ID.
+
+Stream/bound normalized audio, return original text plus actual word/segment estimates and optional chunk-scoped speakers. Never fabricate times, speaker identity, progress or transcript content.
+
+**Guarantee:** Stream/bound normalized audio, return original text plus actual word/segment estimates and optional chunk-scoped speakers. Never fabricate times, speaker identity, progress or transcript content.
+
+**Effects:** Reads selected media, writes private document/media state, optionally invokes the explicitly selected model and writes an explicitly chosen export path.
+
+| Error | Required behavior |
+| --- | --- |
+| `Unavailable` | Unavailable model, invalid media/timing, provider error or no speech is an actionable failed job. |
+
+Scenario IDs: `scenario.file_recognize.authorization`, `scenario.file_recognize.boundaries`, `scenario.file_recognize.concurrency`, `scenario.file_recognize.atomicity`.
+
 ## Preferences
 
 ### Resolve invocation processing plan
@@ -817,6 +893,46 @@ Read sanitized runtime/provider/stage/cleanup state and report actionable status
 **Effects:** Displays sanitized diagnostic status.
 
 Scenario IDs: `scenario.diagnostics.normal`.
+
+## File transcription
+
+### Import and control file jobs
+`action.file_import`
+
+**Input:** `paths`: list<string>; `engine`: engine ID.
+
+**Output:** list<file_document ID>.
+
+Validate an explicit batch and frozen model/language/locality, queue files, decode to private playback copies, cancel/retry without stale publication. Never edit source files.
+
+**Guarantee:** Validate an explicit batch and frozen model/language/locality, queue files, decode to private playback copies, cancel/retry without stale publication. Never edit source files.
+
+**Effects:** Reads selected media, writes private document/media state, optionally invokes the explicitly selected model and writes an explicitly chosen export path.
+
+| Error | Required behavior |
+| --- | --- |
+| `Unavailable` | Source file unavailable or unsupported; leave source unchanged and show retry. |
+
+Scenario IDs: `scenario.file_import.authorization`, `scenario.file_import.boundaries`, `scenario.file_import.concurrency`, `scenario.file_import.atomicity`.
+
+### Read edit export and delete file documents
+`action.file_document`
+
+**Input:** `document`: file_document ID; `operation`: read | edit | rename | speaker | ai | copy | export | delete.
+
+**Output:** { outcome: document | copied | exported | deleted, document: file_document ID }.
+
+Persist optimistic revisions and corrections separately from original. Play timed original, rename speakers, run explicit separate text AI, copy/export and delete only document/private media. Untimed or edited text cannot silently export timed subtitles.
+
+**Guarantee:** Persist optimistic revisions and corrections separately from original. Play timed original, rename speakers, run explicit separate text AI, copy/export and delete only document/private media. Untimed or edited text cannot silently export timed subtitles.
+
+**Effects:** Reads selected media, writes private document/media state, optionally invokes the explicitly selected model and writes an explicitly chosen export path.
+
+| Error | Required behavior |
+| --- | --- |
+| `Unavailable` | Storage/AI/playback/export failure preserves original and recoverable work; unavailable audio does not remove text. |
+
+Scenario IDs: `scenario.file_document.authorization`, `scenario.file_document.boundaries`, `scenario.file_document.concurrency`, `scenario.file_document.atomicity`.
 
 ## Verification boundary
 

@@ -1,5 +1,7 @@
 //! Platform-neutral Vara contracts. No Tauri, microphone, window, secret-store or ML runtime dependency.
 pub mod model;
+pub mod transcription;
+pub use transcription::*;
 pub mod session;
 pub mod store;
 pub use model::*;
@@ -20,6 +22,8 @@ pub enum Error {
     Expired,
     #[error("Historikken kunne ikke gemmes. Teksten er stadig tilgængelig.")]
     Storage(#[source] rusqlite::Error),
+    #[error("Filbiblioteket kunne ikke læses eller gemmes. Originalfilerne er bevaret.")]
+    FileStorage(#[source] rusqlite::Error),
     #[error("Data kunne ikke læses: {0}")]
     Data(#[from] serde_json::Error),
 }

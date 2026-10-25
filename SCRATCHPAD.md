@@ -13,3 +13,11 @@ and reports describe their original revision; they are not current build inputs.
 
 Do not resume the cancelled dictionary/regex investigation without a new request.
 Keep the next work bounded to the user's chosen feature or concrete defect.
+
+## Transskriberingsfane
+
+Featureliste, første leverance, ordniveau-tidsstempler, redigering/alignment,
+kildehåndtering og åbne tekniske afklaringer er samlet i
+[gdd/TRANSCRIPTION-SPEC.md](gdd/TRANSCRIPTION-SPEC.md). Implementeret på
+`codex/file-transcription`; native slutkontrol afventer en ulåst Mac. Evidens og
+begrænsninger: [rapport](gdd/reports/transcription/README.md).

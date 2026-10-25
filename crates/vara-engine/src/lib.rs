@@ -1,9 +1,11 @@
 //! Runtime adapters. Requests take immutable core plans; cancellation never changes providers.
 pub mod cli;
 mod local;
+pub mod media;
 pub mod models;
 mod parakeet;
 mod remote;
+mod transcription;
 pub use models::*;
 use std::{
     path::{Path, PathBuf},
@@ -16,7 +18,11 @@ use vara_core::{EngineConfig, Provider, TextPlan};
 
 pub type Result<T> = std::result::Result<T, String>;
 #[derive(Clone, Default)]
-pub struct Cancellation(pub Arc<AtomicBool>, Arc<parking_lot::Mutex<bool>>);
+pub struct Cancellation(
+    pub Arc<AtomicBool>,
+    Arc<parking_lot::Mutex<bool>>,
+    Arc<parking_lot::Mutex<Vec<std::sync::Weak<parking_lot::Mutex<std::process::Child>>>>>,
+);
 impl Cancellation {
     pub fn cancel(&self) -> bool {
         let finished = self.1.lock();
@@ -24,7 +30,25 @@ impl Cancellation {
             return false;
         }
         self.0.store(true, Ordering::SeqCst);
+        for child in self.2.lock().iter().filter_map(std::sync::Weak::upgrade) {
+            let mut child = child.lock();
+            let _ = child.kill();
+            let _ = child.wait();
+        }
         true
+    }
+    /// Register local subprocesses under the cancellation gate, so quit cannot orphan them.
+    pub(crate) fn spawn_child(
+        &self,
+        spawn: impl FnOnce() -> std::io::Result<std::process::Child>,
+    ) -> Result<Arc<parking_lot::Mutex<std::process::Child>>> {
+        let _gate = self.1.lock();
+        self.check()?;
+        let child = Arc::new(parking_lot::Mutex::new(
+            spawn().map_err(|_| "Den lokale medieafkoder kunne ikke starte.")?,
+        ));
+        self.2.lock().push(Arc::downgrade(&child));
+        Ok(child)
     }
     /// Serialize the installer publication boundary with accepted cancellation.
     pub fn publish<T>(&self, work: impl FnOnce() -> Result<T>) -> Result<T> {

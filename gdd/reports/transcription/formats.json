@@ -1,0 +1,37 @@
+[
+  {
+    "file": "sample.mp3",
+    "success": true,
+    "evidence": "duration=10.404s words=30 elapsed=1.221s timing=Word"
+  },
+  {
+    "file": "sample.flac",
+    "success": true,
+    "evidence": "duration=10.312s words=31 elapsed=1.002s timing=Word"
+  },
+  {
+    "file": "sample.m4a",
+    "success": true,
+    "evidence": "duration=10.432s words=30 elapsed=0.992s timing=Word"
+  },
+  {
+    "file": "sample.ogg",
+    "success": true,
+    "evidence": "duration=10.368s words=30 elapsed=0.997s timing=Word"
+  },
+  {
+    "file": "sample.opus",
+    "success": true,
+    "evidence": "duration=10.312s words=31 elapsed=1.004s timing=Word"
+  },
+  {
+    "file": "sample.mp4",
+    "success": true,
+    "evidence": "duration=10.432s words=30 elapsed=0.982s timing=Word"
+  },
+  {
+    "file": "silent-video.mp4",
+    "success": false,
+    "evidence": "Error: \"Filen indeholder ingen læsbar lyd, eller er beskadiget. Prøv at eksportere lyden som WAV eller MP3.\""
+  }
+]

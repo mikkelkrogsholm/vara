@@ -1,0 +1,252 @@
+{
+  "id": "fixture-danish",
+  "title": "Dansk prøve",
+  "source_name": "sample.mp4",
+  "source_path": "/var/folders/hh/znsnvw8s1p31zr7fywf_cgfc0000gn/T/vara-media-formats-kyfafn8p/sample.mp4",
+  "created_at": 1792953000,
+  "engine": {
+    "id": "local.parakeet",
+    "label": "Parakeet Redux · på enheden",
+    "kind": "speech",
+    "provider": "local_parakeet",
+    "model": "parakeet-redux",
+    "endpoint": null,
+    "locality": "on_device"
+  },
+  "language": null,
+  "stage": "ready",
+  "error": null,
+  "duration": 10.432,
+  "completed_seconds": 10.432,
+  "transcript": {
+    "text": "Hej med dig, dette er en lille test af ethogingsværktøj, som jeg er ved at bygge. Det hedder LSTNR og bruger elæden lad skribe til at omdanne tale til tekst.",
+    "segments": [
+      {
+        "id": "s0",
+        "text": "Hej med dig, dette er en lille test af ethogingsværktøj, som jeg er ved at bygge. Det hedder LSTNR og bruger elæden lad skribe til at omdanne tale til tekst.",
+        "start": 0.0,
+        "end": 10.48,
+        "speaker": null,
+        "words": [
+          {
+            "id": "s0w0",
+            "text": "Hej",
+            "start": 0.0,
+            "end": 0.32,
+            "speaker": null
+          },
+          {
+            "id": "s0w1",
+            "text": "med",
+            "start": 0.32,
+            "end": 0.48,
+            "speaker": null
+          },
+          {
+            "id": "s0w2",
+            "text": "dig,",
+            "start": 0.48,
+            "end": 0.88,
+            "speaker": null
+          },
+          {
+            "id": "s0w3",
+            "text": "dette",
+            "start": 0.88,
+            "end": 1.12,
+            "speaker": null
+          },
+          {
+            "id": "s0w4",
+            "text": "er",
+            "start": 1.12,
+            "end": 1.28,
+            "speaker": null
+          },
+          {
+            "id": "s0w5",
+            "text": "en",
+            "start": 1.28,
+            "end": 1.44,
+            "speaker": null
+          },
+          {
+            "id": "s0w6",
+            "text": "lille",
+            "start": 1.44,
+            "end": 1.68,
+            "speaker": null
+          },
+          {
+            "id": "s0w7",
+            "text": "test",
+            "start": 1.68,
+            "end": 1.92,
+            "speaker": null
+          },
+          {
+            "id": "s0w8",
+            "text": "af",
+            "start": 1.92,
+            "end": 2.08,
+            "speaker": null
+          },
+          {
+            "id": "s0w9",
+            "text": "ethogingsværktøj,",
+            "start": 2.08,
+            "end": 3.6,
+            "speaker": null
+          },
+          {
+            "id": "s0w10",
+            "text": "som",
+            "start": 3.6,
+            "end": 3.84,
+            "speaker": null
+          },
+          {
+            "id": "s0w11",
+            "text": "jeg",
+            "start": 3.84,
+            "end": 4.08,
+            "speaker": null
+          },
+          {
+            "id": "s0w12",
+            "text": "er",
+            "start": 4.08,
+            "end": 4.24,
+            "speaker": null
+          },
+          {
+            "id": "s0w13",
+            "text": "ved",
+            "start": 4.24,
+            "end": 4.4,
+            "speaker": null
+          },
+          {
+            "id": "s0w14",
+            "text": "at",
+            "start": 4.4,
+            "end": 4.5600000000000005,
+            "speaker": null
+          },
+          {
+            "id": "s0w15",
+            "text": "bygge.",
+            "start": 4.5600000000000005,
+            "end": 4.96,
+            "speaker": null
+          },
+          {
+            "id": "s0w16",
+            "text": "Det",
+            "start": 4.96,
+            "end": 5.2,
+            "speaker": null
+          },
+          {
+            "id": "s0w17",
+            "text": "hedder",
+            "start": 5.2,
+            "end": 5.6000000000000005,
+            "speaker": null
+          },
+          {
+            "id": "s0w18",
+            "text": "LSTNR",
+            "start": 5.6000000000000005,
+            "end": 6.72,
+            "speaker": null
+          },
+          {
+            "id": "s0w19",
+            "text": "og",
+            "start": 6.72,
+            "end": 6.88,
+            "speaker": null
+          },
+          {
+            "id": "s0w20",
+            "text": "bruger",
+            "start": 6.88,
+            "end": 7.28,
+            "speaker": null
+          },
+          {
+            "id": "s0w21",
+            "text": "elæden",
+            "start": 7.28,
+            "end": 7.68,
+            "speaker": null
+          },
+          {
+            "id": "s0w22",
+            "text": "lad",
+            "start": 7.68,
+            "end": 8.0,
+            "speaker": null
+          },
+          {
+            "id": "s0w23",
+            "text": "skribe",
+            "start": 8.0,
+            "end": 8.48,
+            "speaker": null
+          },
+          {
+            "id": "s0w24",
+            "text": "til",
+            "start": 8.48,
+            "end": 8.64,
+            "speaker": null
+          },
+          {
+            "id": "s0w25",
+            "text": "at",
+            "start": 8.64,
+            "end": 8.8,
+            "speaker": null
+          },
+          {
+            "id": "s0w26",
+            "text": "omdanne",
+            "start": 8.8,
+            "end": 9.36,
+            "speaker": null
+          },
+          {
+            "id": "s0w27",
+            "text": "tale",
+            "start": 9.36,
+            "end": 9.76,
+            "speaker": null
+          },
+          {
+            "id": "s0w28",
+            "text": "til",
+            "start": 9.76,
+            "end": 10.0,
+            "speaker": null
+          },
+          {
+            "id": "s0w29",
+            "text": "tekst.",
+            "start": 10.0,
+            "end": 10.48,
+            "speaker": null
+          }
+        ]
+      }
+    ],
+    "timing": "word",
+    "timing_source": "asr"
+  },
+  "edited_text": null,
+  "revision": 0,
+  "ai_text": null,
+  "ai_engine": null,
+  "speakers": {}
+}

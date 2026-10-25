@@ -696,3 +696,148 @@ mod tests {
         task.join().unwrap();
     }
 }
+
+/// Rich file response, separate from ordinary dictation's stable request contract.
+pub(crate) async fn file_transcript(
+    client: &reqwest::Client,
+    e: &EngineConfig,
+    path: &Path,
+    language: Option<&str>,
+    secret: Option<&str>,
+    cancel: &Cancellation,
+) -> Result<vara_core::Transcript> {
+    if !matches!(e.provider, Provider::Groq | Provider::ElevenLabs) {
+        return speech(client, e, path, language, secret, cancel)
+            .await
+            .map(vara_core::Transcript::plain);
+    }
+    let bytes = tokio::fs::read(path)
+        .await
+        .map_err(|_| "Arbejdslyden kunne ikke læses.")?;
+    if bytes.len() > 24_000_000 {
+        return Err("Lydstykket overstiger forbindelsens grænse.".into());
+    }
+    cancel.check()?;
+    let part = reqwest::multipart::Part::bytes(bytes)
+        .file_name("transcription.wav")
+        .mime_str("audio/wav")
+        .map_err(|_| "Lydformatet kunne ikke sendes.")?;
+    let mut form = reqwest::multipart::Form::new().part("file", part);
+    let request = if e.provider == Provider::ElevenLabs {
+        form = form
+            .text("model_id", e.model.clone())
+            .text("diarize", "true")
+            .text("tag_audio_events", "false")
+            .text("timestamps_granularity", "word");
+        if let Some(l) = language {
+            form = form.text("language_code", l.to_string());
+        }
+        client
+            .post("https://api.elevenlabs.io/v1/speech-to-text")
+            .header("xi-api-key", key(secret)?)
+            .multipart(form)
+    } else {
+        form = form
+            .text("model", e.model.clone())
+            .text("response_format", "verbose_json")
+            .text("timestamp_granularities[]", "word")
+            .text("temperature", "0");
+        if let Some(l) = language {
+            form = form.text("language", l.to_string());
+        }
+        client
+            .post("https://api.groq.com/openai/v1/audio/transcriptions")
+            .bearer_auth(key(secret)?)
+            .multipart(form)
+    };
+    let value = response(request, cancel).await?;
+    parse_file_transcript(&value)
+}
+fn parse_file_transcript(v: &Value) -> Result<vara_core::Transcript> {
+    use vara_core::{TimedWord, Timing, Transcript, TranscriptSegment};
+    let text = v["text"]
+        .as_str()
+        .ok_or("Svaret indeholder ingen transskription.")?
+        .to_string();
+    let Some(words) = v["words"].as_array().filter(|v| !v.is_empty()) else {
+        return Ok(Transcript::plain(text));
+    };
+    let mut segments: Vec<TranscriptSegment> = vec![];
+    for (i, w) in words.iter().enumerate() {
+        if w["type"] == "spacing" {
+            continue;
+        }
+        let part = w["text"]
+            .as_str()
+            .or_else(|| w["word"].as_str())
+            .ok_or("Udbyderen returnerede ugyldige orddata.")?;
+        if part.trim().is_empty() {
+            continue;
+        }
+        let start = w["start"].as_f64().ok_or("Et ord mangler starttid.")?;
+        let end = w["end"].as_f64().ok_or("Et ord mangler sluttid.")?;
+        if !start.is_finite() || !end.is_finite() || start < 0. || end < start {
+            return Err("Udbyderen returnerede ugyldige ordtider.".into());
+        }
+        let speaker = w["speaker_id"].as_str().map(str::to_owned);
+        if segments
+            .last()
+            .is_none_or(|s| s.speaker != speaker || s.words.len() >= 60)
+        {
+            segments.push(TranscriptSegment {
+                id: format!("s{}", segments.len()),
+                text: String::new(),
+                start: Some(start),
+                end: Some(end),
+                speaker: speaker.clone(),
+                words: vec![],
+            });
+        }
+        let segment = segments.last_mut().unwrap();
+        if !segment.text.is_empty() {
+            segment.text.push(' ');
+        }
+        segment.text += part.trim();
+        segment.end = Some(end);
+        segment.words.push(TimedWord {
+            id: format!("w{i}"),
+            text: part.trim().into(),
+            start,
+            end,
+            speaker,
+        });
+    }
+    if segments.is_empty() {
+        return Ok(Transcript::plain(text));
+    }
+    Ok(Transcript {
+        text,
+        segments,
+        timing: Timing::Word,
+        timing_source: "asr".into(),
+    })
+}
+#[cfg(test)]
+mod file_tests {
+    use super::*;
+    #[test]
+    fn words_and_speaker_turns_are_preserved_and_malformed_timing_is_rejected() {
+        let v = json!({"text":"Hej Anna", "words":[{"text":"Hej","start":0.1,"end":0.5,"type":"word","speaker_id":"speaker_1"},{"text":" ","type":"spacing"},{"text":"Anna","start":0.6,"end":1.0,"type":"word","speaker_id":"speaker_2"}]});
+        let t = parse_file_transcript(&v).unwrap();
+        assert_eq!(t.timing, vara_core::Timing::Word);
+        assert_eq!(t.segments.len(), 2);
+        t.validate(2.).unwrap();
+        assert!(
+            parse_file_transcript(
+                &json!({"text":"Hej","words":[{"word":"Hej","start":1.,"end":0.}]})
+            )
+            .is_err()
+        );
+        assert_eq!(
+            parse_file_transcript(&json!({"text":"uden tider"}))
+                .unwrap()
+                .timing,
+            vara_core::Timing::None
+        );
+    }
+}

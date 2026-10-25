@@ -90,6 +90,9 @@ impl Service {
         service.maintenance()?;
         Ok(service)
     }
+    pub(crate) fn preferences(&self) -> Settings {
+        self.inner.lock().settings.clone()
+    }
     pub fn snapshot(&self) -> Result<Snapshot> {
         let i = self.inner.lock();
         Ok(Snapshot {
@@ -814,7 +817,7 @@ pub fn key_id(e: &EngineConfig) -> String {
             .to_string(),
     }
 }
-fn engine_secret(engine: &EngineConfig) -> Result<Option<String>> {
+pub(crate) fn engine_secret(engine: &EngineConfig) -> Result<Option<String>> {
     if matches!(
         engine.provider,
         Provider::LocalWhisper

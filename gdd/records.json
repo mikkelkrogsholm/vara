@@ -2,21 +2,23 @@
   "format": "gdd-records/0.2",
   "project_id": "vara.clean-write",
   "records": {
-    "decision.settings_v2.2026-10-24": {
+    "decision.transcription.2026-10-25": {
       "kind": "decision",
       "topic": "model_change",
-      "description": "Implement the approved settings-v2 mockups with shared task-based components while preserving existing capabilities and stored preferences.",
+      "description": "Implement approved transcription mockups/spec with separate file documents, explicit timing and preserved dictation.",
       "scope": [
+        "component.transcription",
+        "component.engines",
         "component.experience"
       ],
-      "spec_revision": "sha256:f7ade110b75c7389cadadfd7c10e1da022682503fa43b33ec1b608028302ef52",
-      "policy_revision": "trusted-user-request-implement-settings-mockups-and-update-design-2026-10-24",
+      "spec_revision": "sha256:a845d3099f1b222ea05118fe2e717c35925ce0b74c6dedb8eeb2bbcf1fedfaa3",
+      "policy_revision": "trusted-user-approved-transcription-implementation-2026-10-25",
       "actor": {
         "id": "agent.codex",
         "kind": "agent"
       },
       "outcome": "accepted",
-      "rationale": "User approved the three mockups and requested implementation plus DESIGN.md updates. This records implementation provenance and observed checks; it does not assert human release acceptance or new live speech inference."
+      "rationale": "Mandate and implementation provenance only. No human runtime acceptance, cloud quality or untested-platform acceptance is asserted."
     }
   }
 }

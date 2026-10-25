@@ -1,0 +1,22 @@
+{
+  "format": "gdd-snapshot/0.2",
+  "revision": "sha256:a845d3099f1b222ea05118fe2e717c35925ce0b74c6dedb8eeb2bbcf1fedfaa3",
+  "assets": [
+    {
+      "path": "DESIGN.md",
+      "sha256": "4984b0bf1eccf7ccdd6c75728514ed6da3a8c45ab45697d21dac33e7ae1ba45e"
+    },
+    {
+      "path": "PRODUCT-SPEC.md",
+      "sha256": "ab758f2b3a388d5f7ad67b5a0cd732d51389be2997193d6bfa1eabfae10cf13c"
+    },
+    {
+      "path": "TRANSCRIPTION-SPEC.md",
+      "sha256": "8d0608f22ad6ab551ebc6cc473fb36326f4241c82431836d8c04432839485a68"
+    },
+    {
+      "path": "gdd.json",
+      "sha256": "5fe872dcff0b5d885bcc62672b906c80ff3571b99088564c2e6db30261dd9fe6"
+    }
+  ]
+}

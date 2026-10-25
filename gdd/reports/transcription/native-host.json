@@ -1,0 +1,17 @@
+{
+  "native_host_import": "passed",
+  "duration": 10.312125,
+  "words": 31,
+  "normalized_audio_exists": true,
+  "dictation_database_separate": true,
+  "interrupted_job_recovered_without_replay": true,
+  "batch_stages": {
+    "da_test.wav": "cancelled",
+    "sample.mp4": "ready",
+    "silent-video.mp4": "failed"
+  },
+  "cancelled_audio_removed": true,
+  "ready_waveform_bins": 128,
+  "ready_word_times_validated": true,
+  "retry_reuses_playback_after_original_moves": true
+}

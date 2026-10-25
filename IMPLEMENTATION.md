@@ -34,3 +34,12 @@ settings-v2, credential hardening, local app artwork and native insertion report
 
 The dictionary investigation was stopped at the user's request. It is not an
 implemented feature or active delivery task.
+
+## File transcription — 2026-10-25
+
+The Transskribering tab adds a separate file queue/library, local media decoding,
+real Redux word times, segment/plain-text fallbacks, an editable transcript with
+preserved original, playback, copying/export and separate optional text AI. Its
+own SQLite store and explicitly retained playback copies do not enter dictation
+history or its captured-audio retention. See gdd/reports/transcription/README.md
+for current verification and conditional model capabilities.

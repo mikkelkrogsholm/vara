@@ -30,4 +30,4 @@ for cid,c in n.items():
    lines += [f'| `{code}` | {desc} |' for code,desc in v['errors'].items()];lines.append('')
   lines+=['Scenario IDs: '+', '.join('`'+e['from']+'`' for e in m['edges'] if e['relation']=='exercises' and e['to']==id)+'.','']
 lines+=['## Verification boundary','','GDD validates model shape, types, references, explicit dependencies, ownership and structural scenario coverage. The scenario prose must become implementation tests; its presence is not a passed test. UI designs remain proposed and no human design approval is claimed. Model/runtime choice, measured quality/latency and all target-platform runtime acceptance remain visible acceptance questions.','']
-(r/'CONTRACTS.md').write_text('\n'.join(lines))
+(r/'CONTRACTS.md').write_text('\n'.join(line.rstrip() for line in lines))
