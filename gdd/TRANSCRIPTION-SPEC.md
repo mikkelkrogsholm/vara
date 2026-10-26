@@ -85,9 +85,33 @@ Kontrakten for ordniveau skal med fra begyndelsen. Afspilning, klik/fremhævning
 SRT/VTT medtages, når de valgte runtime-/modelkombinationer leverer verificerede
 tidsdata. Konkrete kompatibilitetsgrænser skal fremgå af UI og dokumentation.
 
-Talermarkering er en særskilt kvalitetstest før produktløfte. Who er en kandidat,
-men der er ikke truffet valg af model, runtime eller licensvilkår. Brugeren har
-ikke bestilt en Who-integration.
+Who er valgt som valgfri lokal taleropdeling efter brugerens bestilling
+2026-10-26. “Find talere” i editoren kører den officielle SDK-runtime via en
+C-grænse fra Rust i en separat, annullerbar proces. Ingen automatisk download,
+cloud-fallback eller ændring af hurtig diktering.
+
+Original ASR-tekst, ord-ID’er og tider forbliver uændrede. Who-turns gemmes separat
+med model/version og kan overlappe. En afledt læsevisning kobler kun en taler til
+et ord/segment, når der er én tydelig overlappende stemme med mindst halv dækning.
+Tvetydige ord står uden en valgt Who-taler. Uden ordtider vises de faktiske
+lydintervaller uden at opfinde en fordeling af tekst. Rettet tekst får ikke nye
+tids- eller talerdata. JSON indeholder rå ASR, Who-turns og redigering hver for sig.
+Talernavne kan omdøbes i den eksisterende komponent.
+
+Modellen hentes eksplicit i Who-dialogen, som viser leverandør, licens og SDK’ets
+brugstælling før download/brug. Lyden og teksten behandles på enheden; den
+uændrede officielle SDK sender installations-id og model-/app-/platformmetadata
+til leverandørens licenssystem. SDK’ets rapportering bevares. Modellerne følger
+ikke med appen. Core ML på Mac kræver macOS 15 eller nyere; appens øvrige funktioner
+bevarer deres eksisterende OS-grænse. Linux/Windows bruger samme Rust-kontrakt og
+SDK-C-grænse; deres native runtime-pakning skal verificeres på målplatformene.
+
+Fejl, ingen fundne talere og annullering bevarer tekst, rettelser og eventuel
+sidste vellykkede taleropdeling. Ingen talere er ikke bevis for, at ingen taler:
+et naturligt dansk klip på 10 sekunder gav ingen Who-turns, mens samme klip gentaget
+til 41 sekunder gav én stemme. To syntetiske stemmer blev genkendt og matchet på
+tværs af et femminutters skel. Dette er funktionstest, ikke en kvalitetsgaranti
+på naturlige danske samtaler.
 
 Links til fx YouTube og optagelse af møde-/systemlyd er efterfølgende inputtyper.
 Valgfri tekst-AI er del af featurelisten; den præcise placering i leverancerækkefølgen

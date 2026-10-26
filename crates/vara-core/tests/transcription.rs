@@ -51,6 +51,8 @@ fn document() -> TranscriptionDocument {
         ai_text: None,
         ai_engine: None,
         speakers: Default::default(),
+        diarization: None,
+        diarization_error: None,
     }
 }
 #[test]
@@ -134,4 +136,97 @@ fn importing_a_batch_is_atomic_on_storage_conflict() {
     store.save(&first).unwrap();
     assert!(store.save_batch(&[second, first]).is_err());
     assert_eq!(store.all().unwrap().len(), 1);
+}
+
+#[test]
+fn who_annotations_preserve_original_words_and_ambiguity() {
+    let original = document().transcript.unwrap();
+    let before = serde_json::to_string(&original).unwrap();
+    let who = Diarization {
+        model: "Who".into(),
+        version: "v0.3.1".into(),
+        turns: vec![
+            SpeakerTurn {
+                speaker: "who-0".into(),
+                start: 0.,
+                end: 0.55,
+            },
+            SpeakerTurn {
+                speaker: "who-1".into(),
+                start: 0.6,
+                end: 1.3,
+            },
+        ],
+    };
+    who.validate(3.).unwrap();
+    let annotated = who.annotate(&original);
+    assert_eq!(annotated.segments.len(), 2);
+    assert_eq!(
+        annotated.segments[0].words[0].speaker.as_deref(),
+        Some("who-0")
+    );
+    assert_eq!(
+        annotated.segments[1].words[0].speaker.as_deref(),
+        Some("who-1")
+    );
+    assert_eq!(annotated.text, original.text);
+    assert_eq!(serde_json::to_string(&original).unwrap(), before);
+    let overlap = Diarization {
+        turns: vec![
+            SpeakerTurn {
+                speaker: "a".into(),
+                start: 0.,
+                end: 2.,
+            },
+            SpeakerTurn {
+                speaker: "b".into(),
+                start: 0.,
+                end: 2.,
+            },
+        ],
+        ..who
+    };
+    assert!(
+        overlap
+            .annotate(&original)
+            .segments
+            .iter()
+            .all(|s| s.speaker.is_none())
+    );
+    assert_eq!(overlap.turns.len(), 2);
+    let bad = Diarization {
+        turns: vec![SpeakerTurn {
+            speaker: "a".into(),
+            start: f64::NAN,
+            end: 1.,
+        }],
+        ..overlap
+    };
+    assert!(bad.validate(3.).is_err());
+}
+#[test]
+fn legacy_documents_load_without_who_and_results_export_separately() {
+    let mut d = document();
+    let mut json = serde_json::to_value(&d).unwrap();
+    json.as_object_mut().unwrap().remove("diarization");
+    json.as_object_mut().unwrap().remove("diarization_error");
+    assert!(
+        serde_json::from_value::<TranscriptionDocument>(json)
+            .unwrap()
+            .diarization
+            .is_none()
+    );
+    d.diarization = Some(Diarization {
+        model: "Who".into(),
+        version: "v0.3.1".into(),
+        turns: vec![SpeakerTurn {
+            speaker: "who-0".into(),
+            start: 0.,
+            end: 2.,
+        }],
+    });
+    let export: serde_json::Value = serde_json::from_str(&d.export("json", true).unwrap()).unwrap();
+    assert_eq!(export["diarization"]["turns"][0]["speaker"], "who-0");
+    assert_eq!(export["transcript"]["segments"][0]["speaker"], "speaker_1");
+    assert_eq!(d.export("txt", true).unwrap(), "Hej verden");
 }

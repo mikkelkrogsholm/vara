@@ -37,8 +37,9 @@ real user dictation during this test was observed with delivery `inserted` in
 Codex. Details: `reports/transcription/native-final.json`.
 
 Cloud rich-timing protocols are contract-tested, not live-account acceptance.
-Windows/Linux acceptance, forced alignment and local diarization/Who remain
-explicit scope/capability limits; no new Who integration is claimed.
+Windows/Linux acceptance and forced alignment remain open. Optional local Who
+integration was added on 2026-10-26; see [Who verification](reports/who/README.md)
+for actual runtime tests and Danish-context limitations.
 
 Work is on `codex/file-transcription`, based on main at `7aba54d`. Cancelled,
 pre-existing untracked dictionary research remains untouched and unpublished.

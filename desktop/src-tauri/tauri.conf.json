@@ -51,7 +51,8 @@
       "icons/icon.ico"
     ],
     "resources": [
-      "notices/"
+      "notices/",
+      "runtime/who/"
     ]
   }
 }

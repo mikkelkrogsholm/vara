@@ -2,23 +2,23 @@
   "format": "gdd-records/0.2",
   "project_id": "vara.clean-write",
   "records": {
-    "decision.transcription.2026-10-25": {
+    "decision.who.2026-10-26": {
       "kind": "decision",
       "topic": "model_change",
-      "description": "Implement approved transcription mockups/spec with separate file documents, explicit timing and preserved dictation.",
+      "description": "User explicitly requested Who integration as optional local speaker diarization, preserving the Rust core and existing dictation.",
       "scope": [
         "component.transcription",
         "component.engines",
         "component.experience"
       ],
-      "spec_revision": "sha256:dece8596ef7cf115db345c035422afa9c8724f75b25c921db0f2e40418e097a4",
-      "policy_revision": "trusted-user-approved-transcription-implementation-2026-10-25",
+      "spec_revision": "sha256:49bbb05399fb4eb7559b5010756b89d56e031cb72ce8d5954c4a236371aca14e",
+      "policy_revision": "trusted-user-integrer-who-2026-10-26",
       "actor": {
         "id": "agent.codex",
         "kind": "agent"
       },
       "outcome": "accepted",
-      "rationale": "Mandate and implementation provenance only. No human runtime acceptance, cloud quality or untested-platform acceptance is asserted."
+      "rationale": "Mandate/provenance only. Model quality and platform acceptance are limited to the separately recorded evidence; no natural Danish multi-speaker accuracy or human runtime acceptance is asserted."
     }
   }
 }

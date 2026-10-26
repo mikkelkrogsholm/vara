@@ -1,0 +1,24 @@
+{
+  "format": "gdd-records/0.2",
+  "project_id": "vara.clean-write",
+  "records": {
+    "decision.transcription.2026-10-25": {
+      "kind": "decision",
+      "topic": "model_change",
+      "description": "Implement approved transcription mockups/spec with separate file documents, explicit timing and preserved dictation.",
+      "scope": [
+        "component.transcription",
+        "component.engines",
+        "component.experience"
+      ],
+      "spec_revision": "sha256:dece8596ef7cf115db345c035422afa9c8724f75b25c921db0f2e40418e097a4",
+      "policy_revision": "trusted-user-approved-transcription-implementation-2026-10-25",
+      "actor": {
+        "id": "agent.codex",
+        "kind": "agent"
+      },
+      "outcome": "accepted",
+      "rationale": "Mandate and implementation provenance only. No human runtime acceptance, cloud quality or untested-platform acceptance is asserted."
+    }
+  }
+}

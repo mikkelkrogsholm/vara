@@ -1,0 +1,17 @@
+{
+  "date": "2026-10-26",
+  "native_file_import_and_local_asr": true,
+  "native_who_dialog_disclosure": true,
+  "native_who_run": true,
+  "speakers": 2,
+  "speaker_turns": 4,
+  "original_asr_word_count": 134,
+  "asr_speaker_refs_unchanged": true,
+  "native_name_edited_and_saved": "Vært",
+  "restart_rebuilds_annotation_and_preserves_name": true,
+  "short_danish_empty_result_error_displayed": true,
+  "short_document_correction_preserved": true,
+  "model_download": "Real download/preparation via official SDK C ABI; native ready-dialog and browser download flow verified separately.",
+  "native_download_button_clicked": false,
+  "existing_profile_retained": true
+}

@@ -687,3 +687,8 @@ html[data-platform="macos"] .brand {
 .tx-seek-track input { width:100%; z-index:1; margin:0; }
 .tx-waveform { position:absolute; inset:0; display:flex; align-items:center; gap:2px; pointer-events:none; opacity:.45; }
 .tx-waveform i { flex:1; background:var(--color-primary); border-radius:1px; }
+
+/* Who reuses text tools, notices, native disclosure and existing buttons. */
+.tx-who-turns { margin: 0 0 var(--space-xl); font-size: 14px; }
+.tx-who-turns summary { cursor: pointer; color: var(--color-muted); padding: 8px 0; }
+.tx-who-turn { display: flex; gap: 12px; align-items: center; }

@@ -123,7 +123,8 @@
         "action.advanced_engines",
         "action.credentials",
         "action.cli_processing",
-        "action.file_recognize"
+        "action.file_recognize",
+        "action.engine_diarize"
       ]
     },
     "component.preferences": {
@@ -7517,6 +7518,15 @@
           "type": "reference",
           "target": "entity.file_transcript",
           "optional": true
+        },
+        "diarization": {
+          "type": "reference",
+          "target": "entity.diarization",
+          "optional": true
+        },
+        "diarization_error": {
+          "type": "string",
+          "optional": true
         }
       }
     },
@@ -7543,7 +7553,8 @@
       },
       "interfaces": [
         "action.file_import",
-        "action.file_document"
+        "action.file_document",
+        "action.file_diarize"
       ]
     },
     "scenario.file_import.authorization": {
@@ -8177,6 +8188,402 @@
           }
         }
       }
+    },
+    "entity.speaker_turn": {
+      "kind": "entity",
+      "label": "Speaker interval",
+      "description": "Independent Who interval; different speakers may overlap. Uncertain text is not assigned by guesswork.",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.transcription",
+          "purpose": "contract",
+          "selector": {
+            "kind": "whole-document"
+          }
+        }
+      ],
+      "fields": {
+        "speaker_id": {
+          "type": "string",
+          "min_length": 1
+        },
+        "start_seconds": {
+          "type": "number",
+          "minimum": 0
+        },
+        "end_seconds": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    },
+    "entity.diarization": {
+      "kind": "entity",
+      "label": "Local speaker annotation",
+      "description": "Separate from immutable source ASR and corrections; pinned model provenance and real intervals.",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.transcription",
+          "purpose": "contract",
+          "selector": {
+            "kind": "whole-document"
+          }
+        }
+      ],
+      "fields": {
+        "model": {
+          "type": "string",
+          "min_length": 1
+        },
+        "version": {
+          "type": "string",
+          "min_length": 1
+        },
+        "turns": {
+          "type": "array",
+          "items": {
+            "type": "reference",
+            "target": "entity.speaker_turn"
+          }
+        }
+      }
+    },
+    "scenario.file_diarize.authorization": {
+      "kind": "scenario",
+      "label": "Find speakers for a file document — authorization",
+      "description": "Explicit user choice and supplier/license/usage disclosure before download/use; no audio/text leaves the device. Retain official SDK licensing metadata reporting.",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.transcription",
+          "purpose": "contract",
+          "selector": {
+            "kind": "whole-document"
+          }
+        }
+      ],
+      "scenario": {
+        "category": "negative",
+        "given": "A local file document with immutable source ASR and an explicit Who request.",
+        "when": "Explicit user choice and supplier/license/usage disclosure before download/use; no audio/text leaves the device. Retain official SDK licensing metadata reporting.",
+        "then": "Explicit optional Who setup and speaker labeling. Preserve source ASR, edits and successful prior labels on failure/empty output. Publish only validated, noncancelled results. Project unambiguous original word/segment speaker labels without inventing alignment."
+      }
+    },
+    "scenario.file_diarize.boundaries": {
+      "kind": "scenario",
+      "label": "Find speakers for a file document — boundaries",
+      "description": "Missing runtime/model, empty turns, invalid times or storage failure preserve source, corrections and prior successful annotation.",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.transcription",
+          "purpose": "contract",
+          "selector": {
+            "kind": "whole-document"
+          }
+        }
+      ],
+      "scenario": {
+        "category": "negative",
+        "given": "A local file document with immutable source ASR and an explicit Who request.",
+        "when": "Missing runtime/model, empty turns, invalid times or storage failure preserve source, corrections and prior successful annotation.",
+        "then": "Explicit optional Who setup and speaker labeling. Preserve source ASR, edits and successful prior labels on failure/empty output. Publish only validated, noncancelled results. Project unambiguous original word/segment speaker labels without inventing alignment."
+      }
+    },
+    "scenario.file_diarize.concurrency": {
+      "kind": "scenario",
+      "label": "Find speakers for a file document — concurrency",
+      "description": "Only one Who task per document; cancellation/deletion kills and reaps its child. Late output cannot recreate a deleted document.",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.transcription",
+          "purpose": "contract",
+          "selector": {
+            "kind": "whole-document"
+          }
+        }
+      ],
+      "scenario": {
+        "category": "concurrency",
+        "given": "A local file document with immutable source ASR and an explicit Who request.",
+        "when": "Only one Who task per document; cancellation/deletion kills and reaps its child. Late output cannot recreate a deleted document.",
+        "then": "Explicit optional Who setup and speaker labeling. Preserve source ASR, edits and successful prior labels on failure/empty output. Publish only validated, noncancelled results. Project unambiguous original word/segment speaker labels without inventing alignment."
+      }
+    },
+    "scenario.file_diarize.atomicity": {
+      "kind": "scenario",
+      "label": "Find speakers for a file document — atomicity",
+      "description": "Save the independent annotation before publishing the derived UI projection. Failure leaves earlier state intact.",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.transcription",
+          "purpose": "contract",
+          "selector": {
+            "kind": "whole-document"
+          }
+        }
+      ],
+      "scenario": {
+        "category": "concurrency",
+        "given": "A local file document with immutable source ASR and an explicit Who request.",
+        "when": "Save the independent annotation before publishing the derived UI projection. Failure leaves earlier state intact.",
+        "then": "Explicit optional Who setup and speaker labeling. Preserve source ASR, edits and successful prior labels on failure/empty output. Publish only validated, noncancelled results. Project unambiguous original word/segment speaker labels without inventing alignment."
+      }
+    },
+    "action.file_diarize": {
+      "kind": "action",
+      "label": "Find speakers for a file document",
+      "description": "Explicit optional Who setup and speaker labeling. Preserve source ASR, edits and successful prior labels on failure/empty output. Publish only validated, noncancelled results. Project unambiguous original word/segment speaker labels without inventing alignment.",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.transcription",
+          "purpose": "contract",
+          "selector": {
+            "kind": "whole-document"
+          }
+        }
+      ],
+      "contract": {
+        "input": {
+          "document": {
+            "type": "reference",
+            "target": "entity.file_document"
+          }
+        },
+        "context": {},
+        "output": {
+          "type": "reference",
+          "target": "entity.diarization"
+        },
+        "errors": {
+          "Unavailable": "Missing runtime/model, empty turns, invalid times or storage failure preserve source, corrections and prior successful annotation."
+        },
+        "preconditions": [
+          "Document has preserved ASR and its private normalized playback copy.",
+          "Who is explicitly chosen after supplier/license/usage disclosure; its model was downloaded explicitly."
+        ],
+        "postconditions": [
+          "Explicit optional Who setup and speaker labeling. Preserve source ASR, edits and successful prior labels on failure/empty output. Publish only validated, noncancelled results. Project unambiguous original word/segment speaker labels without inventing alignment."
+        ],
+        "external_effects": [
+          "Read local normalized audio/model files; explicit model downloads contact supplier/CDN. Official SDK license/usage requests contain installation/app/model/platform metadata, never audio/text. Write independent local annotation state."
+        ],
+        "effects_complete": true,
+        "dependencies_complete": true,
+        "risks": {
+          "authorization": {
+            "relevant": true,
+            "rationale": "Explicit user choice and supplier/license/usage disclosure before download/use; no audio/text leaves the device. Retain official SDK licensing metadata reporting.",
+            "scenarios": [
+              "scenario.file_diarize.authorization"
+            ]
+          },
+          "boundaries": {
+            "relevant": true,
+            "rationale": "Missing runtime/model, empty turns, invalid times or storage failure preserve source, corrections and prior successful annotation.",
+            "scenarios": [
+              "scenario.file_diarize.boundaries"
+            ]
+          },
+          "concurrency": {
+            "relevant": true,
+            "rationale": "Only one Who task per document; cancellation/deletion kills and reaps its child. Late output cannot recreate a deleted document.",
+            "scenarios": [
+              "scenario.file_diarize.concurrency"
+            ]
+          },
+          "atomicity": {
+            "relevant": true,
+            "rationale": "Save the independent annotation before publishing the derived UI projection. Failure leaves earlier state intact.",
+            "scenarios": [
+              "scenario.file_diarize.atomicity"
+            ]
+          },
+          "idempotency": {
+            "relevant": false,
+            "rationale": "Explicit reruns replace one derived annotation atomically; they do not duplicate the document or replay dictation insertion.",
+            "scenarios": []
+          }
+        },
+        "error_cases": {
+          "Unavailable": [
+            "scenario.file_diarize.boundaries"
+          ]
+        }
+      },
+      "behavior": "Explicit optional Who setup and speaker labeling. Preserve source ASR, edits and successful prior labels on failure/empty output. Publish only validated, noncancelled results. Project unambiguous original word/segment speaker labels without inventing alignment."
+    },
+    "scenario.engine_diarize.authorization": {
+      "kind": "scenario",
+      "label": "Run official Who runtime — authorization",
+      "description": "Accept only packaged SDK runtime and explicitly chosen local model; status does not trigger download.",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.transcription",
+          "purpose": "contract",
+          "selector": {
+            "kind": "whole-document"
+          }
+        }
+      ],
+      "scenario": {
+        "category": "negative",
+        "given": "A local file document with immutable source ASR and an explicit Who request.",
+        "when": "Accept only packaged SDK runtime and explicitly chosen local model; status does not trigger download.",
+        "then": "Run pinned official Who C ABI with normalized local audio in an isolated registered child. Keep SDK reporting intact and return model/version plus overlapping real speaker intervals. Never upload audio/text or switch providers."
+      }
+    },
+    "scenario.engine_diarize.boundaries": {
+      "kind": "scenario",
+      "label": "Run official Who runtime — boundaries",
+      "description": "Validate C ABI payload length, speakers, finite/bounded intervals and source duration. Surface native crashes and empty results honestly.",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.transcription",
+          "purpose": "contract",
+          "selector": {
+            "kind": "whole-document"
+          }
+        }
+      ],
+      "scenario": {
+        "category": "negative",
+        "given": "A local file document with immutable source ASR and an explicit Who request.",
+        "when": "Validate C ABI payload length, speakers, finite/bounded intervals and source duration. Surface native crashes and empty results honestly.",
+        "then": "Run pinned official Who C ABI with normalized local audio in an isolated registered child. Keep SDK reporting intact and return model/version plus overlapping real speaker intervals. Never upload audio/text or switch providers."
+      }
+    },
+    "scenario.engine_diarize.concurrency": {
+      "kind": "scenario",
+      "label": "Run official Who runtime — concurrency",
+      "description": "Cancellation kills/reaps the registered child; normal completion flushes SDK licensing requests.",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.transcription",
+          "purpose": "contract",
+          "selector": {
+            "kind": "whole-document"
+          }
+        }
+      ],
+      "scenario": {
+        "category": "concurrency",
+        "given": "A local file document with immutable source ASR and an explicit Who request.",
+        "when": "Cancellation kills/reaps the registered child; normal completion flushes SDK licensing requests.",
+        "then": "Run pinned official Who C ABI with normalized local audio in an isolated registered child. Keep SDK reporting intact and return model/version plus overlapping real speaker intervals. Never upload audio/text or switch providers."
+      }
+    },
+    "scenario.engine_diarize.atomicity": {
+      "kind": "scenario",
+      "label": "Run official Who runtime — atomicity",
+      "description": "Only complete validated result payloads cross the child boundary; never overwrite the original audio.",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.transcription",
+          "purpose": "contract",
+          "selector": {
+            "kind": "whole-document"
+          }
+        }
+      ],
+      "scenario": {
+        "category": "concurrency",
+        "given": "A local file document with immutable source ASR and an explicit Who request.",
+        "when": "Only complete validated result payloads cross the child boundary; never overwrite the original audio.",
+        "then": "Run pinned official Who C ABI with normalized local audio in an isolated registered child. Keep SDK reporting intact and return model/version plus overlapping real speaker intervals. Never upload audio/text or switch providers."
+      }
+    },
+    "action.engine_diarize": {
+      "kind": "action",
+      "label": "Run official Who runtime",
+      "description": "Run pinned official Who C ABI with normalized local audio in an isolated registered child. Keep SDK reporting intact and return model/version plus overlapping real speaker intervals. Never upload audio/text or switch providers.",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.transcription",
+          "purpose": "contract",
+          "selector": {
+            "kind": "whole-document"
+          }
+        }
+      ],
+      "contract": {
+        "input": {
+          "audio_handle": {
+            "type": "string",
+            "min_length": 1
+          }
+        },
+        "context": {},
+        "output": {
+          "type": "reference",
+          "target": "entity.diarization"
+        },
+        "errors": {
+          "Unavailable": "Validate C ABI payload length, speakers, finite/bounded intervals and source duration. Surface native crashes and empty results honestly."
+        },
+        "preconditions": [
+          "Input identifies records within the active local profile; model capabilities and destination are explicit."
+        ],
+        "postconditions": [
+          "Run pinned official Who C ABI with normalized local audio in an isolated registered child. Keep SDK reporting intact and return model/version plus overlapping real speaker intervals. Never upload audio/text or switch providers."
+        ],
+        "external_effects": [
+          "Read local normalized audio/model files; explicit model downloads contact supplier/CDN. Official SDK license/usage requests contain installation/app/model/platform metadata, never audio/text. Write independent local annotation state."
+        ],
+        "effects_complete": true,
+        "dependencies_complete": true,
+        "risks": {
+          "authorization": {
+            "relevant": true,
+            "rationale": "Accept only packaged SDK runtime and explicitly chosen local model; status does not trigger download.",
+            "scenarios": [
+              "scenario.engine_diarize.authorization"
+            ]
+          },
+          "boundaries": {
+            "relevant": true,
+            "rationale": "Validate C ABI payload length, speakers, finite/bounded intervals and source duration. Surface native crashes and empty results honestly.",
+            "scenarios": [
+              "scenario.engine_diarize.boundaries"
+            ]
+          },
+          "concurrency": {
+            "relevant": true,
+            "rationale": "Cancellation kills/reaps the registered child; normal completion flushes SDK licensing requests.",
+            "scenarios": [
+              "scenario.engine_diarize.concurrency"
+            ]
+          },
+          "atomicity": {
+            "relevant": true,
+            "rationale": "Only complete validated result payloads cross the child boundary; never overwrite the original audio.",
+            "scenarios": [
+              "scenario.engine_diarize.atomicity"
+            ]
+          },
+          "idempotency": {
+            "relevant": false,
+            "rationale": "Explicit reruns replace one derived annotation atomically; they do not duplicate the document or replay dictation insertion.",
+            "scenarios": []
+          }
+        },
+        "error_cases": {
+          "Unavailable": [
+            "scenario.engine_diarize.boundaries"
+          ]
+        }
+      },
+      "behavior": "Run pinned official Who C ABI with normalized local audio in an isolated registered child. Keep SDK reporting intact and return model/version plus overlapping real speaker intervals. Never upload audio/text or switch providers."
     }
   },
   "edges": [
@@ -10321,6 +10728,72 @@
       "from": "action.file_document",
       "to": "action.engine_text",
       "relation": "calls"
+    },
+    {
+      "from": "scenario.file_diarize.authorization",
+      "relation": "exercises",
+      "to": "action.file_diarize",
+      "id": "edge.who.scenario_file_diarize_authorization.exercises"
+    },
+    {
+      "from": "scenario.file_diarize.boundaries",
+      "relation": "exercises",
+      "to": "action.file_diarize",
+      "id": "edge.who.scenario_file_diarize_boundaries.exercises"
+    },
+    {
+      "from": "scenario.file_diarize.concurrency",
+      "relation": "exercises",
+      "to": "action.file_diarize",
+      "id": "edge.who.scenario_file_diarize_concurrency.exercises"
+    },
+    {
+      "from": "scenario.file_diarize.atomicity",
+      "relation": "exercises",
+      "to": "action.file_diarize",
+      "id": "edge.who.scenario_file_diarize_atomicity.exercises"
+    },
+    {
+      "from": "action.file_diarize",
+      "relation": "owned_by",
+      "to": "component.transcription",
+      "id": "edge.who.action_file_diarize.owned_by"
+    },
+    {
+      "from": "scenario.engine_diarize.authorization",
+      "relation": "exercises",
+      "to": "action.engine_diarize",
+      "id": "edge.who.scenario_engine_diarize_authorization.exercises"
+    },
+    {
+      "from": "scenario.engine_diarize.boundaries",
+      "relation": "exercises",
+      "to": "action.engine_diarize",
+      "id": "edge.who.scenario_engine_diarize_boundaries.exercises"
+    },
+    {
+      "from": "scenario.engine_diarize.concurrency",
+      "relation": "exercises",
+      "to": "action.engine_diarize",
+      "id": "edge.who.scenario_engine_diarize_concurrency.exercises"
+    },
+    {
+      "from": "scenario.engine_diarize.atomicity",
+      "relation": "exercises",
+      "to": "action.engine_diarize",
+      "id": "edge.who.scenario_engine_diarize_atomicity.exercises"
+    },
+    {
+      "from": "action.engine_diarize",
+      "relation": "owned_by",
+      "to": "component.engines",
+      "id": "edge.who.action_engine_diarize.owned_by"
+    },
+    {
+      "from": "action.file_diarize",
+      "relation": "calls",
+      "to": "action.engine_diarize",
+      "id": "edge.who.action_file_diarize.calls"
     }
   ],
   "sources": {
@@ -10341,7 +10814,7 @@
       "format": "text/markdown",
       "normative": true,
       "revision": {
-        "sha256": "4984b0bf1eccf7ccdd6c75728514ed6da3a8c45ab45697d21dac33e7ae1ba45e"
+        "sha256": "65eb9909c48c0309ea2e4107e600c7f493b29e435dafa813b0aad427597e899a"
       }
     },
     "source.design_selection": {
@@ -10381,7 +10854,7 @@
       "format": "text/markdown",
       "normative": false,
       "revision": {
-        "sha256": "9bbd9c4890dc18c3d4a85dd84f5bfdf8516985ed54f564f7b864dbb759e13466"
+        "sha256": "d210ba7c13875a7a0443a47973935e846811c87b910356936f0ef470fed99538"
       }
     },
     "source.transcription": {
@@ -10391,7 +10864,7 @@
       "format": "text/markdown",
       "normative": true,
       "revision": {
-        "sha256": "622f645a5244106679fedb95130d5ea8856105c56b9b298ab8205fe7a5f6ee8c"
+        "sha256": "b370a3676daddbf96d64e78ed9f934427ffcc333f09da3f7e75ae99ee8b6c73f"
       }
     }
   },

@@ -1,0 +1,2 @@
+`target/release/examples/who desktop/src-tauri/runtime/who/libWhoAndroid.dylib '/Users/mikkelfreltoftkrogsholm/Library/Application Support/dk.vara.desktop/models/who' cancel /tmp/vara-who-fixtures/long-speakers.wav`
+{"cancelled":true}

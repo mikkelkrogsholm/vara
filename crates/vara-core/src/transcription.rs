@@ -34,6 +34,101 @@ pub struct Transcript {
     pub timing: Timing,
     pub timing_source: String,
 }
+/// Independent, model-produced speaker intervals. Overlap is preserved, not forced
+/// into an invented single speaker. Original ASR text/times are never modified.
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct SpeakerTurn {
+    pub speaker: String,
+    pub start: f64,
+    pub end: f64,
+}
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct Diarization {
+    pub model: String,
+    pub version: String,
+    pub turns: Vec<SpeakerTurn>,
+}
+impl Diarization {
+    pub fn validate(&self, duration: f64) -> Result<()> {
+        if !duration.is_finite()
+            || duration <= 0.
+            || self.turns.iter().any(|t| {
+                t.speaker.is_empty()
+                    || !t.start.is_finite()
+                    || !t.end.is_finite()
+                    || t.start < 0.
+                    || t.end <= t.start
+                    || t.end > duration + 0.1
+            })
+        {
+            return Err(Error::Invalid(
+                "Taleropdelingen har ugyldige tidsdata.".into(),
+            ));
+        }
+        Ok(())
+    }
+    /// Label only intervals with one clear speaker. Silence and simultaneous
+    /// speakers remain unassigned; the full overlapping turns remain in JSON.
+    pub fn annotate(&self, source: &Transcript) -> Transcript {
+        let label = |start: f64, end: f64| -> Option<String> {
+            let active: std::collections::BTreeSet<_> = self
+                .turns
+                .iter()
+                .filter(|t| t.start < end && t.end > start)
+                .map(|t| t.speaker.as_str())
+                .collect();
+            if active.len() != 1 {
+                return None;
+            }
+            let speaker = *active.first()?;
+            let coverage: f64 = self
+                .turns
+                .iter()
+                .filter(|t| t.speaker == speaker)
+                .map(|t| (t.end.min(end) - t.start.max(start)).max(0.))
+                .sum();
+            (coverage >= (end - start) * 0.5).then(|| speaker.to_owned())
+        };
+        let mut out = source.clone();
+        out.segments.clear();
+        for segment in &source.segments {
+            if segment.words.is_empty() {
+                let mut s = segment.clone();
+                s.speaker = segment
+                    .start
+                    .zip(segment.end)
+                    .and_then(|(a, b)| label(a, b));
+                out.segments.push(s);
+                continue;
+            }
+            let first_group = out.segments.len();
+            for word in &segment.words {
+                let mut w = word.clone();
+                w.speaker = label(w.start, w.end);
+                if out.segments.len() == first_group
+                    || out.segments.last().is_none_or(|s| s.speaker != w.speaker)
+                {
+                    out.segments.push(TranscriptSegment {
+                        id: format!("{}-who-{}", segment.id, out.segments.len()),
+                        text: String::new(),
+                        start: Some(w.start),
+                        end: Some(w.end),
+                        speaker: w.speaker.clone(),
+                        words: vec![],
+                    });
+                }
+                let s = out.segments.last_mut().unwrap();
+                if !s.text.is_empty() {
+                    s.text.push(' ');
+                }
+                s.text.push_str(&w.text);
+                s.end = Some(w.end);
+                s.words.push(w);
+            }
+        }
+        out
+    }
+}
 impl Transcript {
     pub fn plain(text: String) -> Self {
         Self {
@@ -116,6 +211,10 @@ pub struct TranscriptionDocument {
     pub ai_text: Option<String>,
     pub ai_engine: Option<EngineConfig>,
     pub speakers: BTreeMap<String, String>,
+    #[serde(default)]
+    pub diarization: Option<Diarization>,
+    #[serde(default)]
+    pub diarization_error: Option<String>,
 }
 impl TranscriptionDocument {
     pub fn text(&self) -> &str {

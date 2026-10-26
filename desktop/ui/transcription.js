@@ -25,6 +25,9 @@
     error: null,
     saving: new Set(),
     aiBusy: new Set(),
+    whoBusy: new Set(),
+    whoDownload: false,
+    whoStatus: null,
   };
   let host, main, saveTimer, refreshTimer;
   const audio = new Audio();
@@ -86,8 +89,28 @@
           .includes(q),
     );
   }
+  function whoControls(d) {
+    const running = d.who_busy || tx.whoBusy.has(d.id);
+    const count = new Set((d.diarization?.turns || []).map((t) => t.speaker))
+      .size;
+    return `${b(running ? "Finder talere…" : d.diarization ? "Taleropdeling · Who" : "Find talere", "tx-who-open", { variant: "quiet" })}${running ? b("Annuller taleropdeling", "tx-who-cancel", { variant: "quiet" }) : ""}${d.diarization ? `<span class="muted">${count} ${count === 1 ? "taler" : "talere"} · på enheden</span>` : ""}${d.diarization_error ? notice(d.diarization_error, "error") : ""}`;
+  }
+  function whoTurns(d) {
+    if (!d.diarization) return "";
+    return `<details class="tx-who-turns"><summary>Talerintervaller · Who</summary><p class="muted">Stemmer navngives Taler 1, Taler 2 osv. Overlap og usikre ord kan stå uden én taler. ${d.transcript.timing !== "word" ? "Uden ordtidskoder kan vi ikke fordele teksten præcist mellem talerne." : "Rettelser ændrer ikke originalens talermarkeringer."}</p>${d.diarization.turns.map((t) => `<div class="tx-who-turn">${b(d.speakers[t.speaker] || t.speaker, "tx-speaker", { variant: "quiet", attrs: `data-id="${e(t.speaker)}"` })}${b(`${stamp(t.start)}–${stamp(t.end)}`, "tx-seek", { variant: "quiet", attrs: `data-time="${t.start}"` })}</div>`).join("")}</details>`;
+  }
+  function whoDialog() {
+    const status = tx.whoStatus,
+      d = doc(),
+      running = d?.who_busy || tx.whoBusy.has(d?.id);
+    if (!d) return;
+    host.modal(
+      "Taleropdeling med Who",
+      `<p>Find hvem der taler hvornår. Lyden behandles lokalt; transskriptionen, rettelser og originalfil bevares.</p><p class="muted">Who by <a href="https://desertant.com" data-action="tx-who-link" data-id="vendor">Desert Ant Labs</a> · model v0.3.1. Op til fire stemmer pr. fem minutter; stemmer matches på tværs af længere optagelser. Modellen kan forveksle stemmer, især ved overlap, støj og korte indspark. Korte eller stille klip kan give ingen talere.</p><p class="muted">SDK’et sender en installations-id samt model-, platform- og appoplysninger til Desert Ant Labs’ licenssystem. Lyd og tekst sendes ikke. <a href="https://license.desertant.com/1.0" data-action="tx-who-link" data-id="license">Licens og brugstælling</a>.</p>${status?.error ? notice(status.error, "error") : ""}${tx.whoDownload ? `<p role="status">Henter og klargør Who…</p>${b("Annuller download", "tx-who-download-cancel")}` : running ? `<p role="status">Finder talere. Du kan fortsætte med resten af Vara.</p>${b("Annuller", "tx-who-cancel")}` : status?.ready ? b(d.diarization ? "Find talere igen" : "Find talere", "tx-who-run", { variant: "primary" }) : status?.available ? `<p>Hent modellen før første brug (omkring 81 MB på Mac). Download og brug sker under den viste licens.</p>${b("Hent Who", "tx-who-download", { variant: "primary" })}` : ""}`,
+    );
+  }
   function transcriptText(d) {
-    const t = d.transcript;
+    const t = d.speaker_transcript || d.transcript;
     if (!t)
       return empty(
         stage[d.stage],
@@ -114,7 +137,7 @@
     const timed = d.transcript?.timing || "none",
       draft = tx.drafts.get(d.id),
       hasMedia = !!tx.media[d.id];
-    return `<section class="tx-library"><header class="pane-toolbar"><h1 id="view-title" tabindex="-1">Transskribering</h1></header><div class="tx-library-controls">${b("Tilføj filer", "tx-import", { glyph: "plus" })}${f({ id: "tx-query", label: "Søg i transskriptioner", type: "search", value: tx.query })}</div><ul class="tx-library-list">${filtered().map(fileRow).join("") || '<li class="muted">Ingen match</li>'}</ul><p class="tx-library-note">Lyd og video · Lokale afspilningskopier</p></section><section class="tx-detail" aria-label="Valgt transskription"><header class="tx-detail-header"><div><button class="tx-title" data-action="tx-rename" aria-label="Omdøb ${e(d.title)}"><h2>${e(d.title)}</h2>${icon("edit")}</button><p class="muted">${e(d.source_name)} · ${e(d.language || "Automatisk")} ${d.duration ? " · " + stamp(d.duration) : ""}</p></div><div class="actions"><span id="tx-save-status" class="muted" role="status">${tx.saving.has(d.id) ? "Gemmer…" : draft || (d.transcript && d.stage === "failed") ? "Ikke gemt" : "Gemt"}</span>${d.transcript ? ib("copy", "Kopiér transskription", "tx-copy") : ""}${ib("trash", "Slet transskription", "tx-delete", `data-id="${e(d.id)}"`)}${b("Eksportér", "tx-export", { variant: "primary", attrs: d.transcript ? "" : "disabled" })}</div></header><nav class="tx-tabs" aria-label="Dokumentvisning"><button data-action="tx-tab" data-id="transcript" class="${tx.tab === "transcript" ? "is-current" : ""}" aria-pressed="${tx.tab === "transcript"}">Transskription</button><button data-action="tx-tab" data-id="ai" class="${tx.tab === "ai" ? "is-current" : ""}" aria-pressed="${tx.tab === "ai"}">AI-bearbejdning</button>${d.transcript ? b(tx.original ? "Vis rettet tekst" : "Vis original", "tx-original", { variant: "quiet" }) : ""}</nav><div class="tx-reading"><div id="tx-errors">${error()}</div>${d.error && d.transcript ? notice(d.error, "error", b("Gem resultat igen", "tx-persist")) : ""}<p class="tx-provenance"><span class="status-dot"></span>${e(d.engine.locality === "on_device" ? "På enheden" : d.engine.label)} · ${timed === "word" ? "Ordtidskoder" : timed === "segment" ? "Tidskoder pr. afsnit" : "Ingen tidskoder"}</p>${d.engine.provider === "eleven_labs" ? '<p class="muted tx-format-note">Talere genkendes pr. lydstykke på op til fem minutter. Navne forbindes ikke automatisk mellem lydstykker.</p>' : ""}${d.transcript && tx.tab === "transcript" ? `<div class="tx-text-tools">${b(draft || d.edited_text !== null ? "Gem igen" : "Redigér tekst", draft || d.edited_text !== null ? "tx-save" : "tx-edit", { variant: "quiet" })}${draft || d.edited_text !== null ? b("Gendan original", "tx-reset", { variant: "quiet" }) : ""}${timed !== "none" ? b("Afspil markering", "tx-selection", { variant: "quiet" }) : ""}</div>` : ""}${tx.tab === "ai" ? aiView(d) : transcriptText(d)}${d.transcript && tx.tab === "transcript" ? '<p class="tx-reading-help muted">Klik på et ord eller en tidskode for at lytte herfra. Originalen bevares, når du retter teksten.</p>' : ""}</div><footer class="tx-player"><div class="tx-player-actions">${b("−10 s", "tx-rewind", { variant: "quiet", attrs: hasMedia ? "" : "disabled" })}${b(audio.paused ? "Afspil" : "Pause", "tx-play", { variant: "primary", attrs: hasMedia ? "" : "disabled" })}${b("+10 s", "tx-forward", { variant: "quiet", attrs: hasMedia ? "" : "disabled" })}</div><span id="tx-time" class="tx-time">${stamp(audio.currentTime)} / ${stamp(d.duration)}</span><div class="tx-seek-track"><div class="tx-waveform" aria-hidden="true">${(d.waveform || []).map((v) => `<i style="height:${Math.max(2, Math.min(1, v) * 30)}px"></i>`).join("")}</div><input id="tx-position" type="range" min="0" max="${d.duration || 1}" step="0.1" value="${audio.currentTime || 0}" aria-label="Afspilningsposition" ${hasMedia ? "" : "disabled"}></div><label class="sr-only" for="tx-speed">Afspilningshastighed</label><select id="tx-speed">${[0.75, 1, 1.25, 1.5, 2].map((n) => `<option ${audio.playbackRate === n ? "selected" : ""} value="${n}">${n}×</option>`).join("")}</select>${!hasMedia ? '<p class="tx-missing">Afspilningskopien mangler. Teksten er bevaret.</p>' : ""}</footer></section>`;
+    return `<section class="tx-library"><header class="pane-toolbar"><h1 id="view-title" tabindex="-1">Transskribering</h1></header><div class="tx-library-controls">${b("Tilføj filer", "tx-import", { glyph: "plus" })}${f({ id: "tx-query", label: "Søg i transskriptioner", type: "search", value: tx.query })}</div><ul class="tx-library-list">${filtered().map(fileRow).join("") || '<li class="muted">Ingen match</li>'}</ul><p class="tx-library-note">Lyd og video · Lokale afspilningskopier</p></section><section class="tx-detail" aria-label="Valgt transskription"><header class="tx-detail-header"><div><button class="tx-title" data-action="tx-rename" aria-label="Omdøb ${e(d.title)}"><h2>${e(d.title)}</h2>${icon("edit")}</button><p class="muted">${e(d.source_name)} · ${e(d.language || "Automatisk")} ${d.duration ? " · " + stamp(d.duration) : ""}</p></div><div class="actions"><span id="tx-save-status" class="muted" role="status">${tx.saving.has(d.id) ? "Gemmer…" : draft || (d.transcript && d.stage === "failed") ? "Ikke gemt" : "Gemt"}</span>${d.transcript ? ib("copy", "Kopiér transskription", "tx-copy") : ""}${ib("trash", "Slet transskription", "tx-delete", `data-id="${e(d.id)}"`)}${b("Eksportér", "tx-export", { variant: "primary", attrs: d.transcript ? "" : "disabled" })}</div></header><nav class="tx-tabs" aria-label="Dokumentvisning"><button data-action="tx-tab" data-id="transcript" class="${tx.tab === "transcript" ? "is-current" : ""}" aria-pressed="${tx.tab === "transcript"}">Transskription</button><button data-action="tx-tab" data-id="ai" class="${tx.tab === "ai" ? "is-current" : ""}" aria-pressed="${tx.tab === "ai"}">AI-bearbejdning</button>${d.transcript ? b(tx.original ? "Vis rettet tekst" : "Vis original", "tx-original", { variant: "quiet" }) : ""}</nav><div class="tx-reading"><div id="tx-errors">${error()}</div>${d.error && d.transcript ? notice(d.error, "error", b("Gem resultat igen", "tx-persist")) : ""}<p class="tx-provenance"><span class="status-dot"></span>${e(d.engine.locality === "on_device" ? "På enheden" : d.engine.label)} · ${timed === "word" ? "Ordtidskoder" : timed === "segment" ? "Tidskoder pr. afsnit" : "Ingen tidskoder"}</p>${d.engine.provider === "eleven_labs" ? '<p class="muted tx-format-note">Talere genkendes pr. lydstykke på op til fem minutter. Navne forbindes ikke automatisk mellem lydstykker.</p>' : ""}${d.transcript && tx.tab === "transcript" ? `<div id="tx-who-tools" class="tx-text-tools">${whoControls(d)}</div>${whoTurns(d)}<div class="tx-text-tools">${b(draft || d.edited_text !== null ? "Gem igen" : "Redigér tekst", draft || d.edited_text !== null ? "tx-save" : "tx-edit", { variant: "quiet" })}${draft || d.edited_text !== null ? b("Gendan original", "tx-reset", { variant: "quiet" }) : ""}${timed !== "none" ? b("Afspil markering", "tx-selection", { variant: "quiet" }) : ""}</div>` : ""}${tx.tab === "ai" ? aiView(d) : transcriptText(d)}${d.transcript && tx.tab === "transcript" ? '<p class="tx-reading-help muted">Klik på et ord eller en tidskode for at lytte herfra. Originalen bevares, når du retter teksten.</p>' : ""}</div><footer class="tx-player"><div class="tx-player-actions">${b("−10 s", "tx-rewind", { variant: "quiet", attrs: hasMedia ? "" : "disabled" })}${b(audio.paused ? "Afspil" : "Pause", "tx-play", { variant: "primary", attrs: hasMedia ? "" : "disabled" })}${b("+10 s", "tx-forward", { variant: "quiet", attrs: hasMedia ? "" : "disabled" })}</div><span id="tx-time" class="tx-time">${stamp(audio.currentTime)} / ${stamp(d.duration)}</span><div class="tx-seek-track"><div class="tx-waveform" aria-hidden="true">${(d.waveform || []).map((v) => `<i style="height:${Math.max(2, Math.min(1, v) * 30)}px"></i>`).join("")}</div><input id="tx-position" type="range" min="0" max="${d.duration || 1}" step="0.1" value="${audio.currentTime || 0}" aria-label="Afspilningsposition" ${hasMedia ? "" : "disabled"}></div><label class="sr-only" for="tx-speed">Afspilningshastighed</label><select id="tx-speed">${[0.75, 1, 1.25, 1.5, 2].map((n) => `<option ${audio.playbackRate === n ? "selected" : ""} value="${n}">${n}×</option>`).join("")}</select>${!hasMedia ? '<p class="tx-missing">Afspilningskopien mangler. Teksten er bevaret.</p>' : ""}</footer></section>`;
   }
   function aiView(d) {
     return `<div class="tx-ai"><h3>Bearbejd teksten</h3><p class="muted">Oprydning, resumé eller dine egne instruktioner. Den tidskodede original ændres ikke.</p>${Vara.views.modelPicker(main, "tx-ai-engine", "Tekstmodel", "text", tx.aiEngine || d.ai_engine?.id || main.data.settings.general_engine)}${f({ id: "tx-ai-prompt", label: "Instruktioner til AI", rows: true, value: tx.aiPrompt || "Lav et kort resumé af transskriptionen." })}<p class="muted" id="tx-ai-destination">${aiDestination()}</p>${b(tx.aiBusy.has(d.id) ? "Bearbejder…" : "Bearbejd tekst", "tx-ai", { variant: "primary", attrs: !d.transcript || tx.aiBusy.has(d.id) ? "disabled" : "" })}${tx.aiBusy.has(d.id) ? b("Annuller", "tx-ai-cancel") : ""}${d.ai_text ? `<article class="tx-ai-result"><h3>AI-resultat</h3><p dir="auto">${e(d.ai_text)}</p>${b("Kopiér AI-tekst", "tx-copy-ai", { glyph: "copy" })}</article>` : ""}</div>`;
@@ -216,6 +239,67 @@
       d = doc();
     tx.error = null;
     switch (a) {
+      case "tx-who-link":
+        await host.api("file_who_link", { target: id });
+        break;
+      case "tx-who-open":
+        tx.whoStatus = await host.api("file_who_status");
+        whoDialog();
+        break;
+      case "tx-who-download":
+        tx.whoDownload = true;
+        whoDialog();
+        try {
+          await host.api("file_who_download", { acknowledge_license: true });
+          tx.whoStatus = await host.api("file_who_status");
+        } catch (error) {
+          tx.whoStatus = {
+            ...tx.whoStatus,
+            error: String(error.message || error),
+          };
+        } finally {
+          const stillOpen = document.querySelector(
+            '#modal[open] [data-action="tx-who-download-cancel"]',
+          );
+          tx.whoDownload = false;
+          if (stillOpen && main.page === "transcription") whoDialog();
+        }
+        break;
+      case "tx-who-download-cancel":
+        await host.api("file_who_cancel", { download: true });
+        break;
+      case "tx-who-cancel":
+        await host.api("file_who_cancel", { id: d.id });
+        host.closeModal();
+        break;
+      case "tx-who-run": {
+        await flush();
+        const target = d.id;
+        tx.whoBusy.add(target);
+        host.closeModal();
+        draw();
+        let failure = null;
+        try {
+          await host.api("file_who", { id: target });
+          if (tx.selected === target) tx.original = true;
+        } catch (error) {
+          failure = String(error.message || error);
+        } finally {
+          tx.whoBusy.delete(target);
+          await reload();
+        }
+        // Persisted Who failures have their own single contextual notice.
+        // Cancellation retains the document without an error toast.
+        if (
+          failure &&
+          !failure.includes("Annulleret") &&
+          !doc()?.diarization_error
+        ) {
+          tx.error = failure;
+          draw();
+        }
+        break;
+      }
       case "tx-pick": {
         const files = await host.api("file_pick");
         for (const file of files)
@@ -623,6 +707,8 @@
               ? "Ikke gemt"
               : "Gemt",
         );
+      const who = document.getElementById("tx-who-tools");
+      if (who) who.innerHTML = whoControls(d);
       const errors = document.getElementById("tx-errors");
       if (errors) errors.innerHTML = error();
       const list = document.querySelector(".tx-library-list");

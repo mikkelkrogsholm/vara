@@ -130,6 +130,41 @@ async function run(page) {
                   ? {}
                   : { "file-1": "/private/player.wav" },
               };
+            case "file_who_status":
+              return { available: true, ready: !!window.txWhoReady };
+            case "file_who_download":
+              if (!payload.acknowledge_license)
+                throw Error("Læs licensen først.");
+              if (window.txWhoDownloadWait)
+                await new Promise(
+                  (resolve) => (window.txWhoFinishDownload = resolve),
+                );
+              window.txWhoReady = true;
+              return { ready: true };
+            case "file_who":
+              if (window.txWhoFails)
+                throw Error("Who kunne ikke finde talere. Teksten er bevaret.");
+              d.diarization = {
+                model: "Who by Desert Ant Labs",
+                version: "v0.3.1",
+                turns: [
+                  { speaker: "who-0", start: 0.1, end: 1.8 },
+                  { speaker: "who-1", start: 2, end: 4 },
+                ],
+              };
+              d.speaker_transcript = structuredClone(d.transcript);
+              d.speaker_transcript.segments.forEach((s, i) => {
+                s.speaker = "who-" + i;
+                s.words.forEach((w) => (w.speaker = s.speaker));
+              });
+              d.speakers["who-0"] = "Taler 1";
+              d.speakers["who-1"] = "Taler 2";
+              emit();
+              return d.diarization;
+            case "file_who_cancel":
+              if (d) d.who_busy = false;
+              emit();
+              return null;
             case "file_pick":
               return [
                 {
@@ -487,6 +522,110 @@ async function run(page) {
     "Missing audio preserves text",
   );
   checks.push("Missing playback source");
+  await page.evaluate(() => {
+    window.txMissingAudio = false;
+    window.txFixtureEvents["vara:files"]({ payload: null });
+  });
+  const originalBeforeWho = await page.evaluate(() =>
+    JSON.stringify(window.txFixtureDocs[0].transcript),
+  );
+  await act("tx-who-open").click();
+  assert(
+    (await page.locator("dialog").innerText()).includes("installations-id"),
+    "Who usage reporting disclosed before download/use",
+  );
+  assert(
+    (await page.locator("dialog").innerText()).includes(
+      "Lyd og tekst sendes ikke",
+    ),
+    "Who data boundary explicit",
+  );
+  await act("tx-who-download").click();
+  await act("tx-who-run").waitFor();
+  await act("tx-who-run").click();
+  await page.waitForSelector('.tx-segment-meta [data-id="who-0"]');
+  assert(
+    (await page.locator("#tx-who-tools").innerText()).includes("2 talere"),
+    "Who result visible",
+  );
+  assert(
+    (await page.evaluate(() =>
+      JSON.stringify(window.txFixtureDocs[0].transcript),
+    )) === originalBeforeWho,
+    "Who never mutates source ASR",
+  );
+  assert(
+    (await page.evaluate(() => window.txFixtureDocs[0].edited_text)) !== null,
+    "Who preserves corrections",
+  );
+  await page.locator(".tx-who-turns summary").click();
+  assert(
+    (await page.locator(".tx-who-turn").count()) === 2,
+    "Independent speaker intervals accessible",
+  );
+  await page.locator('.tx-segment-meta [data-id="who-0"]').click();
+  await page.locator("#tx-speaker-input").fill("Vært");
+  await act("tx-speaker-save").click();
+  assert(
+    (await page.locator(".tx-segment-meta").first().innerText()).includes(
+      "Vært",
+    ),
+    "Who speaker can be renamed",
+  );
+  checks.push(
+    "Optional Who setup, usage disclosure, speaker turns, rename and immutable source/corrections",
+  );
+  await page.evaluate(() => (window.txWhoFails = true));
+  await act("tx-who-open").click();
+  await act("tx-who-run").click();
+  await page.waitForFunction(() =>
+    document
+      .querySelector(".tx-reading")
+      .textContent.includes("Who kunne ikke"),
+  );
+  assert(
+    (await page.locator('.tx-segment-meta [data-id="who-0"]').count()) === 1,
+    "Failed rerun retains previous labels",
+  );
+  await act("tx-dismiss").click();
+  await page.evaluate(() => {
+    window.txWhoFails = false;
+    window.txFixtureDocs[0].who_busy = true;
+    window.txFixtureEvents["vara:files"]({ payload: null });
+  });
+  await act("tx-who-cancel").click();
+  assert(
+    (await page.evaluate(() =>
+      window.txFixtureCalls.some((c) => c.action === "file_who_cancel"),
+    )) === true,
+    "Who cancellation uses separate job",
+  );
+  checks.push(
+    "Who failure/cancellation preserve the document and previous successful result",
+  );
+  await page.waitForFunction(
+    () =>
+      !document
+        .querySelector("#tx-who-tools")
+        .textContent.includes("Finder talere"),
+  );
+  await page.evaluate(() => {
+    window.txWhoReady = false;
+    window.txWhoDownloadWait = true;
+  });
+  await act("tx-who-open").click();
+  await act("tx-who-download").click();
+  await page.locator('dialog button[aria-label="Luk dialog"]').click();
+  await page.evaluate(() => window.txWhoFinishDownload());
+  await page.waitForFunction(() => window.txWhoReady === true);
+  assert(
+    !(await page.locator("dialog").evaluate((n) => n.open)),
+    "Late download completion must not reopen a dismissed dialog",
+  );
+  checks.push(
+    "Who model setup does not reclaim focus after its dialog is dismissed",
+  );
+
   for (const width of [1586, 1280, 1040, 720, 320]) {
     await page.setViewportSize({ width, height: 992 });
     assert(

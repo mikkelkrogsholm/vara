@@ -231,3 +231,19 @@ recorder remain on Diktering. No settings-schema or database migration is added.
 
 Implementation evidence belongs to `reports/transcription` and its verification
 report. Model capabilities and platform acceptance are not inferred from this map.
+
+## Who speaker diarization
+
+`vara-engine::who` wraps the pinned official desert-ant-core C ABI in an isolated
+child of the signed executable. `who::worker_entry` runs before desktop startup.
+Cancellation kills and reaps that registered child. SDK license/usage reporting
+is retained and flushed; audio/text do not enter the reporting payload.
+`Files` owns explicit status/download/run/cancel commands and atomic publication;
+its derived speaker transcript cache is rebuilt from persisted turns at startup.
+Original ASR and corrections remain separate from `Diarization`/`SpeakerTurn`.
+
+The macOS packaging script builds the unmodified SDK at a pinned commit, signs
+its dynamic library, and bundles it as an optional runtime. No model weights or
+old Swift application source are bundled. Missing/incompatible runtimes report
+unavailability. Windows/Linux use the same Rust/C ABI but require the official
+platform SDK/LiteRT artifacts and target runtime acceptance before distribution.

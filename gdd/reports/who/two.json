@@ -1,0 +1,26 @@
+{
+  "model": "Who by Desert Ant Labs",
+  "turns": [
+    {
+      "end": 9.2,
+      "speaker": "who-0",
+      "start": 0.0
+    },
+    {
+      "end": 20.06,
+      "speaker": "who-1",
+      "start": 9.67
+    },
+    {
+      "end": 29.81,
+      "speaker": "who-0",
+      "start": 20.55
+    },
+    {
+      "end": 40.67000000000001,
+      "speaker": "who-1",
+      "start": 30.28
+    }
+  ],
+  "version": "v0.3.1"
+}

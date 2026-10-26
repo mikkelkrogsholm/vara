@@ -1250,3 +1250,19 @@ recording HUD remain unchanged. The sidebar's shortcut status explicitly refers
 to dictation while this tab is open; it must not contradict a file's cloud choice.
 Native opening/saving uses platform dialogs. Original files are never deleted by
 library deletion. Missing playback media is a recoverable state with readable text.
+
+### Optional local speaker labeling — Who
+
+Add “Find talere” as a quiet action in the transcription editor. Reuse the
+existing dialog, status/notice, buttons and editable speaker/time margin. The
+Who dialog shows explicit local processing, supplier/model/version, attribution,
+license link and SDK usage metadata before download/use. Download/preparation
+and inference are indeterminate stages with a direct cancellation action.
+
+Keep the existing transcript and corrections readable throughout. Successful
+labeling opens the annotated original; corrections are retained. A native
+`details` disclosure “Talerintervaller · Who” exposes actual overlapping intervals
+and uses the same speaker rename and seek buttons. Untimed transcripts show
+intervals without fabricated word assignment. Errors or zero detected speakers
+explain the limitation and keep prior data. No extra global navigation or new
+visual language is introduced.

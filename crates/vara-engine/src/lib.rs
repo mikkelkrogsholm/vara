@@ -6,6 +6,7 @@ pub mod models;
 mod parakeet;
 mod remote;
 mod transcription;
+pub mod who;
 pub use models::*;
 use std::{
     path::{Path, PathBuf},

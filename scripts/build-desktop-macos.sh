@@ -12,6 +12,7 @@ fi
 export APPLE_SIGNING_IDENTITY
 export CARGO_INCREMENTAL=0
 export CARGO_PROFILE_RELEASE_DEBUG=0
+sh scripts/build-who-runtime.sh
 cargo tauri build --bundles app
 codesign --verify --deep --strict target/release/bundle/macos/Vara.app
 

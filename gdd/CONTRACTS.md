@@ -218,6 +218,8 @@ Own imported-source provenance, stage, preserved transcript, optional correction
 | `ai_text` | string? |
 | `revision` | integer |
 | `transcript` | file_transcript ID? |
+| `diarization` | diarization ID? |
+| `diarization_error` | string? |
 
 ### Transcript segment
 `entity.file_segment`
@@ -244,6 +246,28 @@ Original text and actual timing precision. Corrections and AI never mutate this 
 | `timing` | none  /  segment  /  word |
 | `timing_source` | none  /  asr  /  alignment |
 | `segments` | list<file_segment ID> |
+
+### Speaker interval
+`entity.speaker_turn`
+
+Independent Who interval; different speakers may overlap. Uncertain text is not assigned by guesswork.
+
+| Field | Type |
+| --- | --- |
+| `speaker_id` | string |
+| `start_seconds` | number |
+| `end_seconds` | number |
+
+### Local speaker annotation
+`entity.diarization`
+
+Separate from immutable source ASR and corrections; pinned model provenance and real intervals.
+
+| Field | Type |
+| --- | --- |
+| `model` | string |
+| `version` | string |
+| `turns` | list<speaker_turn ID> |
 
 ## Session
 
@@ -648,6 +672,25 @@ Stream/bound normalized audio, return original text plus actual word/segment est
 
 Scenario IDs: `scenario.file_recognize.authorization`, `scenario.file_recognize.boundaries`, `scenario.file_recognize.concurrency`, `scenario.file_recognize.atomicity`.
 
+### Run official Who runtime
+`action.engine_diarize`
+
+**Input:** `audio_handle`: string.
+
+**Output:** diarization ID.
+
+Run pinned official Who C ABI with normalized local audio in an isolated registered child. Keep SDK reporting intact and return model/version plus overlapping real speaker intervals. Never upload audio/text or switch providers.
+
+**Guarantee:** Run pinned official Who C ABI with normalized local audio in an isolated registered child. Keep SDK reporting intact and return model/version plus overlapping real speaker intervals. Never upload audio/text or switch providers.
+
+**Effects:** Read local normalized audio/model files; explicit model downloads contact supplier/CDN. Official SDK license/usage requests contain installation/app/model/platform metadata, never audio/text. Write independent local annotation state.
+
+| Error | Required behavior |
+| --- | --- |
+| `Unavailable` | Validate C ABI payload length, speakers, finite/bounded intervals and source duration. Surface native crashes and empty results honestly. |
+
+Scenario IDs: `scenario.engine_diarize.authorization`, `scenario.engine_diarize.boundaries`, `scenario.engine_diarize.concurrency`, `scenario.engine_diarize.atomicity`.
+
 ## Preferences
 
 ### Resolve invocation processing plan
@@ -933,6 +976,25 @@ Persist optimistic revisions and corrections separately from original. Play time
 | `Unavailable` | Storage/AI/playback/export failure preserves original and recoverable work; unavailable audio does not remove text. |
 
 Scenario IDs: `scenario.file_document.authorization`, `scenario.file_document.boundaries`, `scenario.file_document.concurrency`, `scenario.file_document.atomicity`.
+
+### Find speakers for a file document
+`action.file_diarize`
+
+**Input:** `document`: file_document ID.
+
+**Output:** diarization ID.
+
+Explicit optional Who setup and speaker labeling. Preserve source ASR, edits and successful prior labels on failure/empty output. Publish only validated, noncancelled results. Project unambiguous original word/segment speaker labels without inventing alignment.
+
+**Guarantee:** Explicit optional Who setup and speaker labeling. Preserve source ASR, edits and successful prior labels on failure/empty output. Publish only validated, noncancelled results. Project unambiguous original word/segment speaker labels without inventing alignment.
+
+**Effects:** Read local normalized audio/model files; explicit model downloads contact supplier/CDN. Official SDK license/usage requests contain installation/app/model/platform metadata, never audio/text. Write independent local annotation state.
+
+| Error | Required behavior |
+| --- | --- |
+| `Unavailable` | Missing runtime/model, empty turns, invalid times or storage failure preserve source, corrections and prior successful annotation. |
+
+Scenario IDs: `scenario.file_diarize.authorization`, `scenario.file_diarize.boundaries`, `scenario.file_diarize.concurrency`, `scenario.file_diarize.atomicity`.
 
 ## Verification boundary
 

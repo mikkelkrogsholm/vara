@@ -6193,6 +6193,7 @@ dependencies = [
  "encoding_rs",
  "futures-util",
  "hound",
+ "libloading 0.8.9",
  "parking_lot",
  "rayon",
  "reqwest 0.12.28",

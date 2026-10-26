@@ -84,5 +84,6 @@ Existing dictation also produced a new actual user result with delivery
 `inserted` in Codex during the walkthrough, and its history survived the restart.
 This is observed real usage, not a claim that synthetic voice was injected.
 
-Local speaker diarization is not implemented. Who remains a candidate requiring
-a separate integration and Danish quality test, as specified from the outset.
+This report covers the initial transcription delivery. Optional Who speaker
+diarization was subsequently integrated on 2026-10-26; see the separate
+[Who verification](../who/README.md), including its short-Danish-clip limitation.

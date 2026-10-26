@@ -2,7 +2,7 @@
 use parking_lot::Mutex;
 use serde_json::{Value, json};
 use std::{collections::BTreeMap, path::PathBuf, sync::Arc};
-use tauri::Emitter;
+use tauri::{Emitter, Manager};
 use vara_core::*;
 use vara_engine::{Cancellation, Engines};
 type Result<T> = std::result::Result<T, String>;
@@ -11,6 +11,8 @@ struct Inner {
     documents: Vec<TranscriptionDocument>,
     cancel: BTreeMap<String, Cancellation>,
     worker: bool,
+    // Derived once per source/Who result, not on every progress refresh.
+    speaker_transcripts: BTreeMap<String, Transcript>,
 }
 pub struct Files {
     inner: Mutex<Inner>,
@@ -47,6 +49,15 @@ impl Files {
                 let _ = std::fs::remove_file(path);
             }
         }
+        let speaker_transcripts = documents
+            .iter()
+            .filter_map(|d| {
+                d.diarization
+                    .as_ref()
+                    .zip(d.transcript.as_ref())
+                    .map(|(who, t)| (d.id.clone(), who.annotate(t)))
+            })
+            .collect();
         let engines = Engines::new(root.join("models"))?;
         Ok(Arc::new(Self {
             inner: Mutex::new(Inner {
@@ -54,6 +65,7 @@ impl Files {
                 documents,
                 cancel: BTreeMap::new(),
                 worker: false,
+                speaker_transcripts,
             }),
             root: media,
             engines,
@@ -103,6 +115,18 @@ impl Files {
         work(&mut d);
         Self::save(&mut i, d)
     }
+    fn who_library(&self) -> Result<PathBuf> {
+        Ok(self
+            .app
+            .path()
+            .resource_dir()
+            .map_err(|_| "Ressourcemappen mangler.")?
+            .join("runtime/who")
+            .join(vara_engine::who::library_name()))
+    }
+    fn who_directory(&self) -> PathBuf {
+        self.root.parent().unwrap().join("models/who")
+    }
     pub fn stop(&self) {
         let i = self.inner.lock();
         for c in i.cancel.values() {
@@ -115,8 +139,150 @@ impl Files {
             "file_list" => {
                 let i = self.inner.lock();
                 return Ok(
-                    json!({"documents":i.documents,"media":i.documents.iter().filter(|d|self.path(&d.id).is_file()).map(|d|(d.id.clone(),self.path(&d.id).to_string_lossy().to_string())).collect::<BTreeMap<_,_>>()}),
+                    json!({"documents":i.documents.iter().map(|d| { let mut value=serde_json::to_value(d).unwrap(); value["speaker_transcript"]=i.speaker_transcripts.get(&d.id).map(|t|serde_json::to_value(t).unwrap()).unwrap_or(Value::Null); value["who_busy"]=json!(i.cancel.contains_key(&format!("who:{}",d.id))); value }).collect::<Vec<_>>(),"media":i.documents.iter().filter(|d|self.path(&d.id).is_file()).map(|d|(d.id.clone(),self.path(&d.id).to_string_lossy().to_string())).collect::<BTreeMap<_,_>>()}),
                 );
+            }
+            "file_who_link" => {
+                let url = match p["target"].as_str() {
+                    Some("license") => "https://license.desertant.com/1.0",
+                    Some("vendor") => "https://desertant.com",
+                    _ => return Err("Ukendt Who-link.".into()),
+                };
+                #[cfg(target_os = "macos")]
+                let result = std::process::Command::new("/usr/bin/open").arg(url).spawn();
+                #[cfg(target_os = "windows")]
+                let result = std::process::Command::new("cmd")
+                    .args(["/C", "start", "", url])
+                    .spawn();
+                #[cfg(not(any(target_os = "macos", target_os = "windows")))]
+                let result = std::process::Command::new("xdg-open").arg(url).spawn();
+                result.map_err(|_| "Linket kunne ikke åbnes i din browser.")?;
+            }
+            "file_who_status" => {
+                let library = self.who_library()?;
+                return Ok(vara_engine::who::run(
+                    &library,
+                    &self.who_directory(),
+                    "status",
+                    None,
+                    &Cancellation::default(),
+                )
+                .unwrap_or_else(|e| json!({"available":false,"ready":false,"error":e})));
+            }
+            "file_who_cancel" => {
+                let key = if p["download"] == true {
+                    "who:download".to_owned()
+                } else {
+                    format!("who:{}", id()?)
+                };
+                if let Some(c) = self.inner.lock().cancel.get(&key) {
+                    c.cancel();
+                }
+            }
+            "file_who_download" | "file_who" => {
+                let download = action == "file_who_download";
+                if download && p["acknowledge_license"] != true {
+                    return Err("Læs Who-licensen før download.".into());
+                }
+                let key = if download {
+                    "who:download".to_owned()
+                } else {
+                    format!("who:{}", id()?)
+                };
+                let document = if download {
+                    None
+                } else {
+                    let i = self.inner.lock();
+                    let d = i
+                        .documents
+                        .iter()
+                        .find(|d| Some(d.id.as_str()) == p["id"].as_str())
+                        .cloned()
+                        .ok_or("Dokumentet mangler.")?;
+                    if d.stage.busy() || d.transcript.is_none() {
+                        return Err("Vent på transskriptionen, før du finder talere.".into());
+                    }
+                    Some(d)
+                };
+                let cancel = Cancellation::default();
+                {
+                    let mut i = self.inner.lock();
+                    if i.cancel.contains_key(&key) {
+                        return Err("Who arbejder allerede. Vent eller annuller.".into());
+                    }
+                    i.cancel.insert(key.clone(), cancel.clone());
+                }
+                self.emit();
+                let result = (|| -> Result<Value> {
+                    let library = self.who_library()?;
+                    let audio = document.as_ref().map(|d| self.path(&d.id));
+                    let value = vara_engine::who::run(
+                        &library,
+                        &self.who_directory(),
+                        if download { "download" } else { "diarize" },
+                        audio.as_deref(),
+                        &cancel,
+                    )?;
+                    if let Some(d) = &document {
+                        let who: Diarization = serde_json::from_value(value.clone())
+                            .map_err(|_| "Who returnerede ugyldige data.")?;
+                        who.validate(d.duration).map_err(|e| e.to_string())?;
+                        if who.turns.is_empty() {
+                            return Err("Who fandt ingen tydelige talere. Prøv en længere eller tydeligere optagelse. Tekst og tidligere taleropdeling er bevaret.".into());
+                        }
+                        let annotated = who.annotate(d.transcript.as_ref().unwrap());
+                        let mut i = self.inner.lock();
+                        cancel.check()?;
+                        let mut current = i
+                            .documents
+                            .iter()
+                            .find(|v| v.id == d.id)
+                            .cloned()
+                            .ok_or("Dokumentet er slettet.")?;
+                        // Recognition retry must not receive labels from an earlier source/result.
+                        if current.stage != FileStage::Ready
+                            || current.created_at != d.created_at
+                            || current.transcript.as_ref().map(|t| &t.text)
+                                != d.transcript.as_ref().map(|t| &t.text)
+                        {
+                            return Err("Transskriptionen blev ændret. Find talere igen.".into());
+                        }
+                        for turn in &who.turns {
+                            let name = format!(
+                                "Taler {}",
+                                turn.speaker
+                                    .strip_prefix("who-")
+                                    .and_then(|n| n.parse::<u32>().ok())
+                                    .unwrap_or(0)
+                                    + 1
+                            );
+                            current.speakers.entry(turn.speaker.clone()).or_insert(name);
+                        }
+                        current.diarization = Some(who);
+                        current.diarization_error = None;
+                        cancel.publish(|| {
+                            Self::save(&mut i, current)?;
+                            i.speaker_transcripts.insert(d.id.clone(), annotated);
+                            Ok(())
+                        })?;
+                    }
+                    Ok(value)
+                })();
+                let mut i = self.inner.lock();
+                i.cancel.remove(&key);
+                if let (Some(d), Err(error)) = (&document, &result) {
+                    if cancel.check().is_ok() {
+                        if let Some(mut current) =
+                            i.documents.iter().find(|v| v.id == d.id).cloned()
+                        {
+                            current.diarization_error = Some(error.clone());
+                            let _ = Self::save(&mut i, current);
+                        }
+                    }
+                }
+                drop(i);
+                self.emit();
+                return result;
             }
             "file_pick" => {
                 let files = rfd::FileDialog::new()
@@ -192,6 +358,8 @@ impl Files {
                         ai_text: None,
                         ai_engine: None,
                         speakers: BTreeMap::new(),
+                        diarization: None,
+                        diarization_error: None,
                     };
                     ids.push(d.id.clone());
                     batch.push(d);
@@ -218,6 +386,9 @@ impl Files {
                     return Err("Filen er ikke under behandling.".into());
                 }
                 if action == "file_delete" {
+                    if let Some(c) = i.cancel.get(&format!("who:{id}")) {
+                        c.cancel();
+                    }
                     if let Some(c) = i.cancel.get(&format!("ai:{id}")) {
                         c.cancel();
                     }
@@ -235,6 +406,7 @@ impl Files {
                     }
                     i.store.delete(id).map_err(|e| e.to_string())?;
                     i.documents.retain(|d| d.id != id);
+                    i.speaker_transcripts.remove(id);
                 } else if let Some(mut d) = i.documents.iter().find(|d| d.id == id).cloned() {
                     if d.stage.busy() {
                         d.stage = FileStage::Cancelled;
@@ -559,6 +731,9 @@ impl Files {
                             }
                             current.speakers = names;
                             current.transcript = Some(t);
+                            i.speaker_transcripts.remove(&current.id);
+                            current.diarization = None;
+                            current.diarization_error = None;
                             current.error = None;
                         }
                         Err(error) => {

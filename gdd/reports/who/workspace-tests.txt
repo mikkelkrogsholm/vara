@@ -1,0 +1,26 @@
+Command: CARGO_INCREMENTAL=0 CARGO_PROFILE_RELEASE_DEBUG=0 cargo test --release --workspace
+
+Running unittests src/lib.rs (target/release/deps/vara_core-5d5067561b725395)
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+Running tests/contracts.rs (target/release/deps/contracts-52b5327591e04c80)
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+Running tests/transcription.rs (target/release/deps/transcription-b4cb102e6369591c)
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+Running unittests src/lib.rs (target/release/deps/vara_desktop-aa59cecaa38974f6)
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+Running unittests src/main.rs (target/release/deps/vara_desktop-b52440d16f333e6d)
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+Running unittests src/lib.rs (target/release/deps/vara_engine-171e8b11249b25ab)
+test result: ok. 15 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.31s
+Running tests/media.rs (target/release/deps/media-2b4f2b3b47ff544c)
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.10s
+Running tests/model_integrity.rs (target/release/deps/model_integrity-f866c635d28ae8ac)
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+Running tests/redux_runtime.rs (target/release/deps/redux_runtime-54afd75f3790640b)
+test result: ok. 0 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.00s
+Running unittests src/lib.rs (target/release/deps/vara_platform-e04cdb97b4a37ded)
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s

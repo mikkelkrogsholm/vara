@@ -93,3 +93,24 @@ Core/media tests run with the workspace. Browser journeys are in
 `tests/transcription.playwright.js` using isolated IPC fixtures. Actual local
 inference can be verified with the `vara-engine` example `file_transcription`.
 See the feature report for evidence, limits and native acceptance status.
+
+## Who local speaker labeling
+
+Open a completed file document and choose **Find talere**. Download Who once via
+the explicit supplier/license/usage disclosure; then run it on the private audio
+copy. Speaker names and original word times remain inspectable; ambiguous words
+are not assigned a single speaker. Empty/failed results retain prior annotations.
+
+The Mac packaging script invokes `scripts/build-who-runtime.sh` (Swift 6.2+ is a
+build dependency of the official SDK, not an end-user requirement). The runtime
+is ignored build output under `src-tauri/runtime/who/`. Model weights remain in
+the app-data model directory and are not part of the app bundle. Who needs
+macOS 15+, while the rest of Vara keeps its existing floor. The same SDK C ABI is
+used by the Rust integration on other platforms; their builds must provide
+`libWhoAndroid.so`/`WhoAndroid.dll` and the official LiteRT dependencies under
+`runtime/who`, then validate on those platforms. Do not ship a Mac dylib as a
+crossplatform runtime.
+
+Verification CLI (normalized mono 16 kHz PCM16 WAV):
+`cargo run --release -p vara-engine --example who -- RUNTIME MODEL_DIR diarize AUDIO.wav`
+The example also accepts `status`, `download`, and `cancel` for lifecycle checks.
