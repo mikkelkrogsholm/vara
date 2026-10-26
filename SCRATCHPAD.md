@@ -19,5 +19,5 @@ Keep the next work bounded to the user's chosen feature or concrete defect.
 Featureliste, første leverance, ordniveau-tidsstempler, redigering/alignment,
 kildehåndtering og åbne tekniske afklaringer er samlet i
 [gdd/TRANSCRIPTION-SPEC.md](gdd/TRANSCRIPTION-SPEC.md). Implementeret på
-`codex/file-transcription`; native slutkontrol afventer en ulåst Mac. Evidens og
+`codex/file-transcription`; native macOS-sluttest bestået 2026-10-26. Evidens og
 begrænsninger: [rapport](gdd/reports/transcription/README.md).

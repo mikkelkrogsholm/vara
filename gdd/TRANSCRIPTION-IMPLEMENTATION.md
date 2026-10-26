@@ -23,16 +23,22 @@ using shared DESIGN.md components while preserving existing dictation.
 - GDD contracts, provenance and design rules reconciled. See detailed evidence in
   [the verification report](reports/transcription/README.md).
 
-## Remaining delivery gate
+## Native delivery verified — 2026-10-26
 
-The Mac has been unlocked, but computer-use app resolution rejects the installed
-`dk.vara.desktop` identity and resolves name/path to obsolete `dk.56n.vara`.
-Native file-picker/save-dialog interaction and playback in macOS WebKit still
-need a manual walkthrough. The user has received the concrete fixture steps.
-Browser playback and native file processing pass separately; these are not a
-claim of that final walkthrough. See `native-ui-attempt.json` in the report folder.
+Computer-use lookup was repaired by removing obsolete Launch Services entries
+and restarting the stale computer-use helper. No permission or safety settings
+were changed. Fresh `cua.getApp("dk.vara.desktop")` now resolves the installed app.
+
+The actual native walkthrough passed: file picker, local Redux inference (31
+words / 10.312s), word seek/playback to end, corrections/autosave, preserved
+original, clipboard paste into a new TextEdit document, TXT save dialog and exact
+export contents, normal quit/relaunch and retained document/correction. A new
+real user dictation during this test was observed with delivery `inserted` in
+Codex. Details: `reports/transcription/native-final.json`.
+
 Cloud rich-timing protocols are contract-tested, not live-account acceptance.
-Windows/Linux native acceptance and forced alignment remain explicit limitations.
+Windows/Linux acceptance, forced alignment and local diarization/Who remain
+explicit scope/capability limits; no new Who integration is claimed.
 
 Work is on `codex/file-transcription`, based on main at `7aba54d`. Cancelled,
 pre-existing untracked dictionary research remains untouched and unpublished.

@@ -1,0 +1,1 @@
+Sluttest: Vara kan transskribere en lydfil, afspille ordene og bevare originalen.

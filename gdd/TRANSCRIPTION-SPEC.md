@@ -1,6 +1,7 @@
 # Transskribering i Vara
 
-Dato: 2026-10-25. Status: implementeret på arbejdsbranchen; native slutkontrol afventer en ulåst Mac.
+Dato: 2026-10-25. Status: implementeret; native macOS-sluttest bestået 2026-10-26.
+Evidens og modelafhængige begrænsninger: [rapport](reports/transcription/README.md).
 
 Brugeren har ønsket en selvstændig transskriberingsfane, der kan tage indhold
 med lyd, og bedt om at få featurelisten og ordniveau-tidsstempler skrevet ned.

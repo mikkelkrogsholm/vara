@@ -4,7 +4,7 @@
     "name": "gdd-validator",
     "version": "0.8.0"
   },
-  "spec_revision": "sha256:a845d3099f1b222ea05118fe2e717c35925ce0b74c6dedb8eeb2bbcf1fedfaa3",
+  "spec_revision": "sha256:dece8596ef7cf115db345c035422afa9c8724f75b25c921db0f2e40418e097a4",
   "profiles": [
     "model"
   ],

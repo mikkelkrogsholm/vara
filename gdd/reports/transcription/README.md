@@ -59,9 +59,10 @@ Symphonia decoder example: https://github.com/pdeljanov/Symphonia/tree/v0.5.5.
   (`browser-checks.json`).
 - Current GDD schema, semantics and record integrity: passed (`model.json`).
   The generated graph is validated separately (`visualization.json`).
-- Native visual interaction remains pending a manual walkthrough. Native picker/save
-  dialogs and playback in macOS WebKit have not been manually exercised. The real
-  native file worker itself passes with a disposable profile (`native-host.json`).
+- Native macOS walkthrough passed on 2026-10-26 (`native-final.json`): actual
+  picker and TXT save dialogs, local inference, word seeking/playback, autosave,
+  original/corrections, clipboard paste into TextEdit and normal quit/relaunch.
+  The earlier isolated native-worker tests remain in `native-host.json`.
 
 ## Installed candidate
 
@@ -72,7 +73,16 @@ The existing personal profile, models and credential store were retained.
 3.43 GiB of build intermediates were removed after installation. This is a local
 signed build, not a notarized public release. No push or merge was performed.
 
-Native UI gate remains open: macOS is now unlocked, but computer use cannot
-resolve the installed Vara app (details in `native-ui-attempt.json`).
-The installed candidate is ready for file-pick → local transcription → playback
-→ edit → copy/export, plus a normal dictation smoke test in another application.
+Native UI gate passed on 2026-10-26. The stale computer-use helper was restarted
+after removing obsolete Launch Services entries; the installed app now resolves
+by its correct ID. No app permissions, safety rules, model files or keys changed.
+`native-ui-attempt.json` preserves the earlier failed attempt; `native-final.json`
+records the successful native walkthrough. `native-export.txt` is the exact TXT
+file saved through macOS. The small test document remains in Vara for inspection.
+
+Existing dictation also produced a new actual user result with delivery
+`inserted` in Codex during the walkthrough, and its history survived the restart.
+This is observed real usage, not a claim that synthetic voice was injected.
+
+Local speaker diarization is not implemented. Who remains a candidate requiring
+a separate integration and Danish quality test, as specified from the outset.
