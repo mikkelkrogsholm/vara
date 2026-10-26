@@ -1,0 +1,16 @@
+{
+  "mac_unlocked": true,
+  "installed_identity": "dk.vara.desktop",
+  "process_pid": 48296,
+  "installed_signature_verified": true,
+  "installed_hash_matches_packaging_report": true,
+  "finder_opened_installed_bundle": true,
+  "computer_use_results": {
+    "getApp_bundle_id": "Invalid app: dk.vara.desktop",
+    "getApp_name_or_path": "Running application not found: dk.56n.vara",
+    "fresh_runtime_retry": "Invalid app: dk.vara.desktop"
+  },
+  "native_walkthrough": "pending manual user check; automation cannot resolve the installed app",
+  "test_fixture": "Samples/da_test.wav",
+  "reported_success": false
+}

@@ -1203,3 +1203,66 @@ and `success-inverse`: they are used for the brand/selection mark, focus outline
 and readiness indicator defined in prose. Those roles have no standardized
 outline/icon property in core component tokens. They are retained deliberately,
 not hidden through fake component entries or unsupported property names.
+
+## File transcription — approved direction, 2026-10-25
+
+The Transskribering tab follows the approved `design/mockups/transcription`
+import/editor references and `TRANSCRIPTION-SPEC.md`. Reuse the existing global
+sidebar, mark, button/icon-button, field, notice, empty-state and dialog primitives.
+UI headings use the existing system sans-serif roles; serif text belongs to the
+reading surface. Mockup font/logo variations do not introduce a second brand.
+
+### Components and compositions
+
+- **Import composition**: one drop/file-picker area, compact selected-file rows
+  with individual removal, a model/language field pair and one explicit start
+  action. Place processing destination and playback-copy retention before start.
+  Show recent documents below. Import does not begin merely by selecting a file.
+- **File row**: document icon, title, language/duration/stage; direct cancel while
+  queued/running, direct delete otherwise. Active row uses the existing selected
+  beige. Errors appear in the selected document with retry. Never invent progress
+  percentages; show actual processed audio duration or an indeterminate stage.
+- **Library/editor composition**: olive global navigation, paper library with
+  search/add, ivory reading pane with title/rename, save status, copy/delete and
+  primary export. Reflow into stacked panes at narrow widths with a complete
+  route back to import and the document list.
+- **Transcript segment**: narrow speaker/time margin and spacious serif paragraph.
+  Speaker names are editable only when speaker data exists. Untimed text remains
+  readable; do not draw invented speaker labels or word buttons.
+- **Timed word**: inline, transparent native button styled as normal transcript
+  text. Hover is subtle; current playback word uses pale peach with burnt-orange
+  accent. Preserve text selection for playing a passage. Word times are estimates.
+- **Editing state**: an accessible serif text area with autosave feedback. Keep
+  the source transcript separate; explain that changed text requires alignment.
+  Failed saves retain the draft. Copy/export can recover that current draft; operations requiring durable state wait for a successful save.
+- **Player**: fixed below the reading pane, with rewind/play/pause/forward,
+  elapsed/total time, a keyboard-operable seek control and playback speed. Any
+  waveform is computed from actual audio amplitude, never decorative fake data.
+- **Optional AI pane**: text-model field, persistent prompt label, visible processing
+  destination and explicit run/cancel. Show AI output separately from the timed
+  transcript. Original and corrected text are retained.
+- **Export dialog**: named format and version fields, explicit save action. TXT,
+  Markdown and full-document JSON work without word times. SRT/VTT require actual
+  timing; edited text cannot silently borrow the original's timestamps.
+
+File documents have their own library; app-grouped dictation history and its
+recording HUD remain unchanged. The sidebar's shortcut status explicitly refers
+to dictation while this tab is open; it must not contradict a file's cloud choice.
+Native opening/saving uses platform dialogs. Original files are never deleted by
+library deletion. Missing playback media is a recoverable state with readable text.
+
+### Optional local speaker labeling — Who
+
+Add “Find talere” as a quiet action in the transcription editor. Reuse the
+existing dialog, status/notice, buttons and editable speaker/time margin. The
+Who dialog shows explicit local processing, supplier/model/version, attribution,
+license link and SDK usage metadata before download/use. Download/preparation
+and inference are indeterminate stages with a direct cancellation action.
+
+Keep the existing transcript and corrections readable throughout. Successful
+labeling opens the annotated original; corrections are retained. A native
+`details` disclosure “Talerintervaller · Who” exposes actual overlapping intervals
+and uses the same speaker rename and seek buttons. Untimed transcripts show
+intervals without fabricated word assignment. Errors or zero detected speakers
+explain the limitation and keep prior data. No extra global navigation or new
+visual language is introduced.

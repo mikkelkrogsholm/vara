@@ -22,8 +22,10 @@ thiserror.workspace = true
 uuid.workspace = true
 tokio.workspace = true
 parking_lot.workspace = true
-tauri = { version = "2", features = ["tray-icon", "macos-private-api"] }
+tauri = { version = "2", features = ["tray-icon", "macos-private-api", "protocol-asset"] }
 tauri-plugin-global-shortcut = "2"
+rfd = "0.17"
+same-file = "1"
 
 [features]
 # Developer fixture replay only. Excluded from normal debug/release builds and distributed apps.

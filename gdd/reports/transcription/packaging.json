@@ -1,0 +1,13 @@
+{
+  "installed": "/Applications/Vara.app",
+  "binary_sha256": "8bdbea038e2dcdf2c87bad9348b00bc370f17d1addac47fd43bf8e629a1afb02",
+  "signature_verified": true,
+  "test_harness_excluded": true,
+  "microphone_entitlement": true,
+  "license_resources_present": true,
+  "prior_candidate": "/Users/mikkelfreltoftkrogsholm/.Trash/Vara-transcription-candidate-1792958706.app",
+  "notarized": false,
+  "playback_boundary_fix_included": true,
+  "build_intermediates_removed": true,
+  "removed_build_bytes": 3680796837
+}

@@ -22,5 +22,8 @@ fn main() {
     }
     copy(&source.join("assets"), &ui.join("assets"));
     println!("cargo:rerun-if-changed={}", ui.display());
+    // Optional runtime is produced by the platform packaging script. A source
+    // checkout without it still builds; Who reports unavailable explicitly.
+    fs::create_dir_all(manifest.join("runtime/who")).expect("Who resource directory");
     tauri_build::build();
 }

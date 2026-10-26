@@ -12,6 +12,7 @@ async function run(page) {
       const d=window.testState;if(window.testFailure===action && ['key_status','set_key','delete_key'].includes(action))throw window.testKeyError||'Nøgleringen er låst. Lås den op og prøv igen.';if(window.testFailure===action)throw ['check_groq','check_openai'].includes(action)?'Adgang afvist. Kontroller API-nøgle og modeladgang.':'Kunne ikke kopiere. Teksten er stadig tilgængelig.';
       switch(action){
         case 'snapshot':return structuredClone(d);
+        case 'file_list':return {documents:[],media:{}};
         case 'devices':return [{id:'device1',label:'Indbygget mikrofon'}];
         case 'application_icons':return Object.fromEntries(payload.ids.filter(id=>id==='com.apple.mail').map(id=>[id,'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Y9Zl1sAAAAASUVORK5CYII=']));
         case 'applications':return [{id:'com.apple.mail',label:'Mail'},{id:'com.apple.Notes',label:'Noter'}];

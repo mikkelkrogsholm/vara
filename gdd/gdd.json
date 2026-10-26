@@ -3,8 +3,8 @@
   "project": {
     "id": "vara.clean-write",
     "title": "Vara v1 — product and module contracts",
-    "goal": "Fast everyday dictation with local defaults, deliberate optional text AI, safe insertion and app-grouped history.",
-    "scope": "Only the first-release scope in PRODUCT-SPEC.md. Rust domain core, three desktop targets, Mac-first development. Proposed design and structural contracts are not implementation or release evidence.",
+    "goal": "Fast everyday dictation with local defaults, deliberate optional text AI, safe insertion and app-grouped history. File transcription with honest word/segment timing and preserved originals.",
+    "scope": "Original dictation scope in PRODUCT-SPEC.md plus the approved file-transcription extension in TRANSCRIPTION-SPEC.md. Shared Rust core; Mac-first desktop development. Specification does not assert release acceptance.",
     "assumptions": [
       "Accepted product requirements are recorded in DECISIONS.md; this model is the requested implementation specification.",
       "Old ideal exploration is archived under reports/history/ideal-before-v1; excluded features are not current release obligations.",
@@ -122,7 +122,9 @@
         "action.recommended_setup",
         "action.advanced_engines",
         "action.credentials",
-        "action.cli_processing"
+        "action.cli_processing",
+        "action.file_recognize",
+        "action.engine_diarize"
       ]
     },
     "component.preferences": {
@@ -7418,6 +7420,1170 @@
         "when": "Provider returns after cancellation.",
         "then": "No new completed history or insertion is produced. Private staging is removed or marked cleanup_pending; result is not revived."
       }
+    },
+    "entity.file_word": {
+      "kind": "entity",
+      "label": "Timed word",
+      "description": "An ASR/alignment estimate relative to media start; identity stable within the original. Edited text does not inherit timing.",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.transcription",
+          "purpose": "contract",
+          "selector": {
+            "kind": "whole-document"
+          }
+        }
+      ],
+      "fields": {
+        "id": {
+          "type": "string",
+          "min_length": 1
+        },
+        "text": {
+          "type": "string",
+          "min_length": 1
+        },
+        "start_seconds": {
+          "type": "number",
+          "minimum": 0
+        },
+        "end_seconds": {
+          "type": "number",
+          "minimum": 0
+        },
+        "speaker_id": {
+          "type": "string",
+          "min_length": 1,
+          "optional": true
+        }
+      }
+    },
+    "entity.file_document": {
+      "kind": "entity",
+      "label": "File transcription document",
+      "description": "Own imported-source provenance, stage, preserved transcript, optional correction, separate AI and explicit timing precision. Playback copy is distinct from dictation capture.",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.transcription",
+          "purpose": "contract",
+          "selector": {
+            "kind": "whole-document"
+          }
+        }
+      ],
+      "fields": {
+        "id": {
+          "type": "string",
+          "min_length": 1
+        },
+        "source_name": {
+          "type": "string",
+          "min_length": 1
+        },
+        "title": {
+          "type": "string",
+          "min_length": 1
+        },
+        "engine": {
+          "type": "reference",
+          "target": "entity.engine"
+        },
+        "stage": {
+          "type": "enum",
+          "values": [
+            "queued",
+            "decoding",
+            "transcribing",
+            "ready",
+            "failed",
+            "cancelled"
+          ]
+        },
+        "edited_text": {
+          "type": "string",
+          "optional": true
+        },
+        "ai_text": {
+          "type": "string",
+          "min_length": 1,
+          "optional": true
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "transcript": {
+          "type": "reference",
+          "target": "entity.file_transcript",
+          "optional": true
+        },
+        "diarization": {
+          "type": "reference",
+          "target": "entity.diarization",
+          "optional": true
+        },
+        "diarization_error": {
+          "type": "string",
+          "optional": true
+        }
+      }
+    },
+    "component.transcription": {
+      "kind": "component",
+      "label": "File transcription",
+      "description": "Own durable file jobs and document library independently from OS dictation delivery and captured-audio retention.",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.transcription",
+          "purpose": "contract",
+          "selector": {
+            "kind": "whole-document"
+          }
+        }
+      ],
+      "boundary": {
+        "responsibility": "Own durable file jobs and document library independently from OS dictation delivery and captured-audio retention.",
+        "rationale": "Distinct file lifetime and timing/editing semantics keep capture/insertion unchanged.",
+        "excludes": [
+          "OS focus/insertion, provider protocols, changing or deleting user original files."
+        ]
+      },
+      "interfaces": [
+        "action.file_import",
+        "action.file_document",
+        "action.file_diarize"
+      ]
+    },
+    "scenario.file_import.authorization": {
+      "kind": "scenario",
+      "label": "Import and control file jobs: authorization",
+      "description": "Only an explicit destination authorizes external audio; local failure never switches provider.",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.transcription",
+          "purpose": "contract",
+          "selector": {
+            "kind": "whole-document"
+          }
+        }
+      ],
+      "scenario": {
+        "category": "negative",
+        "given": "Only an explicit destination authorizes external audio; local failure never switches provider.",
+        "when": "Import and control file jobs is requested.",
+        "then": "Only an explicit destination authorizes external audio; local failure never switches provider."
+      }
+    },
+    "scenario.file_import.boundaries": {
+      "kind": "scenario",
+      "label": "Import and control file jobs: boundaries",
+      "description": "Source file unavailable or unsupported; leave source unchanged and show retry.",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.transcription",
+          "purpose": "contract",
+          "selector": {
+            "kind": "whole-document"
+          }
+        }
+      ],
+      "scenario": {
+        "category": "negative",
+        "given": "Source file unavailable or unsupported; leave source unchanged and show retry.",
+        "when": "Import and control file jobs is requested.",
+        "then": "Source file unavailable or unsupported; leave source unchanged and show retry."
+      }
+    },
+    "scenario.file_import.concurrency": {
+      "kind": "scenario",
+      "label": "Import and control file jobs: concurrency",
+      "description": "Cancel/delete serializes with phase changes and publication. Restart marks interrupted jobs failed; no automatic retry.",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.transcription",
+          "purpose": "contract",
+          "selector": {
+            "kind": "whole-document"
+          }
+        }
+      ],
+      "scenario": {
+        "category": "concurrency",
+        "given": "Cancel/delete serializes with phase changes and publication. Restart marks interrupted jobs failed; no automatic retry.",
+        "when": "Import and control file jobs is requested.",
+        "then": "Cancel/delete serializes with phase changes and publication. Restart marks interrupted jobs failed; no automatic retry."
+      }
+    },
+    "scenario.file_import.atomicity": {
+      "kind": "scenario",
+      "label": "Import and control file jobs: atomicity",
+      "description": "Commit each document mutation durably before publishing UI state; failure never grants OS insertion or modifies source files.",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.transcription",
+          "purpose": "contract",
+          "selector": {
+            "kind": "whole-document"
+          }
+        }
+      ],
+      "scenario": {
+        "category": "concurrency",
+        "given": "Commit each document mutation durably before publishing UI state; failure never grants OS insertion or modifies source files.",
+        "when": "Import and control file jobs is requested.",
+        "then": "Commit each document mutation durably before publishing UI state; failure never grants OS insertion or modifies source files."
+      }
+    },
+    "action.file_import": {
+      "kind": "action",
+      "label": "Import and control file jobs",
+      "description": "Validate an explicit batch and frozen model/language/locality, queue files, decode to private playback copies, cancel/retry without stale publication. Never edit source files.",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.transcription",
+          "purpose": "contract",
+          "selector": {
+            "kind": "whole-document"
+          }
+        }
+      ],
+      "contract": {
+        "input": {
+          "paths": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "min_length": 1
+            }
+          },
+          "engine": {
+            "type": "reference",
+            "target": "entity.engine"
+          }
+        },
+        "context": {},
+        "output": {
+          "type": "array",
+          "items": {
+            "type": "reference",
+            "target": "entity.file_document"
+          }
+        },
+        "errors": {
+          "Unavailable": "Source file unavailable or unsupported; leave source unchanged and show retry."
+        },
+        "preconditions": [
+          "Input identifies records within the active local profile; model capabilities and destination are explicit."
+        ],
+        "postconditions": [
+          "Validate an explicit batch and frozen model/language/locality, queue files, decode to private playback copies, cancel/retry without stale publication. Never edit source files."
+        ],
+        "external_effects": [
+          "Reads selected media, writes private document/media state, optionally invokes the explicitly selected model and writes an explicitly chosen export path."
+        ],
+        "effects_complete": true,
+        "dependencies_complete": true,
+        "risks": {
+          "authorization": {
+            "relevant": true,
+            "rationale": "Only an explicit destination authorizes external audio; local failure never switches provider.",
+            "scenarios": [
+              "scenario.file_import.authorization"
+            ]
+          },
+          "boundaries": {
+            "relevant": true,
+            "rationale": "Source file unavailable or unsupported; leave source unchanged and show retry.",
+            "scenarios": [
+              "scenario.file_import.boundaries"
+            ]
+          },
+          "concurrency": {
+            "relevant": true,
+            "rationale": "Cancel/delete serializes with phase changes and publication. Restart marks interrupted jobs failed; no automatic retry.",
+            "scenarios": [
+              "scenario.file_import.concurrency"
+            ]
+          },
+          "atomicity": {
+            "relevant": true,
+            "rationale": "Commit each document mutation durably before publishing UI state; failure never grants OS insertion or modifies source files.",
+            "scenarios": [
+              "scenario.file_import.atomicity"
+            ]
+          },
+          "idempotency": {
+            "relevant": false,
+            "rationale": "Import is an explicit new batch; editing has revision control. No automatic replay of paste or cloud requests is permitted.",
+            "scenarios": []
+          }
+        },
+        "error_cases": {
+          "Unavailable": [
+            "scenario.file_import.boundaries"
+          ]
+        }
+      },
+      "behavior": "Validate an explicit batch and frozen model/language/locality, queue files, decode to private playback copies, cancel/retry without stale publication. Never edit source files."
+    },
+    "scenario.file_recognize.authorization": {
+      "kind": "scenario",
+      "label": "Recognize file with real timing: authorization",
+      "description": "Use the chosen speech provider and its stored credential through the OS adapter; no secret reaches the UI.",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.transcription",
+          "purpose": "contract",
+          "selector": {
+            "kind": "whole-document"
+          }
+        }
+      ],
+      "scenario": {
+        "category": "negative",
+        "given": "Use the chosen speech provider and its stored credential through the OS adapter; no secret reaches the UI.",
+        "when": "Recognize file with real timing is requested.",
+        "then": "Use the chosen speech provider and its stored credential through the OS adapter; no secret reaches the UI."
+      }
+    },
+    "scenario.file_recognize.boundaries": {
+      "kind": "scenario",
+      "label": "Recognize file with real timing: boundaries",
+      "description": "Unavailable model, invalid media/timing, provider error or no speech is an actionable failed job.",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.transcription",
+          "purpose": "contract",
+          "selector": {
+            "kind": "whole-document"
+          }
+        }
+      ],
+      "scenario": {
+        "category": "negative",
+        "given": "Unavailable model, invalid media/timing, provider error or no speech is an actionable failed job.",
+        "when": "Recognize file with real timing is requested.",
+        "then": "Unavailable model, invalid media/timing, provider error or no speech is an actionable failed job."
+      }
+    },
+    "scenario.file_recognize.concurrency": {
+      "kind": "scenario",
+      "label": "Recognize file with real timing: concurrency",
+      "description": "Check accepted cancellation between blocks/requests and before final publication; a cancelled job cannot become ready.",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.transcription",
+          "purpose": "contract",
+          "selector": {
+            "kind": "whole-document"
+          }
+        }
+      ],
+      "scenario": {
+        "category": "concurrency",
+        "given": "Check accepted cancellation between blocks/requests and before final publication; a cancelled job cannot become ready.",
+        "when": "Recognize file with real timing is requested.",
+        "then": "Check accepted cancellation between blocks/requests and before final publication; a cancelled job cannot become ready."
+      }
+    },
+    "scenario.file_recognize.atomicity": {
+      "kind": "scenario",
+      "label": "Recognize file with real timing: atomicity",
+      "description": "Commit each document mutation durably before publishing UI state; failure never grants OS insertion or modifies source files.",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.transcription",
+          "purpose": "contract",
+          "selector": {
+            "kind": "whole-document"
+          }
+        }
+      ],
+      "scenario": {
+        "category": "concurrency",
+        "given": "Commit each document mutation durably before publishing UI state; failure never grants OS insertion or modifies source files.",
+        "when": "Recognize file with real timing is requested.",
+        "then": "Commit each document mutation durably before publishing UI state; failure never grants OS insertion or modifies source files."
+      }
+    },
+    "action.file_recognize": {
+      "kind": "action",
+      "label": "Recognize file with real timing",
+      "description": "Stream/bound normalized audio, return original text plus actual word/segment estimates and optional chunk-scoped speakers. Never fabricate times, speaker identity, progress or transcript content.",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.transcription",
+          "purpose": "contract",
+          "selector": {
+            "kind": "whole-document"
+          }
+        }
+      ],
+      "contract": {
+        "input": {
+          "document": {
+            "type": "reference",
+            "target": "entity.file_document"
+          }
+        },
+        "context": {},
+        "output": {
+          "type": "reference",
+          "target": "entity.file_transcript"
+        },
+        "errors": {
+          "Unavailable": "Unavailable model, invalid media/timing, provider error or no speech is an actionable failed job."
+        },
+        "preconditions": [
+          "Input identifies records within the active local profile; model capabilities and destination are explicit."
+        ],
+        "postconditions": [
+          "Stream/bound normalized audio, return original text plus actual word/segment estimates and optional chunk-scoped speakers. Never fabricate times, speaker identity, progress or transcript content."
+        ],
+        "external_effects": [
+          "Reads selected media, writes private document/media state, optionally invokes the explicitly selected model and writes an explicitly chosen export path."
+        ],
+        "effects_complete": true,
+        "dependencies_complete": true,
+        "risks": {
+          "authorization": {
+            "relevant": true,
+            "rationale": "Use the chosen speech provider and its stored credential through the OS adapter; no secret reaches the UI.",
+            "scenarios": [
+              "scenario.file_recognize.authorization"
+            ]
+          },
+          "boundaries": {
+            "relevant": true,
+            "rationale": "Unavailable model, invalid media/timing, provider error or no speech is an actionable failed job.",
+            "scenarios": [
+              "scenario.file_recognize.boundaries"
+            ]
+          },
+          "concurrency": {
+            "relevant": true,
+            "rationale": "Check accepted cancellation between blocks/requests and before final publication; a cancelled job cannot become ready.",
+            "scenarios": [
+              "scenario.file_recognize.concurrency"
+            ]
+          },
+          "atomicity": {
+            "relevant": true,
+            "rationale": "Commit each document mutation durably before publishing UI state; failure never grants OS insertion or modifies source files.",
+            "scenarios": [
+              "scenario.file_recognize.atomicity"
+            ]
+          },
+          "idempotency": {
+            "relevant": false,
+            "rationale": "Import is an explicit new batch; editing has revision control. No automatic replay of paste or cloud requests is permitted.",
+            "scenarios": []
+          }
+        },
+        "error_cases": {
+          "Unavailable": [
+            "scenario.file_recognize.boundaries"
+          ]
+        }
+      },
+      "behavior": "Stream/bound normalized audio, return original text plus actual word/segment estimates and optional chunk-scoped speakers. Never fabricate times, speaker identity, progress or transcript content."
+    },
+    "scenario.file_document.authorization": {
+      "kind": "scenario",
+      "label": "Read edit export and delete file documents: authorization",
+      "description": "AI has its own explicit destination and strict-local check. Export uses a chosen path and cannot overwrite source/work audio.",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.transcription",
+          "purpose": "contract",
+          "selector": {
+            "kind": "whole-document"
+          }
+        }
+      ],
+      "scenario": {
+        "category": "negative",
+        "given": "AI has its own explicit destination and strict-local check. Export uses a chosen path and cannot overwrite source/work audio.",
+        "when": "Read edit export and delete file documents is requested.",
+        "then": "AI has its own explicit destination and strict-local check. Export uses a chosen path and cannot overwrite source/work audio."
+      }
+    },
+    "scenario.file_document.boundaries": {
+      "kind": "scenario",
+      "label": "Read edit export and delete file documents: boundaries",
+      "description": "Storage/AI/playback/export failure preserves original and recoverable work; unavailable audio does not remove text.",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.transcription",
+          "purpose": "contract",
+          "selector": {
+            "kind": "whole-document"
+          }
+        }
+      ],
+      "scenario": {
+        "category": "negative",
+        "given": "Storage/AI/playback/export failure preserves original and recoverable work; unavailable audio does not remove text.",
+        "when": "Read edit export and delete file documents is requested.",
+        "then": "Storage/AI/playback/export failure preserves original and recoverable work; unavailable audio does not remove text."
+      }
+    },
+    "scenario.file_document.concurrency": {
+      "kind": "scenario",
+      "label": "Read edit export and delete file documents: concurrency",
+      "description": "Stale edits are rejected, failed saves preserve drafts; late AI output cannot replace newer revisions or recreate deleted records.",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.transcription",
+          "purpose": "contract",
+          "selector": {
+            "kind": "whole-document"
+          }
+        }
+      ],
+      "scenario": {
+        "category": "concurrency",
+        "given": "Stale edits are rejected, failed saves preserve drafts; late AI output cannot replace newer revisions or recreate deleted records.",
+        "when": "Read edit export and delete file documents is requested.",
+        "then": "Stale edits are rejected, failed saves preserve drafts; late AI output cannot replace newer revisions or recreate deleted records."
+      }
+    },
+    "scenario.file_document.atomicity": {
+      "kind": "scenario",
+      "label": "Read edit export and delete file documents: atomicity",
+      "description": "Commit each document mutation durably before publishing UI state; failure never grants OS insertion or modifies source files.",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.transcription",
+          "purpose": "contract",
+          "selector": {
+            "kind": "whole-document"
+          }
+        }
+      ],
+      "scenario": {
+        "category": "concurrency",
+        "given": "Commit each document mutation durably before publishing UI state; failure never grants OS insertion or modifies source files.",
+        "when": "Read edit export and delete file documents is requested.",
+        "then": "Commit each document mutation durably before publishing UI state; failure never grants OS insertion or modifies source files."
+      }
+    },
+    "action.file_document": {
+      "kind": "action",
+      "label": "Read edit export and delete file documents",
+      "description": "Persist optimistic revisions and corrections separately from original. Play timed original, rename speakers, run explicit separate text AI, copy/export and delete only document/private media. Untimed or edited text cannot silently export timed subtitles.",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.transcription",
+          "purpose": "contract",
+          "selector": {
+            "kind": "whole-document"
+          }
+        }
+      ],
+      "contract": {
+        "input": {
+          "document": {
+            "type": "reference",
+            "target": "entity.file_document"
+          },
+          "operation": {
+            "type": "enum",
+            "values": [
+              "read",
+              "edit",
+              "rename",
+              "speaker",
+              "ai",
+              "copy",
+              "export",
+              "delete"
+            ]
+          }
+        },
+        "context": {},
+        "output": {
+          "type": "object",
+          "properties": {
+            "outcome": {
+              "type": "enum",
+              "values": [
+                "document",
+                "copied",
+                "exported",
+                "deleted"
+              ]
+            },
+            "document": {
+              "type": "reference",
+              "target": "entity.file_document"
+            }
+          },
+          "required": [
+            "outcome"
+          ]
+        },
+        "errors": {
+          "Unavailable": "Storage/AI/playback/export failure preserves original and recoverable work; unavailable audio does not remove text."
+        },
+        "preconditions": [
+          "Input identifies records within the active local profile; model capabilities and destination are explicit."
+        ],
+        "postconditions": [
+          "Persist optimistic revisions and corrections separately from original. Play timed original, rename speakers, run explicit separate text AI, copy/export and delete only document/private media. Untimed or edited text cannot silently export timed subtitles."
+        ],
+        "external_effects": [
+          "Reads selected media, writes private document/media state, optionally invokes the explicitly selected model and writes an explicitly chosen export path."
+        ],
+        "effects_complete": true,
+        "dependencies_complete": true,
+        "risks": {
+          "authorization": {
+            "relevant": true,
+            "rationale": "AI has its own explicit destination and strict-local check. Export uses a chosen path and cannot overwrite source/work audio.",
+            "scenarios": [
+              "scenario.file_document.authorization"
+            ]
+          },
+          "boundaries": {
+            "relevant": true,
+            "rationale": "Storage/AI/playback/export failure preserves original and recoverable work; unavailable audio does not remove text.",
+            "scenarios": [
+              "scenario.file_document.boundaries"
+            ]
+          },
+          "concurrency": {
+            "relevant": true,
+            "rationale": "Stale edits are rejected, failed saves preserve drafts; late AI output cannot replace newer revisions or recreate deleted records.",
+            "scenarios": [
+              "scenario.file_document.concurrency"
+            ]
+          },
+          "atomicity": {
+            "relevant": true,
+            "rationale": "Commit each document mutation durably before publishing UI state; failure never grants OS insertion or modifies source files.",
+            "scenarios": [
+              "scenario.file_document.atomicity"
+            ]
+          },
+          "idempotency": {
+            "relevant": false,
+            "rationale": "Import is an explicit new batch; editing has revision control. No automatic replay of paste or cloud requests is permitted.",
+            "scenarios": []
+          }
+        },
+        "error_cases": {
+          "Unavailable": [
+            "scenario.file_document.boundaries"
+          ]
+        }
+      },
+      "behavior": "Persist optimistic revisions and corrections separately from original. Play timed original, rename speakers, run explicit separate text AI, copy/export and delete only document/private media. Untimed or edited text cannot silently export timed subtitles."
+    },
+    "entity.file_segment": {
+      "kind": "entity",
+      "label": "Transcript segment",
+      "description": "Original readable segment with optional real timing, optional speaker and stable timed words.",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.transcription",
+          "purpose": "contract",
+          "selector": {
+            "kind": "whole-document"
+          }
+        }
+      ],
+      "fields": {
+        "id": {
+          "type": "string",
+          "min_length": 1
+        },
+        "text": {
+          "type": "string",
+          "min_length": 1
+        },
+        "start_seconds": {
+          "type": "number",
+          "minimum": 0,
+          "optional": true
+        },
+        "end_seconds": {
+          "type": "number",
+          "minimum": 0,
+          "optional": true
+        },
+        "speaker_id": {
+          "type": "string",
+          "min_length": 1,
+          "optional": true
+        },
+        "words": {
+          "type": "array",
+          "items": {
+            "type": "reference",
+            "target": "entity.file_word"
+          }
+        }
+      }
+    },
+    "entity.file_transcript": {
+      "kind": "entity",
+      "label": "Original file transcript",
+      "description": "Original text and actual timing precision. Corrections and AI never mutate this object.",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.transcription",
+          "purpose": "contract",
+          "selector": {
+            "kind": "whole-document"
+          }
+        }
+      ],
+      "fields": {
+        "text": {
+          "type": "string",
+          "min_length": 1
+        },
+        "timing": {
+          "type": "enum",
+          "values": [
+            "none",
+            "segment",
+            "word"
+          ]
+        },
+        "timing_source": {
+          "type": "enum",
+          "values": [
+            "none",
+            "asr",
+            "alignment"
+          ]
+        },
+        "segments": {
+          "type": "array",
+          "items": {
+            "type": "reference",
+            "target": "entity.file_segment"
+          }
+        }
+      }
+    },
+    "entity.speaker_turn": {
+      "kind": "entity",
+      "label": "Speaker interval",
+      "description": "Independent Who interval; different speakers may overlap. Uncertain text is not assigned by guesswork.",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.transcription",
+          "purpose": "contract",
+          "selector": {
+            "kind": "whole-document"
+          }
+        }
+      ],
+      "fields": {
+        "speaker_id": {
+          "type": "string",
+          "min_length": 1
+        },
+        "start_seconds": {
+          "type": "number",
+          "minimum": 0
+        },
+        "end_seconds": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    },
+    "entity.diarization": {
+      "kind": "entity",
+      "label": "Local speaker annotation",
+      "description": "Separate from immutable source ASR and corrections; pinned model provenance and real intervals.",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.transcription",
+          "purpose": "contract",
+          "selector": {
+            "kind": "whole-document"
+          }
+        }
+      ],
+      "fields": {
+        "model": {
+          "type": "string",
+          "min_length": 1
+        },
+        "version": {
+          "type": "string",
+          "min_length": 1
+        },
+        "turns": {
+          "type": "array",
+          "items": {
+            "type": "reference",
+            "target": "entity.speaker_turn"
+          }
+        }
+      }
+    },
+    "scenario.file_diarize.authorization": {
+      "kind": "scenario",
+      "label": "Find speakers for a file document — authorization",
+      "description": "Explicit user choice and supplier/license/usage disclosure before download/use; no audio/text leaves the device. Retain official SDK licensing metadata reporting.",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.transcription",
+          "purpose": "contract",
+          "selector": {
+            "kind": "whole-document"
+          }
+        }
+      ],
+      "scenario": {
+        "category": "negative",
+        "given": "A local file document with immutable source ASR and an explicit Who request.",
+        "when": "Explicit user choice and supplier/license/usage disclosure before download/use; no audio/text leaves the device. Retain official SDK licensing metadata reporting.",
+        "then": "Explicit optional Who setup and speaker labeling. Preserve source ASR, edits and successful prior labels on failure/empty output. Publish only validated, noncancelled results. Project unambiguous original word/segment speaker labels without inventing alignment."
+      }
+    },
+    "scenario.file_diarize.boundaries": {
+      "kind": "scenario",
+      "label": "Find speakers for a file document — boundaries",
+      "description": "Missing runtime/model, empty turns, invalid times or storage failure preserve source, corrections and prior successful annotation.",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.transcription",
+          "purpose": "contract",
+          "selector": {
+            "kind": "whole-document"
+          }
+        }
+      ],
+      "scenario": {
+        "category": "negative",
+        "given": "A local file document with immutable source ASR and an explicit Who request.",
+        "when": "Missing runtime/model, empty turns, invalid times or storage failure preserve source, corrections and prior successful annotation.",
+        "then": "Explicit optional Who setup and speaker labeling. Preserve source ASR, edits and successful prior labels on failure/empty output. Publish only validated, noncancelled results. Project unambiguous original word/segment speaker labels without inventing alignment."
+      }
+    },
+    "scenario.file_diarize.concurrency": {
+      "kind": "scenario",
+      "label": "Find speakers for a file document — concurrency",
+      "description": "Only one Who task per document; cancellation/deletion kills and reaps its child. Late output cannot recreate a deleted document.",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.transcription",
+          "purpose": "contract",
+          "selector": {
+            "kind": "whole-document"
+          }
+        }
+      ],
+      "scenario": {
+        "category": "concurrency",
+        "given": "A local file document with immutable source ASR and an explicit Who request.",
+        "when": "Only one Who task per document; cancellation/deletion kills and reaps its child. Late output cannot recreate a deleted document.",
+        "then": "Explicit optional Who setup and speaker labeling. Preserve source ASR, edits and successful prior labels on failure/empty output. Publish only validated, noncancelled results. Project unambiguous original word/segment speaker labels without inventing alignment."
+      }
+    },
+    "scenario.file_diarize.atomicity": {
+      "kind": "scenario",
+      "label": "Find speakers for a file document — atomicity",
+      "description": "Save the independent annotation before publishing the derived UI projection. Failure leaves earlier state intact.",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.transcription",
+          "purpose": "contract",
+          "selector": {
+            "kind": "whole-document"
+          }
+        }
+      ],
+      "scenario": {
+        "category": "concurrency",
+        "given": "A local file document with immutable source ASR and an explicit Who request.",
+        "when": "Save the independent annotation before publishing the derived UI projection. Failure leaves earlier state intact.",
+        "then": "Explicit optional Who setup and speaker labeling. Preserve source ASR, edits and successful prior labels on failure/empty output. Publish only validated, noncancelled results. Project unambiguous original word/segment speaker labels without inventing alignment."
+      }
+    },
+    "action.file_diarize": {
+      "kind": "action",
+      "label": "Find speakers for a file document",
+      "description": "Explicit optional Who setup and speaker labeling. Preserve source ASR, edits and successful prior labels on failure/empty output. Publish only validated, noncancelled results. Project unambiguous original word/segment speaker labels without inventing alignment.",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.transcription",
+          "purpose": "contract",
+          "selector": {
+            "kind": "whole-document"
+          }
+        }
+      ],
+      "contract": {
+        "input": {
+          "document": {
+            "type": "reference",
+            "target": "entity.file_document"
+          }
+        },
+        "context": {},
+        "output": {
+          "type": "reference",
+          "target": "entity.diarization"
+        },
+        "errors": {
+          "Unavailable": "Missing runtime/model, empty turns, invalid times or storage failure preserve source, corrections and prior successful annotation."
+        },
+        "preconditions": [
+          "Document has preserved ASR and its private normalized playback copy.",
+          "Who is explicitly chosen after supplier/license/usage disclosure; its model was downloaded explicitly."
+        ],
+        "postconditions": [
+          "Explicit optional Who setup and speaker labeling. Preserve source ASR, edits and successful prior labels on failure/empty output. Publish only validated, noncancelled results. Project unambiguous original word/segment speaker labels without inventing alignment."
+        ],
+        "external_effects": [
+          "Read local normalized audio/model files; explicit model downloads contact supplier/CDN. Official SDK license/usage requests contain installation/app/model/platform metadata, never audio/text. Write independent local annotation state."
+        ],
+        "effects_complete": true,
+        "dependencies_complete": true,
+        "risks": {
+          "authorization": {
+            "relevant": true,
+            "rationale": "Explicit user choice and supplier/license/usage disclosure before download/use; no audio/text leaves the device. Retain official SDK licensing metadata reporting.",
+            "scenarios": [
+              "scenario.file_diarize.authorization"
+            ]
+          },
+          "boundaries": {
+            "relevant": true,
+            "rationale": "Missing runtime/model, empty turns, invalid times or storage failure preserve source, corrections and prior successful annotation.",
+            "scenarios": [
+              "scenario.file_diarize.boundaries"
+            ]
+          },
+          "concurrency": {
+            "relevant": true,
+            "rationale": "Only one Who task per document; cancellation/deletion kills and reaps its child. Late output cannot recreate a deleted document.",
+            "scenarios": [
+              "scenario.file_diarize.concurrency"
+            ]
+          },
+          "atomicity": {
+            "relevant": true,
+            "rationale": "Save the independent annotation before publishing the derived UI projection. Failure leaves earlier state intact.",
+            "scenarios": [
+              "scenario.file_diarize.atomicity"
+            ]
+          },
+          "idempotency": {
+            "relevant": false,
+            "rationale": "Explicit reruns replace one derived annotation atomically; they do not duplicate the document or replay dictation insertion.",
+            "scenarios": []
+          }
+        },
+        "error_cases": {
+          "Unavailable": [
+            "scenario.file_diarize.boundaries"
+          ]
+        }
+      },
+      "behavior": "Explicit optional Who setup and speaker labeling. Preserve source ASR, edits and successful prior labels on failure/empty output. Publish only validated, noncancelled results. Project unambiguous original word/segment speaker labels without inventing alignment."
+    },
+    "scenario.engine_diarize.authorization": {
+      "kind": "scenario",
+      "label": "Run official Who runtime — authorization",
+      "description": "Accept only packaged SDK runtime and explicitly chosen local model; status does not trigger download.",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.transcription",
+          "purpose": "contract",
+          "selector": {
+            "kind": "whole-document"
+          }
+        }
+      ],
+      "scenario": {
+        "category": "negative",
+        "given": "A local file document with immutable source ASR and an explicit Who request.",
+        "when": "Accept only packaged SDK runtime and explicitly chosen local model; status does not trigger download.",
+        "then": "Run pinned official Who C ABI with normalized local audio in an isolated registered child. Keep SDK reporting intact and return model/version plus overlapping real speaker intervals. Never upload audio/text or switch providers."
+      }
+    },
+    "scenario.engine_diarize.boundaries": {
+      "kind": "scenario",
+      "label": "Run official Who runtime — boundaries",
+      "description": "Validate C ABI payload length, speakers, finite/bounded intervals and source duration. Surface native crashes and empty results honestly.",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.transcription",
+          "purpose": "contract",
+          "selector": {
+            "kind": "whole-document"
+          }
+        }
+      ],
+      "scenario": {
+        "category": "negative",
+        "given": "A local file document with immutable source ASR and an explicit Who request.",
+        "when": "Validate C ABI payload length, speakers, finite/bounded intervals and source duration. Surface native crashes and empty results honestly.",
+        "then": "Run pinned official Who C ABI with normalized local audio in an isolated registered child. Keep SDK reporting intact and return model/version plus overlapping real speaker intervals. Never upload audio/text or switch providers."
+      }
+    },
+    "scenario.engine_diarize.concurrency": {
+      "kind": "scenario",
+      "label": "Run official Who runtime — concurrency",
+      "description": "Cancellation kills/reaps the registered child; normal completion flushes SDK licensing requests.",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.transcription",
+          "purpose": "contract",
+          "selector": {
+            "kind": "whole-document"
+          }
+        }
+      ],
+      "scenario": {
+        "category": "concurrency",
+        "given": "A local file document with immutable source ASR and an explicit Who request.",
+        "when": "Cancellation kills/reaps the registered child; normal completion flushes SDK licensing requests.",
+        "then": "Run pinned official Who C ABI with normalized local audio in an isolated registered child. Keep SDK reporting intact and return model/version plus overlapping real speaker intervals. Never upload audio/text or switch providers."
+      }
+    },
+    "scenario.engine_diarize.atomicity": {
+      "kind": "scenario",
+      "label": "Run official Who runtime — atomicity",
+      "description": "Only complete validated result payloads cross the child boundary; never overwrite the original audio.",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.transcription",
+          "purpose": "contract",
+          "selector": {
+            "kind": "whole-document"
+          }
+        }
+      ],
+      "scenario": {
+        "category": "concurrency",
+        "given": "A local file document with immutable source ASR and an explicit Who request.",
+        "when": "Only complete validated result payloads cross the child boundary; never overwrite the original audio.",
+        "then": "Run pinned official Who C ABI with normalized local audio in an isolated registered child. Keep SDK reporting intact and return model/version plus overlapping real speaker intervals. Never upload audio/text or switch providers."
+      }
+    },
+    "action.engine_diarize": {
+      "kind": "action",
+      "label": "Run official Who runtime",
+      "description": "Run pinned official Who C ABI with normalized local audio in an isolated registered child. Keep SDK reporting intact and return model/version plus overlapping real speaker intervals. Never upload audio/text or switch providers.",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.transcription",
+          "purpose": "contract",
+          "selector": {
+            "kind": "whole-document"
+          }
+        }
+      ],
+      "contract": {
+        "input": {
+          "audio_handle": {
+            "type": "string",
+            "min_length": 1
+          }
+        },
+        "context": {},
+        "output": {
+          "type": "reference",
+          "target": "entity.diarization"
+        },
+        "errors": {
+          "Unavailable": "Validate C ABI payload length, speakers, finite/bounded intervals and source duration. Surface native crashes and empty results honestly."
+        },
+        "preconditions": [
+          "Input identifies records within the active local profile; model capabilities and destination are explicit."
+        ],
+        "postconditions": [
+          "Run pinned official Who C ABI with normalized local audio in an isolated registered child. Keep SDK reporting intact and return model/version plus overlapping real speaker intervals. Never upload audio/text or switch providers."
+        ],
+        "external_effects": [
+          "Read local normalized audio/model files; explicit model downloads contact supplier/CDN. Official SDK license/usage requests contain installation/app/model/platform metadata, never audio/text. Write independent local annotation state."
+        ],
+        "effects_complete": true,
+        "dependencies_complete": true,
+        "risks": {
+          "authorization": {
+            "relevant": true,
+            "rationale": "Accept only packaged SDK runtime and explicitly chosen local model; status does not trigger download.",
+            "scenarios": [
+              "scenario.engine_diarize.authorization"
+            ]
+          },
+          "boundaries": {
+            "relevant": true,
+            "rationale": "Validate C ABI payload length, speakers, finite/bounded intervals and source duration. Surface native crashes and empty results honestly.",
+            "scenarios": [
+              "scenario.engine_diarize.boundaries"
+            ]
+          },
+          "concurrency": {
+            "relevant": true,
+            "rationale": "Cancellation kills/reaps the registered child; normal completion flushes SDK licensing requests.",
+            "scenarios": [
+              "scenario.engine_diarize.concurrency"
+            ]
+          },
+          "atomicity": {
+            "relevant": true,
+            "rationale": "Only complete validated result payloads cross the child boundary; never overwrite the original audio.",
+            "scenarios": [
+              "scenario.engine_diarize.atomicity"
+            ]
+          },
+          "idempotency": {
+            "relevant": false,
+            "rationale": "Explicit reruns replace one derived annotation atomically; they do not duplicate the document or replay dictation insertion.",
+            "scenarios": []
+          }
+        },
+        "error_cases": {
+          "Unavailable": [
+            "scenario.engine_diarize.boundaries"
+          ]
+        }
+      },
+      "behavior": "Run pinned official Who C ABI with normalized local audio in an isolated registered child. Keep SDK reporting intact and return model/version plus overlapping real speaker intervals. Never upload audio/text or switch providers."
     }
   },
   "edges": [
@@ -9460,6 +10626,174 @@
       "from": "entity.recovery",
       "to": "component.history",
       "relation": "owned_by"
+    },
+    {
+      "id": "edge.file_import.authorization",
+      "from": "scenario.file_import.authorization",
+      "to": "action.file_import",
+      "relation": "exercises"
+    },
+    {
+      "id": "edge.file_import.boundaries",
+      "from": "scenario.file_import.boundaries",
+      "to": "action.file_import",
+      "relation": "exercises"
+    },
+    {
+      "id": "edge.file_import.concurrency",
+      "from": "scenario.file_import.concurrency",
+      "to": "action.file_import",
+      "relation": "exercises"
+    },
+    {
+      "id": "edge.file_import.atomicity",
+      "from": "scenario.file_import.atomicity",
+      "to": "action.file_import",
+      "relation": "exercises"
+    },
+    {
+      "id": "edge.owns.file_import",
+      "from": "action.file_import",
+      "to": "component.transcription",
+      "relation": "owned_by"
+    },
+    {
+      "id": "edge.file_recognize.authorization",
+      "from": "scenario.file_recognize.authorization",
+      "to": "action.file_recognize",
+      "relation": "exercises"
+    },
+    {
+      "id": "edge.file_recognize.boundaries",
+      "from": "scenario.file_recognize.boundaries",
+      "to": "action.file_recognize",
+      "relation": "exercises"
+    },
+    {
+      "id": "edge.file_recognize.concurrency",
+      "from": "scenario.file_recognize.concurrency",
+      "to": "action.file_recognize",
+      "relation": "exercises"
+    },
+    {
+      "id": "edge.file_recognize.atomicity",
+      "from": "scenario.file_recognize.atomicity",
+      "to": "action.file_recognize",
+      "relation": "exercises"
+    },
+    {
+      "id": "edge.owns.file_recognize",
+      "from": "action.file_recognize",
+      "to": "component.engines",
+      "relation": "owned_by"
+    },
+    {
+      "id": "edge.file_document.authorization",
+      "from": "scenario.file_document.authorization",
+      "to": "action.file_document",
+      "relation": "exercises"
+    },
+    {
+      "id": "edge.file_document.boundaries",
+      "from": "scenario.file_document.boundaries",
+      "to": "action.file_document",
+      "relation": "exercises"
+    },
+    {
+      "id": "edge.file_document.concurrency",
+      "from": "scenario.file_document.concurrency",
+      "to": "action.file_document",
+      "relation": "exercises"
+    },
+    {
+      "id": "edge.file_document.atomicity",
+      "from": "scenario.file_document.atomicity",
+      "to": "action.file_document",
+      "relation": "exercises"
+    },
+    {
+      "id": "edge.owns.file_document",
+      "from": "action.file_document",
+      "to": "component.transcription",
+      "relation": "owned_by"
+    },
+    {
+      "id": "edge.file_import.recognizes",
+      "from": "action.file_import",
+      "to": "action.file_recognize",
+      "relation": "calls"
+    },
+    {
+      "id": "edge.file_document.text_ai",
+      "from": "action.file_document",
+      "to": "action.engine_text",
+      "relation": "calls"
+    },
+    {
+      "from": "scenario.file_diarize.authorization",
+      "relation": "exercises",
+      "to": "action.file_diarize",
+      "id": "edge.who.scenario_file_diarize_authorization.exercises"
+    },
+    {
+      "from": "scenario.file_diarize.boundaries",
+      "relation": "exercises",
+      "to": "action.file_diarize",
+      "id": "edge.who.scenario_file_diarize_boundaries.exercises"
+    },
+    {
+      "from": "scenario.file_diarize.concurrency",
+      "relation": "exercises",
+      "to": "action.file_diarize",
+      "id": "edge.who.scenario_file_diarize_concurrency.exercises"
+    },
+    {
+      "from": "scenario.file_diarize.atomicity",
+      "relation": "exercises",
+      "to": "action.file_diarize",
+      "id": "edge.who.scenario_file_diarize_atomicity.exercises"
+    },
+    {
+      "from": "action.file_diarize",
+      "relation": "owned_by",
+      "to": "component.transcription",
+      "id": "edge.who.action_file_diarize.owned_by"
+    },
+    {
+      "from": "scenario.engine_diarize.authorization",
+      "relation": "exercises",
+      "to": "action.engine_diarize",
+      "id": "edge.who.scenario_engine_diarize_authorization.exercises"
+    },
+    {
+      "from": "scenario.engine_diarize.boundaries",
+      "relation": "exercises",
+      "to": "action.engine_diarize",
+      "id": "edge.who.scenario_engine_diarize_boundaries.exercises"
+    },
+    {
+      "from": "scenario.engine_diarize.concurrency",
+      "relation": "exercises",
+      "to": "action.engine_diarize",
+      "id": "edge.who.scenario_engine_diarize_concurrency.exercises"
+    },
+    {
+      "from": "scenario.engine_diarize.atomicity",
+      "relation": "exercises",
+      "to": "action.engine_diarize",
+      "id": "edge.who.scenario_engine_diarize_atomicity.exercises"
+    },
+    {
+      "from": "action.engine_diarize",
+      "relation": "owned_by",
+      "to": "component.engines",
+      "id": "edge.who.action_engine_diarize.owned_by"
+    },
+    {
+      "from": "action.file_diarize",
+      "relation": "calls",
+      "to": "action.engine_diarize",
+      "id": "edge.who.action_file_diarize.calls"
     }
   ],
   "sources": {
@@ -9470,7 +10804,7 @@
       "format": "text/markdown",
       "normative": true,
       "revision": {
-        "sha256": "03e00c795b83fa653c737234686a19b70ba1cd76518efa5544d818e7faf1adb1"
+        "sha256": "ab758f2b3a388d5f7ad67b5a0cd732d51389be2997193d6bfa1eabfae10cf13c"
       }
     },
     "source.design": {
@@ -9480,7 +10814,7 @@
       "format": "text/markdown",
       "normative": true,
       "revision": {
-        "sha256": "1b38f594b9033e62ecbb4dc54740aecd4b481b77865924fa1208441e31d0bec4"
+        "sha256": "65eb9909c48c0309ea2e4107e600c7f493b29e435dafa813b0aad427597e899a"
       }
     },
     "source.design_selection": {
@@ -9520,7 +10854,17 @@
       "format": "text/markdown",
       "normative": false,
       "revision": {
-        "sha256": "fa72a94c4572aec7322ee3ec96dd2edd26106ff246d01ec7bee75e3f690ae8c2"
+        "sha256": "d210ba7c13875a7a0443a47973935e846811c87b910356936f0ef470fed99538"
+      }
+    },
+    "source.transcription": {
+      "role": "input",
+      "title": "Approved file transcription specification and word-level contracts",
+      "uri": "TRANSCRIPTION-SPEC.md",
+      "format": "text/markdown",
+      "normative": true,
+      "revision": {
+        "sha256": "b370a3676daddbf96d64e78ed9f934427ffcc333f09da3f7e75ae99ee8b6c73f"
       }
     }
   },

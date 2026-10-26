@@ -2,21 +2,23 @@
   "format": "gdd-records/0.2",
   "project_id": "vara.clean-write",
   "records": {
-    "decision.settings_v2.2026-10-24": {
+    "decision.who.2026-10-26": {
       "kind": "decision",
       "topic": "model_change",
-      "description": "Implement the approved settings-v2 mockups with shared task-based components while preserving existing capabilities and stored preferences.",
+      "description": "User explicitly requested Who integration as optional local speaker diarization, preserving the Rust core and existing dictation.",
       "scope": [
+        "component.transcription",
+        "component.engines",
         "component.experience"
       ],
-      "spec_revision": "sha256:f7ade110b75c7389cadadfd7c10e1da022682503fa43b33ec1b608028302ef52",
-      "policy_revision": "trusted-user-request-implement-settings-mockups-and-update-design-2026-10-24",
+      "spec_revision": "sha256:49bbb05399fb4eb7559b5010756b89d56e031cb72ce8d5954c4a236371aca14e",
+      "policy_revision": "trusted-user-integrer-who-2026-10-26",
       "actor": {
         "id": "agent.codex",
         "kind": "agent"
       },
       "outcome": "accepted",
-      "rationale": "User approved the three mockups and requested implementation plus DESIGN.md updates. This records implementation provenance and observed checks; it does not assert human release acceptance or new live speech inference."
+      "rationale": "Mandate/provenance only. Model quality and platform acceptance are limited to the separately recorded evidence; no natural Danish multi-speaker accuracy or human runtime acceptance is asserted."
     }
   }
 }

@@ -16,3 +16,6 @@ graphify-out/
 /target/
 /desktop/src-tauri/gen/
 /desktop/ui/design/
+
+# Generated official Who native runtime, built from pinned SDK.
+/desktop/src-tauri/runtime/who/

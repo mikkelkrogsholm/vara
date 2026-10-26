@@ -1,0 +1,29 @@
+{
+  "tests": [
+    {
+      "fixture": "two-speakers.wav",
+      "kind": "synthetic system TTS voices Sara (Danish) and Daniel (English); functional test, not natural Danish quality benchmark",
+      "duration_seconds": 41.21975,
+      "speakers": 2,
+      "returned_turns": 4,
+      "wrong_speaker_seconds_within_known_speech": 0.0,
+      "covered_known_speech_seconds": 38.82,
+      "crosses_five_minute_boundary": false
+    },
+    {
+      "fixture": "long-speakers.wav",
+      "kind": "synthetic system TTS voices Sara (Danish) and Daniel (English); functional test, not natural Danish quality benchmark",
+      "duration_seconds": 329.758,
+      "speakers": 2,
+      "returned_turns": 37,
+      "wrong_speaker_seconds_within_known_speech": 0.0,
+      "covered_known_speech_seconds": 310.558,
+      "crosses_five_minute_boundary": true
+    }
+  ],
+  "natural_danish_short_seconds": 10.312125,
+  "natural_danish_short_speakers": 0,
+  "same_danish_repeated_seconds": 41.2485,
+  "same_danish_repeated_speakers": 1,
+  "note": "Functional checks only. No claim of natural Danish multi-speaker diarization accuracy."
+}

@@ -72,3 +72,45 @@ time out after 15 seconds. The executable must call
 an unauthenticated credential command-line API. Store errors offer retry; timed-out
 writes may have completed and must be checked before repeating. See the
 [credential verification report](../gdd/reports/CREDENTIAL-HARDENING-2026-10-24.md).
+
+## File-transcription development
+
+`vara-core::transcription` defines file documents, timing validation, export and a
+separate document store. `vara-engine::{media,transcription}` decode and recognize
+files. The host queue lives in `src-tauri/src/transcription.rs`; its UI composition
+and controller are in `ui/transcription.js` using existing shared primitives and
+model readiness components. Transcription media is exposed only through a scoped
+native asset protocol; unrelated files are outside that playback scope.
+
+For a native file-job smoke test, build with `test-harness`, set an isolated
+`VARA_DATA_DIR` with available models and point `VARA_TEST_FILE` to a disposable
+fixture. Optional `VARA_TEST_FILES_JSON` supplies a JSON array for a batch;
+`VARA_TEST_CANCEL_FIRST=1` exercises cancellation. Normal builds exclude this
+harness. File tests do not register a dictation shortcut or access the microphone.
+Never use your personal data directory for harness tests.
+
+Core/media tests run with the workspace. Browser journeys are in
+`tests/transcription.playwright.js` using isolated IPC fixtures. Actual local
+inference can be verified with the `vara-engine` example `file_transcription`.
+See the feature report for evidence, limits and native acceptance status.
+
+## Who local speaker labeling
+
+Open a completed file document and choose **Find talere**. Download Who once via
+the explicit supplier/license/usage disclosure; then run it on the private audio
+copy. Speaker names and original word times remain inspectable; ambiguous words
+are not assigned a single speaker. Empty/failed results retain prior annotations.
+
+The Mac packaging script invokes `scripts/build-who-runtime.sh` (Swift 6.2+ is a
+build dependency of the official SDK, not an end-user requirement). The runtime
+is ignored build output under `src-tauri/runtime/who/`. Model weights remain in
+the app-data model directory and are not part of the app bundle. Who needs
+macOS 15+, while the rest of Vara keeps its existing floor. The same SDK C ABI is
+used by the Rust integration on other platforms; their builds must provide
+`libWhoAndroid.so`/`WhoAndroid.dll` and the official LiteRT dependencies under
+`runtime/who`, then validate on those platforms. Do not ship a Mac dylib as a
+crossplatform runtime.
+
+Verification CLI (normalized mono 16 kHz PCM16 WAV):
+`cargo run --release -p vara-engine --example who -- RUNTIME MODEL_DIR diarize AUDIO.wav`
+The example also accepts `status`, `download`, and `cancel` for lifecycle checks.

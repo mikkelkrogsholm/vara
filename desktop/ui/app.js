@@ -91,6 +91,9 @@
   let renderedPage = null;
   function render() {
     if (!state.data) return;
+    if(state.page==="transcription"&&Vara.transcription?.retainEditor()){
+      $("sidebar").innerHTML=Vara.views.sidebar(state);Vara.transcription.refreshEditorStatus();return;
+    }
     const focus = focusIdentity(),
       focused = document.activeElement;
     const selection =
@@ -152,12 +155,13 @@
     if (state.data && JSON.stringify(state.data) === JSON.stringify(data))
       return;
     state.data = data;
+    Vara.transcription?.onSession(data.session);
     loadAppArtwork();
     if (!state.selected && data.history.length)
       state.selected = data.history[0].id;
     if (data.history[0]?.id && previous !== data.history[0].id) {
       state.selected = data.history[0].id;
-      if (!state.dirty) {
+      if (!state.dirty && state.page !== "transcription") {
         state.page = "history";
         state.detailOpen = true;
       } else toast("En ny diktering er gemt i historikken.");
@@ -366,6 +370,7 @@
   async function action(button) {
     const a = button.dataset.action,
       id = button.dataset.id;
+    if (a.startsWith("tx-")) return Vara.transcription.action(button);
     switch (a) {
       case "navigate":
         navigate(() => {
@@ -832,6 +837,7 @@
     if (!data.settings.onboarding_complete && data.history.length === 0)
       state.page = "setup";
     apply(data);
+    Vara.transcription.init({api,render,modal,closeModal,toast},state);
     await window.__TAURI__.event.listen("vara:state", (event) =>
       apply(event.payload),
     );

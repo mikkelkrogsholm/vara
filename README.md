@@ -46,3 +46,22 @@ files are build output. Follow [DESIGN.md](gdd/DESIGN.md) and
 macOS is the tested development target. Windows/Linux native integration and
 mobile shells still require implementation and testing. See
 [implementation status](IMPLEMENTATION.md) for current limits.
+
+## File transcription
+
+Open **Transskribering**, add audio/video files, choose a model and start the batch.
+The file library is separate from app-grouped dictation history. It retains the
+original transcript, optional corrections and separate AI output. Word/segment
+navigation and subtitle export are available only when actual model timings exist.
+
+Vara keeps a private normalized playback copy until the document is deleted;
+original user files are never modified or deleted. The dictation recording's
+24-hour retry policy does not apply to these expressly retained playback copies.
+Common formats decode locally in Rust. An independently installed FFmpeg can add
+codec support; Vara does not download or bundle it. Unsupported inputs are reported.
+See [transcription specification](gdd/TRANSCRIPTION-SPEC.md) and
+[verification evidence](gdd/reports/transcription/README.md).
+
+Cancellation of an unfinished file job removes its private working audio; the
+source file remains untouched. Failed recognition can reuse a valid retained
+playback copy on retry even if the external original has moved.

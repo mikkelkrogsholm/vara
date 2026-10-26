@@ -1,0 +1,58 @@
+{
+  "dictation": [
+    {
+      "name": "Reference layout, tokens and default original",
+      "visual": {
+        "sidebar": "rgb(47, 53, 39)",
+        "detail": "rgb(255, 252, 247)",
+        "reading": "36px",
+        "serif": "Georgia, \"Noto Serif\", \"Liberation Serif\", serif",
+        "columns": [
+          285,
+          523,
+          777
+        ]
+      }
+    },
+    "Local artwork by app identity, monogram fallback and direct accessible row actions",
+    "Direct and processed result states, keyboard selection",
+    "Search, empty results and focus",
+    "Settings, shortcut recorder and unsaved/invalid states",
+    "Free shortcuts: single key, side-specific modifier, modifier chord and Escape",
+    "Separate global-shortcut/Input Monitoring permission and refreshed status",
+    "Connections and every connection dialog; secret clearing",
+    "Privacy, app picker, one-shot processing, direct actions and deletion dialog",
+    "Persistent failure, recovery, empty history and all setup steps",
+    "Permission denial, not-ready model and real progress representation",
+    "10,000-character reading, intermediate drilldown, 320px reflow and reduced-motion rendering",
+    "Selected speech model controls readiness; Whisper remains optional",
+    "Groq key, access check/error, both speech choices and explicit cloud selection",
+    "OpenAI key, current model access check/error and explicit cloud choice",
+    "Locked keychain, uncertain timeout, secret clearing and metadata retry",
+    "Provider-level stored/missing key status, direct test success/error, deletion and stale-result invalidation",
+    "Unified dictation flow, native AI choice, preserved conditional draft, contextual key setup and atomic preferences",
+    "Contextual local download, cancellation and live progress retain pending settings",
+    "Privacy locality/retention, truthful fixed audio policy and preserved per-app overrides",
+    "Mockup-aligned settings hierarchy, distinct management page and all three settings layouts down to 320px",
+    "Fresh onboarding remains usable while microphone enumeration never resolves",
+    "Cloud first-use route reaches Dictation while device enumeration is stalled"
+  ],
+  "transcription": [
+    "Import, batching, local/cloud destinations and explicit start",
+    "Editor, actual HTML audio playback, word seek and highlight",
+    "Timed passage selection plays and stops at its boundary",
+    "Provider speaker names can be changed independently of transcript text",
+    "Keyboard word navigation and recording/playback isolation",
+    "Autosave, original and explicit alignment status",
+    "Failed autosave preserves and copies the recoverable draft",
+    "Export format/version and alignment guard",
+    "Rename and separate optional AI output",
+    "Failed import, retry and cancellation",
+    "Missing playback source",
+    "Optional Who setup, usage disclosure, speaker turns, rename and immutable source/corrections",
+    "Who failure/cancellation preserve the document and previous successful result",
+    "Who model setup does not reclaim focus after its dialog is dismissed",
+    "Desktop and narrow reflow",
+    "Deletion scope and library update"
+  ]
+}

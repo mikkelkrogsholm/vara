@@ -17,6 +17,25 @@ impl Local {
         language: Option<&str>,
         cancel: &Cancellation,
     ) -> Result<String> {
+        Ok(self.transcribe(model, path, language, cancel, false)?.text)
+    }
+    pub fn transcript(
+        &self,
+        model: &Path,
+        path: &Path,
+        language: Option<&str>,
+        cancel: &Cancellation,
+    ) -> Result<vara_core::Transcript> {
+        self.transcribe(model, path, language, cancel, true)
+    }
+    fn transcribe(
+        &self,
+        model: &Path,
+        path: &Path,
+        language: Option<&str>,
+        cancel: &Cancellation,
+        timed: bool,
+    ) -> Result<vara_core::Transcript> {
         let (samples, _) = read_audio(path)?;
         if samples.len() < 1600 {
             return Err("Optagelsen er for kort.".into());
@@ -45,7 +64,7 @@ impl Local {
         params.set_language(language);
         params.set_translate(false);
         params.set_no_context(true);
-        params.set_no_timestamps(true);
+        params.set_no_timestamps(!timed);
         params.set_print_progress(false);
         params.set_print_realtime(false);
         params.set_print_timestamps(false);
@@ -68,14 +87,35 @@ impl Local {
             .map_err(|_| "Transskriptionen mislykkedes. Optagelsen kan genprøves.")?;
         cancel.check()?;
         let mut text = String::new();
+        let mut segments = Vec::new();
         for i in 0..state.full_n_segments() {
             if let Some(s) = state.get_segment(i) {
                 if s.no_speech_probability() < 0.85 {
-                    text.push_str(s.to_str().map_err(|_| "Teksten kunne ikke afkodes.")?);
+                    let part = s.to_str().map_err(|_| "Teksten kunne ikke afkodes.")?;
+                    text.push_str(part);
+                    if timed {
+                        segments.push(vara_core::TranscriptSegment {
+                            id: format!("s{i}"),
+                            text: part.trim().into(),
+                            start: Some(s.start_timestamp() as f64 / 100.),
+                            end: Some(s.end_timestamp() as f64 / 100.),
+                            speaker: None,
+                            words: vec![],
+                        });
+                    }
                 }
             }
         }
-        Ok(text)
+        if timed {
+            Ok(vara_core::Transcript {
+                text: text.trim().into(),
+                segments,
+                timing: vara_core::Timing::Segment,
+                timing_source: "asr".into(),
+            })
+        } else {
+            Ok(vara_core::Transcript::plain(text))
+        }
     }
     pub fn text(
         &self,

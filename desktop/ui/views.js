@@ -65,6 +65,7 @@
         : null);
     return `<div class="brand">${mark()}<span>vara</span></div><nav>${[
       ["history", "history", "Historik"],
+      ["transcription", "document", "Transskribering"],
       ["apps", "apps", "AI pr. app"],
       ["settings", "settings", "Indstillinger"],
     ]
@@ -74,7 +75,7 @@
       )
       .join(
         "",
-      )}</nav><div class="sidebar-footer"><div class="sidebar-status"><span class="status-dot ${installed && micReady && local ? "" : "is-unready"}"></span><span>${local ? "Lyd: på enheden" : "Lyd: cloud valgt"}</span><kbd>${e(binding(p.shortcut))}</kbd></div><p>${s.data.next_choice && s.data.next_choice !== "default" ? "Næste diktering: " + (s.data.next_choice === "direct" ? "direkte" : "generel AI") + "<br>" : ""}${p.activation === "hold" ? "Hold, tal og slip." : "Tryk for start / stop."}</p><p>${local ? "Lokal transskription.<br>Din lyd forlader ikke enheden." : "Lyd behandles hos din valgte udbyder."}</p>${textEngine ? `<p>Tekst: ${e(loc[textEngine.locality])}</p>` : Object.values(p.app_rules).some((a) => a.enabled) ? "<p>AI efter dine appregler.</p>" : ""}${!installed || !micReady ? b(!installed ? "Hent talemodellen" : "Færdiggør opsætning", "setup", { variant: "quiet", cls: "sidebar-setup" }) : ""}<div class="sidebar-dictation-controls">${b(s.data.session?.stage === "recording" ? "Afslut" : "Diktér", s.data.session?.stage === "recording" ? "stop" : "start", { variant: "quiet", glyph: s.data.session?.stage === "recording" ? "stop" : "mic", attrs: s.data.session && s.data.session.stage !== "recording" ? "disabled" : "" })}${ib("more", "Behandling for næste diktering", "choose-processing")}</div></div>`;
+      )}</nav><div class="sidebar-footer"><div class="sidebar-status"><span class="status-dot ${installed && micReady && local ? "" : "is-unready"}"></span><span>${s.page === "transcription" ? "Diktering: " : "Lyd: "}${local ? "på enheden" : "cloud valgt"}</span><kbd>${e(binding(p.shortcut))}</kbd></div><p>${s.data.next_choice && s.data.next_choice !== "default" ? "Næste diktering: " + (s.data.next_choice === "direct" ? "direkte" : "generel AI") + "<br>" : ""}${p.activation === "hold" ? "Hold, tal og slip." : "Tryk for start / stop."}</p><p>${s.page === "transcription" ? "Genvejen starter diktering.<br>Filens model vælges i fanen." : local ? "Lokal transskription.<br>Din lyd forlader ikke enheden." : "Lyd behandles hos din valgte udbyder."}</p>${textEngine ? `<p>Tekst: ${e(loc[textEngine.locality])}</p>` : Object.values(p.app_rules).some((a) => a.enabled) ? "<p>AI efter dine appregler.</p>" : ""}${!installed || !micReady ? b(!installed ? "Hent talemodellen" : "Færdiggør opsætning", "setup", { variant: "quiet", cls: "sidebar-setup" }) : ""}<div class="sidebar-dictation-controls">${b(s.data.session?.stage === "recording" ? "Afslut" : "Diktér", s.data.session?.stage === "recording" ? "stop" : "start", { variant: "quiet", glyph: s.data.session?.stage === "recording" ? "stop" : "mic", attrs: s.data.session && s.data.session.stage !== "recording" ? "disabled" : "" })}${ib("more", "Behandling for næste diktering", "choose-processing")}</div></div>`;
   }
   function messages(s) {
     return `${s.uiError?.scope === "global" ? notice(s.uiError.message, "error", b("Luk besked", "dismiss-ui-error", { variant: "quiet" })) : ""}${s.data.message ? `<div class="inline-state">${icon("warning")}<p>${e(s.data.message)}</p>${ib("close", "Luk besked", "dismiss_message")}</div>` : ""}${s.data.session ? `<div class="inline-state session-state" role="status">${icon("mic")}<p>${e(phase[s.data.session.stage] || "Diktering")} · ${e(s.data.session.origin.app_name)}</p>${s.data.session.stage === "recording" ? b("Afslut", "stop", { glyph: "stop" }) : ""}${b("Annuller", "cancel", { variant: "quiet" })}</div>` : ""}${s.data.unsaved ? `<section class="pending-save"><h2>Teksten er endnu ikke gemt</h2><p class="transcript is-long">${e(finished(s.data.unsaved))}</p><div class="actions">${b("Kopiér", "copy-unsaved", { variant: "primary" })}${b("Prøv at gemme igen", "save_unsaved")}${b("Kassér", "discard-unsaved", { variant: "quiet" })}</div></section>` : ""}`;
@@ -236,6 +237,7 @@
     providers,
     providersList,
     modelFeedback,
+    modelPicker,
     privacySummary,
   };
 })();

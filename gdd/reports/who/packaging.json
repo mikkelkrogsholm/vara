@@ -1,0 +1,17 @@
+{
+  "binary_sha256": "9002c009bb61d04582e7a436530174c8db0cf43ec105af7abe2173fd222e5e76",
+  "sdk_sha256": "ccab0f0259151b83b4e647e345b2c046bbd578735f4e908c9be4dc0b2010aa69",
+  "signature_verified": true,
+  "sdk_signature_verified": true,
+  "sdk_revision": "86b9b55fe8c61ec1c27c5b6383f545c6df1d6ceb",
+  "model_version": "v0.3.1",
+  "app": "/Applications/Vara.app",
+  "models_bundled": false,
+  "notarized": false,
+  "build_cleanup": {
+    "removed_bytes": 3077850852,
+    "target_removed": true,
+    "installed_app_preserved": true,
+    "models_preserved": true
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "date": "2026-10-26",
+  "installed_bundle": "/Applications/Vara.app",
+  "bundle_id": "dk.vara.desktop",
+  "binary_sha256": "8bdbea038e2dcdf2c87bad9348b00bc370f17d1addac47fd43bf8e629a1afb02",
+  "automation_repaired": {
+    "launch_services": "unregistered four obsolete build/Trash entries and force-registered installed app",
+    "computer_use_helper": "restarted stale SkyComputerUseService and reset cua_repl",
+    "permissions_or_safety_rules_changed": false,
+    "fresh_getApp_bundle_id_succeeded": true
+  },
+  "native_walkthrough": {
+    "file_picker": true,
+    "fixture": "Samples/da_test.wav",
+    "local_engine": "Parakeet Redux",
+    "duration_seconds": 10.312125,
+    "stage": "ready",
+    "word_count": 31,
+    "word_seek_observed_seconds": 5.5,
+    "playback_advances_to_end": true,
+    "correct_play_pause_end_label": true,
+    "autosave_revision": 1,
+    "original_preserved": true,
+    "copy_to_new_textedit_document_matches": true,
+    "native_txt_save_dialog": true,
+    "export_matches_correction": true,
+    "normal_quit_and_relaunch": true,
+    "document_and_correction_survive_restart": true,
+    "original_file_sha256_unchanged": true,
+    "normalized_playback_copy_exists": true
+  },
+  "existing_dictation": {
+    "new_successful_real_dictation_observed_during_test": true,
+    "created_at": 1793002365,
+    "origin_app": "com.openai.codex",
+    "delivery": "inserted",
+    "note": "Observed actual user invocation, not a synthetic microphone/voice fixture; existing automated regression evidence remains applicable."
+  },
+  "limitations": [
+    "No local diarization/Who integration was included in this scope.",
+    "Rich cloud diarization remains protocol-tested, without live provider acceptance.",
+    "Windows/Linux runtime acceptance remains separate."
+  ]
+}

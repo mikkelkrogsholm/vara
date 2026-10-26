@@ -1,4 +1,5 @@
 mod service;
+mod transcription;
 use service::Service;
 use std::sync::{Arc, OnceLock, Weak};
 use tauri::{
@@ -129,6 +130,11 @@ async fn command(
 ) -> Result<serde_json::Value, String> {
     let service = state.inner().clone();
     tauri::async_runtime::spawn_blocking(move || {
+        if action.starts_with("file_") {
+            use tauri::Manager;
+            let files = app.state::<Arc<transcription::Files>>();
+            return files.command(&action, payload.unwrap_or_default(), &service.preferences());
+        }
         if action == "shortcut_capture" {
             let enabled = payload
                 .as_ref()
@@ -195,14 +201,48 @@ pub fn run() {
                 app.path().app_data_dir()?
             };
             let service =
-                Service::new(app.handle().clone(), root).map_err(std::io::Error::other)?;
+                Service::new(app.handle().clone(), root.clone()).map_err(std::io::Error::other)?;
+            app.asset_protocol_scope()
+                .allow_directory(root.join("transcriptions"), false)?;
+            let files = transcription::Files::new(app.handle().clone(), root)
+                .map_err(std::io::Error::other)?;
+            app.manage(files.clone());
+            #[cfg(feature = "test-harness")]
+            if let Some(path) = std::env::var_os("VARA_TEST_FILE") {
+                if std::env::var_os("VARA_DATA_DIR").is_none() {
+                    return Err("File harness requires isolated VARA_DATA_DIR".into());
+                }
+                let paths = if let Ok(batch) = std::env::var("VARA_TEST_FILES_JSON") {
+                    serde_json::from_str::<Vec<String>>(&batch)?
+                } else {
+                    vec![path.to_string_lossy().to_string()]
+                };
+                let ids=if let Ok(id)=std::env::var("VARA_TEST_RETRY_ID"){
+                    files.command("file_retry",serde_json::json!({"id":id}),&service.preferences()).map_err(std::io::Error::other)?;serde_json::json!([id])
+                }else{files.command("file_add",serde_json::json!({"paths":paths,"engine":"local.parakeet","language":""}),&service.preferences()).map_err(std::io::Error::other)?};
+                if std::env::var_os("VARA_TEST_CANCEL_FIRST").is_some() {
+                    files
+                        .command(
+                            "file_cancel",
+                            serde_json::json!({"id":ids[0]}),
+                            &service.preferences(),
+                        )
+                        .map_err(std::io::Error::other)?;
+                }
+            }
             let _ = LIVE.set(Arc::downgrade(&service));
             app.manage(service.clone());
             let (sender, receiver) = std::sync::mpsc::channel();
             let _ = HOTKEY_EVENTS.set(sender);
             let weak = Arc::downgrade(&service);
             std::thread::spawn(move || run_shortcut_events(weak, receiver));
-            if let Err(error) = register_shortcut(app.handle(), &service.shortcut()) {
+            let file_harness =
+                cfg!(feature = "test-harness") && std::env::var_os("VARA_TEST_FILE").is_some();
+            if let Err(error) = if file_harness {
+                Ok(())
+            } else {
+                register_shortcut(app.handle(), &service.shortcut())
+            } {
                 service.warn(error);
             }
             let show = MenuItem::with_id(app, "show", "Åbn Vara", true, None::<&str>)?;
@@ -222,6 +262,7 @@ pub fn run() {
                         }
                     }
                     "quit" => {
+                        app.state::<Arc<transcription::Files>>().stop();
                         if let Some(service) = app.try_state::<Arc<Service>>() {
                             let _ = service.cancel();
                         }
@@ -276,6 +317,7 @@ pub fn run() {
                 }
             }
             tauri::RunEvent::ExitRequested { .. } => {
+                app.state::<Arc<transcription::Files>>().stop();
                 if let Some(service) = app.try_state::<Arc<Service>>() {
                     let _ = service.cancel();
                 }

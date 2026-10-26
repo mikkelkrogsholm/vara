@@ -149,3 +149,26 @@ coverage, tested provider/runtime versions, a representative quality baseline an
 measured latency envelopes. These are engineering acceptance decisions, not an
 additional feature questionnaire. GDD structural readiness, a working mockup and
 application acceptance remain separate claims.
+
+## Approved extension — file transcription (2026-10-25)
+
+The user approved implementation of a separate Transskribering tab following
+`TRANSCRIPTION-SPEC.md` and the two transcription mockups. This extends the
+application beyond the original dictation-only release scope. It does not replace
+or weaken V1-01 through V1-12 above.
+
+Imported documents own a distinct library, durable file jobs, original/corrected
+text, explicit timing precision, optional speaker labels and separate AI output.
+Selecting files does not start processing; a deliberate local/cloud model choice
+and explicit start do. No automatic insertion is performed for imported files.
+
+Playback uses a private local normalized copy retained with the file document
+until deletion, explained before import. Original user files remain untouched.
+The dictation audio-deletion/24-hour recovery rule applies to captured dictation,
+not to these expressly retained file playback copies. Local failure never grants
+cloud permission. Only actual model timings may drive word navigation or exports.
+See the dedicated specification for scope, conditional capabilities and exclusions.
+
+Cancellation of an unfinished file job removes its private working audio; the
+source file remains untouched. Failed recognition can reuse a valid retained
+playback copy on retry even if the external original has moved.
