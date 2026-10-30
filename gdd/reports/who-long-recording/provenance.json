@@ -1,0 +1,272 @@
+{
+  "sdk_tag": "v4.2.1",
+  "sdk_commit": "1a5efed67f44731b5eb5433aa9be3eebae05e269",
+  "upstream_worktree_clean": true,
+  "sdk_dylib_sha256": "da2d4ef517def786f34dc92f3038959e3ec59265138f977dc70d14e45d38c57a",
+  "model_revision": "v0.3.4",
+  "model_files": [
+    {
+      "file": ".dal-meta/manifest",
+      "bytes": 3202,
+      "sha256": "c9e24ac67a04993b3c40db341305a70abd7243293822fd70b851ada0a7840619"
+    },
+    {
+      "file": "coreml-fp16/encoder_30000.mlmodelc/analytics/coremldata.bin",
+      "bytes": 243,
+      "sha256": "2f2656633f626f87beba6e47e533baed3874d1eacd3228c2bf351326858cc53e"
+    },
+    {
+      "file": "coreml-fp16/encoder_30000.mlmodelc/coremldata.bin",
+      "bytes": 399,
+      "sha256": "a1b2a35fddb8755483ca4bd9cb3d51e15c79c1e9ce3b052e1e55f69ba75a444e"
+    },
+    {
+      "file": "coreml-fp16/encoder_30000.mlmodelc/model.mil",
+      "bytes": 228136,
+      "sha256": "3adf9eb810955c207527c87868ff926b8594919d5ea2cc7e5a220d4ea2aa3499"
+    },
+    {
+      "file": "coreml-fp16/encoder_30000.mlmodelc/weights/weight.bin",
+      "bytes": 23349888,
+      "sha256": "998194432a81fef3c66350502c624cf844e62592223c25bf5deb93031f529bd1"
+    },
+    {
+      "file": "coreml-fp16/encoder_6000.mlmodelc/analytics/coremldata.bin",
+      "bytes": 243,
+      "sha256": "203e8dfd90815c1d197147d44cf9cc41da5031c5c0fe15398918023bb3c57722"
+    },
+    {
+      "file": "coreml-fp16/encoder_6000.mlmodelc/coremldata.bin",
+      "bytes": 397,
+      "sha256": "f3c6f8e3f44270e1d0672cb0ecce98de3a2de3715a0d1c2f13f6cb341f28fb76"
+    },
+    {
+      "file": "coreml-fp16/encoder_6000.mlmodelc/model.mil",
+      "bytes": 227558,
+      "sha256": "22c7928cf61eb8594436075f1200f489232a5fc9ed61dc8b3fdfb6e7287418e6"
+    },
+    {
+      "file": "coreml-fp16/encoder_6000.mlmodelc/weights/weight.bin",
+      "bytes": 20834688,
+      "sha256": "fa34257f332b5ebfcd53d1461cbb87f76a02c5bb129a33703dcafd9a11477316"
+    },
+    {
+      "file": "coreml-fp16/queries_30000.mlmodelc/analytics/coremldata.bin",
+      "bytes": 243,
+      "sha256": "92335d6b04331041d4f255e5bafe7befc837a9f6d37d03fa4beeba25cb4cb347"
+    },
+    {
+      "file": "coreml-fp16/queries_30000.mlmodelc/coremldata.bin",
+      "bytes": 504,
+      "sha256": "979397a485b3c0e1c9a8dd6e4c8bffeed4f019b8323b722b3c586ff311f056b7"
+    },
+    {
+      "file": "coreml-fp16/queries_30000.mlmodelc/model.mil",
+      "bytes": 135814,
+      "sha256": "6d2f360abe974b7bd9fce4e077735a005ff54d0640d23be50041768b6c75379a"
+    },
+    {
+      "file": "coreml-fp16/queries_30000.mlmodelc/weights/weight.bin",
+      "bytes": 13019136,
+      "sha256": "46687be0f958349341bc7e2bf84bda5e4d7365ff5056462a205d19f1f56f81fb"
+    },
+    {
+      "file": "coreml-fp16/queries_6000.mlmodelc/analytics/coremldata.bin",
+      "bytes": 243,
+      "sha256": "617e1a729e0a763826236a7a4cd1e2d6252aad96b34f052a9044c8e7f7c00800"
+    },
+    {
+      "file": "coreml-fp16/queries_6000.mlmodelc/coremldata.bin",
+      "bytes": 452,
+      "sha256": "76b9725564138b9741ac553e1d8fdd03987645e603124edd2fa0c575e706ccb4"
+    },
+    {
+      "file": "coreml-fp16/queries_6000.mlmodelc/model.mil",
+      "bytes": 134015,
+      "sha256": "5f9a152aa7c01fc4ba2c8916e29d6ec581cb3b41df53afc44661b85be7c2336b"
+    },
+    {
+      "file": "coreml-fp16/queries_6000.mlmodelc/weights/weight.bin",
+      "bytes": 13019136,
+      "sha256": "46687be0f958349341bc7e2bf84bda5e4d7365ff5056462a205d19f1f56f81fb"
+    },
+    {
+      "file": "coreml-fp16/voice_3256.mlmodelc/analytics/coremldata.bin",
+      "bytes": 243,
+      "sha256": "874f2018ec09db2d185cb43c1c55a65d383b4b8d6f435d746e1c73045594fb48"
+    },
+    {
+      "file": "coreml-fp16/voice_3256.mlmodelc/coremldata.bin",
+      "bytes": 373,
+      "sha256": "ac5fb237dc7f59da6bb643f7de7ee98dafadd9b3c3f3770cd1df680abc53a442"
+    },
+    {
+      "file": "coreml-fp16/voice_3256.mlmodelc/model.mil",
+      "bytes": 57727,
+      "sha256": "6eebc5e3608f69ebe755c51f7d7b98799e1310afb93df643a1c98cf00f9caf89"
+    },
+    {
+      "file": "coreml-fp16/voice_3256.mlmodelc/weights/weight.bin",
+      "bytes": 10642880,
+      "sha256": "b8c030fc8b0053f9274f4f54a87e9c575ce2df9dd207f4098a1ca96ec0dfa57f"
+    },
+    {
+      "file": "coreml-fp16/who_embed.f16",
+      "bytes": 2621960,
+      "sha256": "2f2cb55e4370c30b3d5f0401bf421e018fcc8633f5d3aef225375704c60a8c1c"
+    },
+    {
+      "file": "coreml-fp16/who_mel_banks.f32",
+      "bytes": 23652,
+      "sha256": "730d76d5d2099d964c705c82c4556e2b10792d287666aa97edb0633f88f08ce0"
+    },
+    {
+      "file": "coreml-fp16/who_meta.json",
+      "bytes": 3954,
+      "sha256": "cd2a2e311db7e7f6c0248a635b59b21fff5028837fef9ccc1ea5c715edd7e737"
+    },
+    {
+      "file": "coreml-fp16/who_voice_banks.f32",
+      "bytes": 82248,
+      "sha256": "df33ff45ac021f5d014356b4e9ab4b9f91fadd836649962ee6e89eadfcd264e3"
+    }
+  ],
+  "model_file_sha256_list_sha256": "cf9fff3ea2b2f01c1d13bb9f6f380d5555f4f3baf314ca7960c2f8958b65848a",
+  "model_total_bytes": 84387334,
+  "result_wire_sha256": "b607e378ab2fec583cdd2c16312b120ed1c8f60d7038811f14de039682a637f1",
+  "result_json_sha256": "3cb139263c6998c8c1a0938c7a016b062b72de4f70212c3c3ca65f958f7f2c39",
+  "driver_sha256": "879c764ff8012ff5ba21816cd78bc664cb65b8f6519cb3c0d9c8928ce170504b",
+  "audio_duration_seconds": 6921.877375,
+  "audio_sample_rate_hz": 16000,
+  "audio_sample_count": 110750038,
+  "sdk_wall_seconds": 60.48705196380615,
+  "exit_code": 0,
+  "baseline_model_revision": "v0.3.1",
+  "baseline_installed_model_files": [
+    {
+      "path": ".dal-meta/manifest",
+      "bytes": 2971,
+      "sha256": "a18e60cfe97924f874bd8020a34b3731788bf8833e4c94fc7f1550ba68f1559a"
+    },
+    {
+      "path": "fp16/encoder_30000.mlmodelc/analytics/coremldata.bin",
+      "bytes": 243,
+      "sha256": "1f6b023f1a68b41f4c7b196c7e55e82364080a3afbe605cbe80ba9e5745c837a"
+    },
+    {
+      "path": "fp16/encoder_30000.mlmodelc/coremldata.bin",
+      "bytes": 399,
+      "sha256": "37068d45c952c52d1af4baccd13b0c54e95c789bbc13de8782d2fb7c3fa38f36"
+    },
+    {
+      "path": "fp16/encoder_30000.mlmodelc/model.mil",
+      "bytes": 227193,
+      "sha256": "afd61aa39893dc45eeb41d840786354d6416e936ffd3ecd4c7ecfd03be1a6bfe"
+    },
+    {
+      "path": "fp16/encoder_30000.mlmodelc/weights/weight.bin",
+      "bytes": 23349632,
+      "sha256": "3f41c65f482a6f73fc1d871645df9abfa1fea414fd1a6170ee0a4348a0f21155"
+    },
+    {
+      "path": "fp16/encoder_6000.mlmodelc/analytics/coremldata.bin",
+      "bytes": 243,
+      "sha256": "b0f6bde55d386d28da57e913cef36a34ee304fa6cfe8fae4cf9c58e49d57bf36"
+    },
+    {
+      "path": "fp16/encoder_6000.mlmodelc/coremldata.bin",
+      "bytes": 397,
+      "sha256": "0e95b7d56b27ece2d0bf756ed9d534e0fc0bc4d214584cbc42593107a4bc8b59"
+    },
+    {
+      "path": "fp16/encoder_6000.mlmodelc/model.mil",
+      "bytes": 226615,
+      "sha256": "c1f379e64c5d0232dfaf264a7f218f8b3249666fa22273adb3bba23f0b9f9298"
+    },
+    {
+      "path": "fp16/encoder_6000.mlmodelc/weights/weight.bin",
+      "bytes": 20834432,
+      "sha256": "6fe9f19a9d8d1f53f33fcabafbfd70fa496aa90f4483e0abe07a7d56c84d0860"
+    },
+    {
+      "path": "fp16/queries_30000.mlmodelc/analytics/coremldata.bin",
+      "bytes": 243,
+      "sha256": "865acbb6e727ad4d7f19df246867f049659cec80c4ce343eab8fb2cfefc8348b"
+    },
+    {
+      "path": "fp16/queries_30000.mlmodelc/coremldata.bin",
+      "bytes": 504,
+      "sha256": "7880839435681d4692176cd3b805dbd07ab0530e25035b8cd93e265e6746a4c9"
+    },
+    {
+      "path": "fp16/queries_30000.mlmodelc/model.mil",
+      "bytes": 136110,
+      "sha256": "d57e4febdee498c62d111782f295ca3ca645e2d4adc424c8e038f08ae5f8c4bf"
+    },
+    {
+      "path": "fp16/queries_30000.mlmodelc/weights/weight.bin",
+      "bytes": 13024320,
+      "sha256": "1628719839677f2d5b24332173d9b40237159f5c0716a488c0469bc622b07792"
+    },
+    {
+      "path": "fp16/queries_6000.mlmodelc/analytics/coremldata.bin",
+      "bytes": 243,
+      "sha256": "b479eeff018563428a9c0ebf48ba8b8e266283c99655333baf68730ea9743d31"
+    },
+    {
+      "path": "fp16/queries_6000.mlmodelc/coremldata.bin",
+      "bytes": 452,
+      "sha256": "701f716d5483788bce00faaf55877d04bd7e5188c3cf0d88837644b47c6cd9d5"
+    },
+    {
+      "path": "fp16/queries_6000.mlmodelc/model.mil",
+      "bytes": 134289,
+      "sha256": "f8010d087ae252bbbf8b437a26aa0067a8db4776d35c3e23c10972579c992ba7"
+    },
+    {
+      "path": "fp16/queries_6000.mlmodelc/weights/weight.bin",
+      "bytes": 13024320,
+      "sha256": "1628719839677f2d5b24332173d9b40237159f5c0716a488c0469bc622b07792"
+    },
+    {
+      "path": "fp16/voice_3256.mlmodelc/analytics/coremldata.bin",
+      "bytes": 243,
+      "sha256": "874f2018ec09db2d185cb43c1c55a65d383b4b8d6f435d746e1c73045594fb48"
+    },
+    {
+      "path": "fp16/voice_3256.mlmodelc/coremldata.bin",
+      "bytes": 373,
+      "sha256": "ac5fb237dc7f59da6bb643f7de7ee98dafadd9b3c3f3770cd1df680abc53a442"
+    },
+    {
+      "path": "fp16/voice_3256.mlmodelc/model.mil",
+      "bytes": 57727,
+      "sha256": "6eebc5e3608f69ebe755c51f7d7b98799e1310afb93df643a1c98cf00f9caf89"
+    },
+    {
+      "path": "fp16/voice_3256.mlmodelc/weights/weight.bin",
+      "bytes": 10642880,
+      "sha256": "b8c030fc8b0053f9274f4f54a87e9c575ce2df9dd207f4098a1ca96ec0dfa57f"
+    },
+    {
+      "path": "fp16/who_embed.f16",
+      "bytes": 2621960,
+      "sha256": "2f2cb55e4370c30b3d5f0401bf421e018fcc8633f5d3aef225375704c60a8c1c"
+    },
+    {
+      "path": "fp16/who_mel_banks.f32",
+      "bytes": 23652,
+      "sha256": "730d76d5d2099d964c705c82c4556e2b10792d287666aa97edb0633f88f08ce0"
+    },
+    {
+      "path": "fp16/who_meta.json",
+      "bytes": 3954,
+      "sha256": "cd2a2e311db7e7f6c0248a635b59b21fff5028837fef9ccc1ea5c715edd7e737"
+    },
+    {
+      "path": "fp16/who_voice_banks.f32",
+      "bytes": 82248,
+      "sha256": "df33ff45ac021f5d014356b4e9ab4b9f91fadd836649962ee6e89eadfcd264e3"
+    }
+  ]
+}

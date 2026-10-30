@@ -1,0 +1,27 @@
+{
+  "duration_seconds": 6921.877375,
+  "baseline_speaker_count": 20,
+  "candidate_speaker_count": 21,
+  "candidate_turns": 3456,
+  "global_anchor_mapping": {
+    "who-0": "who-0",
+    "who-1": "who-1",
+    "who-2": "who-2",
+    "who-3": "who-3"
+  },
+  "matched_anchor_overlap_seconds": 5836.88,
+  "all_anchor_pairwise_overlap_seconds": 6910.41,
+  "baseline_anchor_active_seconds": 5842.54,
+  "windows_with_positive_anchor_activity": 75,
+  "anchor_windows_where_dominant_candidate_differs_from_global": 0,
+  "anchor_windows_where_positive_local_permutation_differs": 0,
+  "candidate_ids_spanning_only_one_window": 17,
+  "scope": "Unlabeled output consistency only; baseline is not human ground truth. Pairwise overlap can double count simultaneously active IDs.",
+  "matched_anchor_overlap_fraction": 0.999031,
+  "extra_id_total_active_seconds": 272.17,
+  "extra_id_seconds_overlapping_any_baseline_anchor": 98.91,
+  "baseline_total_union_active_seconds": 5551.35,
+  "candidate_total_union_active_seconds": 5553.85,
+  "common_union_active_seconds": 5547.79,
+  "baseline_extra_id_total_active_seconds": 261.77
+}
