@@ -8,7 +8,7 @@ features=['# Vara v1 — feature index','','Derived from `gdd.json`; see PRODUCT
 for id,c in n.items():
  if c['kind']!='component':continue
  features+=['## '+c['label'],'']
- for aid in c['interfaces']:features+=['- **'+n[aid]['label']+'** (`'+aid+'`): '+n[aid]['description']]
+ for aid in c['interfaces']:features+=['- **'+n[aid]['label']+'** (`'+aid+'`): '+n[aid]['description'].rstrip()]
  features.append('')
 features+=['## Remaining engineering acceptance','','No additional product questionnaire is required to begin. These require implementation evidence:','']+[f"- {q['statement']}" for q in m['questions'].values()]+['','Deferred features are listed in PRODUCT-SPEC.md and are not first-release graph obligations.','']
 (r/'PRODUCT.md').write_text('\n'.join(features))

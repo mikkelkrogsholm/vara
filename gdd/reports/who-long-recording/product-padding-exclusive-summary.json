@@ -1,0 +1,43 @@
+{
+  "method": "After optimal global ID mapping, score only times with exactly one confident speaker and no uncertain or overlapping activity in each output; no human identity truth.",
+  "mapping": {
+    "who-0": "who-0",
+    "who-1": "who-2",
+    "who-2": "who-3",
+    "who-3": "who-1"
+  },
+  "reference_exclusive_seconds": 4995.819999999977,
+  "compared_exclusive_seconds": 4668.670000000013,
+  "compared_fraction_of_reference_exclusive": 0.9345152547529804,
+  "matched_seconds": 4614.350000000027,
+  "different_identity_seconds": 54.31999999998607,
+  "different_fraction_compared": 0.011635005258453889,
+  "reference_exclusive_padded_uncertain_seconds": 147.92000000000075,
+  "reference_exclusive_padded_overlap_seconds": 93.18999999999295,
+  "confusion_seconds": {
+    "who-0": {
+      "who-0": 1822.92,
+      "who-1": 5.98,
+      "who-2": 3.61,
+      "who-3": 0.42
+    },
+    "who-1": {
+      "who-0": 1.21,
+      "who-1": 0.3,
+      "who-2": 1878.83,
+      "who-3": 4.14
+    },
+    "who-2": {
+      "who-0": 0.76,
+      "who-1": 0.36,
+      "who-2": 12.5,
+      "who-3": 722.12
+    },
+    "who-3": {
+      "who-0": 22.86,
+      "who-1": 190.48,
+      "who-2": 2.14,
+      "who-3": 0.04
+    }
+  }
+}

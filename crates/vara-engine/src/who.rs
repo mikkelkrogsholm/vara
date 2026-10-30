@@ -1,4 +1,4 @@
-//! Who's official SDK behind its pinned C ABI. Rust owns lifecycle, source safety
+//! Who's adapted SDK behind its pinned C ABI. Rust owns lifecycle, source safety
 //! and cancellation; an isolated child contains native inference and SDK crashes.
 use crate::{Cancellation, Result};
 use std::{
@@ -9,8 +9,8 @@ use std::{
 };
 use vara_core::{Diarization, SpeakerTurn};
 
-pub const SDK_REVISION: &str = "86b9b55fe8c61ec1c27c5b6383f545c6df1d6ceb";
-pub const MODEL_VERSION: &str = "v0.3.1";
+pub const SDK_REVISION: &str = "1a5efed67f44731b5eb5433aa9be3eebae05e269";
+pub const MODEL_VERSION: &str = "v0.3.4";
 pub fn library_name() -> &'static str {
     if cfg!(target_os = "macos") {
         "libWhoAndroid.dylib"
@@ -28,6 +28,22 @@ pub fn run(
     audio: Option<&Path>,
     cancel: &Cancellation,
 ) -> Result<serde_json::Value> {
+    run_known(library, directory, operation, audio, None, cancel)
+}
+/// A supplied count enables conservative grouping; automatic mode retains SDK output.
+pub fn run_known(
+    library: &Path,
+    directory: &Path,
+    operation: &str,
+    audio: Option<&Path>,
+    known_count: Option<u32>,
+    cancel: &Cancellation,
+) -> Result<serde_json::Value> {
+    if known_count.is_some_and(|n| !(1..=16).contains(&n))
+        || (known_count.is_some() && operation != "diarize")
+    {
+        return Err("Vælg et antal talere mellem 1 og 16.".into());
+    }
     if !library.is_file() {
         return Err(
             "Who-runtime mangler i denne installation. Installer den nyeste Vara-version.".into(),
@@ -43,9 +59,14 @@ pub fn run(
         .arg(operation)
         .arg(audio.unwrap_or(Path::new("")))
         .arg(&output)
+        .arg(known_count.map(|n| n.to_string()).unwrap_or_default())
+        .env_remove("VARA_WHO_LANE_PAYLOAD")
         .stdin(Stdio::null())
         .stdout(Stdio::null())
         .stderr(Stdio::null());
+    if known_count.is_some() {
+        command.env("VARA_WHO_LANE_PAYLOAD", temp.path().join("lanes.json"));
+    }
     let child = cancel.spawn_child(|| command.spawn())?;
     let start = Instant::now();
     loop {
@@ -88,7 +109,7 @@ pub fn worker_entry() -> bool {
     if args.get(1).is_none_or(|a| a != "--vara-who-worker") {
         return false;
     }
-    if args.len() != 7 {
+    if args.len() != 8 {
         std::process::exit(2);
     }
     let result = unsafe {
@@ -97,6 +118,7 @@ pub fn worker_entry() -> bool {
             Path::new(&args[3]),
             &args[4].to_string_lossy(),
             Path::new(&args[5]),
+            &args[7].to_string_lossy(),
         )
     };
     let value = match result {
@@ -115,6 +137,7 @@ unsafe fn native(
     directory: &Path,
     operation: &str,
     audio: &Path,
+    count_arg: &str,
 ) -> Result<serde_json::Value> {
     type Create = unsafe extern "C" fn(*const c_char, *const c_char, *const c_char) -> *mut c_void;
     type State = unsafe extern "C" fn(*mut c_void) -> i32;
@@ -216,7 +239,21 @@ unsafe fn native(
             Err("Who returnerede ugyldige talerdata.".into())
         };
         unsafe { free(ptr) };
-        Ok(serde_json::to_value(result?).unwrap())
+        let mut diarization = result?;
+        if !count_arg.is_empty() {
+            let known_count: u32 = count_arg.parse().map_err(|_| "Ugyldigt antal talere.")?;
+            let path = std::env::var_os("VARA_WHO_LANE_PAYLOAD")
+                .ok_or("Who kunne ikke hente stemmedata.")?;
+            let metadata = std::fs::metadata(&path)
+                .map_err(|_| "Who kunne ikke hente stemmedata for denne optagelse.")?;
+            if metadata.len() > 32_000_000 {
+                return Err("Who returnerede for mange stemmedata.".into());
+            }
+            let lanes = std::fs::read(path).map_err(|_| "Who kunne ikke læse stemmedata.")?;
+            diarization =
+                crate::who_known::group(diarization, &lanes, known_count, count as f64 / 16000.)?;
+        }
+        Ok(serde_json::to_value(diarization).unwrap())
     })();
     // Preserve the SDK's licensing/usage reporting, including short-lived workers.
     unsafe {
@@ -255,6 +292,8 @@ fn decode(bytes: &[u8], duration: f64) -> Result<Diarization> {
         model: "Who by Desert Ant Labs".into(),
         version: MODEL_VERSION.into(),
         turns,
+        raw_turns: None,
+        known_speakers: None,
     };
     result.validate(duration).map_err(|e| e.to_string())?;
     Ok(result)

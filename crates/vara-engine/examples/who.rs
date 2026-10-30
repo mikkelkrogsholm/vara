@@ -25,11 +25,19 @@ fn main() -> Result<(), String> {
         println!("{{\"cancelled\":true}}");
         return Ok(());
     }
-    let result = vara_engine::who::run(
+    let known_count = args
+        .get(4)
+        .map(|s| {
+            s.parse::<u32>()
+                .map_err(|_| "Invalid speaker count".to_owned())
+        })
+        .transpose()?;
+    let result = vara_engine::who::run_known(
         std::path::Path::new(&args[0]),
         std::path::Path::new(&args[1]),
         &args[2],
         args.get(3).map(std::path::Path::new),
+        known_count,
         &Default::default(),
     )?;
     println!("{}", serde_json::to_string_pretty(&result).unwrap());

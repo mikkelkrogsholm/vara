@@ -1,0 +1,49 @@
+--- a/Sources/Who/Model.swift
++++ b/Sources/Who/Model.swift
+@@ -236,18 +236,45 @@
+         }
+         var labels = [Int](repeating: -1, count: lanes.count)
+         let clustered = AverageLinkage.cluster(voices, cosine: join.cosine)
++        func diagnostic(_ finalLabels: [Int]) throws {
++            guard let path = ProcessInfo.processInfo.environment["VARA_WHO_LANE_PAYLOAD"] else { return }
++            let ordered = lanes.indices.sorted { (lanes[$0].turns.first!.start, finalLabels[$0]) < (lanes[$1].turns.first!.start, finalLabels[$1]) }
++            var numbering: [Int: Int] = [:]
++            for g in ordered where numbering[finalLabels[g]] == nil { numbering[finalLabels[g]] = numbering.count }
++            var records: [[String: Any]] = []
++            for g in lanes.indices {
++                let lane = lanes[g]
++                let v = voiced.firstIndex(of: g)
++                let record: [String: Any] = [
++                    "lane": g, "piece": lane.piece, "query": lane.query,
++                    "solo_seconds": Double(lane.solo.reduce(0, +)) * meta.frames.step_s,
++                    "pool_columns": pools[g]?.count ?? 0,
++                    "embedding": v.map { voices[$0] } as Any? ?? NSNull(),
++                    "algorithm_cluster": v.map { clustered[$0] } as Any? ?? NSNull(),
++                    "joined_label": finalLabels[g], "final_speaker": numbering[finalLabels[g]]!,
++                    "turns": lane.turns.map { ["start": $0.start, "end": $0.end] }
++                ]
++                records.append(record)
++            }
++            let payload: [String: Any] = ["min_solo_seconds": join.min_solo_s, "cosine_threshold": join.cosine, "piece_seconds": windows.last!.seconds, "voiceless": join.voiceless, "lanes": records]
++            try JSONSerialization.data(withJSONObject: payload, options: [.sortedKeys]).write(to: URL(fileURLWithPath: path), options: .atomic)
++            try FileManager.default.setAttributes([.posixPermissions: 0o600], ofItemAtPath: path)
++        }
+         for (g, label) in zip(voiced, clustered) { labels[g] = label }
+         if join.voiceless == "fold", !voiced.isEmpty {
+             for g in lanes.indices where labels[g] < 0 {
+                 labels[g] = labels[Voices.nearest(to: lanes[g].turns, among: voiced.map { lanes[$0].turns }, lanes: voiced)]
+             }
+-            return Voices.firstAppearance(labels)
++            let finalLabels = Voices.firstAppearance(labels)
++            try diagnostic(finalLabels)
++            return finalLabels
+         }
+         var next = (clustered.max() ?? -1) + 1
+         for g in lanes.indices where labels[g] < 0 {
+             labels[g] = next
+             next += 1
+         }
++        try diagnostic(labels)
+         return labels
+     }
+ 

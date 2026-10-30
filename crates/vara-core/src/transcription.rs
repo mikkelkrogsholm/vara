@@ -47,7 +47,19 @@ pub struct Diarization {
     pub model: String,
     pub version: String,
     pub turns: Vec<SpeakerTurn>,
+    /// Original SDK result retained when a known speaker count is applied.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub raw_turns: Option<Vec<SpeakerTurn>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub known_speakers: Option<KnownSpeakers>,
 }
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct KnownSpeakers {
+    pub count: u32,
+    pub method: String,
+    pub cosine_threshold: f64,
+}
+
 impl Diarization {
     pub fn validate(&self, duration: f64) -> Result<()> {
         if !duration.is_finite()
@@ -65,6 +77,62 @@ impl Diarization {
                 "Taleropdelingen har ugyldige tidsdata.".into(),
             ));
         }
+        if self.raw_turns.is_some() != self.known_speakers.is_some() {
+            return Err(Error::Invalid(
+                "Taleropdelingen mangler oplysninger om metoden.".into(),
+            ));
+        }
+        if let Some(known) = &self.known_speakers {
+            if !(1..=16).contains(&known.count)
+                || known.method.trim().is_empty()
+                || !known.cosine_threshold.is_finite()
+                || !(0.0..=1.0).contains(&known.cosine_threshold)
+                || self
+                    .turns
+                    .iter()
+                    .filter(|t| t.speaker != "who-uncertain")
+                    .map(|t| &t.speaker)
+                    .collect::<std::collections::BTreeSet<_>>()
+                    .len()
+                    != known.count as usize
+            {
+                return Err(Error::Invalid("Taleropdelingens metode er ugyldig.".into()));
+            }
+        }
+        if let Some(raw) = &self.raw_turns {
+            let mut original = self.clone();
+            original.turns = raw.clone();
+            original.raw_turns = None;
+            original.known_speakers = None;
+            original.validate(duration)?;
+            let merged = |turns: &[SpeakerTurn]| {
+                let mut spans: Vec<_> = turns.iter().map(|t| (t.start, t.end)).collect();
+                spans.sort_by(|a, b| a.0.total_cmp(&b.0).then(a.1.total_cmp(&b.1)));
+                let mut out: Vec<(f64, f64)> = Vec::new();
+                for (start, end) in spans {
+                    if let Some(last) = out.last_mut() {
+                        if start <= last.1 + 1e-6 {
+                            last.1 = last.1.max(end);
+                            continue;
+                        }
+                    }
+                    out.push((start, end));
+                }
+                out
+            };
+            let before = merged(raw);
+            let after = merged(&self.turns);
+            if before.len() != after.len()
+                || before
+                    .iter()
+                    .zip(after)
+                    .any(|(a, b)| (a.0 - b.0).abs() > 1e-5 || (a.1 - b.1).abs() > 1e-5)
+            {
+                return Err(Error::Invalid(
+                    "Taleropdelingen mangler lydintervaller.".into(),
+                ));
+            }
+        }
         Ok(())
     }
     /// Label only intervals with one clear speaker. Silence and simultaneous
@@ -77,7 +145,7 @@ impl Diarization {
                 .filter(|t| t.start < end && t.end > start)
                 .map(|t| t.speaker.as_str())
                 .collect();
-            if active.len() != 1 {
+            if active.len() != 1 || active.contains("who-uncertain") {
                 return None;
             }
             let speaker = *active.first()?;

@@ -30,6 +30,8 @@ Derived from `gdd.json`; see PRODUCT-SPEC.md for accepted release scope and CONT
 - **Configure optional engine** (`action.advanced_engines`): New providers implement the speech or text adapter contract without changes to session/history/desktop ownership.
 - **Store personal provider key** (`action.credentials`): Direct cloud providers use the user key; no Vara login/billing proxy. Providers retrieve secrets through private handles.
 - **Invoke optional installed text CLI** (`action.cli_processing`): CLI integrations are optional text engines, not a promised subscription speech backend or a claim of on-device inference.
+- **Recognize file with real timing** (`action.file_recognize`): Stream/bound normalized audio, return original text plus actual word/segment estimates and optional chunk-scoped speakers. Never fabricate times, speaker identity, progress or transcript content.
+- **Run adapted Who runtime** (`action.engine_diarize`): Run pinned adapted Who C ABI with normalized local audio in an isolated registered child. Keep SDK reporting intact and return model/version plus overlapping real speaker intervals. Never upload audio/text or switch providers. An ephemeral validated lane payload supports optional known-count grouping; embeddings are never persisted. Reference lanes must uniquely match their own prototype with the entire current piece omitted.
 
 ## Preferences
 
@@ -52,6 +54,12 @@ Derived from `gdd.json`; see PRODUCT-SPEC.md for accepted release scope and CONT
 - **Present session status** (`action.session_feedback`): UI shows actual stage/locality and cancellation availability; never claims a completed paste or cleanup without its outcome.
 - **Guide first use** (`action.first_success`): Default setup needs no terminal/account/key. A mock result or saved key alone cannot satisfy onboarding.
 - **Show actionable readiness and errors** (`action.diagnostics`): User can identify unavailable engine, permission, failed stage and pending cleanup without exposing content.
+
+## File transcription
+
+- **Import and control file jobs** (`action.file_import`): Validate an explicit batch and frozen model/language/locality, queue files, decode to private playback copies, cancel/retry without stale publication. Never edit source files.
+- **Read edit export and delete file documents** (`action.file_document`): Persist optimistic revisions and corrections separately from original. Play timed original, rename speakers, run explicit separate text AI, copy/export and delete only document/private media. Untimed or edited text cannot silently export timed subtitles.
+- **Find speakers for a file document** (`action.file_diarize`): Explicit optional Who setup and speaker labeling. Preserve source ASR, edits and successful prior labels on failure/empty output. Publish only validated, noncancelled results. Project unambiguous original word/segment speaker labels without inventing alignment. Automatic is the default; a supplied known speaker count uses recurring reference groups and leaves ambiguous passages uncertain, preserving raw SDK intervals and method provenance. Reference lanes must uniquely match their own prototype with the entire current piece omitted.
 
 ## Remaining engineering acceptance
 

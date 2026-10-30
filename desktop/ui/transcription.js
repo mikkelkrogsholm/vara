@@ -91,13 +91,16 @@
   }
   function whoControls(d) {
     const running = d.who_busy || tx.whoBusy.has(d.id);
-    const count = new Set((d.diarization?.turns || []).map((t) => t.speaker))
-      .size;
-    return `${b(running ? "Finder talere…" : d.diarization ? "Taleropdeling · Who" : "Find talere", "tx-who-open", { variant: "quiet" })}${running ? b("Annuller taleropdeling", "tx-who-cancel", { variant: "quiet" }) : ""}${d.diarization ? `<span class="muted">${count} ${count === 1 ? "taler" : "talere"} · på enheden</span>` : ""}${d.diarization_error ? notice(d.diarization_error, "error") : ""}`;
+    const turns = d.diarization?.turns || [];
+    const count = new Set(turns.filter((t) => t.speaker !== "who-uncertain").map((t) => t.speaker)).size;
+    const uncertain = turns.filter((t) => t.speaker === "who-uncertain").sort((a, b) => a.start - b.start);
+    let seconds = 0, end = 0;
+    for (const t of uncertain) { seconds += Math.max(0, t.end - Math.max(end, t.start)); end = Math.max(end, t.end); }
+    return `${b(running ? "Finder talere…" : d.diarization ? "Taleropdeling · Who" : "Find talere", "tx-who-open", { variant: "quiet" })}${running ? b("Annuller taleropdeling", "tx-who-cancel", { variant: "quiet" }) : ""}${d.diarization ? `<span class="muted">${count} ${count === 1 ? "taler" : "talere"}${uncertain.length ? ` · ${uncertain.length} usikre intervaller (${Math.round(seconds)} sek.)` : ""} · på enheden</span>` : ""}${d.diarization_error ? notice(d.diarization_error, "error") : ""}`;
   }
   function whoTurns(d) {
     if (!d.diarization) return "";
-    return `<details class="tx-who-turns"><summary>Talerintervaller · Who</summary><p class="muted">Stemmer navngives Taler 1, Taler 2 osv. Overlap og usikre ord kan stå uden én taler. ${d.transcript.timing !== "word" ? "Uden ordtidskoder kan vi ikke fordele teksten præcist mellem talerne." : "Rettelser ændrer ikke originalens talermarkeringer."}</p>${d.diarization.turns.map((t) => `<div class="tx-who-turn">${b(d.speakers[t.speaker] || t.speaker, "tx-speaker", { variant: "quiet", attrs: `data-id="${e(t.speaker)}"` })}${b(`${stamp(t.start)}–${stamp(t.end)}`, "tx-seek", { variant: "quiet", attrs: `data-time="${t.start}"` })}</div>`).join("")}</details>`;
+    return `<details class="tx-who-turns"><summary>Talerintervaller · Who</summary><p class="muted">Stemmer navngives Taler 1, Taler 2 osv. Overlap og usikre ord kan stå uden én taler. ${d.transcript.timing !== "word" ? "Uden ordtidskoder kan vi ikke fordele teksten præcist mellem talerne." : "Rettelser ændrer ikke originalens talermarkeringer."}</p>${d.diarization.turns.map((t) => `<div class="tx-who-turn">${t.speaker === "who-uncertain" ? '<span>Usikker taler</span>' : b(d.speakers[t.speaker] || t.speaker, "tx-speaker", { variant: "quiet", attrs: `data-id="${e(t.speaker)}"` })}${b(`${stamp(t.start)}–${stamp(t.end)}`, "tx-seek", { variant: "quiet", attrs: `data-time="${t.start}"` })}</div>`).join("")}</details>`;
   }
   function whoDialog() {
     const status = tx.whoStatus,
@@ -106,7 +109,7 @@
     if (!d) return;
     host.modal(
       "Taleropdeling med Who",
-      `<p>Find hvem der taler hvornår. Lyden behandles lokalt; transskriptionen, rettelser og originalfil bevares.</p><p class="muted">Who by <a href="https://desertant.com" data-action="tx-who-link" data-id="vendor">Desert Ant Labs</a> · model v0.3.1. Op til fire stemmer pr. fem minutter; stemmer matches på tværs af længere optagelser. Modellen kan forveksle stemmer, især ved overlap, støj og korte indspark. Korte eller stille klip kan give ingen talere.</p><p class="muted">SDK’et sender en installations-id samt model-, platform- og appoplysninger til Desert Ant Labs’ licenssystem. Lyd og tekst sendes ikke. <a href="https://license.desertant.com/1.0" data-action="tx-who-link" data-id="license">Licens og brugstælling</a>.</p>${status?.error ? notice(status.error, "error") : ""}${tx.whoDownload ? `<p role="status">Henter og klargør Who…</p>${b("Annuller download", "tx-who-download-cancel")}` : running ? `<p role="status">Finder talere. Du kan fortsætte med resten af Vara.</p>${b("Annuller", "tx-who-cancel")}` : status?.ready ? b(d.diarization ? "Find talere igen" : "Find talere", "tx-who-run", { variant: "primary" }) : status?.available ? `<p>Hent modellen før første brug (omkring 81 MB på Mac). Download og brug sker under den viste licens.</p>${b("Hent Who", "tx-who-download", { variant: "primary" })}` : ""}`,
+      `<p>Find hvem der taler hvornår. Lyden behandles lokalt; transskriptionen, rettelser og originalfil bevares.</p><p class="muted">Who by <a href="https://desertant.com" data-action="tx-who-link" data-id="vendor">Desert Ant Labs</a> · model v0.3.4. Vara anvender en tilpasset SDK-version. Op til fire stemmer pr. fem minutter; stemmer matches på tværs af længere optagelser. Modellen kan forveksle stemmer, især ved overlap, støj og korte indspark. Korte eller stille klip kan give ingen talere.</p><p class="muted">SDK’et sender en installations-id samt model-, platform- og appoplysninger til Desert Ant Labs’ licenssystem. Lyd og tekst sendes ikke. <a href="https://license.desertant.com/1.0" data-action="tx-who-link" data-id="license">Licens og brugstælling</a>.</p>${status?.error ? notice(status.error, "error") : ""}${tx.whoDownload ? `<p role="status">Henter og klargør Who…</p>${b("Annuller download", "tx-who-download-cancel")}` : running ? `<p role="status">Finder talere. Du kan fortsætte med resten af Vara.</p>${b("Annuller", "tx-who-cancel")}` : status?.ready ? `<label for="tx-who-count">Antal talere</label><select id="tx-who-count"><option value="">Automatisk</option>${Array.from({length: 16}, (_, i) => `<option value="${i + 1}" ${d.diarization?.known_speakers?.count === i + 1 ? "selected" : ""}>${i + 1}</option>`).join("")}</select><p class="muted">Angiv kun antal, hvis du kender det. Passager uden et entydigt match vises som usikre.</p>${b(d.diarization ? "Find talere igen" : "Find talere", "tx-who-run", { variant: "primary" })}` : status?.available ? `<p>Hent modellen før første brug (omkring 81 MB på Mac). Download og brug sker under den viste licens.</p>${b("Hent Who", "tx-who-download", { variant: "primary" })}` : ""}`,
     );
   }
   function transcriptText(d) {
@@ -273,6 +276,8 @@
         host.closeModal();
         break;
       case "tx-who-run": {
+        const selectedCount = document.getElementById("tx-who-count")?.value;
+        const knownCount = selectedCount ? Number(selectedCount) : null;
         await flush();
         const target = d.id;
         tx.whoBusy.add(target);
@@ -280,7 +285,7 @@
         draw();
         let failure = null;
         try {
-          await host.api("file_who", { id: target });
+          await host.api("file_who", { id: target, known_speaker_count: knownCount });
           if (tx.selected === target) tx.original = true;
         } catch (error) {
           failure = String(error.message || error);

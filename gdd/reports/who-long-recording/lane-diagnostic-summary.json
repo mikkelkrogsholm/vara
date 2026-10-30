@@ -1,0 +1,109 @@
+{
+  "speaker_count": 21,
+  "turn_count": 3456,
+  "result_exact_equal": true,
+  "wire_exact_equal": true,
+  "lanes": 101,
+  "voiced_lanes": 100,
+  "voiceless_lanes": 1,
+  "min_solo_seconds": 1,
+  "cosine_threshold": 0.6499999761581421,
+  "voiceless_policy": "fold",
+  "extra_lanes": 17,
+  "extra_voiced": 17,
+  "extra_solo_min": 1.29,
+  "extra_solo_max": 59.43,
+  "extra_pool_columns_min": 15,
+  "anchor_heldout_lanes": 83,
+  "anchor_heldout_consistent": 83,
+  "anchor_heldout_inconsistent": [],
+  "extra_stable_all_reference_omissions": 17,
+  "extra_cosine_min": 0.09413855637281511,
+  "extra_cosine_max": 0.7290218466947961,
+  "extra_margin_min": 0.014980672570480066,
+  "extra_margin_max": 0.4178301836380526,
+  "windows": 24,
+  "first_middle_end": [
+    {
+      "piece": 0,
+      "anchor_lanes": 4,
+      "anchor_consistent": 4,
+      "anchor_active_seconds": 268.579999999999,
+      "consistent_active_seconds": 268.579999999999,
+      "extra_lanes": 0,
+      "extra_stable_all_reference_omissions": 0
+    },
+    {
+      "piece": 12,
+      "anchor_lanes": 4,
+      "anchor_consistent": 4,
+      "anchor_active_seconds": 265.1599999999994,
+      "consistent_active_seconds": 265.1599999999994,
+      "extra_lanes": 0,
+      "extra_stable_all_reference_omissions": 0
+    },
+    {
+      "piece": 23,
+      "anchor_lanes": 1,
+      "anchor_consistent": 1,
+      "anchor_active_seconds": 15.350000000000364,
+      "consistent_active_seconds": 15.350000000000364,
+      "extra_lanes": 2,
+      "extra_stable_all_reference_omissions": 2
+    }
+  ],
+  "hashes": {
+    "instrumentation_patch": "c7d2db933ecf048a3c426cb5cbc95343e33513813c363824874a077b0871ae8c",
+    "instrumented_model_swift": "a10e19772227107267ec028753eed056fc9c85fc099e53d6a9ff7b36bc3ad2d4",
+    "original_model_swift": "712622cb8647e09c0747263d4b2849cf69b66bdb57acb3f6f753675b080090c9",
+    "diagnostic_dylib": "1e75cb3174fd16917ffe993137476a8c81f8657942e2976945cf4366efa574d1",
+    "reference_dylib": "da2d4ef517def786f34dc92f3038959e3ec59265138f977dc70d14e45d38c57a",
+    "driver": "56966feb97bdcdc796212e64b3b34a3d95ddcbdaae238aa40fcc1127ff9948de",
+    "analysis": "4bcf7535c2c7857e017955b6a0c43601fe40a6000a6092fbdb0656fd771920c9",
+    "wire": "b607e378ab2fec583cdd2c16312b120ed1c8f60d7038811f14de039682a637f1",
+    "analysis_extension": "2c2124aed856911072268f994e0b8f1f8559bbee621b839f559d6c4a380d0577",
+    "analysis_finalizer": "6cd7cbaf3b383e079e46e0ba9ccefb97c75b1d6a1bee9236ac591a1af412239c"
+  },
+  "sdk_wall_seconds": 69.668221950531,
+  "exit_code": 0,
+  "extra_nearest_anchor_pair_mean_min": 0.08418387734859195,
+  "extra_nearest_anchor_pair_mean_max": 0.648437725274195,
+  "voiceless_lane_aggregate": [
+    {
+      "piece": 2,
+      "query": 31,
+      "solo_seconds": 0.97,
+      "pool_columns": 0,
+      "algorithm_cluster": null,
+      "final_speaker": 2
+    }
+  ],
+  "anchor_heldout_cosine_min": 0.7287105574678486,
+  "anchor_heldout_margin_min": 0.3980617752852162,
+  "extra_solo_under_five_seconds": 14,
+  "known_four_cluster_anchor_sets": {
+    "0": [
+      0,
+      3
+    ],
+    "1": [
+      2
+    ],
+    "2": [
+      1
+    ],
+    "3": []
+  },
+  "known_four_extras_matching_prototype": 8,
+  "known_four_scope": "Offline average linkage forced to four clusters, diagnostic only. Not a validation of speaker count or identity.",
+  "prototype_method": "Arithmetic mean of unit lane embeddings, normalized, equal lane weights. For each held-out lane omit all reference anchor lanes from its 300s piece. Also omit each of all 24 pieces in turn for extra assignment stability. References only candidate final IDs 0-3; no human truth.",
+  "anchor_heldout_cosine_median": 0.9286706971681861,
+  "anchor_heldout_margin_median": 0.6596599710797836,
+  "prototype_cosine_at_least_point65_count": 5,
+  "prototype_cosine_at_least_point65_active_seconds": 201.68000000000177,
+  "prototype_cosine_below_point65_count": 12,
+  "prototype_cosine_below_point65_active_seconds": 70.48999999999836,
+  "high_prototype_cosine_overlapping_target_count": 0,
+  "high_prototype_cosine_overlap_target_seconds": 0,
+  "pair_mean_at_least_point65_count": 0
+}

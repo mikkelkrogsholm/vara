@@ -86,7 +86,7 @@ SRT/VTT medtages, når de valgte runtime-/modelkombinationer leverer verificered
 tidsdata. Konkrete kompatibilitetsgrænser skal fremgå af UI og dokumentation.
 
 Who er valgt som valgfri lokal taleropdeling efter brugerens bestilling
-2026-10-26. “Find talere” i editoren kører den officielle SDK-runtime via en
+2026-10-26. “Find talere” i editoren kører den tilpassede SDK-runtime via en
 C-grænse fra Rust i en separat, annullerbar proces. Ingen automatisk download,
 cloud-fallback eller ændring af hurtig diktering.
 
@@ -98,9 +98,18 @@ lydintervaller uden at opfinde en fordeling af tekst. Rettet tekst får ikke nye
 tids- eller talerdata. JSON indeholder rå ASR, Who-turns og redigering hver for sig.
 Talernavne kan omdøbes i den eksisterende komponent.
 
+Automatisk er standard. Brugeren kan angive et kendt antal fra 1 til 16; dette
+kræver tilstrækkeligt mange tilbagevendende SDK-grupper. De stærkeste vælges efter
+antal lydstykker og aktiv varighed og bevares som adskilte referencer. Et
+referencelydspor skal entydigt matche sin egen reference, når hele det aktuelle
+lydstykke er udeladt fra prototyperne; ellers markeres det usikkert. Øvrige
+lydspor matches kun ved præcis ét cosinusmatch over modellens egen grænse;
+uklare spor, herunder spor uden stemmevektor, beholdes som usikre og tildeles
+ikke ord. JSON bevarer rå SDK-intervaller, afledte intervaller, valgt antal,
+metode og grænse. Midlertidige stemmevektorer gemmes ikke i dokumentet.
+
 Modellen hentes eksplicit i Who-dialogen, som viser leverandør, licens og SDK’ets
-brugstælling før download/brug. Lyden og teksten behandles på enheden; den
-uændrede officielle SDK sender installations-id og model-/app-/platformmetadata
+brugstælling før download/brug. Lyden og teksten behandles på enheden; SDK’et sender installations-id og model-/app-/platformmetadata
 til leverandørens licenssystem. SDK’ets rapportering bevares. Modellerne følger
 ikke med appen. Core ML på Mac kræver macOS 15 eller nyere; appens øvrige funktioner
 bevarer deres eksisterende OS-grænse. Linux/Windows bruger samme Rust-kontrakt og

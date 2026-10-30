@@ -1,5 +1,5 @@
 async function run(page) {
-  const root = "/Users/mikkelfreltoftkrogsholm/Projekter/vara";
+  const root = process.env.VARA_TEST_OUTPUT_ROOT || ".";
   const context = await page.context().browser().newContext();
   page = await context.newPage();
   const fixture = await (
@@ -146,12 +146,17 @@ async function run(page) {
                 throw Error("Who kunne ikke finde talere. Teksten er bevaret.");
               d.diarization = {
                 model: "Who by Desert Ant Labs",
-                version: "v0.3.1",
+                version: "v0.3.4",
                 turns: [
                   { speaker: "who-0", start: 0.1, end: 1.8 },
                   { speaker: "who-1", start: 2, end: 4 },
                 ],
               };
+              if (payload.known_speaker_count) {
+                d.diarization.known_speakers = { count: payload.known_speaker_count, method: "fixture", cosine_threshold: 0.65 };
+                d.diarization.raw_turns = structuredClone(d.diarization.turns);
+                d.diarization.turns.push({ speaker: "who-uncertain", start: 5, end: 7 });
+              }
               d.speaker_transcript = structuredClone(d.transcript);
               d.speaker_transcript.segments.forEach((s, i) => {
                 s.speaker = "who-" + i;
@@ -575,6 +580,20 @@ async function run(page) {
   checks.push(
     "Optional Who setup, usage disclosure, speaker turns, rename and immutable source/corrections",
   );
+  await act("tx-who-open").click();
+  assert((await page.locator("#tx-who-count").inputValue()) === "", "Automatic is default");
+  await page.locator("#tx-who-count").selectOption("2");
+  await act("tx-who-run").click();
+  await page.waitForFunction(() => document.querySelector("#tx-who-tools").textContent.includes("usikre"));
+  assert((await page.locator("#tx-who-tools").innerText()).includes("2 talere · 1 usikre intervaller (2 sek.)"), "Known count excludes and measures uncertainty");
+  await page.locator(".tx-who-turns summary").click();
+  assert((await page.locator(".tx-who-turns").innerText()).includes("Usikker taler"), "Uncertain interval visible");
+  assert((await page.locator('[data-action="tx-speaker"][data-id="who-uncertain"]').count()) === 0, "Uncertainty cannot be renamed");
+  await act("tx-who-open").click();
+  assert((await page.locator("#tx-who-count").inputValue()) === "2", "Known count survives reopening");
+  assert(await page.evaluate(() => window.txFixtureCalls.some(c => c.action === "file_who" && c.payload.known_speaker_count === 2)), "Known count sent to host");
+  await page.locator('dialog button[aria-label="Luk dialog"]').click();
+  checks.push("Known speaker count, uncertainty and persisted choice");
   await page.evaluate(() => (window.txWhoFails = true));
   await act("tx-who-open").click();
   await act("tx-who-run").click();

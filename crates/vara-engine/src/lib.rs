@@ -170,3 +170,5 @@ pub fn audio_duration(path: &Path) -> Result<f64> {
     }
     Ok(reader.duration() as f64 / rate as f64)
 }
+
+mod who_known;

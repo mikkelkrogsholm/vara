@@ -261,13 +261,26 @@ Independent Who interval; different speakers may overlap. Uncertain text is not 
 ### Local speaker annotation
 `entity.diarization`
 
-Separate from immutable source ASR and corrections; pinned model provenance and real intervals.
+Separate from immutable source ASR and corrections; pinned model provenance and real intervals. Known-count results preserve raw SDK intervals, chosen count, method and threshold; uncertain intervals are explicit.
 
 | Field | Type |
 | --- | --- |
 | `model` | string |
 | `version` | string |
 | `turns` | list<speaker_turn ID> |
+| `raw_turns` | list<speaker_turn ID>? |
+| `known_speakers` | known_speakers ID? |
+
+### Known speaker count provenance
+`entity.known_speakers`
+
+User-provided count, grouping method and model cosine threshold.
+
+| Field | Type |
+| --- | --- |
+| `count` | integer |
+| `method` | string |
+| `cosine_threshold` | number |
 
 ## Session
 
@@ -672,16 +685,16 @@ Stream/bound normalized audio, return original text plus actual word/segment est
 
 Scenario IDs: `scenario.file_recognize.authorization`, `scenario.file_recognize.boundaries`, `scenario.file_recognize.concurrency`, `scenario.file_recognize.atomicity`.
 
-### Run official Who runtime
+### Run adapted Who runtime
 `action.engine_diarize`
 
-**Input:** `audio_handle`: string.
+**Input:** `audio_handle`: string; `known_speaker_count`: integer?.
 
 **Output:** diarization ID.
 
-Run pinned official Who C ABI with normalized local audio in an isolated registered child. Keep SDK reporting intact and return model/version plus overlapping real speaker intervals. Never upload audio/text or switch providers.
+Run pinned adapted Who C ABI with normalized local audio in an isolated registered child. Keep SDK reporting intact and return model/version plus overlapping real speaker intervals. Never upload audio/text or switch providers. An ephemeral validated lane payload supports optional known-count grouping; embeddings are never persisted. Reference lanes must uniquely match their own prototype with the entire current piece omitted.
 
-**Guarantee:** Run pinned official Who C ABI with normalized local audio in an isolated registered child. Keep SDK reporting intact and return model/version plus overlapping real speaker intervals. Never upload audio/text or switch providers.
+**Guarantee:** Run pinned adapted Who C ABI with normalized local audio in an isolated registered child. Keep SDK reporting intact and return model/version plus overlapping real speaker intervals. Never upload audio/text or switch providers. An ephemeral validated lane payload supports optional known-count grouping; embeddings are never persisted. Reference lanes must uniquely match their own prototype with the entire current piece omitted.
 
 **Effects:** Read local normalized audio/model files; explicit model downloads contact supplier/CDN. Official SDK license/usage requests contain installation/app/model/platform metadata, never audio/text. Write independent local annotation state.
 
@@ -980,13 +993,13 @@ Scenario IDs: `scenario.file_document.authorization`, `scenario.file_document.bo
 ### Find speakers for a file document
 `action.file_diarize`
 
-**Input:** `document`: file_document ID.
+**Input:** `document`: file_document ID; `known_speaker_count`: integer?.
 
 **Output:** diarization ID.
 
-Explicit optional Who setup and speaker labeling. Preserve source ASR, edits and successful prior labels on failure/empty output. Publish only validated, noncancelled results. Project unambiguous original word/segment speaker labels without inventing alignment.
+Explicit optional Who setup and speaker labeling. Preserve source ASR, edits and successful prior labels on failure/empty output. Publish only validated, noncancelled results. Project unambiguous original word/segment speaker labels without inventing alignment. Automatic is the default; a supplied known speaker count uses recurring reference groups and leaves ambiguous passages uncertain, preserving raw SDK intervals and method provenance. Reference lanes must uniquely match their own prototype with the entire current piece omitted.
 
-**Guarantee:** Explicit optional Who setup and speaker labeling. Preserve source ASR, edits and successful prior labels on failure/empty output. Publish only validated, noncancelled results. Project unambiguous original word/segment speaker labels without inventing alignment.
+**Guarantee:** Explicit optional Who setup and speaker labeling. Preserve source ASR, edits and successful prior labels on failure/empty output. Publish only validated, noncancelled results. Project unambiguous original word/segment speaker labels without inventing alignment. Automatic is the default; a supplied known speaker count uses recurring reference groups and leaves ambiguous passages uncertain, preserving raw SDK intervals and method provenance. Reference lanes must uniquely match their own prototype with the entire current piece omitted.
 
 **Effects:** Read local normalized audio/model files; explicit model downloads contact supplier/CDN. Official SDK license/usage requests contain installation/app/model/platform metadata, never audio/text. Write independent local annotation state.
 

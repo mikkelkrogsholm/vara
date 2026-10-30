@@ -1257,7 +1257,7 @@ Add “Find talere” as a quiet action in the transcription editor. Reuse the
 existing dialog, status/notice, buttons and editable speaker/time margin. The
 Who dialog shows explicit local processing, supplier/model/version, attribution,
 license link and SDK usage metadata before download/use. Download/preparation
-and inference are indeterminate stages with a direct cancellation action.
+and inference are indeterminate stages with a direct cancellation action. The dialog defaults to automatic, and offers an optional known speaker count. A result with a count shows the reference count and uncertain passage count and union duration; uncertainty is not a renameable person.
 
 Keep the existing transcript and corrections readable throughout. Successful
 labeling opens the annotated original; corrections are retained. A native

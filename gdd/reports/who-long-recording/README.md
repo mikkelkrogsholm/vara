@@ -39,4 +39,30 @@ git -C "$UPSTREAM_DIR" rev-parse HEAD
 git -C "$UPSTREAM_DIR" status --short
 ```
 
-The requested conditional leading-silence stability experiment was not run because the candidate returned 21 IDs, not four. No production code, application data, speaker names or installed model files were changed. No diagnosis assigns names or human truth labels; those require independently supplied annotations. The next implementation decision remains with the manager.
+The requested conditional leading-silence stability experiment was not run because the candidate returned 21 IDs, not four. At the time of the initial diagnostic no production code, application data, speaker names or installed model files were changed. No diagnosis assigns names or human truth labels; those require independently supplied annotations.
+
+
+## Lane evidence and conservative known-count implementation
+
+A separately instrumented SDK run exported 101 lanes, of which 100 had voice embeddings. Its SDK wire output was byte-identical to the unmodified 4.2.1 run. The extra 17 one-window IDs all had embeddings and between 1.29 and 59.43 seconds of solo activity; they are not explained by the SDK's no-embedding fallback. Reference prototypes were the normalized means of the unit lane embeddings. In leave-one-five-minute-piece-out comparisons, all 83 voiced lanes of the four long-lived groups matched their own reference; the minimum cosine was 0.7287, median 0.9287, and minimum margin 0.3981. Of the 17 extras, five uniquely met the model's own 0.65 join cut, totaling 201.68 active seconds; 12 did not, totaling 70.49 seconds. These comparisons are not human identity labels. The one voiceless lane is retained as uncertain by the product.
+
+Offline forcing ordinary average-linkage clustering to four groups merged two of the long-lived groups and retained an extra cluster. It was therefore rejected. The optional product path instead picks the requested number of recurring SDK groups by piece recurrence then active duration. It never merges those references, checks each reference lane against its own uniquely matching prototype with the whole current piece held out, and assigns other voiced lanes only for exactly one reference above the existing model cut. All other intervals are explicitly uncertain. The original SDK turns are retained independently; embeddings are temporary worker data. Automatic mode uses the SDK output as before.
+
+The production Rust CLI ran the entire recording in both modes with the adapted SDK and v0.3.4 model. Automatic returned 21 IDs and 3,456 turns. Known four returned four reference IDs and 145 coalesced uncertain intervals totaling **75.64 seconds**; assigned activity totaled 6,042.30 speaker-seconds. The latter can exceed elapsed active time because speakers may overlap. Raw SDK output contains all 3,456 turns. The overall detected interval union was 5,553.85 seconds in both raw and derived output; the largest endpoint difference was 1.14e-13 seconds from floating-point representation. These measurements are not speech-recall or identity-accuracy scores.
+
+A second full Rust CLI run prepended 60 seconds of silence, changing all five-minute boundaries; times were shifted back and clipped for comparison. It again returned four reference IDs, but uncertainty grew to **229.46 seconds**. After finding the global one-to-one ID mapping, compare only spans where each run has exactly one confident speaker and neither has uncertain or overlapping activity. Of 4,995.82 seconds of such speech in the unpadded run, 4,668.67 seconds (93.45%) were comparable; 4,614.35 seconds had matching IDs and **54.32 seconds (1.16%) differed**. An additional 147.92 seconds were uncertain and 93.19 seconds overlapping in the padded result. These categories describe the unpadded exclusive speech and do not include every reason for non-comparability. The largest window discrepancy was 18.60 of 231.54 comparable seconds in the first window. This test establishes a real difference between runs, not which one is correct; identity stability throughout the recording is not verified.
+
+The pairwise overlap comparison (`product-padding-window-comparison.csv`) allows simultaneous speakers and must not be interpreted as exclusive identity accuracy. It has 79/79 active window/reference pairs matching the optimal per-window one-to-one mapping but 77/79 matching the greatest individual overlap. The independent exclusive comparison and its 24 window rows are in `product-padding-exclusive-summary.json` and `product-padding-exclusive-windows.csv`. `product-pipeline-summary.json` records aggregate union and padding results. `lane-diagnostic-*.csv/json` contain aggregate lane counts, scores, and leave-out comparisons; no embeddings, transcript text or raw intervals are committed.
+
+Reproduction used the exact Rust worker/CLI with private paths supplied outside the repository:
+
+```sh
+cargo test --offline -p vara-engine who --lib
+cargo test --offline -p vara-core --test transcription
+cargo build --offline -p vara-engine --example who
+who RUNTIME MODEL_DIR diarize ORIGINAL_WAV > PRIVATE_AUTO_JSON
+who RUNTIME MODEL_DIR diarize ORIGINAL_WAV 4 > PRIVATE_KNOWN_JSON
+who RUNTIME MODEL_DIR diarize PADDED_WAV 4 > PRIVATE_PADDED_JSON
+```
+
+The SDK patch is `scripts/patches/who-lanes.patch` (SHA-256 `48db9d8e8436ec967031d04cee3469a6b3aa32cb944e911f9cd6433d21e3791b`) applied to SDK commit `1a5efed67f44731b5eb5433aa9be3eebae05e269`. The test CLI SHA-256 was `e82995144f0b144c51eed636909039ea7ea7e3e1598597ce974e506fb0b6e63e`; unsigned tested runtime SHA-256 `5b6eccb31887b11077c3391845bd2a9b2b2cb6cf281422f008dc3b7a4183a6d7`. The Developer ID signed app was built and signature checked for review; it is not notarized or installed. Its executable SHA-256 is `b088469031e06eb78d2d1f08dd80a21d2f2fef9c63803b943b3982dfbf70bc96` and bundled signed runtime SHA-256 `add9bb9c08322209bcc56730c2d06f0309af60b739ccc44dcf451e409b2cd29e`. No installed app or personal database was modified.

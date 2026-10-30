@@ -145,6 +145,8 @@ fn who_annotations_preserve_original_words_and_ambiguity() {
     let who = Diarization {
         model: "Who".into(),
         version: "v0.3.1".into(),
+        raw_turns: None,
+        known_speakers: None,
         turns: vec![
             SpeakerTurn {
                 speaker: "who-0".into(),
@@ -219,6 +221,8 @@ fn legacy_documents_load_without_who_and_results_export_separately() {
     d.diarization = Some(Diarization {
         model: "Who".into(),
         version: "v0.3.1".into(),
+        raw_turns: None,
+        known_speakers: None,
         turns: vec![SpeakerTurn {
             speaker: "who-0".into(),
             start: 0.,
@@ -229,4 +233,46 @@ fn legacy_documents_load_without_who_and_results_export_separately() {
     assert_eq!(export["diarization"]["turns"][0]["speaker"], "who-0");
     assert_eq!(export["transcript"]["segments"][0]["speaker"], "speaker_1");
     assert_eq!(d.export("txt", true).unwrap(), "Hej verden");
+}
+
+#[test]
+fn known_count_uncertainty_and_legacy_diarization() {
+    let old =
+        r#"{"model":"Who","version":"old","turns":[{"speaker":"who-0","start":0.0,"end":1.0}]}"#;
+    let mut d: Diarization = serde_json::from_str(old).unwrap();
+    assert!(d.raw_turns.is_none() && d.known_speakers.is_none());
+    d.raw_turns = Some(d.turns.clone());
+    d.known_speakers = Some(KnownSpeakers {
+        count: 1,
+        method: "test".into(),
+        cosine_threshold: 0.65,
+    });
+    d.turns.push(SpeakerTurn {
+        speaker: "who-uncertain".into(),
+        start: 0.5,
+        end: 0.8,
+    });
+    let source = Transcript {
+        text: "word".into(),
+        timing: Timing::Word,
+        timing_source: "test".into(),
+        segments: vec![TranscriptSegment {
+            id: "s".into(),
+            text: "word".into(),
+            start: Some(0.),
+            end: Some(1.),
+            speaker: None,
+            words: vec![TimedWord {
+                id: "w".into(),
+                text: "word".into(),
+                start: 0.,
+                end: 1.,
+                speaker: None,
+            }],
+        }],
+    };
+    assert_eq!(d.annotate(&source).segments[0].speaker, None);
+    assert!(d.validate(2.).is_ok());
+    d.known_speakers.as_mut().unwrap().count = 0;
+    assert!(d.validate(2.).is_err());
 }

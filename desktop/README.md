@@ -99,18 +99,18 @@ See the feature report for evidence, limits and native acceptance status.
 Open a completed file document and choose **Find talere**. Download Who once via
 the explicit supplier/license/usage disclosure; then run it on the private audio
 copy. Speaker names and original word times remain inspectable; ambiguous words
-are not assigned a single speaker. Empty/failed results retain prior annotations.
+are not assigned a single speaker. The dialog optionally accepts a known speaker count; recurring SDK groups become references, checked against prototypes that omit the lane’s entire piece; lanes without exactly one matching reference remain uncertain. The raw SDK result and derived intervals are retained separately; temporary embeddings are not saved. Empty/failed results retain prior annotations.
 
 The Mac packaging script invokes `scripts/build-who-runtime.sh` (Swift 6.2+ is a
-build dependency of the official SDK, not an end-user requirement). The runtime
+build dependency of the adapted SDK, not an end-user requirement). The runtime
 is ignored build output under `src-tauri/runtime/who/`. Model weights remain in
 the app-data model directory and are not part of the app bundle. Who needs
 macOS 15+, while the rest of Vara keeps its existing floor. The same SDK C ABI is
 used by the Rust integration on other platforms; their builds must provide
-`libWhoAndroid.so`/`WhoAndroid.dll` and the official LiteRT dependencies under
+`libWhoAndroid.so`/`WhoAndroid.dll` and the LiteRT dependencies under
 `runtime/who`, then validate on those platforms. Do not ship a Mac dylib as a
 crossplatform runtime.
 
 Verification CLI (normalized mono 16 kHz PCM16 WAV):
 `cargo run --release -p vara-engine --example who -- RUNTIME MODEL_DIR diarize AUDIO.wav`
-The example also accepts `status`, `download`, and `cancel` for lifecycle checks.
+Append a count from 1 to 16 after `AUDIO.wav` to exercise known-count grouping. The example also accepts `status`, `download`, and `cancel` for lifecycle checks.

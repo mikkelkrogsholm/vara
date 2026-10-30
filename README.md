@@ -75,7 +75,7 @@ Vil du bruge cloud, kan du vælge blandt andet **OpenAI**, **Groq** eller dit eg
 
 Ved lokal talegenkendelse sendes lyden ikke til en transskriptionstjeneste. Vælger du cloud til tale eller tekst, sendes det relevante indhold til den valgte udbyder.
 
-Who kører også lokalt. Leverandørens officielle SDK sender dog et installations-id samt app-, model- og platformoplysninger til sin licenstjeneste. Det sender ikke lyd eller transskriptionstekst. Det oplyses i appen før download og brug. Who har sin egen leverandørlicens.
+Who kører også lokalt. Varas tilpassede udgave af leverandørens SDK sender dog et installations-id samt app-, model- og platformoplysninger til sin licenstjeneste. Det sender ikke lyd eller transskriptionstekst. Det oplyses i appen før download og brug. Who har sin egen leverandørlicens.
 
 </details>
 

@@ -204,6 +204,17 @@ impl Files {
                     }
                     Some(d)
                 };
+                let known_count = if download || p["known_speaker_count"].is_null() {
+                    None
+                } else {
+                    Some(
+                        p["known_speaker_count"]
+                            .as_u64()
+                            .filter(|n| (1..=16).contains(n))
+                            .ok_or("Vælg et antal talere mellem 1 og 16.")?
+                            as u32,
+                    )
+                };
                 let cancel = Cancellation::default();
                 {
                     let mut i = self.inner.lock();
@@ -216,11 +227,12 @@ impl Files {
                 let result = (|| -> Result<Value> {
                     let library = self.who_library()?;
                     let audio = document.as_ref().map(|d| self.path(&d.id));
-                    let value = vara_engine::who::run(
+                    let value = vara_engine::who::run_known(
                         &library,
                         &self.who_directory(),
                         if download { "download" } else { "diarize" },
                         audio.as_deref(),
+                        known_count,
                         &cancel,
                     )?;
                     if let Some(d) = &document {
@@ -248,6 +260,9 @@ impl Files {
                             return Err("Transskriptionen blev ændret. Find talere igen.".into());
                         }
                         for turn in &who.turns {
+                            if turn.speaker == "who-uncertain" {
+                                continue;
+                            }
                             let name = format!(
                                 "Taler {}",
                                 turn.speaker
@@ -580,7 +595,10 @@ impl Files {
                 work?;
             }
             "file_speaker" => {
-                let speaker = p["speaker"].as_str().ok_or("Taler mangler.")?;
+                let speaker = p["speaker"]
+                    .as_str()
+                    .filter(|s| *s != "who-uncertain")
+                    .ok_or("Taler mangler.")?;
                 let name = p["name"]
                     .as_str()
                     .filter(|s| !s.trim().is_empty() && s.len() < 200)

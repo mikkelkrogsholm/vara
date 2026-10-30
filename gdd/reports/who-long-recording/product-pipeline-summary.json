@@ -1,0 +1,63 @@
+{
+  "automatic_id_count": 21,
+  "automatic_turn_count": 3456,
+  "known_count_ids": [
+    "who-0",
+    "who-1",
+    "who-2",
+    "who-3"
+  ],
+  "known_turn_count": 3469,
+  "known_raw_turn_count": 3456,
+  "known_unknown_turn_count": 145,
+  "known_unknown_union_seconds": 75.63999999999857,
+  "known_resolved_speaker_seconds": 6042.299999999983,
+  "known_activity_union_seconds": 5553.849999999982,
+  "raw_activity_union_seconds": 5553.849999999982,
+  "max_union_endpoint_error": 1.1368683772161603e-13,
+  "raw_equal_auto_labels": true,
+  "padded_known_ids": [
+    "who-0",
+    "who-1",
+    "who-2",
+    "who-3"
+  ],
+  "padded_unknown_union_seconds": 229.4600000000026,
+  "padded_mapping": {
+    "who-0": "who-0",
+    "who-1": "who-2",
+    "who-2": "who-3",
+    "who-3": "who-1"
+  },
+  "padded_total_global_overlap_seconds": 5642.710000000016,
+  "padded_matched_base_speaker_seconds": 6042.299999999983,
+  "padded_windows_with_positive_reference_activity": 79,
+  "padded_windows_global_best": 77,
+  "padded_windows_global_optimal": 79,
+  "padded_global_overlap_matrix_seconds": {
+    "who-0": {
+      "who-0": 2198.59,
+      "who-1": 88.17,
+      "who-2": 155.92,
+      "who-3": 168.24
+    },
+    "who-1": {
+      "who-0": 136.93,
+      "who-1": 69.07,
+      "who-2": 2137.1,
+      "who-3": 45.91
+    },
+    "who-2": {
+      "who-0": 173.79,
+      "who-1": 56.83,
+      "who-2": 52.83,
+      "who-3": 969.01
+    },
+    "who-3": {
+      "who-0": 100.89,
+      "who-1": 338.01,
+      "who-2": 65.24,
+      "who-3": 60.58
+    }
+  }
+}
