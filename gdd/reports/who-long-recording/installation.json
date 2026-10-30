@@ -1,0 +1,24 @@
+{
+  "installed": true,
+  "bundle_id": "dk.vara.desktop",
+  "signature": "Developer ID; deep strict verification passed",
+  "notarized": false,
+  "executable_sha256": "8158fd47605a2183d506188b971558b46f76d0e8616285193b2e3c588a92cf26",
+  "runtime_sha256": "81c08a74dcead97feb7cdec539efc357f9bf1ed1d1ecdb9058592369ca6a144e",
+  "model_version": "v0.3.4",
+  "installed_worker_status": {
+    "available": true,
+    "ready": true
+  },
+  "document_stage": "ready",
+  "result_readback_exact": true,
+  "non_diarization_fields_unchanged": true,
+  "known_speakers": 4,
+  "raw_turns": 3456,
+  "output_turns": 8616,
+  "uncertain_seconds": 606.29,
+  "previous_model_retained": true,
+  "private_backup_created": true,
+  "ui_verification": "not available",
+  "interpretation": "Cross-run consistency is not human-verified speaker accuracy."
+}

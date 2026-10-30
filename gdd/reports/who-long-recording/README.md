@@ -107,7 +107,7 @@ passed with assertions for the cross-check explanation and human-readable uncert
 was stopped. The known-count CLI cancellation test returned `{"cancelled":true}`.
 GDD model schema and semantics passed; historical snapshot resolution remains
 UNKNOWN as previously documented. The final Developer ID app passed
-`codesign --verify --deep --strict`; it is not notarized or installed. App
+`codesign --verify --deep --strict`; it is not notarized. App
 executable SHA-256 `8158fd47605a2183d506188b971558b46f76d0e8616285193b2e3c588a92cf26`,
 bundled signed runtime SHA-256
 `81c08a74dcead97feb7cdec539efc357f9bf1ed1d1ecdb9058592369ca6a144e`,
@@ -124,3 +124,5 @@ who "$RUNTIME" "$MODEL_DIR" diarize "$SOURCE_WAV" 4 > "$PRIVATE_ORIGINAL_JSON"
 who "$RUNTIME" "$MODEL_DIR" diarize "$PADDED_WAV" 4 > "$PRIVATE_PADDED_JSON"
 who "$RUNTIME" "$MODEL_DIR" cancel "$SOURCE_WAV" 4
 ```
+
+Installation follow-up: the verified app was installed locally, the signed worker reported the model ready, and the tested result was saved to the selected recording after a private backup. Readback matched the tested result and confirmed the other document fields were unchanged. The old model files remain available. The app was launched normally; native UI verification was not available. See `installation.json` for sanitized evidence.
