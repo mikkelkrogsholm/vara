@@ -1,0 +1,65 @@
+{
+  "primary_uncertainty_seconds": 606.2899999999541,
+  "padded_uncertainty_seconds": 609.3000000000175,
+  "primary_ids": [
+    "who-0",
+    "who-1",
+    "who-2",
+    "who-3"
+  ],
+  "padded_ids": [
+    "who-0",
+    "who-1",
+    "who-2",
+    "who-3"
+  ],
+  "primary_raw_turn_count": 3456,
+  "method": "After optimal global ID mapping, score only times with exactly one confident speaker and no uncertain or overlapping activity in each output; no human identity truth.",
+  "mapping": {
+    "who-0": "who-0",
+    "who-1": "who-2",
+    "who-2": "who-3",
+    "who-3": "who-1"
+  },
+  "reference_exclusive_seconds": 4614.350000000027,
+  "compared_exclusive_seconds": 4497.53000000001,
+  "compared_fraction_of_reference_exclusive": 0.974683324845316,
+  "matched_seconds": 4497.53000000001,
+  "different_identity_seconds": 0.0,
+  "different_fraction_compared": 0.0,
+  "reference_exclusive_padded_uncertain_seconds": 116.8200000000162,
+  "reference_exclusive_padded_overlap_seconds": 4.263256414560601e-13,
+  "confusion_seconds": {
+    "who-0": {
+      "who-0": 1781.76,
+      "who-1": 0.0,
+      "who-2": 0.0,
+      "who-3": 0.0
+    },
+    "who-1": {
+      "who-0": 0.0,
+      "who-1": 0.0,
+      "who-2": 1837.93,
+      "who-3": 0.0
+    },
+    "who-2": {
+      "who-0": 0.0,
+      "who-1": 0.0,
+      "who-2": 0.0,
+      "who-3": 703.84
+    },
+    "who-3": {
+      "who-0": 0.0,
+      "who-1": 174.0,
+      "who-2": 0.0,
+      "who-3": 0.0
+    }
+  },
+  "primary_raw_equals_automatic": true,
+  "primary_activity_union_seconds": 5553.85,
+  "raw_activity_union_seconds": 5553.85,
+  "maximum_union_endpoint_difference_seconds": 1.1368683772161603e-13,
+  "primary_micro_intervals_below_1e-7": 0,
+  "window_count": 24,
+  "human_identity_accuracy": "not verified; no annotated ground truth"
+}

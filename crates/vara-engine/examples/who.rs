@@ -14,11 +14,15 @@ fn main() -> Result<(), String> {
             std::thread::sleep(std::time::Duration::from_millis(100));
             other.cancel();
         });
-        let result = vara_engine::who::run(
+        let count = args
+            .get(4)
+            .map(|s| s.parse::<u32>().expect("invalid count"));
+        let result = vara_engine::who::run_known(
             std::path::Path::new(&args[0]),
             std::path::Path::new(&args[1]),
             "diarize",
             args.get(3).map(std::path::Path::new),
+            count,
             &cancel,
         );
         assert_eq!(result.unwrap_err(), "Annulleret.");

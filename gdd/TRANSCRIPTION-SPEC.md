@@ -106,7 +106,14 @@ lydstykke er udeladt fra prototyperne; ellers markeres det usikkert. Øvrige
 lydspor matches kun ved præcis ét cosinusmatch over modellens egen grænse;
 uklare spor, herunder spor uden stemmevektor, beholdes som usikre og tildeles
 ikke ord. JSON bevarer rå SDK-intervaller, afledte intervaller, valgt antal,
-metode og grænse. Midlertidige stemmevektorer gemmes ikke i dokumentet.
+metode og grænse. Ved kendt antal køres en anden kontrol med 60 sekunders
+foranstillet stilhed. En entydig global én-til-én-kobling kræves ud fra
+udelukkende enestemmige, sikre tidsintervaller. Et primært interval får kun sine
+sikre talere, når begge kørslers komplette talersæt er ens og ingen er usikker;
+øvrig primær aktivitet er usikker. Der tilføjes ikke aktivitet, som kun findes i
+kontrolkørslen. Derfor kan antallet af sikre ID'er blive lavere end det valgte
+antal. Metoden gemmer kontrolforskydningen som en versionsangivet del af
+metoden. Midlertidige stemmevektorer gemmes ikke i dokumentet.
 
 Modellen hentes eksplicit i Who-dialogen, som viser leverandør, licens og SDK’ets
 brugstælling før download/brug. Lyden og teksten behandles på enheden; SDK’et sender installations-id og model-/app-/platformmetadata

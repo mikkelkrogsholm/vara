@@ -94,7 +94,7 @@ impl Diarization {
                     .map(|t| &t.speaker)
                     .collect::<std::collections::BTreeSet<_>>()
                     .len()
-                    != known.count as usize
+                    > known.count as usize
             {
                 return Err(Error::Invalid("Taleropdelingens metode er ugyldig.".into()));
             }

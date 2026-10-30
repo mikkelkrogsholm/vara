@@ -273,6 +273,8 @@ fn known_count_uncertainty_and_legacy_diarization() {
     };
     assert_eq!(d.annotate(&source).segments[0].speaker, None);
     assert!(d.validate(2.).is_ok());
+    d.known_speakers.as_mut().unwrap().count = 2;
+    assert!(d.validate(2.).is_ok()); // Abstention may leave fewer IDs than the chosen count.
     d.known_speakers.as_mut().unwrap().count = 0;
     assert!(d.validate(2.).is_err());
 }

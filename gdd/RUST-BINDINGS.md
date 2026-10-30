@@ -242,7 +242,14 @@ is retained and flushed; audio/text do not enter the reporting payload.
 its derived speaker transcript cache is rebuilt from persisted turns at startup.
 Original ASR and corrections remain separate from `Diarization`/`SpeakerTurn`.
 
-The macOS packaging script builds the unmodified SDK at a pinned commit, signs
+Known-count mode runs two sequential cancellable children, with a private streamed
+60-second padded PCM copy for the second pass. It requires an unambiguous global
+one-to-one match from exclusive confident overlap, retains only exact confident
+set agreement, and labels other primary activity uncertain. Raw first-pass SDK
+turns and versioned method provenance remain in the document. Failed alignment
+publishes no replacement. Temporary PCM and lane payloads are removed.
+
+The macOS packaging script builds the pinned SDK with the lane-export patch, signs
 its dynamic library, and bundles it as an optional runtime. No model weights or
 old Swift application source are bundled. Missing/incompatible runtimes report
 unavailability. Windows/Linux use the same Rust/C ABI but require the official

@@ -66,3 +66,61 @@ who RUNTIME MODEL_DIR diarize PADDED_WAV 4 > PRIVATE_PADDED_JSON
 ```
 
 The SDK patch is `scripts/patches/who-lanes.patch` (SHA-256 `48db9d8e8436ec967031d04cee3469a6b3aa32cb944e911f9cd6433d21e3791b`) applied to SDK commit `1a5efed67f44731b5eb5433aa9be3eebae05e269`. The test CLI SHA-256 was `e82995144f0b144c51eed636909039ea7ea7e3e1598597ce974e506fb0b6e63e`; unsigned tested runtime SHA-256 `5b6eccb31887b11077c3391845bd2a9b2b2cb6cf281422f008dc3b7a4183a6d7`. The Developer ID signed app was built and signature checked for review; it is not notarized or installed. Its executable SHA-256 is `b088469031e06eb78d2d1f08dd80a21d2f2fef9c63803b943b3982dfbf70bc96` and bundled signed runtime SHA-256 `add9bb9c08322209bcc56730c2d06f0309af60b739ccc44dcf451e409b2cd29e`. No installed app or personal database was modified.
+
+## Cross-window consensus — final product run
+
+Known-count mode now runs the same guarded grouping twice, with 60 seconds of
+leading normalized silence in the second pass. The global ID alignment maximizes
+exclusive confident overlap with a bounded exact assignment and rejects ambiguous
+or nonpositive alignments. On each primary interval, complete confident speaker
+sets must agree and neither pass may be uncertain; otherwise that primary
+activity is uncertain. Secondary-only activity is not added. Equal endpoints
+within 10 nanoseconds are grouped for floating-point stability, preferring primary
+endpoints and never merging distinct primary endpoints. Genuine overlap is kept
+when the sets agree. The original SDK turns are retained, and method provenance
+records the 60-second check. Failure or cancellation publishes no replacement.
+
+The final production Rust CLI ran the entire recording with known count four,
+and then the 60-second-padded recording (whose own check used a further 60
+seconds). Both retained four confident IDs. The first output preserved all
+3,456 original SDK turns exactly, and its derived and raw activity unions were
+both 5,553.85 seconds (maximum endpoint difference 1.14e-13 seconds). There
+were no output intervals shorter than 1e-7 seconds. Uncertainty was 606.29
+seconds in the first output and 609.30 seconds in the padded output.
+
+After a global ID mapping, 4,497.53 of 4,614.35 seconds of first-output
+exclusive confident activity (97.47%) were comparable with an exclusive
+confident interval in the padded output. There were **0.00 seconds of identity
+disagreement**, including across all 24 windows. First, middle windows 11 and
+12, and last compared 208.34, 199.48, 202.99 and 10.82 seconds respectively,
+each with zero disagreement. The entire per-window table is
+`consensus-exclusive-windows.csv`; the aggregate and mapping are in
+`consensus-exclusive-summary.json`. These are cross-run consistency measures,
+not human-verified identity accuracy or speech recall. No annotated speaker truth
+was provided, and four returned IDs do not prove that they represent the four
+people correctly. Raw interval JSON and logs stay in the private temporary trial.
+
+Verification: `cargo test --offline -p vara-engine who --lib` passed 9 tests;
+`cargo test --offline -p vara-core --test transcription` passed 9 tests;
+`cargo fmt --all -- --check` passed. The production UI Playwright fixture suite
+passed with assertions for the cross-check explanation and human-readable uncertainty duration; its localhost test server
+was stopped. The known-count CLI cancellation test returned `{"cancelled":true}`.
+GDD model schema and semantics passed; historical snapshot resolution remains
+UNKNOWN as previously documented. The final Developer ID app passed
+`codesign --verify --deep --strict`; it is not notarized or installed. App
+executable SHA-256 `8158fd47605a2183d506188b971558b46f76d0e8616285193b2e3c588a92cf26`,
+bundled signed runtime SHA-256
+`81c08a74dcead97feb7cdec539efc357f9bf1ed1d1ecdb9058592369ca6a144e`,
+and Rust test CLI SHA-256
+`16e50ab2885c20f1e50f329f4adda4392f218493ea241561b8dcb00853bfd2f5`.
+
+Private reproduction, with paths supplied locally:
+
+```sh
+CARGO_TARGET_DIR="$TARGET" cargo test --offline -p vara-engine who --lib
+CARGO_TARGET_DIR="$TARGET" cargo test --offline -p vara-core --test transcription
+CARGO_TARGET_DIR="$TARGET" cargo build --offline -p vara-engine --example who
+who "$RUNTIME" "$MODEL_DIR" diarize "$SOURCE_WAV" 4 > "$PRIVATE_ORIGINAL_JSON"
+who "$RUNTIME" "$MODEL_DIR" diarize "$PADDED_WAV" 4 > "$PRIVATE_PADDED_JSON"
+who "$RUNTIME" "$MODEL_DIR" cancel "$SOURCE_WAV" 4
+```

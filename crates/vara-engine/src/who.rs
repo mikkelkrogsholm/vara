@@ -49,6 +49,86 @@ pub fn run_known(
             "Who-runtime mangler i denne installation. Installer den nyeste Vara-version.".into(),
         );
     }
+    if let Some(count) = known_count {
+        let audio = audio.ok_or("Afspilningskopien mangler.")?;
+        let mut reader = hound::WavReader::open(audio).map_err(|_| "Afspilningskopien mangler.")?;
+        let spec = reader.spec();
+        if spec.channels != 1
+            || spec.sample_rate != 16000
+            || spec.bits_per_sample != 16
+            || spec.sample_format != hound::SampleFormat::Int
+            || reader.duration() == 0
+            || reader.duration() > 16000 * 28800
+        {
+            return Err("Who kræver Varas normaliserede lydkopi (højst 8 timer).".into());
+        }
+        let duration = reader.duration() as f64 / 16000.;
+        let primary: Diarization = serde_json::from_value(run_one(
+            library,
+            directory,
+            operation,
+            Some(audio),
+            Some(count),
+            false,
+            cancel,
+        )?)
+        .map_err(|_| "Who returnerede et ugyldigt resultat.")?;
+        cancel.check()?;
+        let temp = tempfile::tempdir().map_err(|_| "Who kunne ikke oprette en arbejdsmappe.")?;
+        let padded = temp.path().join("padded.wav");
+        let mut writer = hound::WavWriter::create(&padded, spec)
+            .map_err(|_| "Who kunne ikke oprette en lydkopi.")?;
+        for _ in 0..(60 * 16000) {
+            writer
+                .write_sample(0_i16)
+                .map_err(|_| "Who kunne ikke skrive lydkopien.")?;
+        }
+        for (i, sample) in reader.samples::<i16>().enumerate() {
+            if i % 16000 == 0 {
+                cancel.check()?;
+            }
+            writer
+                .write_sample(sample.map_err(|_| "Lydkopien kunne ikke læses.")?)
+                .map_err(|_| "Who kunne ikke skrive lydkopien.")?;
+        }
+        writer
+            .finalize()
+            .map_err(|_| "Who kunne ikke skrive lydkopien.")?;
+        cancel.check()?;
+        let secondary: Diarization = serde_json::from_value(run_one(
+            library,
+            directory,
+            operation,
+            Some(&padded),
+            Some(count),
+            true,
+            cancel,
+        )?)
+        .map_err(|_| "Who returnerede et ugyldigt resultat.")?;
+        cancel.check()?;
+        let consensus = crate::who_consensus::combine(primary, secondary, duration, cancel)?;
+        return serde_json::to_value(consensus)
+            .map_err(|_| "Who returnerede et ugyldigt resultat.".into());
+    }
+    run_one(
+        library,
+        directory,
+        operation,
+        audio,
+        known_count,
+        false,
+        cancel,
+    )
+}
+fn run_one(
+    library: &Path,
+    directory: &Path,
+    operation: &str,
+    audio: Option<&Path>,
+    known_count: Option<u32>,
+    padded: bool,
+    cancel: &Cancellation,
+) -> Result<serde_json::Value> {
     let temp = tempfile::tempdir().map_err(|_| "Who kunne ikke oprette en arbejdsmappe.")?;
     let output = temp.path().join("result.json");
     let mut command = Command::new(std::env::current_exe().map_err(|_| "Who kunne ikke starte.")?);
@@ -64,8 +144,12 @@ pub fn run_known(
         .stdin(Stdio::null())
         .stdout(Stdio::null())
         .stderr(Stdio::null());
+    command.env_remove("VARA_WHO_INTERNAL_PADDING");
     if known_count.is_some() {
         command.env("VARA_WHO_LANE_PAYLOAD", temp.path().join("lanes.json"));
+    }
+    if padded {
+        command.env("VARA_WHO_INTERNAL_PADDING", "1");
     }
     let child = cancel.spawn_child(|| command.spawn())?;
     let start = Instant::now();
@@ -199,7 +283,14 @@ unsafe fn native(
         if spec.channels != 1
             || spec.sample_rate != 16000
             || spec.bits_per_sample != 16
-            || wav.duration() > 16000 * 28800
+            || wav.duration()
+                > 16000
+                    * (28800
+                        + if std::env::var_os("VARA_WHO_INTERNAL_PADDING").is_some() {
+                            60
+                        } else {
+                            0
+                        })
         {
             return Err("Who kræver Varas normaliserede lydkopi (højst 8 timer).".into());
         }

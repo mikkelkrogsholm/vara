@@ -8524,7 +8524,7 @@
     "action.engine_diarize": {
       "kind": "action",
       "label": "Run adapted Who runtime",
-      "description": "Run pinned adapted Who C ABI with normalized local audio in an isolated registered child. Keep SDK reporting intact and return model/version plus overlapping real speaker intervals. Never upload audio/text or switch providers. An ephemeral validated lane payload supports optional known-count grouping; embeddings are never persisted. Reference lanes must uniquely match their own prototype with the entire current piece omitted.",
+      "description": "Run pinned adapted Who C ABI with normalized local audio in an isolated registered child. Keep SDK reporting intact and return model/version plus overlapping real speaker intervals. Never upload audio/text or switch providers. An ephemeral validated lane payload supports optional known-count grouping; embeddings are never persisted. Reference lanes must uniquely match their own prototype with the entire current piece omitted. Known-count runs a second pass with 60 seconds leading silence, aligns IDs by an unambiguous global assignment of exclusive confident overlap, and retains only exact confident set agreement on primary activity; all other primary activity is uncertain.",
       "maturity": "specified",
       "source_refs": [
         {
@@ -8560,7 +8560,7 @@
           "Input identifies records within the active local profile; model capabilities and destination are explicit."
         ],
         "postconditions": [
-          "Run pinned adapted Who C ABI with normalized local audio in an isolated registered child. Keep SDK reporting intact and return model/version plus overlapping real speaker intervals. Never upload audio/text or switch providers. An ephemeral validated lane payload supports optional known-count grouping; embeddings are never persisted. Reference lanes must uniquely match their own prototype with the entire current piece omitted."
+          "Run pinned adapted Who C ABI with normalized local audio in an isolated registered child. Keep SDK reporting intact and return model/version plus overlapping real speaker intervals. Never upload audio/text or switch providers. An ephemeral validated lane payload supports optional known-count grouping; embeddings are never persisted. Reference lanes must uniquely match their own prototype with the entire current piece omitted. Known-count runs a second pass with 60 seconds leading silence, aligns IDs by an unambiguous global assignment of exclusive confident overlap, and retains only exact confident set agreement on primary activity; all other primary activity is uncertain."
         ],
         "external_effects": [
           "Read local normalized audio/model files; explicit model downloads contact supplier/CDN. Official SDK license/usage requests contain installation/app/model/platform metadata, never audio/text. Write independent local annotation state."
@@ -8608,12 +8608,12 @@
           ]
         }
       },
-      "behavior": "Run pinned adapted Who C ABI with normalized local audio in an isolated registered child. Keep SDK reporting intact and return model/version plus overlapping real speaker intervals. Never upload audio/text or switch providers. An ephemeral validated lane payload supports optional known-count grouping; embeddings are never persisted. Reference lanes must uniquely match their own prototype with the entire current piece omitted."
+      "behavior": "Run pinned adapted Who C ABI with normalized local audio in an isolated registered child. Keep SDK reporting intact and return model/version plus overlapping real speaker intervals. Never upload audio/text or switch providers. An ephemeral validated lane payload supports optional known-count grouping; embeddings are never persisted. Reference lanes must uniquely match their own prototype with the entire current piece omitted. Known-count runs a second pass with 60 seconds leading silence, aligns IDs by an unambiguous global assignment of exclusive confident overlap, and retains only exact confident set agreement on primary activity; all other primary activity is uncertain."
     },
     "entity.known_speakers": {
       "kind": "entity",
       "label": "Known speaker count provenance",
-      "description": "User-provided count, grouping method and model cosine threshold.",
+      "description": "User-provided count, grouping and versioned 60-second cross-check method, and model cosine threshold.",
       "maturity": "specified",
       "source_refs": [
         {
@@ -10910,7 +10910,7 @@
       "format": "text/markdown",
       "normative": false,
       "revision": {
-        "sha256": "d210ba7c13875a7a0443a47973935e846811c87b910356936f0ef470fed99538"
+        "sha256": "3b6100e28c6909e5aad50912c26bc0b76661c23ccc6161d30f2c3fd8ceef31fb"
       }
     },
     "source.transcription": {
@@ -10920,7 +10920,7 @@
       "format": "text/markdown",
       "normative": true,
       "revision": {
-        "sha256": "b9078bb205667f04e7a881b59b201f08d9b91026808202410dad227597aae00f"
+        "sha256": "2cb1afacf267e7b825230fa3226fbb45eed2cc73897649eba2b42390f383005e"
       }
     }
   },
