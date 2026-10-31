@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="820" viewBox="0 0 1280 820">
+<rect x="0" y="0" width="1280" height="820" rx="0" fill="rgb(255, 252, 247)"/>
+<rect x="0" y="0" width="1280" height="820" rx="0" fill="rgb(247, 244, 238)"/>
+<rect x="230.390625" y="0" width="1049.609375" height="820" rx="0" fill="rgb(247, 244, 238)"/>
+<line x1="270.390625" y1="82.421875" x2="1240" y2="82.421875" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<line x1="270.390625" y1="7.921875" x2="1240" y2="7.921875" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<text  x="270.390625" y="49.471875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Parakeet Redux: Moondream og NVIDIA · CC BY 4.0.</text>
+<line x1="270.390625" y1="663.921875" x2="1240" y2="663.921875" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<text  x="270.390625" y="131.321875" fill="rgb(37, 37, 31)" font-family="Georgia, &quot;Noto Serif&quot;, &quot;Liberation Serif&quot;, serif" font-size="24px" font-weight="normal">API-nøgler</text>
+<text  x="270.390625" y="162.671875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Dine egne nøgler gemmes i systemets nøglelager.</text>
+<line x1="270.390625" y1="273.921875" x2="1240" y2="273.921875" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<text  x="270.390625" y="223.5" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="bold">OpenAI</text>
+<text  x="270.390625" y="243.3" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Tale og tekst</text>
+<text  x="642.453125" y="231.721875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Ingen nøgle tilføjet</text>
+<rect x="1103.5625" y="220.921875" width="136.4375" height="38" rx="10" fill="rgb(255, 252, 247)"/>
+<rect x="1104.0625" y="221.421875" width="135.4375" height="37" rx="10" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
+<svg x="1120.5625" y="229.921875" width="20" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(37, 37, 31)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="9" r="5"></circle><path d="m12 13 8 8m-5-5 3-3m0 6 3-3"></path></svg>
+<text  x="1148.5625" y="244.525" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Tilføj nøgle</text>
+<line x1="270.390625" y1="364.921875" x2="1240" y2="364.921875" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<text  x="270.390625" y="314.5" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="bold">Groq</text>
+<text  x="270.390625" y="334.3" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Whisper til tale · AI til tekst</text>
+<text  x="642.453125" y="322.721875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Ingen nøgle tilføjet</text>
+<rect x="1103.5625" y="311.921875" width="136.4375" height="38" rx="10" fill="rgb(255, 252, 247)"/>
+<rect x="1104.0625" y="312.421875" width="135.4375" height="37" rx="10" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
+<svg x="1120.5625" y="320.921875" width="20" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(37, 37, 31)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="9" r="5"></circle><path d="m12 13 8 8m-5-5 3-3m0 6 3-3"></path></svg>
+<text  x="1148.5625" y="335.525" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Tilføj nøgle</text>
+<line x1="270.390625" y1="455.921875" x2="1240" y2="455.921875" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<text  x="270.390625" y="405.5" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="bold">ElevenLabs</text>
+<text  x="270.390625" y="425.3" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Tale</text>
+<text  x="642.453125" y="413.721875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Ingen nøgle tilføjet</text>
+<rect x="1103.5625" y="402.921875" width="136.4375" height="38" rx="10" fill="rgb(255, 252, 247)"/>
+<rect x="1104.0625" y="403.421875" width="135.4375" height="37" rx="10" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
+<svg x="1120.5625" y="411.921875" width="20" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(37, 37, 31)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="9" r="5"></circle><path d="m12 13 8 8m-5-5 3-3m0 6 3-3"></path></svg>
+<text  x="1148.5625" y="426.525" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Tilføj nøgle</text>
+<line x1="270.390625" y1="546.921875" x2="1240" y2="546.921875" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<text  x="270.390625" y="496.5" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="bold">Anthropic</text>
+<text  x="270.390625" y="516.3" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Tekst</text>
+<text  x="642.453125" y="504.721875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Ingen nøgle tilføjet</text>
+<rect x="1103.5625" y="493.921875" width="136.4375" height="38" rx="10" fill="rgb(255, 252, 247)"/>
+<rect x="1104.0625" y="494.421875" width="135.4375" height="37" rx="10" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
+<svg x="1120.5625" y="502.921875" width="20" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(37, 37, 31)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="9" r="5"></circle><path d="m12 13 8 8m-5-5 3-3m0 6 3-3"></path></svg>
+<text  x="1148.5625" y="517.525" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Tilføj nøgle</text>
+<text  x="270.390625" y="587.5" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="bold">Gemini</text>
+<text  x="270.390625" y="607.3" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Tekst</text>
+<text  x="642.453125" y="595.721875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Ingen nøgle tilføjet</text>
+<rect x="1103.5625" y="584.921875" width="136.4375" height="38" rx="10" fill="rgb(255, 252, 247)"/>
+<rect x="1104.0625" y="585.421875" width="135.4375" height="37" rx="10" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
+<svg x="1120.5625" y="593.921875" width="20" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(37, 37, 31)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="9" r="5"></circle><path d="m12 13 8 8m-5-5 3-3m0 6 3-3"></path></svg>
+<text  x="1148.5625" y="608.525" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Tilføj nøgle</text>
+<line x1="270.390625" y1="703.921875" x2="1240" y2="703.921875" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<text  x="270.390625" y="755.421875" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="20px" font-weight="bold">Egne endpoints og modelnavne</text>
+<svg x="1222" y="739.921875" width="18" height="18" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(37, 37, 31)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg>
+<line x1="270.390625" y1="808.921875" x2="1240" y2="808.921875" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+</svg>

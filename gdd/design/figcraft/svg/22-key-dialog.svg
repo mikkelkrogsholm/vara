@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="820" viewBox="0 0 1280 820">
+<rect x="0" y="-1" width="1280" height="820" rx="0" fill="rgb(255, 252, 247)"/>
+<rect x="0" y="-1" width="1280" height="820" rx="0" fill="rgb(247, 244, 238)"/>
+<rect x="0" y="-1" width="230.390625" height="820" rx="0" fill="rgb(47, 53, 39)"/>
+<svg x="32" y="66.5" width="30" height="30" class="brand-mark" viewBox="0 0 32 32" fill="none" stroke="rgb(242, 180, 134)" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M3 15v2m6-8v14m7-21v28m7-21v14m6-8v2"></path></svg>
+<text  x="74" y="92" fill="rgb(246, 244, 235)" font-family="Georgia, &quot;Noto Serif&quot;, &quot;Liberation Serif&quot;, serif" font-size="30px" font-weight="bold">vara</text>
+<svg x="34" y="150" width="23" height="23" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(246, 244, 235)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 6v6l4 2"></path></svg>
+<text  x="71" y="166.5" fill="rgb(246, 244, 235)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Historik</text>
+<svg x="34" y="209" width="23" height="23" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(246, 244, 235)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"></path><path d="M14 2v6h6M8 13h8M8 17h6"></path></svg>
+<text  x="71" y="225.5" fill="rgb(246, 244, 235)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Transskribering</text>
+<svg x="34" y="268" width="23" height="23" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(246, 244, 235)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect></svg>
+<text  x="71" y="284.5" fill="rgb(246, 244, 235)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">AI pr. app</text>
+<rect x="18" y="313" width="194.390625" height="51" rx="10" fill="rgb(72, 80, 60)"/>
+<rect x="23" y="325" width="2" height="27" rx="1" fill="#f4a978"/>
+<svg x="34" y="327" width="23" height="23" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(246, 244, 235)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 3-1 3-3 1-2 3 2 2-1 3 3 2 3-1 2 2 3-1 1-3 3-1 1-3-2-2 1-3-3-2-3 1-2-1Z"></path><circle cx="12" cy="11" r="3"></circle></svg>
+<text  x="71" y="343.5" fill="rgb(246, 244, 235)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="bold">Indstillinger</text>
+<line x1="30" y1="526.03125" x2="200.390625" y2="526.03125" stroke="rgb(98, 105, 81)" stroke-width="1"/>
+<rect x="30" y="557.421875" width="8" height="8" rx="50" fill="rgb(158, 214, 154)"/>
+<text  x="46" y="565.58125" fill="rgb(246, 244, 235)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Lyd: på enheden</text>
+<rect x="135.46875" y="579.828125" width="64.921875" height="27.1875" rx="8" fill="rgb(72, 80, 60)"/>
+<rect x="135.96875" y="580.328125" width="63.921875" height="26.1875" rx="8" fill="none" stroke="rgb(155, 163, 140)" stroke-width="1"/>
+<text  x="142.46875" y="597.528125" fill="rgb(246, 244, 235)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="12px" font-weight="bold">⌥ Space</text>
+<text  x="30" y="633.565625" fill="rgb(203, 208, 194)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Hold, tal og slip.</text>
+<text  x="30" y="658.3625" fill="rgb(203, 208, 194)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Lokal transskription.</text>
+<text  x="30" y="679.159375" fill="rgb(203, 208, 194)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Din lyd forlader ikke</text>
+<text  x="30" y="699.95625" fill="rgb(203, 208, 194)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">enheden.</text>
+<text  x="30" y="724.753125" fill="rgb(203, 208, 194)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">AI efter dine appregler.</text>
+<svg x="31" y="758" width="20" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(246, 244, 235)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2" width="6" height="13" rx="3"></rect><path d="M5 10v2a7 7 0 0 0 14 0v-2M12 19v3m-4 0h8"></path></svg>
+<text  x="59" y="772.45625" fill="rgb(246, 244, 235)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="bold">Diktér</text>
+<svg x="172.390625" y="758" width="20" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(246, 244, 235)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5" cy="12" r="1"></circle><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle></svg>
+<rect x="230.390625" y="-1" width="1049.609375" height="820" rx="0" fill="rgb(247, 244, 238)"/>
+<text  x="270.390625" y="5.099999999999998" fill="rgb(37, 37, 31)" font-family="Georgia, &quot;Noto Serif&quot;, &quot;Liberation Serif&quot;, serif" font-size="36px" font-weight="normal">Indstillinger</text>
+<text  x="270.390625" y="37.640625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">En stille hjælper, på dine præmisser.</text>
+<line x1="270.390625" y1="125.390625" x2="1240" y2="125.390625" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<text  x="270.390625" y="104.140625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Diktering</text>
+<line x1="356.265625" y1="124.390625" x2="490.40625" y2="124.390625" stroke="rgb(168, 68, 23)" stroke-width="2"/>
+<text  x="356.265625" y="104.140625" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="bold">Modeller og nøgler</text>
+<text  x="514.40625" y="104.140625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Privatliv</text>
+<line x1="270.390625" y1="522.421875" x2="1240" y2="522.421875" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<text  x="270.390625" y="176.290625" fill="rgb(37, 37, 31)" font-family="Georgia, &quot;Noto Serif&quot;, &quot;Liberation Serif&quot;, serif" font-size="24px" font-weight="normal">Lokale modeller</text>
+<text  x="270.390625" y="207.640625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Hent én gang. Brug uden konto eller nøgle.</text>
+<line x1="270.390625" y1="301.234375" x2="1240" y2="301.234375" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<text  x="270.390625" y="258.140625" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="bold">Parakeet Redux · tale</text>
+<text  x="270.390625" y="280.940625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Flersproget · 179 MB</text>
+<text  x="668.328125" y="269.690625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Installeret på enheden</text>
+<rect x="1066.28125" y="245.0625" width="173.71875" height="38" rx="10" fill="rgb(255, 252, 247)"/>
+<rect x="1066.78125" y="245.5625" width="172.71875" height="37" rx="10" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
+<svg x="1083.28125" y="254.0625" width="20" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(37, 37, 31)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M4 17v4h16v-4"></path></svg>
+<text  x="1111.28125" y="268.665625" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Kontrollér model</text>
+<line x1="270.390625" y1="374.578125" x2="1240" y2="374.578125" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<text  x="270.390625" y="331.484375" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="bold">Whisper Base · tale</text>
+<text  x="270.390625" y="354.284375" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Valgfrit alternativ · 148 MB</text>
+<text  x="668.328125" y="343.034375" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Installeret på enheden</text>
+<rect x="1066.28125" y="318.40625" width="173.71875" height="38" rx="10" fill="rgb(255, 252, 247)"/>
+<rect x="1066.78125" y="318.90625" width="172.71875" height="37" rx="10" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
+<svg x="1083.28125" y="327.40625" width="20" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(37, 37, 31)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M4 17v4h16v-4"></path></svg>
+<text  x="1111.28125" y="342.009375" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Kontrollér model</text>
+<line x1="270.390625" y1="447.921875" x2="1240" y2="447.921875" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<text  x="270.390625" y="404.828125" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="bold">Qwen3 0.6B · tekst</text>
+<text  x="270.390625" y="427.628125" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Valgfri AI-bearbejdning · 651 MB</text>
+<text  x="668.328125" y="416.378125" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Installeret på enheden</text>
+<rect x="1066.28125" y="391.75" width="173.71875" height="38" rx="10" fill="rgb(255, 252, 247)"/>
+<rect x="1066.78125" y="392.25" width="172.71875" height="37" rx="10" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
+<svg x="1083.28125" y="400.75" width="20" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(37, 37, 31)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M4 17v4h16v-4"></path></svg>
+<text  x="1111.28125" y="415.353125" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Kontrollér model</text>
+<text  x="270.390625" y="489.471875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Parakeet Redux: Moondream og NVIDIA · CC BY 4.0.</text>
+<line x1="270.390625" y1="1103.921875" x2="1240" y2="1103.921875" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<text  x="270.390625" y="571.321875" fill="rgb(37, 37, 31)" font-family="Georgia, &quot;Noto Serif&quot;, &quot;Liberation Serif&quot;, serif" font-size="24px" font-weight="normal">API-nøgler</text>
+<text  x="270.390625" y="602.671875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Dine egne nøgler gemmes i systemets nøglelager.</text>
+<line x1="270.390625" y1="713.921875" x2="1240" y2="713.921875" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<text  x="270.390625" y="663.5" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="bold">OpenAI</text>
+<text  x="270.390625" y="683.3" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Tale og tekst</text>
+<text  x="642.453125" y="671.721875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Ingen nøgle tilføjet</text>
+<rect x="1103.5625" y="660.921875" width="136.4375" height="38" rx="10" fill="rgb(255, 252, 247)"/>
+<rect x="1104.0625" y="661.421875" width="135.4375" height="37" rx="10" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
+<svg x="1120.5625" y="669.921875" width="20" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(37, 37, 31)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="9" r="5"></circle><path d="m12 13 8 8m-5-5 3-3m0 6 3-3"></path></svg>
+<text  x="1148.5625" y="684.525" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Tilføj nøgle</text>
+<line x1="270.390625" y1="804.921875" x2="1240" y2="804.921875" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<text  x="270.390625" y="754.5" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="bold">Groq</text>
+<text  x="270.390625" y="774.3" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Whisper til tale · AI til tekst</text>
+<text  x="642.453125" y="762.721875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Ingen nøgle tilføjet</text>
+<rect x="1103.5625" y="751.921875" width="136.4375" height="38" rx="10" fill="rgb(255, 252, 247)"/>
+<rect x="1104.0625" y="752.421875" width="135.4375" height="37" rx="10" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
+<svg x="1120.5625" y="760.921875" width="20" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(37, 37, 31)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="9" r="5"></circle><path d="m12 13 8 8m-5-5 3-3m0 6 3-3"></path></svg>
+<text  x="1148.5625" y="775.525" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Tilføj nøgle</text>
+<line x1="270.390625" y1="895.921875" x2="1240" y2="895.921875" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<rect x="270.390625" y="744.40625" width="969.609375" height="74.59375" rx="0" fill="rgb(247, 244, 238)"/>
+<line x1="270.390625" y1="744.40625" x2="1240" y2="744.40625" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<text  x="934.734375" y="786.80625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Fortryd ændringer</text>
+<rect x="1091.53125" y="761.40625" width="148.46875" height="41.59375" rx="10" fill="rgb(220, 216, 206)"/>
+<text  x="1108.53125" y="786.80625" fill="rgb(92, 93, 84)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Gem indstillinger</text>
+<rect width="1280" height="820" fill="rgba(37,37,31,0.28)"/>
+<rect x="400" y="228.953125" width="480" height="362.09375" rx="16" fill="rgb(255, 252, 247)"/>
+<rect x="400.5" y="229.453125" width="479" height="361.09375" rx="16" fill="none" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<svg x="835" y="251.953125" width="20" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(37, 37, 31)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 6 12 12M6 18 18 6"></path></svg>
+<text  x="433" y="282.453125" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="20px" font-weight="bold">OpenAI</text>
+<text  x="433" y="321.203125" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Tilføj din egen API-nøgle. Den gemmes i systemets</text>
+<text  x="433" y="343.703125" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">nøglelager.</text>
+<text  x="433" y="366.203125" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Udbyderen kan transskribere din lyd og bearbejde tekst med</text>
+<text  x="433" y="388.703125" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">AI. Data til de valgte funktioner behandles i cloud.</text>
+<text  x="433" y="430.353125" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">API-nøgle</text>
+<rect x="433" y="439.953125" width="414" height="48.5" rx="10" fill="rgb(255, 252, 247)"/>
+<rect x="433.5" y="440.453125" width="413" height="47.5" rx="10" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
+<rect x="433" y="516.453125" width="414" height="41.59375" rx="10" fill="rgb(168, 68, 23)"/>
+<rect x="433.5" y="516.953125" width="413" height="40.59375" rx="10" fill="none" stroke="rgb(168, 68, 23)" stroke-width="1"/>
+<text  x="603.90625" y="541.853125" fill="rgb(255, 255, 255)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Gem nøgle</text>
+</svg>

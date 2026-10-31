@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="820" viewBox="0 0 1280 820">
+<rect x="0" y="0" width="1280" height="820" rx="0" fill="rgb(255, 252, 247)"/>
+<rect x="0" y="0" width="1280" height="820" rx="0" fill="rgb(247, 244, 238)"/>
+<rect x="230.390625" y="0" width="1049.609375" height="820" rx="0" fill="rgb(247, 244, 238)"/>
+<text  x="270.390625" y="59.3" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="28px" font-weight="bold">Transskribering</text>
+<text  x="270.390625" y="91.25" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Fra lyd og video til tekst.</text>
+<rect x="270.890625" y="130" width="968.609375" height="280.28125" rx="12" fill="none" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<svg x="737.1875" y="164.5" width="36" height="36" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(37, 37, 31)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"></path><path d="M14 2v6h6M8 13h8M8 17h6"></path></svg>
+<text  x="637.09375" y="241.3" fill="rgb(37, 37, 31)" font-family="Georgia, serif" font-size="28px" font-weight="normal">Tilføj lyd eller video</text>
+<text  x="593" y="275.9375" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Træk filer hertil, eller vælg dem på computeren.</text>
+<rect x="706.03125" y="300.1875" width="98.3125" height="41.59375" rx="10" fill="rgb(255, 252, 247)"/>
+<rect x="706.53125" y="300.6875" width="97.3125" height="40.59375" rx="10" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
+<text  x="723.03125" y="325.5875" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Vælg filer</text>
+<text  x="592.046875" y="362.48125" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="12px" font-weight="normal">WAV, MP3, FLAC, M4A og video med understøttet lydspor</text>
+<text  x="270.390625" y="450.18125" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Talemodel</text>
+<svg x="270.390625" y="508.03125" width="16" height="16" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(37, 37, 31)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"></path></svg>
+<text  x="292.390625" y="519.83125" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">På denne enhed · Klar</text>
+<text  x="765.1875" y="450.18125" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Sprog</text>
+<text  x="270.390625" y="558.03125" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Filerne behandles på din enhed. Originalerne ændres ikke.</text>
+<text  x="270.390625" y="583.83125" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Vara gemmer en lydkopi til afspilning og genprøvning. Slet dokumentet for at fjerne kopien; annullering rydder arbejdslyden. Op til 8 timer pr. fil.</text>
+<text  x="270.390625" y="602.48125" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="12px" font-weight="normal">Parakeet registrerer automatisk sproget.</text>
+<line x1="270.390625" y1="631.78125" x2="1240" y2="631.78125" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<text  x="270.390625" y="768.76875" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="18px" font-weight="bold">Seneste</text>
+<text  x="1047" y="739.775" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Søg i transskriptioner</text>
+<rect x="1047" y="749.375" width="193" height="48.5" rx="10" fill="rgb(255, 252, 247)"/>
+<rect x="1047.5" y="749.875" width="192" height="47.5" rx="10" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
+<line x1="270.390625" y1="879.875" x2="1240" y2="879.875" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<text  x="318.390625" y="834.125" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="bold">Interview med Anna</text>
+</svg>

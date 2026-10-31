@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="820" viewBox="0 0 1280 820">
+<rect x="0" y="0" width="1280" height="820" rx="0" fill="rgb(255, 252, 247)"/>
+<rect x="0" y="0" width="1280" height="820" rx="0" fill="rgb(247, 244, 238)"/>
+<rect x="230.390625" y="0" width="1049.609375" height="820" rx="0" fill="rgb(247, 244, 238)"/>
+<line x1="270.390625" y1="105.328125" x2="1240" y2="105.328125" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<text  x="270.390625" y="5.578125" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Vælg den model, der</text>
+<text  x="270.390625" y="28.078125" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">transskriberer din tale.</text>
+<svg x="529.6875" y="44.578125" width="16" height="16" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(37, 37, 31)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"></path></svg>
+<text  x="551.6875" y="56.378125" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">På denne enhed · Klar</text>
+<line x1="270.390625" y1="256.671875" x2="1240" y2="256.671875" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<text  x="270.390625" y="154.228125" fill="rgb(37, 37, 31)" font-family="Georgia, &quot;Noto Serif&quot;, &quot;Liberation Serif&quot;, serif" font-size="24px" font-weight="normal">Efter transskription</text>
+<text  x="270.390625" y="185.578125" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Din standard for nye dikteringer.</text>
+<circle cx="540.6875" cy="143.328125" r="10.5" fill="#fff" stroke="#A84417"/>
+<circle cx="540.6875" cy="143.328125" r="7" fill="#A84417"/>
+<text  x="561.6875" y="147.578125" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Behold transskriptionen</text>
+<text  x="561.6875" y="172.378125" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Indsæt transskriptionen, som den er.</text>
+<circle cx="905.84375" cy="143.328125" r="10.5" fill="#fff" stroke="#888"/>
+<text  x="926.84375" y="147.578125" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Bearbejd med AI</text>
+<text  x="926.84375" y="172.378125" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Bearbejd teksten, før den indsættes.</text>
+<text  x="529.6875" y="218.128125" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Apps med egne regler bruger deres egne indstillinger.</text>
+<text  x="859.875" y="218.128125" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="bold">Administrer apps →</text>
+<line x1="270.390625" y1="613.671875" x2="1240" y2="613.671875" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<text  x="270.390625" y="305.571875" fill="rgb(37, 37, 31)" font-family="Georgia, &quot;Noto Serif&quot;, &quot;Liberation Serif&quot;, serif" font-size="24px" font-weight="normal">Tilladelser</text>
+<text  x="270.390625" y="336.921875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Adgang til mikrofon, genvej og</text>
+<text  x="270.390625" y="359.421875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">indsættelse i andre apps.</text>
+<line x1="529.6875" y1="361.671875" x2="1240" y2="361.671875" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<text  x="529.6875" y="314.921875" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="bold">Mikrofon</text>
+<text  x="529.6875" y="338.721875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Bruges kun, når du starter en diktering.</text>
+<svg x="1138.203125" y="313.671875" width="16" height="16" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(56, 102, 65)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"></path></svg>
+<text  x="1160.203125" y="325.471875" fill="rgb(56, 102, 65)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Adgang givet</text>
+<line x1="529.6875" y1="474.171875" x2="1240" y2="474.171875" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<text  x="529.6875" y="407.921875" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="bold">Globale genveje</text>
+<text  x="529.6875" y="431.721875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Inputovervågning lader Vara registrere din genvej, mens du</text>
+<text  x="529.6875" y="451.221875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">arbejder i andre apps.</text>
+<svg x="1138.203125" y="416.421875" width="16" height="16" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(56, 102, 65)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"></path></svg>
+<text  x="1160.203125" y="428.221875" fill="rgb(56, 102, 65)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Adgang givet</text>
+<line x1="529.6875" y1="586.671875" x2="1240" y2="586.671875" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<text  x="529.6875" y="520.421875" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="bold">Indsættelse i andre apps</text>
+<text  x="529.6875" y="544.221875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Tilgængelighed gør det muligt at indsætte i det oprindelige</text>
+<text  x="529.6875" y="563.721875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">tekstfelt.</text>
+<svg x="1138.203125" y="528.921875" width="16" height="16" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(56, 102, 65)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"></path></svg>
+<text  x="1160.203125" y="540.721875" fill="rgb(56, 102, 65)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Adgang givet</text>
+</svg>
