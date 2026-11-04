@@ -4,11 +4,28 @@ use std::{fs::File, path::Path};
 use symphonia::core::{
     audio::SampleBuffer, codecs::DecoderOptions, errors::Error, io::MediaSourceStream, probe::Hint,
 };
+fn symphonia_cause(error: &Error) -> vara_core::UserMessage {
+    match error {
+        Error::IoError(e) => vara_core::UserMessage::io_cause(e),
+        Error::DecodeError(_) => vara_core::UserMessage::new("media.cause_format"),
+        Error::Unsupported(_) => vara_core::UserMessage::new("media.cause_unsupported"),
+        Error::LimitError(_) => vara_core::UserMessage::new("media.cause_limit"),
+        Error::SeekError(_) => vara_core::UserMessage::new("media.cause_seek"),
+        Error::ResetRequired => vara_core::UserMessage::new("media.cause_reset"),
+    }
+}
+fn hound_cause(error: &hound::Error) -> vara_core::UserMessage {
+    match error {
+        hound::Error::IoError(e) => vara_core::UserMessage::io_cause(e),
+        hound::Error::Unsupported => vara_core::UserMessage::new("media.cause_unsupported"),
+        _ => vara_core::UserMessage::new("media.cause_format"),
+    }
+}
 const MAX_SAMPLES: u64 = 16_000 * 60 * 60 * 8;
 pub fn normalize(source: &Path, destination: &Path, cancel: &Cancellation) -> Result<f64> {
     cancel.check()?;
     if source == destination || same_file::is_same_file(source, destination).unwrap_or(false) {
-        return Err("Originalen må ikke overskrives.".into());
+        return Err(vara_core::UserMessage::new("media.overwrite").wire());
     }
     let mut compatible_fallback = false;
     let result = decode(source, destination, cancel, &mut compatible_fallback).or_else(|native| {
@@ -34,13 +51,21 @@ fn decode(
     cancel: &Cancellation,
     compatible_fallback: &mut bool,
 ) -> Result<f64> {
-    let file = File::open(source).map_err(|_| "Kildefilen kunne ikke åbnes. Vælg den igen.")?;
+    let file = File::open(source).map_err(|e| {
+        vara_core::UserMessage::new("media.source_open")
+            .caused_by(vara_core::UserMessage::io_cause(&e))
+            .wire()
+    })?;
     if !file
         .metadata()
-        .map_err(|_| "Kildefilen kunne ikke læses.")?
+        .map_err(|e| {
+            vara_core::UserMessage::new("media.source_read")
+                .caused_by(vara_core::UserMessage::io_cause(&e))
+                .wire()
+        })?
         .is_file()
     {
-        return Err("Vælg en lyd- eller videofil.".into());
+        return Err(vara_core::UserMessage::new("media.choose_file").wire());
     }
     let stream = MediaSourceStream::new(Box::new(file), Default::default());
     let mut hint = Hint::new();
@@ -49,9 +74,11 @@ fn decode(
     }
     let mut format = symphonia::default::get_probe()
         .format(&hint, stream, &Default::default(), &Default::default())
-        .map_err(|_| {
+        .map_err(|e| {
             *compatible_fallback = true;
-            "Formatet kunne ikke læses. Prøv WAV, MP3, FLAC, M4A eller video med AAC-lyd."
+            vara_core::UserMessage::new("media.format")
+                .caused_by(symphonia_cause(&e))
+                .wire()
         })?
         .format;
     let (id, mut decoder) = format
@@ -65,7 +92,7 @@ fn decode(
         })
         .ok_or_else(|| {
             *compatible_fallback = true;
-            "Filen indeholder ingen understøttet lyd. Prøv at eksportere lyden som WAV eller MP3."
+            vara_core::UserMessage::new("media.no_supported_audio").wire()
         })?;
     let spec = hound::WavSpec {
         channels: 1,
@@ -73,8 +100,11 @@ fn decode(
         bits_per_sample: 16,
         sample_format: hound::SampleFormat::Int,
     };
-    let mut wav = hound::WavWriter::create(destination, spec)
-        .map_err(|_| "Arbejdslyden kunne ikke gemmes. Kontroller ledig plads.")?;
+    let mut wav = hound::WavWriter::create(destination, spec).map_err(|e| {
+        vara_core::UserMessage::new("media.work_save")
+            .caused_by(hound_cause(&e))
+            .wire()
+    })?;
     let mut source_frames = 0u64;
     let mut output_samples = 0u64;
     let mut rate = 0u32;
@@ -84,24 +114,25 @@ fn decode(
         let packet = match format.next_packet() {
             Ok(p) => p,
             Err(Error::IoError(e)) if e.kind() == std::io::ErrorKind::UnexpectedEof => break,
-            Err(_) => {
-                return Err(
-                    "Mediefilen er beskadiget eller skifter lydformat. Originalen er bevaret."
-                        .into(),
-                );
+            Err(e) => {
+                return Err(vara_core::UserMessage::new("media.corrupt_format")
+                    .caused_by(symphonia_cause(&e))
+                    .wire());
             }
         };
         if packet.track_id() != id {
             continue;
         }
-        let audio = decoder.decode(&packet).map_err(|_| {
+        let audio = decoder.decode(&packet).map_err(|e| {
             *compatible_fallback = true;
-            "Lydsporet kunne ikke afkodes. Originalen er bevaret."
+            vara_core::UserMessage::new("media.decode")
+                .caused_by(symphonia_cause(&e))
+                .wire()
         })?;
         let cfg = *audio.spec();
         let channels = cfg.channels.count();
         if cfg.rate == 0 || channels == 0 || (rate != 0 && rate != cfg.rate) {
-            return Err("Lydsporets format understøttes ikke.".into());
+            return Err(vara_core::UserMessage::new("media.track_format").wire());
         }
         rate = cfg.rate;
         let mut samples = SampleBuffer::<f32>::new(audio.capacity() as u64, cfg);
@@ -109,7 +140,7 @@ fn decode(
         for frame in samples.samples().chunks(channels) {
             let sample = frame.iter().sum::<f32>() / channels as f32;
             if !sample.is_finite() {
-                return Err("Lydsporet indeholder ugyldige samples.".into());
+                return Err(vara_core::UserMessage::new("media.invalid_samples").wire());
             }
             // A continuous clock across packets prevents packet-boundary drift.
             while (output_samples as f64 * rate as f64 / 16000.) <= source_frames as f64 {
@@ -121,12 +152,14 @@ fn decode(
                     previous + (sample - previous) * alpha
                 };
                 wav.write_sample((v.clamp(-1., 1.) * 32767.).round() as i16)
-                    .map_err(|_| "Arbejdslyden kunne ikke gemmes. Kontroller ledig plads.")?;
+                    .map_err(|e| {
+                        vara_core::UserMessage::new("media.work_save")
+                            .caused_by(hound_cause(&e))
+                            .wire()
+                    })?;
                 output_samples += 1;
                 if output_samples > MAX_SAMPLES {
-                    return Err(
-                        "Filen overstiger grænsen på 8 timers lyd. Del den i mindre filer.".into(),
-                    );
+                    return Err(vara_core::UserMessage::new("media.too_long").wire());
                 }
             }
             source_frames += 1;
@@ -135,10 +168,13 @@ fn decode(
     }
     cancel.check()?;
     if output_samples < 1600 {
-        return Err("Filen indeholder ingen eller for kort lyd.".into());
+        return Err(vara_core::UserMessage::new("media.too_short").wire());
     }
-    wav.finalize()
-        .map_err(|_| "Arbejdslyden kunne ikke færdiggøres.")?;
+    wav.finalize().map_err(|e| {
+        vara_core::UserMessage::new("media.work_finish")
+            .caused_by(hound_cause(&e))
+            .wire()
+    })?;
     Ok(output_samples as f64 / 16000.)
 }
 
@@ -148,8 +184,11 @@ pub fn chunks(
     cancel: &Cancellation,
     mut consume: impl FnMut(&Path, f64, f64) -> Result<()>,
 ) -> Result<()> {
-    let mut reader =
-        hound::WavReader::open(path).map_err(|_| "Arbejdslyden mangler. Genprøv filen.")?;
+    let mut reader = hound::WavReader::open(path).map_err(|e| {
+        vara_core::UserMessage::new("media.work_missing")
+            .caused_by(hound_cause(&e))
+            .wire()
+    })?;
     let mut samples = reader.samples::<i16>();
     let mut offset = 0.;
     loop {
@@ -158,12 +197,19 @@ pub fn chunks(
             .by_ref()
             .take(300 * 16000)
             .collect::<std::result::Result<Vec<_>, _>>()
-            .map_err(|_| "Arbejdslyden er beskadiget.")?;
+            .map_err(|e| {
+                vara_core::UserMessage::new("media.work_corrupt")
+                    .caused_by(hound_cause(&e))
+                    .wire()
+            })?;
         if buffer.is_empty() {
             break;
         }
-        let chunk =
-            tempfile::NamedTempFile::new().map_err(|_| "Arbejdsfilen kunne ikke oprettes.")?;
+        let chunk = tempfile::NamedTempFile::new().map_err(|e| {
+            vara_core::UserMessage::new("media.temp_create")
+                .caused_by(vara_core::UserMessage::io_cause(&e))
+                .wire()
+        })?;
         let mut writer = hound::WavWriter::create(
             chunk.path(),
             hound::WavSpec {
@@ -173,16 +219,24 @@ pub fn chunks(
                 sample_format: hound::SampleFormat::Int,
             },
         )
-        .map_err(|_| "Arbejdsfilen kunne ikke gemmes.")?;
+        .map_err(|e| {
+            vara_core::UserMessage::new("media.temp_save")
+                .caused_by(hound_cause(&e))
+                .wire()
+        })?;
         let duration = buffer.len() as f64 / 16000.;
         for v in buffer {
-            writer
-                .write_sample(v)
-                .map_err(|_| "Arbejdsfilen kunne ikke gemmes.")?;
+            writer.write_sample(v).map_err(|e| {
+                vara_core::UserMessage::new("media.temp_save")
+                    .caused_by(hound_cause(&e))
+                    .wire()
+            })?;
         }
-        writer
-            .finalize()
-            .map_err(|_| "Arbejdsfilen kunne ikke færdiggøres.")?;
+        writer.finalize().map_err(|e| {
+            vara_core::UserMessage::new("media.temp_finish")
+                .caused_by(hound_cause(&e))
+                .wire()
+        })?;
         consume(chunk.path(), offset, duration)?;
         offset += duration;
     }
@@ -252,32 +306,40 @@ fn decode_ffmpeg(
             let _ = child.kill();
             let _ = child.wait();
             cancel.check()?;
-            return Err("Medieafkodning nåede tidsgrænsen. Prøv en mindre fil.".into());
+            return Err(vara_core::UserMessage::new("media.timeout").wire());
         }
         let status = child.lock().try_wait();
         match status {
             Ok(Some(status)) => {
                 if !status.success() {
-                    return Err("Filen indeholder ingen læsbar lyd, eller er beskadiget. Prøv at eksportere lyden som WAV eller MP3.".into());
+                    return Err(vara_core::UserMessage::new("media.unreadable_audio")
+                        .caused_by(crate::process_cause(&status))
+                        .wire());
                 }
                 break;
             }
             Ok(None) => std::thread::sleep(std::time::Duration::from_millis(40)),
-            Err(_) => {
+            Err(error) => {
                 let mut child = child.lock();
                 let _ = child.kill();
                 let _ = child.wait();
-                return Err("Medieafkodningen blev afbrudt.".into());
+                return Err(vara_core::UserMessage::new("media.interrupted")
+                    .caused_by(vara_core::UserMessage::io_cause(&error))
+                    .wire());
             }
         }
     }
-    let reader = hound::WavReader::open(destination).map_err(|_| "Den afkodede lyd er ugyldig.")?;
+    let reader = hound::WavReader::open(destination).map_err(|e| {
+        vara_core::UserMessage::new("media.decoded_invalid")
+            .caused_by(hound_cause(&e))
+            .wire()
+    })?;
     let duration = reader.duration() as f64 / 16000.;
     if reader.spec().sample_rate != 16000 || reader.spec().channels != 1 || duration < 0.1 {
-        return Err("Filen indeholder ingen brugbar lyd.".into());
+        return Err(vara_core::UserMessage::new("media.no_usable_audio").wire());
     }
     if duration > 28800. {
-        return Err("Filen overstiger grænsen på 8 timers lyd. Del den i mindre filer.".into());
+        return Err(vara_core::UserMessage::new("media.too_long").wire());
     }
     cancel.check()?;
     Ok(duration)
@@ -285,7 +347,11 @@ fn decode_ffmpeg(
 
 /// Fixed-size actual amplitude envelope for the seek control; no fabricated waveform.
 pub fn waveform(path: &Path, cancel: &Cancellation) -> Result<Vec<f32>> {
-    let mut reader = hound::WavReader::open(path).map_err(|_| "Lydkopien kunne ikke læses.")?;
+    let mut reader = hound::WavReader::open(path).map_err(|e| {
+        vara_core::UserMessage::new("media.copy_read")
+            .caused_by(hound_cause(&e))
+            .wire()
+    })?;
     let total = reader.duration() as usize;
     let width = 128;
     let mut peaks = vec![0f32; width];
@@ -293,7 +359,11 @@ pub fn waveform(path: &Path, cancel: &Cancellation) -> Result<Vec<f32>> {
         if i % 16000 == 0 {
             cancel.check()?;
         }
-        let sample = sample.map_err(|_| "Lydkopien er beskadiget.")?;
+        let sample = sample.map_err(|e| {
+            vara_core::UserMessage::new("media.copy_corrupt")
+                .caused_by(hound_cause(&e))
+                .wire()
+        })?;
         let bin = (i * width / total.max(1)).min(width - 1);
         peaks[bin] = peaks[bin].max((sample as f32 / 32768.).abs());
     }
@@ -321,18 +391,22 @@ mod subprocess_tests {
 
 /// An already-published private playback copy can be reused after a failed recognition.
 pub fn normalized_duration(path: &Path) -> Result<f64> {
-    let reader = hound::WavReader::open(path).map_err(|_| "Lydkopien kunne ikke læses.")?;
+    let reader = hound::WavReader::open(path).map_err(|e| {
+        vara_core::UserMessage::new("media.copy_read")
+            .caused_by(hound_cause(&e))
+            .wire()
+    })?;
     let spec = reader.spec();
     if spec.sample_rate != 16000
         || spec.channels != 1
         || spec.bits_per_sample != 16
         || spec.sample_format != hound::SampleFormat::Int
     {
-        return Err("Lydkopien har et ugyldigt format.".into());
+        return Err(vara_core::UserMessage::new("media.copy_format").wire());
     }
     let duration = reader.duration() as f64 / 16000.;
     if !(0.1..=28800.).contains(&duration) {
-        return Err("Lydkopiens varighed understøttes ikke.".into());
+        return Err(vara_core::UserMessage::new("media.copy_duration").wire());
     }
     Ok(duration)
 }

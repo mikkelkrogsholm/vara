@@ -121,10 +121,10 @@ pub fn capture_target() -> Result<Destination> {
     unsafe {
         let raw = vara_capture_target();
         if raw.is_null() {
-            return Err("Den aktive app kunne ikke identificeres.".into());
+            return Err(vara_core::UserMessage::new("platform.target_identify").wire());
         }
         let parsed = serde_json::from_slice(CStr::from_ptr(raw).to_bytes())
-            .map_err(|_| "Den aktive app kunne ikke læses.".into());
+            .map_err(|_| vara_core::UserMessage::new("platform.target_read").wire());
         vara_free(raw);
         parsed
     }
@@ -192,7 +192,7 @@ pub fn request_permission(kind: &str) -> Result<()> {
             "microphone" => vara_request_microphone(),
             "accessibility" => vara_request_accessibility(),
             "input_monitoring" => vara_request_input_monitoring(),
-            _ => return Err("Ukendt tilladelse.".into()),
+            _ => return Err(vara_core::UserMessage::new("platform.permission").wire()),
         };
     }
     Ok(())
@@ -239,7 +239,7 @@ pub fn hide_hud() {
 pub fn copy(text: &str) -> Result<()> {
     arboard::Clipboard::new()
         .and_then(|mut c| c.set_text(text))
-        .map_err(|_| "Teksten kunne ikke kopieres. Markér den og brug systemets Kopiér.".into())
+        .map_err(|_| vara_core::UserMessage::new("platform.clipboard").wire())
 }
 
 pub fn applications() -> Result<serde_json::Value> {
@@ -247,10 +247,10 @@ pub fn applications() -> Result<serde_json::Value> {
     unsafe {
         let raw = vara_applications();
         if raw.is_null() {
-            return Err("Apps kunne ikke findes.".into());
+            return Err(vara_core::UserMessage::new("platform.apps_find").wire());
         }
         let value = serde_json::from_slice(CStr::from_ptr(raw).to_bytes())
-            .map_err(|_| "Apps kunne ikke læses.".into());
+            .map_err(|_| vara_core::UserMessage::new("platform.apps_read").wire());
         vara_free(raw);
         value
     }
@@ -269,19 +269,21 @@ pub fn application_icons(ids: &[String]) -> Result<serde_json::Value> {
                 || id.chars().any(|c| c.is_control() || c == '/' || c == '\\')
         })
     {
-        return Err("Ugyldige app-id’er.".into());
+        return Err(vara_core::UserMessage::new("platform.app_ids").wire());
     }
     #[cfg(target_os = "macos")]
     unsafe {
-        let input =
-            CString::new(serde_json::to_string(ids).map_err(|_| "App-id’er kunne ikke læses.")?)
-                .map_err(|_| "Ugyldige app-id’er.")?;
+        let input = CString::new(
+            serde_json::to_string(ids)
+                .map_err(|_| vara_core::UserMessage::new("platform.app_ids_read").wire())?,
+        )
+        .map_err(|_| vara_core::UserMessage::new("platform.app_ids").wire())?;
         let raw = vara_application_icons(input.as_ptr());
         if raw.is_null() {
-            return Err("Appikoner kunne ikke læses.".into());
+            return Err(vara_core::UserMessage::new("platform.icons_read").wire());
         }
         let result = serde_json::from_slice(CStr::from_ptr(raw).to_bytes())
-            .map_err(|_| "Appikoner kunne ikke læses.".into());
+            .map_err(|_| vara_core::UserMessage::new("platform.icons_read").wire());
         vara_free(raw);
         result
     }

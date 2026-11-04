@@ -4,7 +4,7 @@ use std::collections::{BTreeMap, BTreeSet};
 use vara_core::{Diarization, SpeakerTurn};
 
 fn bad() -> String {
-    "Who kunne ikke afstemme talerne mellem kontrolkørslerne. Tidligere resultat er bevaret.".into()
+    vara_core::UserMessage::new("who.consensus").wire()
 }
 const UNKNOWN: &str = "who-uncertain";
 
@@ -218,7 +218,14 @@ pub(super) fn combine(
         .unwrap()
         .method
         .push_str("+cross-window-consensus-offset-60s-v1");
-    primary.validate(duration).map_err(|_| bad())?;
+    primary.validate(duration).map_err(|e| {
+        vara_core::UserMessage::new("who.consensus")
+            .caused_by(
+                vara_core::UserMessage::decode(&e.wire())
+                    .unwrap_or_else(|| vara_core::UserMessage::new("runtime.unknown")),
+            )
+            .wire()
+    })?;
     Ok(primary)
 }
 
@@ -315,6 +322,9 @@ mod tests {
         c.cancel();
         let a = doc(vec![turn("a", 0., 1.), turn("b", 1., 2.)]);
         let b = doc(vec![turn("x", 60., 61.), turn("y", 61., 62.)]);
-        assert_eq!(combine(a, b, 2., &c).unwrap_err(), "Annulleret.");
+        assert_eq!(
+            combine(a, b, 2., &c).unwrap_err(),
+            vara_core::UserMessage::new("runtime.cancelled").wire()
+        );
     }
 }

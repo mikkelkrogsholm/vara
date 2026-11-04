@@ -1,0 +1,1034 @@
+{
+  "runtime.unknown": {
+    "da": "Der opstod en ukendt fejl.",
+    "en": "An unknown error occurred."
+  },
+  "session.busy": {
+    "da": "Der er allerede en diktering i gang.",
+    "en": "A dictation is already in progress."
+  },
+  "session.cancelled": {
+    "da": "Dikteringen er annulleret eller forældet.",
+    "en": "The dictation was cancelled or is no longer current."
+  },
+  "session.expired": {
+    "da": "Optagelsen er udløbet og kan ikke genprøves.",
+    "en": "The recording has expired and cannot be retried."
+  },
+  "storage.history": {
+    "da": "Historikken kunne ikke gemmes. Teksten er stadig tilgængelig.",
+    "en": "History could not be saved. The text is still available."
+  },
+  "storage.files": {
+    "da": "Filbiblioteket kunne ikke læses eller gemmes. Originalfilerne er bevaret.",
+    "en": "The file library could not be read or saved. Original files are preserved."
+  },
+  "storage.data": {
+    "da": "Data kunne ikke læses.",
+    "en": "Data could not be read."
+  },
+  "runtime.cancelled": {
+    "da": "Annulleret.",
+    "en": "Cancelled."
+  },
+  "provider.network": {
+    "da": "Forbindelsen mislykkedes. Kontroller netværk og endpoint.",
+    "en": "Connection failed. Check the network and endpoint."
+  },
+  "provider.access": {
+    "da": "Adgang afvist. Kontroller API-nøgle og modeladgang.",
+    "en": "Access denied. Check the API key and model access."
+  },
+  "provider.rate_limit": {
+    "da": "Udbyderens grænse er nået. Prøv igen senere.",
+    "en": "The provider's limit was reached. Try again later."
+  },
+  "provider.http": {
+    "da": "Udbyderen kunne ikke behandle forespørgslen (HTTP {status}).",
+    "en": "The provider could not process the request (HTTP {status})."
+  },
+  "provider.missing_key": {
+    "da": "Tilføj din API-nøgle i Modeller og nøgler.",
+    "en": "Add your API key in Models and keys."
+  },
+  "microphone.unavailable": {
+    "da": "Den valgte mikrofon er ikke tilgængelig. Vælg en anden i Indstillinger.",
+    "en": "The selected microphone is unavailable. Choose another in Settings."
+  },
+  "microphone.open": {
+    "da": "Mikrofonen kunne ikke åbnes. Kontroller tilladelsen i systemindstillingerne.",
+    "en": "The microphone could not be opened. Check its permission in system settings."
+  },
+  "model.unknown": {
+    "da": "Ukendt lokal model.",
+    "en": "Unknown local model."
+  },
+  "model.download_stalled": {
+    "da": "Download er gået i stå. Prøv igen.",
+    "en": "The download stalled. Try again."
+  },
+  "media.source_open": {
+    "da": "Kildefilen kunne ikke åbnes. Vælg den igen.",
+    "en": "The source file could not be opened. Select it again."
+  },
+  "who.speaker_count": {
+    "da": "Vælg et antal talere mellem 1 og 16.",
+    "en": "Choose between 1 and 16 speakers."
+  },
+  "session.already_advanced": {
+    "da": "Dikteringen er allerede gået videre.",
+    "en": "The dictation has already advanced."
+  },
+  "session.invalid_step": {
+    "da": "Ugyldigt trin i dikteringen.",
+    "en": "Invalid dictation step."
+  },
+  "settings.retention_days": {
+    "da": "Vælg et positivt antal dage.",
+    "en": "Choose a positive number of days."
+  },
+  "who.invalid_times": {
+    "da": "Taleropdelingen har ugyldige tidsdata.",
+    "en": "Speaker separation has invalid timing data."
+  },
+  "who.missing_method": {
+    "da": "Taleropdelingen mangler oplysninger om metoden.",
+    "en": "Speaker separation is missing method information."
+  },
+  "who.invalid_method": {
+    "da": "Taleropdelingens metode er ugyldig.",
+    "en": "The speaker separation method is invalid."
+  },
+  "who.missing_intervals": {
+    "da": "Taleropdelingen mangler lydintervaller.",
+    "en": "Speaker separation is missing audio intervals."
+  },
+  "transcription.invalid_times": {
+    "da": "Transskriptionen har ugyldige tidsdata.",
+    "en": "The transcription has invalid timing data."
+  },
+  "transcription.not_ready": {
+    "da": "Transskriptionen er ikke klar.",
+    "en": "The transcription is not ready."
+  },
+  "transcription.subtitle_timing": {
+    "da": "Undertekster kræver tidsjusteret tekst. Vælg den tidskodede original, eller eksportér som tekst.",
+    "en": "Subtitles require timed text. Choose the timed original or export as text."
+  },
+  "transcription.export_format": {
+    "da": "Ukendt eksportformat.",
+    "en": "Unknown export format."
+  },
+  "engine.name_model": {
+    "da": "Angiv navn og model.",
+    "en": "Enter a name and model."
+  },
+  "engine.provider_configuration": {
+    "da": "Udbyderens funktion eller placering passer ikke til valget.",
+    "en": "The provider function or location does not match the selection."
+  },
+  "engine.model_name": {
+    "da": "Modelnavnet indeholder ugyldige tegn.",
+    "en": "The model name contains invalid characters."
+  },
+  "engine.endpoint_url": {
+    "da": "Endpoint er ikke en gyldig URL.",
+    "en": "The endpoint is not a valid URL."
+  },
+  "engine.endpoint_credentials": {
+    "da": "Endpoint må ikke indeholde adgangsoplysninger, query eller fragment.",
+    "en": "The endpoint must not contain credentials, a query, or a fragment."
+  },
+  "engine.endpoint_https": {
+    "da": "Brug HTTPS til eksterne endpoints.",
+    "en": "Use HTTPS for external endpoints."
+  },
+  "engine.endpoint_loopback": {
+    "da": "Kun loopback-endpoints kan betegnes som på enheden.",
+    "en": "Only loopback endpoints can be marked as on-device."
+  },
+  "settings.model_missing": {
+    "da": "Den valgte model findes ikke.",
+    "en": "The selected model does not exist."
+  },
+  "settings.duplicate_model": {
+    "da": "To modeller har samme id.",
+    "en": "Two models have the same ID."
+  },
+  "settings.speech_model": {
+    "da": "Vælg en talemodel.",
+    "en": "Choose a speech model."
+  },
+  "settings.app_identity": {
+    "da": "App-identiteten er ugyldig.",
+    "en": "The app identity is invalid."
+  },
+  "settings.local_only": {
+    "da": "Kun behandling på denne enhed er valgt. Vælg lokale lyd- og tekstmodeller.",
+    "en": "On-device processing only is selected. Choose local speech and text models."
+  },
+  "settings.prompt": {
+    "da": "Skriv en systemprompt, før du slår AI til.",
+    "en": "Enter a system prompt before enabling AI."
+  },
+  "settings.text_model": {
+    "da": "Vælg en tekstmodel.",
+    "en": "Choose a text model."
+  },
+  "session.local_only": {
+    "da": "Denne diktering tillader kun behandling på enheden.",
+    "en": "This dictation permits on-device processing only."
+  },
+  "provider.timeout": {
+    "da": "Forbindelsen fik timeout.",
+    "en": "The connection timed out."
+  },
+  "provider.connect": {
+    "da": "Netværksforbindelsen kunne ikke oprettes.",
+    "en": "The network connection could not be established."
+  },
+  "provider.transport": {
+    "da": "Netværkstransporten fejlede.",
+    "en": "The network transport failed."
+  },
+  "provider.response_interrupted": {
+    "da": "Svaret blev afbrudt.",
+    "en": "The response was interrupted."
+  },
+  "provider.response_too_large": {
+    "da": "Svaret overstiger tekstgrænsen.",
+    "en": "The response exceeds the text limit."
+  },
+  "provider.invalid_response": {
+    "da": "Udbyderen returnerede et ugyldigt svar.",
+    "en": "The provider returned an invalid response."
+  },
+  "audio.recording_read": {
+    "da": "Optagelsen kunne ikke læses.",
+    "en": "The recording could not be read."
+  },
+  "provider.recording_too_large": {
+    "da": "Optagelsen er for stor til denne forbindelse.",
+    "en": "The recording is too large for this connection."
+  },
+  "provider.audio_format": {
+    "da": "Lydformatet kunne ikke sendes.",
+    "en": "The audio format could not be sent."
+  },
+  "provider.no_transcription": {
+    "da": "Svaret indeholder ingen transskription.",
+    "en": "The response contains no transcription."
+  },
+  "ai.text_limit": {
+    "da": "AI nåede tekstgrænsen. Originalen er bevaret.",
+    "en": "AI reached the text limit. The original is preserved."
+  },
+  "ai.invalid_response": {
+    "da": "AI returnerede et ugyldigt svar.",
+    "en": "AI returned an invalid response."
+  },
+  "provider.gemini_model": {
+    "da": "Gemini-modelnavnet er ugyldigt.",
+    "en": "The Gemini model name is invalid."
+  },
+  "ai.incomplete": {
+    "da": "AI kunne ikke færdiggøre teksten. Originalen er bevaret.",
+    "en": "AI could not finish the text. The original is preserved."
+  },
+  "ai.empty": {
+    "da": "AI returnerede ingen tekst.",
+    "en": "AI returned no text."
+  },
+  "provider.endpoint_required": {
+    "da": "Angiv endpoint.",
+    "en": "Enter an endpoint."
+  },
+  "provider.text_unsupported": {
+    "da": "Denne udbyder understøtter ikke tekstbehandling.",
+    "en": "This provider does not support text processing."
+  },
+  "ai.delivery_failed": {
+    "da": "AI kunne ikke levere teksten. Originalen er bevaret.",
+    "en": "AI could not deliver the text. The original is preserved."
+  },
+  "ai.empty_original_preserved": {
+    "da": "AI returnerede ingen tekst. Originalen er bevaret.",
+    "en": "AI returned no text. The original is preserved."
+  },
+  "provider.invalid_models": {
+    "da": "Udbyderen returnerede en ugyldig modelliste.",
+    "en": "The provider returned an invalid model list."
+  },
+  "audio.work_read": {
+    "da": "Arbejdslyden kunne ikke læses.",
+    "en": "The working audio could not be read."
+  },
+  "provider.audio_chunk_too_large": {
+    "da": "Lydstykket overstiger forbindelsens grænse.",
+    "en": "The audio segment exceeds the connection limit."
+  },
+  "provider.invalid_words": {
+    "da": "Udbyderen returnerede ugyldige orddata.",
+    "en": "The provider returned invalid word data."
+  },
+  "provider.word_start": {
+    "da": "Et ord mangler starttid.",
+    "en": "A word is missing its start time."
+  },
+  "provider.word_end": {
+    "da": "Et ord mangler sluttid.",
+    "en": "A word is missing its end time."
+  },
+  "provider.invalid_word_times": {
+    "da": "Udbyderen returnerede ugyldige ordtider.",
+    "en": "The provider returned invalid word timings."
+  },
+  "io.not_found": {
+    "da": "Filen eller ressourcen blev ikke fundet.",
+    "en": "The file or resource was not found."
+  },
+  "io.permission_denied": {
+    "da": "Adgang blev afvist af systemet.",
+    "en": "The system denied access."
+  },
+  "io.timed_out": {
+    "da": "Systemhandlingen fik timeout.",
+    "en": "The system operation timed out."
+  },
+  "io.interrupted": {
+    "da": "Systemhandlingen blev afbrudt.",
+    "en": "The system operation was interrupted."
+  },
+  "io.already_exists": {
+    "da": "Filen eller ressourcen findes allerede.",
+    "en": "The file or resource already exists."
+  },
+  "io.invalid_data": {
+    "da": "Systemet rapporterede ugyldige data.",
+    "en": "The system reported invalid data."
+  },
+  "io.storage": {
+    "da": "Systemet kunne ikke skrive data.",
+    "en": "The system could not write data."
+  },
+  "io.other": {
+    "da": "Systemets filhandling fejlede.",
+    "en": "The system file operation failed."
+  },
+  "io.os_code": {
+    "da": "Systemfejlkode {code}",
+    "en": "System error code {code}"
+  },
+  "model.directory": {
+    "da": "Modelmappen kunne ikke oprettes.",
+    "en": "The model folder could not be created."
+  },
+  "model.download_start": {
+    "da": "Download kunne ikke starte.",
+    "en": "The download could not start."
+  },
+  "model.download_network": {
+    "da": "Kunne ikke hente modellen. Kontroller forbindelsen.",
+    "en": "Could not download the model. Check the connection."
+  },
+  "model.download_rejected": {
+    "da": "Modelserveren afviste download.",
+    "en": "The model server rejected the download."
+  },
+  "model.download_save": {
+    "da": "Kunne ikke gemme modeldownload.",
+    "en": "Could not save the model download."
+  },
+  "model.download_interrupted": {
+    "da": "Download blev afbrudt. Prøv igen.",
+    "en": "The download was interrupted. Try again."
+  },
+  "model.download_size": {
+    "da": "Download har forkert størrelse.",
+    "en": "The downloaded file has the wrong size."
+  },
+  "model.disk_space": {
+    "da": "Ikke plads til modellen.",
+    "en": "There is not enough space for the model."
+  },
+  "model.verification": {
+    "da": "Modelkontrol fejlede. Download er ikke taget i brug.",
+    "en": "Model verification failed. The download was not installed."
+  },
+  "model.sync": {
+    "da": "Modellen kunne ikke gemmes sikkert.",
+    "en": "The model could not be saved safely."
+  },
+  "model.install": {
+    "da": "Kunne ikke installere modellen.",
+    "en": "Could not install the model."
+  },
+  "model.read": {
+    "da": "Modellen kunne ikke læses.",
+    "en": "The model could not be read."
+  },
+  "model.check": {
+    "da": "Modellen kunne ikke kontrolleres.",
+    "en": "The model could not be checked."
+  },
+  "media.overwrite": {
+    "da": "Originalen må ikke overskrives.",
+    "en": "The original must not be overwritten."
+  },
+  "media.source_read": {
+    "da": "Kildefilen kunne ikke læses.",
+    "en": "The source file could not be read."
+  },
+  "media.choose_file": {
+    "da": "Vælg en lyd- eller videofil.",
+    "en": "Choose an audio or video file."
+  },
+  "media.format": {
+    "da": "Formatet kunne ikke læses. Prøv WAV, MP3, FLAC, M4A eller video med AAC-lyd.",
+    "en": "The format could not be read. Try WAV, MP3, FLAC, M4A or video with AAC audio."
+  },
+  "media.no_supported_audio": {
+    "da": "Filen indeholder ingen understøttet lyd. Prøv at eksportere lyden som WAV eller MP3.",
+    "en": "The file has no supported audio. Try exporting audio as WAV or MP3."
+  },
+  "media.work_save": {
+    "da": "Arbejdslyden kunne ikke gemmes. Kontroller ledig plads.",
+    "en": "The working audio could not be saved. Check available space."
+  },
+  "media.corrupt_format": {
+    "da": "Mediefilen er beskadiget eller skifter lydformat. Originalen er bevaret.",
+    "en": "The media file is damaged or changes audio format. The original is preserved."
+  },
+  "media.decode": {
+    "da": "Lydsporet kunne ikke afkodes. Originalen er bevaret.",
+    "en": "The audio track could not be decoded. The original is preserved."
+  },
+  "media.track_format": {
+    "da": "Lydsporets format understøttes ikke.",
+    "en": "The audio track format is not supported."
+  },
+  "media.invalid_samples": {
+    "da": "Lydsporet indeholder ugyldige samples.",
+    "en": "The audio track contains invalid samples."
+  },
+  "media.too_long": {
+    "da": "Filen overstiger grænsen på 8 timers lyd. Del den i mindre filer.",
+    "en": "The file exceeds the 8-hour audio limit. Split it into smaller files."
+  },
+  "media.too_short": {
+    "da": "Filen indeholder ingen eller for kort lyd.",
+    "en": "The file has no audio or the audio is too short."
+  },
+  "media.work_finish": {
+    "da": "Arbejdslyden kunne ikke færdiggøres.",
+    "en": "The working audio could not be finalized."
+  },
+  "media.work_missing": {
+    "da": "Arbejdslyden mangler. Genprøv filen.",
+    "en": "The working audio is missing. Retry the file."
+  },
+  "media.work_corrupt": {
+    "da": "Arbejdslyden er beskadiget.",
+    "en": "The working audio is damaged."
+  },
+  "media.temp_create": {
+    "da": "Arbejdsfilen kunne ikke oprettes.",
+    "en": "The temporary file could not be created."
+  },
+  "media.temp_save": {
+    "da": "Arbejdsfilen kunne ikke gemmes.",
+    "en": "The temporary file could not be saved."
+  },
+  "media.temp_finish": {
+    "da": "Arbejdsfilen kunne ikke færdiggøres.",
+    "en": "The temporary file could not be finalized."
+  },
+  "media.timeout": {
+    "da": "Medieafkodning nåede tidsgrænsen. Prøv en mindre fil.",
+    "en": "Media decoding timed out. Try a smaller file."
+  },
+  "media.unreadable_audio": {
+    "da": "Filen indeholder ingen læsbar lyd, eller er beskadiget. Prøv at eksportere lyden som WAV eller MP3.",
+    "en": "The file has no readable audio or is damaged. Try exporting audio as WAV or MP3."
+  },
+  "media.interrupted": {
+    "da": "Medieafkodningen blev afbrudt.",
+    "en": "Media decoding was interrupted."
+  },
+  "media.decoded_invalid": {
+    "da": "Den afkodede lyd er ugyldig.",
+    "en": "The decoded audio is invalid."
+  },
+  "media.no_usable_audio": {
+    "da": "Filen indeholder ingen brugbar lyd.",
+    "en": "The file has no usable audio."
+  },
+  "media.copy_read": {
+    "da": "Lydkopien kunne ikke læses.",
+    "en": "The audio copy could not be read."
+  },
+  "media.copy_corrupt": {
+    "da": "Lydkopien er beskadiget.",
+    "en": "The audio copy is damaged."
+  },
+  "media.copy_format": {
+    "da": "Lydkopien har et ugyldigt format.",
+    "en": "The audio copy has an invalid format."
+  },
+  "media.copy_duration": {
+    "da": "Lydkopiens varighed understøttes ikke.",
+    "en": "The audio copy duration is not supported."
+  },
+  "media.decoder_start": {
+    "da": "Den lokale medieafkoder kunne ikke starte.",
+    "en": "The local media decoder could not start."
+  },
+  "provider.client_start": {
+    "da": "Netværksklienten kunne ikke starte.",
+    "en": "The network client could not start."
+  },
+  "engine.speech_unsupported": {
+    "da": "Denne motor understøtter ikke tale.",
+    "en": "This engine does not support speech."
+  },
+  "engine.no_speech": {
+    "da": "Ingen tale genkendt. Prøv igen tættere på mikrofonen.",
+    "en": "No speech recognized. Try again closer to the microphone."
+  },
+  "audio.invalid_format": {
+    "da": "Optagelsen har et ugyldigt lydformat.",
+    "en": "The recording has an invalid audio format."
+  },
+  "storage.sqlite_code": {
+    "da": "Databasefejlkode {code}",
+    "en": "Database error code {code}"
+  },
+  "storage.sqlite_other": {
+    "da": "Databasen rapporterede en fejl.",
+    "en": "The database reported an error."
+  },
+  "storage.json_location": {
+    "da": "Datafejl ved linje {line}, kolonne {column}",
+    "en": "Data error at line {line}, column {column}"
+  },
+  "microphone.find": {
+    "da": "Mikrofoner kunne ikke findes.",
+    "en": "Microphones could not be found."
+  },
+  "microphone.list": {
+    "da": "Mikrofonlisten kunne ikke læses.",
+    "en": "The microphone list could not be read."
+  },
+  "microphone.read": {
+    "da": "En mikrofon kunne ikke læses.",
+    "en": "A microphone could not be read."
+  },
+  "microphone.already_recording": {
+    "da": "Der optages allerede.",
+    "en": "A recording is already in progress."
+  },
+  "microphone.not_recording": {
+    "da": "Der er ingen optagelse i gang.",
+    "en": "No recording is in progress."
+  },
+  "microphone.worker_stopped": {
+    "da": "Lydmotoren er stoppet.",
+    "en": "The audio engine has stopped."
+  },
+  "microphone.worker_unresponsive": {
+    "da": "Lydmotoren svarede ikke.",
+    "en": "The audio engine did not respond."
+  },
+  "microphone.time_limit": {
+    "da": "Optagelsen nåede grænsen på 10 minutter. Start en kortere diktering.",
+    "en": "The recording reached the 10-minute limit. Start a shorter dictation."
+  },
+  "microphone.devices": {
+    "da": "Mikrofonerne kunne ikke læses.",
+    "en": "The microphones could not be read."
+  },
+  "microphone.format": {
+    "da": "Mikrofonens lydformat er ikke tilgængeligt.",
+    "en": "The microphone audio format is unavailable."
+  },
+  "microphone.disconnected": {
+    "da": "Mikrofonen blev afbrudt. Kontroller forbindelsen og prøv igen.",
+    "en": "The microphone was disconnected. Check the connection and try again."
+  },
+  "microphone.sample_format": {
+    "da": "Mikrofonens sampleformat understøttes ikke endnu.",
+    "en": "The microphone sample format is not yet supported."
+  },
+  "microphone.start": {
+    "da": "Mikrofonen kunne ikke starte.",
+    "en": "The microphone could not start."
+  },
+  "microphone.empty": {
+    "da": "Mikrofonen leverede ingen lyd.",
+    "en": "The microphone produced no audio."
+  },
+  "microphone.recording_save": {
+    "da": "Optagelsen kunne ikke gemmes.",
+    "en": "The recording could not be saved."
+  },
+  "microphone.disk_space": {
+    "da": "Der er ikke plads til optagelsen.",
+    "en": "There is not enough space for the recording."
+  },
+  "microphone.finish": {
+    "da": "Optagelsen kunne ikke afsluttes.",
+    "en": "The recording could not be finalized."
+  },
+  "who.runtime_missing": {
+    "da": "Who-runtime mangler i denne installation. Installer den nyeste Vara-version.",
+    "en": "The Who runtime is missing from this installation. Install the latest Vara version."
+  },
+  "who.playback_missing": {
+    "da": "Afspilningskopien mangler.",
+    "en": "The playback copy is missing."
+  },
+  "who.normalized_audio": {
+    "da": "Who kræver Varas normaliserede lydkopi (højst 8 timer).",
+    "en": "Who requires Vara’s normalized audio copy (at most 8 hours)."
+  },
+  "who.invalid_result": {
+    "da": "Who returnerede et ugyldigt resultat.",
+    "en": "Who returned an invalid result."
+  },
+  "who.temp_dir": {
+    "da": "Who kunne ikke oprette en arbejdsmappe.",
+    "en": "Who could not create a working folder."
+  },
+  "who.copy_create": {
+    "da": "Who kunne ikke oprette en lydkopi.",
+    "en": "Who could not create an audio copy."
+  },
+  "who.copy_write": {
+    "da": "Who kunne ikke skrive lydkopien.",
+    "en": "Who could not write the audio copy."
+  },
+  "who.start": {
+    "da": "Who kunne ikke starte.",
+    "en": "Who could not start."
+  },
+  "who.process_read": {
+    "da": "Who-processen kunne ikke aflæses.",
+    "en": "The Who process could not be checked."
+  },
+  "who.runtime_failed": {
+    "da": "Who kunne ikke køre. Runtime kræver macOS 15 eller nyere på Mac; lyd og tekst er bevaret.",
+    "en": "Who could not run. On Mac, the runtime requires macOS 15 or later; audio and text are preserved."
+  },
+  "who.timeout": {
+    "da": "Who tog for lang tid. Prøv igen; transskriptionen er bevaret.",
+    "en": "Who timed out. Try again; the transcription is preserved."
+  },
+  "who.no_result": {
+    "da": "Who returnerede intet resultat.",
+    "en": "Who returned no result."
+  },
+  "who.load": {
+    "da": "Who-runtime kunne ikke indlæses.",
+    "en": "The Who runtime could not be loaded."
+  },
+  "who.incompatible": {
+    "da": "Who-runtime er inkompatibel.",
+    "en": "The Who runtime is incompatible."
+  },
+  "model.invalid_path": {
+    "da": "Ugyldig modelsti.",
+    "en": "Invalid model path."
+  },
+  "who.create": {
+    "da": "Who kunne ikke oprettes.",
+    "en": "Who could not be created."
+  },
+  "who.download": {
+    "da": "Who kunne ikke hentes eller klargøres. Kontroller netværk og ledig diskplads, og prøv igen.",
+    "en": "Who could not be downloaded or prepared. Check the network and available disk space, then try again."
+  },
+  "who.operation": {
+    "da": "Ukendt Who-operation.",
+    "en": "Unknown Who operation."
+  },
+  "who.model_missing": {
+    "da": "Hent Who-modellen først.",
+    "en": "Download the Who model first."
+  },
+  "who.too_large": {
+    "da": "Filen er for stor til Who.",
+    "en": "The file is too large for Who."
+  },
+  "who.no_speakers": {
+    "da": "Who kunne ikke finde talere. Transskriptionen er bevaret; prøv igen med en anden fil.",
+    "en": "Who could not find speakers. The transcription is preserved; try again with another file."
+  },
+  "who.invalid_speakers": {
+    "da": "Who returnerede ugyldige talerdata.",
+    "en": "Who returned invalid speaker data."
+  },
+  "who.invalid_count": {
+    "da": "Ugyldigt antal talere.",
+    "en": "Invalid speaker count."
+  },
+  "who.embeddings": {
+    "da": "Who kunne ikke hente stemmedata.",
+    "en": "Who could not retrieve voice data."
+  },
+  "who.recording_embeddings": {
+    "da": "Who kunne ikke hente stemmedata for denne optagelse.",
+    "en": "Who could not retrieve voice data for this recording."
+  },
+  "who.embeddings_too_large": {
+    "da": "Who returnerede for mange stemmedata.",
+    "en": "Who returned too much voice data."
+  },
+  "who.embeddings_read": {
+    "da": "Who kunne ikke læse stemmedata.",
+    "en": "Who could not read voice data."
+  },
+  "who.known_count": {
+    "da": "Who kunne ikke afklare det valgte antal talere. Tidligere resultat er bevaret.",
+    "en": "Who could not determine the selected speaker count. The previous result is preserved."
+  },
+  "who.consensus": {
+    "da": "Who kunne ikke afstemme talerne mellem kontrolkørslerne. Tidligere resultat er bevaret.",
+    "en": "Who could not reconcile speakers between verification runs. The previous result is preserved."
+  },
+  "audio.too_short": {
+    "da": "Optagelsen er for kort.",
+    "en": "The recording is too short."
+  },
+  "whisper.load": {
+    "da": "Whisper kunne ikke indlæses. Hent modellen i Indstillinger.",
+    "en": "Whisper could not be loaded. Download the model in Settings."
+  },
+  "whisper.start": {
+    "da": "Whisper kunne ikke starte.",
+    "en": "Whisper could not start."
+  },
+  "whisper.transcription": {
+    "da": "Transskriptionen mislykkedes. Optagelsen kan genprøves.",
+    "en": "Transcription failed. The recording can be retried."
+  },
+  "local.text_decode": {
+    "da": "Teksten kunne ikke afkodes.",
+    "en": "The text could not be decoded."
+  },
+  "local.model_missing": {
+    "da": "Hent først den lokale tekstmodel.",
+    "en": "Download the local text model first."
+  },
+  "local.model_corrupt": {
+    "da": "Tekstmodellen er beskadiget.",
+    "en": "The text model is damaged."
+  },
+  "local.model_load": {
+    "da": "Tekstmodellen kunne ikke indlæses.",
+    "en": "The text model could not be loaded."
+  },
+  "local.tokenizer_load": {
+    "da": "Tokenizer kunne ikke indlæses.",
+    "en": "The tokenizer could not be loaded."
+  },
+  "local.tokenize": {
+    "da": "Teksten kunne ikke tokeniseres.",
+    "en": "The text could not be tokenized."
+  },
+  "local.text_too_long": {
+    "da": "Teksten er for lang til den lokale model. Originalen er bevaret.",
+    "en": "The text is too long for the local model. The original is preserved."
+  },
+  "local.timeout": {
+    "da": "Lokal AI nåede tidsgrænsen. Originalen er bevaret.",
+    "en": "Local AI timed out. The original is preserved."
+  },
+  "local.model_run": {
+    "da": "Tekstmodellen kunne ikke køre.",
+    "en": "The text model could not run."
+  },
+  "local.generation": {
+    "da": "AI-generering mislykkedes.",
+    "en": "AI generation failed."
+  },
+  "local.output_decode": {
+    "da": "AI-teksten kunne ikke afkodes.",
+    "en": "The AI text could not be decoded."
+  },
+  "audio.corrupt": {
+    "da": "Optagelsen er beskadiget.",
+    "en": "The recording is damaged."
+  },
+  "audio.too_long": {
+    "da": "Optagelsen overstiger 10 minutter.",
+    "en": "The recording exceeds 10 minutes."
+  },
+  "speech.start": {
+    "da": "Talemotoren kunne ikke starte.",
+    "en": "The speech engine could not start."
+  },
+  "parakeet.model_missing": {
+    "da": "Hent Parakeet Redux i Modeller og nøgler.",
+    "en": "Download Parakeet Redux in Models and Keys."
+  },
+  "audio.work_open": {
+    "da": "Arbejdslyden kunne ikke åbnes.",
+    "en": "The working audio could not be opened."
+  },
+  "speech.file_empty": {
+    "da": "Ingen tale genkendt i filen.",
+    "en": "No speech was recognized in the file."
+  },
+  "speech.file_interrupted": {
+    "da": "Den lokale talemotor blev afbrudt. Genprøv filen.",
+    "en": "The local speech engine was interrupted. Retry the file."
+  },
+  "speech.recording_interrupted": {
+    "da": "Den lokale talemotor blev afbrudt. Prøv optagelsen igen.",
+    "en": "The local speech engine was interrupted. Try the recording again."
+  },
+  "speech.threads": {
+    "da": "Talemotorens arbejdstråde kunne ikke starte.",
+    "en": "The speech engine worker threads could not start."
+  },
+  "parakeet.load": {
+    "da": "Parakeet Redux kunne ikke indlæses. Hent modellen igen i Modeller og nøgler.",
+    "en": "Parakeet Redux could not be loaded. Download the model again in Models and keys."
+  },
+  "cli.unknown": {
+    "da": "Ukendt CLI.",
+    "en": "Unknown CLI."
+  },
+  "cli.start": {
+    "da": "CLI kunne ikke starte.",
+    "en": "The CLI could not start."
+  },
+  "cli.no_input": {
+    "da": "CLI mangler tekstinput.",
+    "en": "The CLI has no text input."
+  },
+  "cli.input_rejected": {
+    "da": "CLI afviste tekstinput.",
+    "en": "The CLI rejected text input."
+  },
+  "cli.no_output": {
+    "da": "CLI mangler tekstoutput.",
+    "en": "The CLI has no text output."
+  },
+  "cli.output_read": {
+    "da": "CLI-svaret kunne ikke læses.",
+    "en": "The CLI response could not be read."
+  },
+  "cli.output_too_large": {
+    "da": "CLI-svaret er for stort.",
+    "en": "The CLI response is too large."
+  },
+  "cli.wait": {
+    "da": "CLI kunne ikke afsluttes.",
+    "en": "The CLI could not be waited for."
+  },
+  "cli.rejected": {
+    "da": "CLI afviste forespørgslen. Kontroller login og model i værktøjet.",
+    "en": "The CLI rejected the request. Check login and model access in the tool."
+  },
+  "cli.invalid_text": {
+    "da": "CLI returnerede ugyldig tekst.",
+    "en": "The CLI returned invalid text."
+  },
+  "cli.timeout": {
+    "da": "CLI nåede tidsgrænsen. Originalen er bevaret.",
+    "en": "The CLI timed out. The original is preserved."
+  },
+  "cli.codex_unsupported": {
+    "da": "Installeret. Denne Codex-kontrakt har ingen verificeret tilstand uden værktøjer; tekstbehandling er derfor utilgængelig.",
+    "en": "Installed. This Codex contract has no verified mode without tools, so text processing is unavailable."
+  },
+  "cli.supported": {
+    "da": "Tekstkontrakten er understøttet. Login og modeladgang kontrolleres ved forespørgslen.",
+    "en": "The text contract is supported. Login and model access are checked on request."
+  },
+  "cli.unsupported": {
+    "da": "Installeret version har ingen verificeret isoleret tekstkontrakt.",
+    "en": "The installed version has no verified isolated text contract."
+  },
+  "cli.workdir": {
+    "da": "CLI-arbejdsmappe kunne ikke oprettes.",
+    "en": "The CLI working folder could not be created."
+  },
+  "cli.config": {
+    "da": "CLI-konfiguration kunne ikke oprettes.",
+    "en": "The CLI configuration could not be created."
+  },
+  "cli.system_prompt": {
+    "da": "Systemprompt kunne ikke oprettes.",
+    "en": "The system prompt could not be created."
+  },
+  "cli.isolation": {
+    "da": "CLI mangler en isoleret tekstkontrakt.",
+    "en": "The CLI has no isolated text contract."
+  },
+  "cli.gemini_invalid": {
+    "da": "Gemini CLI returnerede et ugyldigt svar.",
+    "en": "Gemini CLI returned an invalid response."
+  },
+  "cli.gemini_failed": {
+    "da": "Gemini CLI kunne ikke behandle teksten.",
+    "en": "Gemini CLI could not process the text."
+  },
+  "cli.gemini_empty": {
+    "da": "Gemini CLI returnerede ingen tekst.",
+    "en": "Gemini CLI returned no text."
+  },
+  "cli.missing_claude": {
+    "da": "claude er ikke installeret. Installer og log ind i værktøjet uden for Vara.",
+    "en": "claude is not installed. Install and sign in to the tool outside Vara."
+  },
+  "cli.missing_codex": {
+    "da": "codex er ikke installeret. Installer og log ind i værktøjet uden for Vara.",
+    "en": "codex is not installed. Install and sign in to the tool outside Vara."
+  },
+  "cli.missing_gemini": {
+    "da": "gemini er ikke installeret. Installer og log ind i værktøjet uden for Vara.",
+    "en": "gemini is not installed. Install and sign in to the tool outside Vara."
+  },
+  "cli.exit_code": {
+    "da": "Værktøjets afslutningskode {code}",
+    "en": "Tool exit code {code}"
+  },
+  "credential.invalid_id": {
+    "da": "Ugyldigt forbindelses-id.",
+    "en": "Invalid connection ID."
+  },
+  "credential.store_unavailable": {
+    "da": "Systemets nøglelager er ikke tilgængeligt. Åbn det og prøv igen.",
+    "en": "The system credential store is unavailable. Open it and try again."
+  },
+  "credential.status": {
+    "da": "Nøglelagerets status kunne ikke læses. Åbn nøglelageret og prøv igen.",
+    "en": "The credential store status could not be read. Open the store and try again."
+  },
+  "credential.read": {
+    "da": "API-nøglen kunne ikke læses. Åbn systemets nøglelager og prøv igen.",
+    "en": "The API key could not be read. Open the system credential store and try again."
+  },
+  "credential.invalid_key": {
+    "da": "Indtast en gyldig API-nøgle.",
+    "en": "Enter a valid API key."
+  },
+  "credential.save": {
+    "da": "API-nøglen kunne ikke gemmes. Åbn systemets nøglelager og prøv igen.",
+    "en": "The API key could not be saved. Open the system credential store and try again."
+  },
+  "credential.delete": {
+    "da": "API-nøglen kunne ikke slettes. Åbn systemets nøglelager og prøv igen.",
+    "en": "The API key could not be deleted. Open the system credential store and try again."
+  },
+  "credential.mac_unavailable": {
+    "da": "Systemets nøglelager er ikke tilgængeligt. Åbn Nøglering og prøv igen.",
+    "en": "The system credential store is unavailable. Open Keychain Access and try again."
+  },
+  "credential.timeout_mutation": {
+    "da": "Nøglelageret svarede ikke inden 15 sekunder. Ændringen kan være gennemført. Åbn Nøglering, og brug Prøv igen for at kontrollere status, før du gentager ændringen.",
+    "en": "The credential store did not respond within 15 seconds. The change may have completed. Open Keychain Access and use Retry to check the status before repeating the change."
+  },
+  "credential.timeout": {
+    "da": "Nøglelageret svarede ikke inden 15 sekunder. Åbn Nøglering og prøv igen.",
+    "en": "The credential store did not respond within 15 seconds. Open Keychain Access and try again."
+  },
+  "credential.locked": {
+    "da": "Nøgleringen er låst, eller Vara mangler adgang. Lås login-nøgleringen op i Nøglering, og kontrollér nøglens adgangskontrol for Vara. Prøv derefter igen.",
+    "en": "The keychain is locked or Vara lacks access. Unlock the login keychain in Keychain Access and check the key’s access control for Vara. Then try again."
+  },
+  "shortcut.activation": {
+    "da": "Genvejen kunne ikke aktiveres. Giv Vara adgang til Inputovervågning i Indstillinger → Tilladelser. Den tidligere genvej er bevaret.",
+    "en": "The shortcut could not be activated. Give Vara Input Monitoring access in Settings → Permissions. The previous shortcut is preserved."
+  },
+  "shortcut.unsupported": {
+    "da": "Denne platformadapter understøtter endnu ikke fysiske flertastgenveje. Vælg en enkelt tast eller en kombination med Ctrl, Alt eller Shift.",
+    "en": "This platform adapter does not yet support physical multi-key shortcuts. Choose one key or a combination with Ctrl, Alt or Shift."
+  },
+  "shortcut.invalid": {
+    "da": "Ugyldig fysisk genvej.",
+    "en": "Invalid physical shortcut."
+  },
+  "shortcut.duplicate": {
+    "da": "Genvejen indeholder samme tast flere gange.",
+    "en": "The shortcut contains the same key more than once."
+  },
+  "platform.target_identify": {
+    "da": "Den aktive app kunne ikke identificeres.",
+    "en": "The active app could not be identified."
+  },
+  "platform.target_read": {
+    "da": "Den aktive app kunne ikke læses.",
+    "en": "The active app could not be read."
+  },
+  "platform.permission": {
+    "da": "Ukendt tilladelse.",
+    "en": "Unknown permission."
+  },
+  "platform.clipboard": {
+    "da": "Teksten kunne ikke kopieres. Markér den og brug systemets Kopiér.",
+    "en": "The text could not be copied. Select it and use the system Copy command."
+  },
+  "platform.apps_find": {
+    "da": "Apps kunne ikke findes.",
+    "en": "Apps could not be found."
+  },
+  "platform.apps_read": {
+    "da": "Apps kunne ikke læses.",
+    "en": "Apps could not be read."
+  },
+  "platform.app_ids": {
+    "da": "Ugyldige app-id’er.",
+    "en": "Invalid app IDs."
+  },
+  "platform.app_ids_read": {
+    "da": "App-id’er kunne ikke læses.",
+    "en": "App IDs could not be read."
+  },
+  "platform.icons_read": {
+    "da": "Appikoner kunne ikke læses.",
+    "en": "App icons could not be read."
+  },
+  "shortcut.unknown_key": {
+    "da": "En tast kunne ikke knyttes til en fysisk tast på denne platform.",
+    "en": "A key could not be mapped to a physical key on this platform."
+  },
+  "credential.os_status": {
+    "da": "Nøgleringsstatus {code}",
+    "en": "Keychain status {code}"
+  },
+  "process.exit_code": {
+    "da": "Processens afslutningskode {code}",
+    "en": "Process exit code {code}"
+  },
+  "process.signal": {
+    "da": "Processen blev afsluttet af signal {signal}",
+    "en": "Process terminated by signal {signal}"
+  },
+  "process.unknown": {
+    "da": "Processen sluttede uden statuskode.",
+    "en": "The process ended without an exit code."
+  },
+  "media.cause_format": {
+    "da": "Mediedata har et ugyldigt format.",
+    "en": "The media data has an invalid format."
+  },
+  "media.cause_unsupported": {
+    "da": "Medieformatet er ikke understøttet.",
+    "en": "The media format is unsupported."
+  },
+  "media.cause_limit": {
+    "da": "En mediegrænse blev nået.",
+    "en": "A media limit was reached."
+  },
+  "media.cause_seek": {
+    "da": "Det var ikke muligt at søge i mediet.",
+    "en": "The media could not be seeked."
+  },
+  "media.cause_reset": {
+    "da": "Medieafkoderen kræver nulstilling.",
+    "en": "The media decoder requires a reset."
+  }
+}

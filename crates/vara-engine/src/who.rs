@@ -42,16 +42,15 @@ pub fn run_known(
     if known_count.is_some_and(|n| !(1..=16).contains(&n))
         || (known_count.is_some() && operation != "diarize")
     {
-        return Err("Vælg et antal talere mellem 1 og 16.".into());
+        return Err(vara_core::UserMessage::new("who.speaker_count").wire());
     }
     if !library.is_file() {
-        return Err(
-            "Who-runtime mangler i denne installation. Installer den nyeste Vara-version.".into(),
-        );
+        return Err(vara_core::UserMessage::new("who.runtime_missing").wire());
     }
     if let Some(count) = known_count {
-        let audio = audio.ok_or("Afspilningskopien mangler.")?;
-        let mut reader = hound::WavReader::open(audio).map_err(|_| "Afspilningskopien mangler.")?;
+        let audio = audio.ok_or(vara_core::UserMessage::new("who.playback_missing").wire())?;
+        let mut reader = hound::WavReader::open(audio)
+            .map_err(|_| vara_core::UserMessage::new("who.playback_missing").wire())?;
         let spec = reader.spec();
         if spec.channels != 1
             || spec.sample_rate != 16000
@@ -60,7 +59,7 @@ pub fn run_known(
             || reader.duration() == 0
             || reader.duration() > 16000 * 28800
         {
-            return Err("Who kræver Varas normaliserede lydkopi (højst 8 timer).".into());
+            return Err(vara_core::UserMessage::new("who.normalized_audio").wire());
         }
         let duration = reader.duration() as f64 / 16000.;
         let primary: Diarization = serde_json::from_value(run_one(
@@ -72,28 +71,34 @@ pub fn run_known(
             false,
             cancel,
         )?)
-        .map_err(|_| "Who returnerede et ugyldigt resultat.")?;
+        .map_err(|_| vara_core::UserMessage::new("who.invalid_result").wire())?;
         cancel.check()?;
-        let temp = tempfile::tempdir().map_err(|_| "Who kunne ikke oprette en arbejdsmappe.")?;
+        let temp = tempfile::tempdir().map_err(|e| {
+            vara_core::UserMessage::new("who.temp_dir")
+                .caused_by(vara_core::UserMessage::io_cause(&e))
+                .wire()
+        })?;
         let padded = temp.path().join("padded.wav");
         let mut writer = hound::WavWriter::create(&padded, spec)
-            .map_err(|_| "Who kunne ikke oprette en lydkopi.")?;
+            .map_err(|_| vara_core::UserMessage::new("who.copy_create").wire())?;
         for _ in 0..(60 * 16000) {
             writer
                 .write_sample(0_i16)
-                .map_err(|_| "Who kunne ikke skrive lydkopien.")?;
+                .map_err(|_| vara_core::UserMessage::new("who.copy_write").wire())?;
         }
         for (i, sample) in reader.samples::<i16>().enumerate() {
             if i % 16000 == 0 {
                 cancel.check()?;
             }
             writer
-                .write_sample(sample.map_err(|_| "Lydkopien kunne ikke læses.")?)
-                .map_err(|_| "Who kunne ikke skrive lydkopien.")?;
+                .write_sample(
+                    sample.map_err(|_| vara_core::UserMessage::new("media.copy_read").wire())?,
+                )
+                .map_err(|_| vara_core::UserMessage::new("who.copy_write").wire())?;
         }
         writer
             .finalize()
-            .map_err(|_| "Who kunne ikke skrive lydkopien.")?;
+            .map_err(|_| vara_core::UserMessage::new("who.copy_write").wire())?;
         cancel.check()?;
         let secondary: Diarization = serde_json::from_value(run_one(
             library,
@@ -104,11 +109,11 @@ pub fn run_known(
             true,
             cancel,
         )?)
-        .map_err(|_| "Who returnerede et ugyldigt resultat.")?;
+        .map_err(|_| vara_core::UserMessage::new("who.invalid_result").wire())?;
         cancel.check()?;
         let consensus = crate::who_consensus::combine(primary, secondary, duration, cancel)?;
         return serde_json::to_value(consensus)
-            .map_err(|_| "Who returnerede et ugyldigt resultat.".into());
+            .map_err(|_| vara_core::UserMessage::new("who.invalid_result").wire());
     }
     run_one(
         library,
@@ -129,9 +134,17 @@ fn run_one(
     padded: bool,
     cancel: &Cancellation,
 ) -> Result<serde_json::Value> {
-    let temp = tempfile::tempdir().map_err(|_| "Who kunne ikke oprette en arbejdsmappe.")?;
+    let temp = tempfile::tempdir().map_err(|e| {
+        vara_core::UserMessage::new("who.temp_dir")
+            .caused_by(vara_core::UserMessage::io_cause(&e))
+            .wire()
+    })?;
     let output = temp.path().join("result.json");
-    let mut command = Command::new(std::env::current_exe().map_err(|_| "Who kunne ikke starte.")?);
+    let mut command = Command::new(std::env::current_exe().map_err(|e| {
+        vara_core::UserMessage::new("who.start")
+            .caused_by(vara_core::UserMessage::io_cause(&e))
+            .wire()
+    })?);
     command
         .arg("--vara-who-worker")
         .arg(library)
@@ -160,13 +173,15 @@ fn run_one(
             let _ = p.wait();
             return Err(e);
         }
-        if let Some(status) = child
-            .lock()
-            .try_wait()
-            .map_err(|_| "Who-processen kunne ikke aflæses.")?
-        {
+        if let Some(status) = child.lock().try_wait().map_err(|e| {
+            vara_core::UserMessage::new("who.process_read")
+                .caused_by(vara_core::UserMessage::io_cause(&e))
+                .wire()
+        })? {
             if !status.success() {
-                return Err("Who kunne ikke køre. Runtime kræver macOS 15 eller nyere på Mac; lyd og tekst er bevaret.".into());
+                return Err(vara_core::UserMessage::new("who.runtime_failed")
+                    .caused_by(crate::process_cause(&status))
+                    .wire());
             }
             break;
         }
@@ -174,14 +189,18 @@ fn run_one(
             let mut p = child.lock();
             let _ = p.kill();
             let _ = p.wait();
-            return Err("Who tog for lang tid. Prøv igen; transskriptionen er bevaret.".into());
+            return Err(vara_core::UserMessage::new("who.timeout").wire());
         }
         std::thread::sleep(Duration::from_millis(50));
     }
     cancel.check()?;
-    let bytes = std::fs::read(output).map_err(|_| "Who returnerede intet resultat.")?;
-    let value: serde_json::Value =
-        serde_json::from_slice(&bytes).map_err(|_| "Who returnerede et ugyldigt resultat.")?;
+    let bytes = std::fs::read(output).map_err(|e| {
+        vara_core::UserMessage::new("who.no_result")
+            .caused_by(vara_core::UserMessage::io_cause(&e))
+            .wire()
+    })?;
+    let value: serde_json::Value = serde_json::from_slice(&bytes)
+        .map_err(|_| vara_core::UserMessage::new("who.invalid_result").wire())?;
     if let Some(error) = value["error"].as_str() {
         return Err(error.to_owned());
     }
@@ -240,27 +259,27 @@ unsafe fn native(
     // SAFETY: this path is an explicit signed/bundled SDK artifact, not discovered
     // from model files or the working directory. The ABI is pinned in the build.
     let lib = unsafe { libloading::Library::new(library) }
-        .map_err(|_| "Who-runtime kunne ikke indlæses.")?;
-    let create: libloading::Symbol<Create> =
-        unsafe { lib.get(b"who_create") }.map_err(|_| "Who-runtime er inkompatibel.")?;
-    let state: libloading::Symbol<State> =
-        unsafe { lib.get(b"dal_is_downloaded") }.map_err(|_| "Who-runtime er inkompatibel.")?;
-    let download: libloading::Symbol<State> =
-        unsafe { lib.get(b"dal_download") }.map_err(|_| "Who-runtime er inkompatibel.")?;
-    let run: libloading::Symbol<Run> =
-        unsafe { lib.get(b"dal_run") }.map_err(|_| "Who-runtime er inkompatibel.")?;
-    let destroy: libloading::Symbol<Destroy> =
-        unsafe { lib.get(b"dal_destroy") }.map_err(|_| "Who-runtime er inkompatibel.")?;
-    let free: libloading::Symbol<Free> =
-        unsafe { lib.get(b"dal_buffer_free") }.map_err(|_| "Who-runtime er inkompatibel.")?;
-    let flush: libloading::Symbol<Flush> =
-        unsafe { lib.get(b"dal_flush_telemetry") }.map_err(|_| "Who-runtime er inkompatibel.")?;
+        .map_err(|_| vara_core::UserMessage::new("who.load").wire())?;
+    let create: libloading::Symbol<Create> = unsafe { lib.get(b"who_create") }
+        .map_err(|_| vara_core::UserMessage::new("who.incompatible").wire())?;
+    let state: libloading::Symbol<State> = unsafe { lib.get(b"dal_is_downloaded") }
+        .map_err(|_| vara_core::UserMessage::new("who.incompatible").wire())?;
+    let download: libloading::Symbol<State> = unsafe { lib.get(b"dal_download") }
+        .map_err(|_| vara_core::UserMessage::new("who.incompatible").wire())?;
+    let run: libloading::Symbol<Run> = unsafe { lib.get(b"dal_run") }
+        .map_err(|_| vara_core::UserMessage::new("who.incompatible").wire())?;
+    let destroy: libloading::Symbol<Destroy> = unsafe { lib.get(b"dal_destroy") }
+        .map_err(|_| vara_core::UserMessage::new("who.incompatible").wire())?;
+    let free: libloading::Symbol<Free> = unsafe { lib.get(b"dal_buffer_free") }
+        .map_err(|_| vara_core::UserMessage::new("who.incompatible").wire())?;
+    let flush: libloading::Symbol<Flush> = unsafe { lib.get(b"dal_flush_telemetry") }
+        .map_err(|_| vara_core::UserMessage::new("who.incompatible").wire())?;
     let name = CString::new("who").unwrap();
-    let dir =
-        CString::new(directory.to_string_lossy().as_bytes()).map_err(|_| "Ugyldig modelsti.")?;
+    let dir = CString::new(directory.to_string_lossy().as_bytes())
+        .map_err(|_| vara_core::UserMessage::new("model.invalid_path").wire())?;
     let handle = unsafe { create(name.as_ptr(), std::ptr::null(), dir.as_ptr()) };
     if handle.is_null() {
-        return Err("Who kunne ikke oprettes.".into());
+        return Err(vara_core::UserMessage::new("who.create").wire());
     }
     let result = (|| -> Result<serde_json::Value> {
         if operation == "status" {
@@ -268,17 +287,18 @@ unsafe fn native(
         }
         if operation == "download" {
             if unsafe { download(handle) } != 0 {
-                return Err("Who kunne ikke hentes eller klargøres. Kontroller netværk og ledig diskplads, og prøv igen.".into());
+                return Err(vara_core::UserMessage::new("who.download").wire());
             }
             return Ok(serde_json::json!({"ready":unsafe{state(handle)}==1}));
         }
         if operation != "diarize" {
-            return Err("Ukendt Who-operation.".into());
+            return Err(vara_core::UserMessage::new("who.operation").wire());
         }
         if unsafe { state(handle) } != 1 {
-            return Err("Hent Who-modellen først.".into());
+            return Err(vara_core::UserMessage::new("who.model_missing").wire());
         }
-        let mut wav = hound::WavReader::open(audio).map_err(|_| "Afspilningskopien mangler.")?;
+        let mut wav = hound::WavReader::open(audio)
+            .map_err(|_| vara_core::UserMessage::new("who.playback_missing").wire())?;
         let spec = wav.spec();
         if spec.channels != 1
             || spec.sample_rate != 16000
@@ -292,13 +312,15 @@ unsafe fn native(
                             0
                         })
         {
-            return Err("Who kræver Varas normaliserede lydkopi (højst 8 timer).".into());
+            return Err(vara_core::UserMessage::new("who.normalized_audio").wire());
         }
         let count = wav.duration();
         let mut input = Vec::with_capacity(count as usize * 4 + 12);
         input.extend_from_slice(&count.to_be_bytes());
         for sample in wav.samples::<i16>() {
-            let v = sample.map_err(|_| "Lydkopien kunne ikke læses.")? as f32 / 32768.;
+            let v = sample.map_err(|_| vara_core::UserMessage::new("media.copy_read").wire())?
+                as f32
+                / 32768.;
             input.extend_from_slice(&v.to_bits().to_be_bytes());
         }
         input.extend_from_slice(&16000_f64.to_bits().to_be_bytes());
@@ -306,7 +328,8 @@ unsafe fn native(
             run(
                 handle,
                 input.as_ptr(),
-                i32::try_from(input.len()).map_err(|_| "Filen er for stor til Who.")?,
+                i32::try_from(input.len())
+                    .map_err(|_| vara_core::UserMessage::new("who.too_large").wire())?,
                 std::ptr::null(),
                 0,
                 std::ptr::null(),
@@ -314,7 +337,7 @@ unsafe fn native(
             )
         };
         if ptr.is_null() {
-            return Err("Who kunne ikke finde talere. Transskriptionen er bevaret; prøv igen med en anden fil.".into());
+            return Err(vara_core::UserMessage::new("who.no_speakers").wire());
         }
         let len = u32::from_be_bytes(
             unsafe { std::slice::from_raw_parts(ptr, 4) }
@@ -327,20 +350,26 @@ unsafe fn native(
                 count as f64 / 16000.,
             )
         } else {
-            Err("Who returnerede ugyldige talerdata.".into())
+            Err(vara_core::UserMessage::new("who.invalid_speakers").wire())
         };
         unsafe { free(ptr) };
         let mut diarization = result?;
         if !count_arg.is_empty() {
-            let known_count: u32 = count_arg.parse().map_err(|_| "Ugyldigt antal talere.")?;
+            let known_count: u32 = count_arg
+                .parse()
+                .map_err(|_| vara_core::UserMessage::new("who.invalid_count").wire())?;
             let path = std::env::var_os("VARA_WHO_LANE_PAYLOAD")
-                .ok_or("Who kunne ikke hente stemmedata.")?;
+                .ok_or(vara_core::UserMessage::new("who.embeddings").wire())?;
             let metadata = std::fs::metadata(&path)
-                .map_err(|_| "Who kunne ikke hente stemmedata for denne optagelse.")?;
+                .map_err(|_| vara_core::UserMessage::new("who.recording_embeddings").wire())?;
             if metadata.len() > 32_000_000 {
-                return Err("Who returnerede for mange stemmedata.".into());
+                return Err(vara_core::UserMessage::new("who.embeddings_too_large").wire());
             }
-            let lanes = std::fs::read(path).map_err(|_| "Who kunne ikke læse stemmedata.")?;
+            let lanes = std::fs::read(path).map_err(|e| {
+                vara_core::UserMessage::new("who.embeddings_read")
+                    .caused_by(vara_core::UserMessage::io_cause(&e))
+                    .wire()
+            })?;
             diarization =
                 crate::who_known::group(diarization, &lanes, known_count, count as f64 / 16000.)?;
         }
@@ -354,7 +383,7 @@ unsafe fn native(
     result
 }
 fn decode(bytes: &[u8], duration: f64) -> Result<Diarization> {
-    let bad = || "Who returnerede ugyldige talerdata.".to_owned();
+    let bad = || vara_core::UserMessage::new("who.invalid_speakers").wire();
     if bytes.len() < 16 {
         return Err(bad());
     }
@@ -386,7 +415,7 @@ fn decode(bytes: &[u8], duration: f64) -> Result<Diarization> {
         raw_turns: None,
         known_speakers: None,
     };
-    result.validate(duration).map_err(|e| e.to_string())?;
+    result.validate(duration).map_err(|e| e.wire())?;
     Ok(result)
 }
 #[cfg(test)]

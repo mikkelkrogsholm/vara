@@ -87,15 +87,23 @@ pub async fn install(
     cancel: &Cancellation,
     progress: impl Fn(Progress),
 ) -> Result<()> {
-    let files = artifacts(id).ok_or("Ukendt lokal model.")?;
+    let files = artifacts(id).ok_or_else(|| vara_core::UserMessage::new("model.unknown").wire())?;
     let directory = model_directory(dir, id);
     let dir = directory.as_path();
-    std::fs::create_dir_all(dir).map_err(|_| "Modelmappen kunne ikke oprettes.")?;
+    std::fs::create_dir_all(dir).map_err(|e| {
+        vara_core::UserMessage::new("model.directory")
+            .caused_by(vara_core::UserMessage::io_cause(&e))
+            .wire()
+    })?;
     // Model hosts redirect to a CDN. Credentials are never attached to this download client.
     let client = reqwest::Client::builder()
         .timeout(std::time::Duration::from_secs(1800))
         .build()
-        .map_err(|_| "Download kunne ikke starte.")?;
+        .map_err(|e| {
+            vara_core::UserMessage::new("model.download_start")
+                .caused_by(crate::network_cause(&e))
+                .wire()
+        })?;
     let total = files.iter().map(|f| f.bytes).sum();
     let mut received = 0;
     let mut pending = Vec::new();
@@ -113,27 +121,27 @@ pub async fn install(
                 .get(a.url)
                 .send()
                 .await
-                .map_err(|_| "Kunne ikke hente modellen. Kontroller forbindelsen.")?
+                .map_err(|e| vara_core::UserMessage::new("model.download_network").caused_by(crate::network_cause(&e)).wire())?
                 .error_for_status()
-                .map_err(|_| "Modelserveren afviste download.")?;
+                .map_err(|e| vara_core::UserMessage::new("model.download_rejected").caused_by(crate::network_cause(&e)).wire())?;
             let mut file =
-                std::fs::File::create(&part).map_err(|_| "Kunne ikke gemme modeldownload.")?;
+                std::fs::File::create(&part).map_err(|e| vara_core::UserMessage::new("model.download_save").caused_by(vara_core::UserMessage::io_cause(&e)).wire())?;
             let mut stream = response.bytes_stream();
             let mut n = 0;
             let mut hash = Sha256::new();
             let mut last = std::time::Instant::now();
             let mut last_byte=std::time::Instant::now();
             loop {
-                let chunk=tokio::select!{chunk=stream.next()=>chunk,_=tokio::time::sleep(std::time::Duration::from_millis(100))=>{cancel.check()?;if last_byte.elapsed()>std::time::Duration::from_secs(45){return Err("Download er gået i stå. Prøv igen.".into());}continue;}};
+                let chunk=tokio::select!{chunk=stream.next()=>chunk,_=tokio::time::sleep(std::time::Duration::from_millis(100))=>{cancel.check()?;if last_byte.elapsed()>std::time::Duration::from_secs(45){return Err(vara_core::UserMessage::new("model.download_stalled").wire());}continue;}};
                 let Some(chunk)=chunk else {break;};last_byte=std::time::Instant::now();cancel.check()?;
-                let chunk = chunk.map_err(|_| "Download blev afbrudt. Prøv igen.")?;
+                let chunk = chunk.map_err(|e| vara_core::UserMessage::new("model.download_interrupted").caused_by(crate::network_cause(&e)).wire())?;
                 n += chunk.len() as u64;
                 if n > a.bytes {
-                    return Err("Download har forkert størrelse.".into());
+                    return Err(vara_core::UserMessage::new("model.download_size").wire());
                 }
                 hash.update(&chunk);
                 file.write_all(&chunk)
-                    .map_err(|_| "Ikke plads til modellen.")?;
+                    .map_err(|e| vara_core::UserMessage::new("model.disk_space").caused_by(vara_core::UserMessage::io_cause(&e)).wire())?;
                 if last.elapsed() > std::time::Duration::from_millis(150) {
                     progress(Progress {
                         id: id.into(),
@@ -146,10 +154,10 @@ pub async fn install(
             }
             cancel.check()?;
             if n != a.bytes || format!("{:x}", hash.finalize()) != a.sha256 {
-                return Err("Modelkontrol fejlede. Download er ikke taget i brug.".into());
+                return Err(vara_core::UserMessage::new("model.verification").wire());
             }
             file.sync_all()
-                .map_err(|_| "Modellen kunne ikke gemmes sikkert.")?;
+                .map_err(|e| vara_core::UserMessage::new("model.sync").caused_by(vara_core::UserMessage::io_cause(&e)).wire())?;
             cancel.check()?;
 
             Ok::<(), String>(())
@@ -162,7 +170,7 @@ pub async fn install(
         pending.push((part,dest));
         received += a.bytes;
     }
-    cancel.publish(||{let mut published=Vec::new();for (part,dest) in &pending{if std::fs::rename(part,dest).is_err(){for path in published{let _=std::fs::remove_file(path);}return Err("Kunne ikke installere modellen.".into());}published.push(dest);}Ok(())})?;
+    cancel.publish(||{let mut published=Vec::new();for (part,dest) in &pending{if let Err(error) = std::fs::rename(part,dest){for path in published{let _=std::fs::remove_file(path);}return Err(vara_core::UserMessage::new("model.install").caused_by(vara_core::UserMessage::io_cause(&error)).wire());}published.push(dest);}Ok(())})?;
     progress(Progress {
         id: id.into(),
         received,
@@ -182,13 +190,19 @@ pub fn verified(path: &Path, a: &Artifact) -> Result<bool> {
     if !std::fs::metadata(path).is_ok_and(|m| m.len() == a.bytes) {
         return Ok(false);
     }
-    let mut f = std::fs::File::open(path).map_err(|_| "Modellen kunne ikke læses.")?;
+    let mut f = std::fs::File::open(path).map_err(|e| {
+        vara_core::UserMessage::new("model.read")
+            .caused_by(vara_core::UserMessage::io_cause(&e))
+            .wire()
+    })?;
     let mut hash = Sha256::new();
     let mut buf = [0u8; 65536];
     loop {
-        let n = f
-            .read(&mut buf)
-            .map_err(|_| "Modellen kunne ikke kontrolleres.")?;
+        let n = f.read(&mut buf).map_err(|e| {
+            vara_core::UserMessage::new("model.check")
+                .caused_by(vara_core::UserMessage::io_cause(&e))
+                .wire()
+        })?;
         if n == 0 {
             break;
         }

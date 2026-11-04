@@ -19,7 +19,7 @@ fn binary(provider: Provider) -> Result<PathBuf> {
         Provider::ClaudeCli => "claude",
         Provider::CodexCli => "codex",
         Provider::GeminiCli => "gemini",
-        _ => return Err("Ukendt CLI.".into()),
+        _ => return Err(vara_core::UserMessage::new("cli.unknown").wire()),
     };
     let mut paths: Vec<PathBuf> = std::env::var_os("PATH")
         .map(|p| std::env::split_paths(&p).collect())
@@ -47,9 +47,13 @@ fn binary(provider: Provider) -> Result<PathBuf> {
             }
         }
     }
-    Err(format!(
-        "{name} er ikke installeret. Installer og log ind i værktøjet uden for Vara."
-    ))
+    let code = match provider {
+        Provider::ClaudeCli => "cli.missing_claude",
+        Provider::CodexCli => "cli.missing_codex",
+        Provider::GeminiCli => "cli.missing_gemini",
+        _ => "cli.unknown",
+    };
+    Err(vara_core::UserMessage::new(code).wire())
 }
 async fn output(
     mut command: Command,
@@ -62,42 +66,54 @@ async fn output(
         .stdout(Stdio::piped())
         .stderr(Stdio::null())
         .kill_on_drop(true);
-    let mut child = command.spawn().map_err(|_| "CLI kunne ikke starte.")?;
-    let mut stdin = child.stdin.take().ok_or("CLI mangler tekstinput.")?;
+    let mut child = command.spawn().map_err(|e| {
+        vara_core::UserMessage::new("cli.start")
+            .caused_by(vara_core::UserMessage::io_cause(&e))
+            .wire()
+    })?;
+    let mut stdin = child
+        .stdin
+        .take()
+        .ok_or(vara_core::UserMessage::new("cli.no_input").wire())?;
     if let Some(input) = input {
-        stdin
-            .write_all(input.as_bytes())
-            .await
-            .map_err(|_| "CLI afviste tekstinput.")?;
+        stdin.write_all(input.as_bytes()).await.map_err(|e| {
+            vara_core::UserMessage::new("cli.input_rejected")
+                .caused_by(vara_core::UserMessage::io_cause(&e))
+                .wire()
+        })?;
     }
     drop(stdin);
     let mut stdout = child
         .stdout
         .take()
-        .ok_or("CLI mangler tekstoutput.")?
+        .ok_or(vara_core::UserMessage::new("cli.no_output").wire())?
         .take(2_000_001);
     let mut bytes = Vec::new();
     let start = std::time::Instant::now();
     let work = async {
-        stdout
-            .read_to_end(&mut bytes)
-            .await
-            .map_err(|_| "CLI-svaret kunne ikke læses.")?;
+        stdout.read_to_end(&mut bytes).await.map_err(|e| {
+            vara_core::UserMessage::new("cli.output_read")
+                .caused_by(vara_core::UserMessage::io_cause(&e))
+                .wire()
+        })?;
         if bytes.len() > 2_000_000 {
-            return Err("CLI-svaret er for stort.".into());
+            return Err(vara_core::UserMessage::new("cli.output_too_large").wire());
         }
-        let status = child
-            .wait()
-            .await
-            .map_err(|_| "CLI kunne ikke afsluttes.")?;
+        let status = child.wait().await.map_err(|e| {
+            vara_core::UserMessage::new("cli.wait")
+                .caused_by(vara_core::UserMessage::io_cause(&e))
+                .wire()
+        })?;
         if !status.success() {
-            return Err("CLI afviste forespørgslen. Kontroller login og model i værktøjet.".into());
+            return Err(vara_core::UserMessage::new("cli.rejected")
+                .caused_by(crate::process_cause(&status))
+                .wire());
         }
-        String::from_utf8(bytes).map_err(|_| "CLI returnerede ugyldig tekst.".into())
+        String::from_utf8(bytes).map_err(|_| vara_core::UserMessage::new("cli.invalid_text").wire())
     };
     tokio::pin!(work);
     loop {
-        tokio::select! {r=&mut work=>{cancel.check()?;return r;},_=tokio::time::sleep(std::time::Duration::from_millis(50))=>{cancel.check()?;if start.elapsed()>std::time::Duration::from_secs(seconds){return Err("CLI nåede tidsgrænsen. Originalen er bevaret.".into());}}}
+        tokio::select! {r=&mut work=>{cancel.check()?;return r;},_=tokio::time::sleep(std::time::Duration::from_millis(50))=>{cancel.check()?;if start.elapsed()>std::time::Duration::from_secs(seconds){return Err(vara_core::UserMessage::new("cli.timeout").wire());}}}
     }
 }
 pub async fn status(provider: Provider) -> Status {
@@ -113,7 +129,12 @@ pub async fn status(provider: Provider) -> Status {
         }
     };
     if provider == Provider::CodexCli {
-        return Status{provider,installed:true,supported:false,detail:"Installeret. Denne Codex-kontrakt har ingen verificeret tilstand uden værktøjer; tekstbehandling er derfor utilgængelig.".into()};
+        return Status {
+            provider,
+            installed: true,
+            supported: false,
+            detail: vara_core::UserMessage::new("cli.codex_unsupported").wire(),
+        };
     }
     let mut command = Command::new(path);
     command.arg(if provider == Provider::ClaudeCli {
@@ -141,10 +162,17 @@ pub async fn status(provider: Provider) -> Status {
         installed: true,
         supported,
         detail: if supported {
-            "Tekstkontrakten er understøttet. Login og modeladgang kontrolleres ved forespørgslen."
-                .into()
+            vara_core::UserMessage::new("cli.supported").wire()
         } else {
-            "Installeret version har ingen verificeret isoleret tekstkontrakt.".into()
+            let mut message = vara_core::UserMessage::new("cli.unsupported");
+            if let Some(cause) = output
+                .as_ref()
+                .err()
+                .and_then(|e| vara_core::UserMessage::decode(e))
+            {
+                message = message.caused_by(cause);
+            }
+            message.wire()
         },
     }
 }
@@ -156,7 +184,11 @@ pub async fn text(plan: &TextPlan, text: &str, cancel: &Cancellation) -> Result<
     let dir = tempfile::Builder::new()
         .prefix("vara-text-")
         .tempdir()
-        .map_err(|_| "CLI-arbejdsmappe kunne ikke oprettes.")?;
+        .map_err(|e| {
+            vara_core::UserMessage::new("cli.workdir")
+                .caused_by(vara_core::UserMessage::io_cause(&e))
+                .wire()
+        })?;
     let mut command = Command::new(binary(plan.engine.provider)?);
     command.current_dir(dir.path());
     match plan.engine.provider {
@@ -187,9 +219,12 @@ pub async fn text(plan: &TextPlan, text: &str, cancel: &Cancellation) -> Result<
             // Schema and tool allowlist behavior verified against installed 0.29.5.
             let settings = dir.path().join("settings.json");
             let system = dir.path().join("system.md");
-            std::fs::write(&settings,serde_json::to_vec(&serde_json::json!({"tools":{"core":[],"discoveryCommand":"","callCommand":""},"mcp":{"allowed":["__vara_no_mcp__"]},"hooksConfig":{"enabled":false},"context":{"fileName":"__vara_no_context__","includeDirectories":[]}})).unwrap()).map_err(|_|"CLI-konfiguration kunne ikke oprettes.")?;
-            std::fs::write(&system, &plan.system_prompt)
-                .map_err(|_| "Systemprompt kunne ikke oprettes.")?;
+            std::fs::write(&settings,serde_json::to_vec(&serde_json::json!({"tools":{"core":[],"discoveryCommand":"","callCommand":""},"mcp":{"allowed":["__vara_no_mcp__"]},"hooksConfig":{"enabled":false},"context":{"fileName":"__vara_no_context__","includeDirectories":[]}})).unwrap()).map_err(|_|vara_core::UserMessage::new("cli.config").wire())?;
+            std::fs::write(&system, &plan.system_prompt).map_err(|e| {
+                vara_core::UserMessage::new("cli.system_prompt")
+                    .caused_by(vara_core::UserMessage::io_cause(&e))
+                    .wire()
+            })?;
             command
                 .env("GEMINI_CLI_SYSTEM_SETTINGS_PATH", settings)
                 .env("GEMINI_SYSTEM_MD", system)
@@ -205,7 +240,7 @@ pub async fn text(plan: &TextPlan, text: &str, cancel: &Cancellation) -> Result<
                 command.args(["--model", &plan.engine.model]);
             }
         }
-        _ => return Err("CLI mangler en isoleret tekstkontrakt.".into()),
+        _ => return Err(vara_core::UserMessage::new("cli.isolation").wire()),
     }
     let input = format!(
         "<transskription>\n{}\n</transskription>",
@@ -213,15 +248,15 @@ pub async fn text(plan: &TextPlan, text: &str, cancel: &Cancellation) -> Result<
     );
     let out = output(command, Some(input), cancel, 90).await?;
     if plan.engine.provider == Provider::GeminiCli {
-        let value: serde_json::Value =
-            serde_json::from_str(&out).map_err(|_| "Gemini CLI returnerede et ugyldigt svar.")?;
+        let value: serde_json::Value = serde_json::from_str(&out)
+            .map_err(|_| vara_core::UserMessage::new("cli.gemini_invalid").wire())?;
         if value.get("error").is_some() {
-            return Err("Gemini CLI kunne ikke behandle teksten.".into());
+            return Err(vara_core::UserMessage::new("cli.gemini_failed").wire());
         }
         return value["response"]
             .as_str()
             .map(str::to_string)
-            .ok_or_else(|| "Gemini CLI returnerede ingen tekst.".into());
+            .ok_or_else(|| vara_core::UserMessage::new("cli.gemini_empty").wire());
     }
     Ok(out)
 }

@@ -23,7 +23,7 @@ struct Interval {
     end: f64,
 }
 fn bad() -> String {
-    "Who kunne ikke afklare det valgte antal talere. Tidligere resultat er bevaret.".into()
+    vara_core::UserMessage::new("who.known_count").wire()
 }
 fn unit(v: &[f64]) -> Result<Vec<f64>> {
     if v.is_empty() || v.len() > 2048 || v.iter().any(|x| !x.is_finite()) {
@@ -278,7 +278,14 @@ pub(super) fn group(
         method: "recurring-sdk-lanes-heldout-unique-cosine-v2".into(),
         cosine_threshold: payload.cosine_threshold,
     });
-    raw.validate(duration).map_err(|_| bad())?;
+    raw.validate(duration).map_err(|e| {
+        vara_core::UserMessage::new("who.known_count")
+            .caused_by(
+                vara_core::UserMessage::decode(&e.wire())
+                    .unwrap_or_else(|| vara_core::UserMessage::new("runtime.unknown")),
+            )
+            .wire()
+    })?;
     Ok(raw)
 }
 

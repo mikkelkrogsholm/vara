@@ -58,7 +58,7 @@ async fn redux_cancellation_skips_loading_and_network() {
             )
             .await
             .unwrap_err(),
-        "Annulleret."
+        vara_core::UserMessage::new("runtime.cancelled").wire()
     );
     assert!(
         install("local.parakeet", dir.path(), &cancel, |_| panic!(
@@ -101,5 +101,8 @@ async fn unavailable_redux_returns_error_without_switching_provider() {
         )
         .await
         .unwrap_err();
-    assert!(error.contains("Parakeet Redux"));
+    assert_eq!(
+        vara_core::UserMessage::decode(&error).unwrap().code,
+        "parakeet.load"
+    );
 }

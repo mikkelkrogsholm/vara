@@ -25,7 +25,10 @@ fn main() -> Result<(), String> {
             count,
             &cancel,
         );
-        assert_eq!(result.unwrap_err(), "Annulleret.");
+        assert_eq!(
+            result.unwrap_err(),
+            vara_core::UserMessage::new("runtime.cancelled").wire()
+        );
         println!("{{\"cancelled\":true}}");
         return Ok(());
     }

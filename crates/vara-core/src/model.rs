@@ -49,7 +49,9 @@ pub struct EngineConfig {
 impl EngineConfig {
     pub fn validate(&self) -> Result<()> {
         if self.id.is_empty() || self.label.trim().is_empty() || self.model.trim().is_empty() {
-            return Err(Error::Invalid("Angiv navn og model.".into()));
+            return Err(Error::InvalidMessage(crate::UserMessage::new(
+                "engine.name_model",
+            )));
         }
         let valid = match self.provider {
             Provider::LocalParakeet => {
@@ -79,9 +81,9 @@ impl EngineConfig {
             }
         };
         if !valid {
-            return Err(Error::Invalid(
-                "Udbyderens funktion eller placering passer ikke til valget.".into(),
-            ));
+            return Err(Error::InvalidMessage(crate::UserMessage::new(
+                "engine.provider_configuration",
+            )));
         }
         if matches!(
             self.provider,
@@ -92,33 +94,37 @@ impl EngineConfig {
             .all(|c| c.is_ascii_alphanumeric() || "._/-:".contains(c))
             || self.model.starts_with('-'))
         {
-            return Err(Error::Invalid(
-                "Modelnavnet indeholder ugyldige tegn.".into(),
-            ));
+            return Err(Error::InvalidMessage(crate::UserMessage::new(
+                "engine.model_name",
+            )));
         }
         if matches!(self.provider, Provider::Custom | Provider::Ollama) {
-            let url = url::Url::parse(self.endpoint.as_deref().unwrap_or_default())
-                .map_err(|_| Error::Invalid("Endpoint er ikke en gyldig URL.".into()))?;
+            let url =
+                url::Url::parse(self.endpoint.as_deref().unwrap_or_default()).map_err(|_| {
+                    Error::InvalidMessage(crate::UserMessage::new("engine.endpoint_url"))
+                })?;
             if !url.username().is_empty()
                 || url.password().is_some()
                 || url.query().is_some()
                 || url.fragment().is_some()
             {
-                return Err(Error::Invalid(
-                    "Endpoint må ikke indeholde adgangsoplysninger, query eller fragment.".into(),
-                ));
+                return Err(Error::InvalidMessage(crate::UserMessage::new(
+                    "engine.endpoint_credentials",
+                )));
             }
             let local = matches!(
                 url.host_str(),
                 Some("localhost" | "127.0.0.1" | "[::1]" | "::1")
             );
             if !matches!(url.scheme(), "http" | "https") || !local && url.scheme() != "https" {
-                return Err(Error::Invalid("Brug HTTPS til eksterne endpoints.".into()));
+                return Err(Error::InvalidMessage(crate::UserMessage::new(
+                    "engine.endpoint_https",
+                )));
             }
             if (self.locality == Locality::OnDevice) != local {
-                return Err(Error::Policy(
-                    "Kun loopback-endpoints kan betegnes som på enheden.".into(),
-                ));
+                return Err(Error::PolicyMessage(crate::UserMessage::new(
+                    "engine.endpoint_loopback",
+                )));
             }
         }
         Ok(())
@@ -381,28 +387,36 @@ impl Settings {
         self.engines
             .iter()
             .find(|e| e.id == id)
-            .ok_or_else(|| Error::Invalid("Den valgte model findes ikke.".into()))
+            .ok_or_else(|| Error::InvalidMessage(crate::UserMessage::new("settings.model_missing")))
     }
     pub fn validate(&self) -> Result<()> {
         if self.retention_days == Some(0) {
-            return Err(Error::Invalid("Vælg et positivt antal dage.".into()));
+            return Err(Error::InvalidMessage(crate::UserMessage::new(
+                "settings.retention_days",
+            )));
         }
         let mut ids = std::collections::HashSet::new();
         for e in &self.engines {
             e.validate()?;
             if !ids.insert(&e.id) {
-                return Err(Error::Invalid("To modeller har samme id.".into()));
+                return Err(Error::InvalidMessage(crate::UserMessage::new(
+                    "settings.duplicate_model",
+                )));
             }
         }
         if self.engine(&self.speech_engine)?.kind != EngineKind::Speech {
-            return Err(Error::Invalid("Vælg en talemodel.".into()));
+            return Err(Error::InvalidMessage(crate::UserMessage::new(
+                "settings.speech_model",
+            )));
         }
         if self.general_ai_enabled {
             self.validate_text(&self.general_engine, &self.general_prompt)?;
         }
         for (id, rule) in &self.app_rules {
             if id != &rule.app_id || id.is_empty() {
-                return Err(Error::Invalid("App-identiteten er ugyldig.".into()));
+                return Err(Error::InvalidMessage(crate::UserMessage::new(
+                    "settings.app_identity",
+                )));
             }
             if rule.enabled {
                 self.validate_text(&rule.engine_id, &rule.prompt)?;
@@ -420,22 +434,23 @@ impl Settings {
                             .unwrap_or(true)
                 })
             {
-                return Err(Error::Policy(
-                    "Kun behandling på denne enhed er valgt. Vælg lokale lyd- og tekstmodeller."
-                        .into(),
-                ));
+                return Err(Error::PolicyMessage(crate::UserMessage::new(
+                    "settings.local_only",
+                )));
             }
         }
         Ok(())
     }
     fn validate_text(&self, id: &str, prompt: &str) -> Result<()> {
         if prompt.trim().is_empty() {
-            return Err(Error::Invalid(
-                "Skriv en systemprompt, før du slår AI til.".into(),
-            ));
+            return Err(Error::InvalidMessage(crate::UserMessage::new(
+                "settings.prompt",
+            )));
         }
         if self.engine(id)?.kind != EngineKind::Text {
-            return Err(Error::Invalid("Vælg en tekstmodel.".into()));
+            return Err(Error::InvalidMessage(crate::UserMessage::new(
+                "settings.text_model",
+            )));
         }
         Ok(())
     }
@@ -511,9 +526,9 @@ impl Plan {
                     .as_ref()
                     .is_some_and(|t| t.engine.locality != Locality::OnDevice))
         {
-            return Err(Error::Policy(
-                "Denne diktering tillader kun behandling på enheden.".into(),
-            ));
+            return Err(Error::PolicyMessage(crate::UserMessage::new(
+                "session.local_only",
+            )));
         }
         Ok(())
     }

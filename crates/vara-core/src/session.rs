@@ -44,9 +44,9 @@ impl Session {
             return Err(Error::Cancelled);
         }
         if self.stage != from {
-            return Err(Error::Invalid(
-                "Dikteringen er allerede gået videre.".into(),
-            ));
+            return Err(Error::InvalidMessage(crate::UserMessage::new(
+                "session.already_advanced",
+            )));
         }
         let allowed = matches!(
             (from, to),
@@ -57,7 +57,9 @@ impl Session {
                 | (Stage::Committing, Stage::Completed)
         );
         if !allowed {
-            return Err(Error::Invalid("Ugyldigt trin i dikteringen.".into()));
+            return Err(Error::InvalidMessage(crate::UserMessage::new(
+                "session.invalid_step",
+            )));
         }
         self.stage = to;
         Ok(())

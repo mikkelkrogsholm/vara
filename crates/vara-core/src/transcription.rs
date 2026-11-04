@@ -73,14 +73,14 @@ impl Diarization {
                     || t.end > duration + 0.1
             })
         {
-            return Err(Error::Invalid(
-                "Taleropdelingen har ugyldige tidsdata.".into(),
-            ));
+            return Err(Error::InvalidMessage(crate::UserMessage::new(
+                "who.invalid_times",
+            )));
         }
         if self.raw_turns.is_some() != self.known_speakers.is_some() {
-            return Err(Error::Invalid(
-                "Taleropdelingen mangler oplysninger om metoden.".into(),
-            ));
+            return Err(Error::InvalidMessage(crate::UserMessage::new(
+                "who.missing_method",
+            )));
         }
         if let Some(known) = &self.known_speakers {
             if !(1..=16).contains(&known.count)
@@ -96,7 +96,9 @@ impl Diarization {
                     .len()
                     > known.count as usize
             {
-                return Err(Error::Invalid("Taleropdelingens metode er ugyldig.".into()));
+                return Err(Error::InvalidMessage(crate::UserMessage::new(
+                    "who.invalid_method",
+                )));
             }
         }
         if let Some(raw) = &self.raw_turns {
@@ -128,9 +130,9 @@ impl Diarization {
                     .zip(after)
                     .any(|(a, b)| (a.0 - b.0).abs() > 1e-5 || (a.1 - b.1).abs() > 1e-5)
             {
-                return Err(Error::Invalid(
-                    "Taleropdelingen mangler lydintervaller.".into(),
-                ));
+                return Err(Error::InvalidMessage(crate::UserMessage::new(
+                    "who.missing_intervals",
+                )));
             }
         }
         Ok(())
@@ -214,7 +216,7 @@ impl Transcript {
         }
     }
     pub fn validate(&self, duration: f64) -> Result<()> {
-        let bad = || Error::Invalid("Transskriptionen har ugyldige tidsdata.".into());
+        let bad = || Error::InvalidMessage(crate::UserMessage::new("transcription.invalid_times"));
         if !duration.is_finite() || duration <= 0. {
             return Err(bad());
         }
@@ -297,10 +299,9 @@ impl TranscriptionDocument {
         })
     }
     pub fn export(&self, format: &str, original: bool) -> Result<String> {
-        let t = self
-            .transcript
-            .as_ref()
-            .ok_or_else(|| Error::Invalid("Transskriptionen er ikke klar.".into()))?;
+        let t = self.transcript.as_ref().ok_or_else(|| {
+            Error::InvalidMessage(crate::UserMessage::new("transcription.not_ready"))
+        })?;
         let text = if original {
             t.text.as_str()
         } else {
@@ -317,7 +318,9 @@ impl TranscriptionDocument {
             }
             "srt" | "vtt" => {
                 if (!original && self.edited_text.is_some()) || t.timing == Timing::None {
-                    return Err(Error::Invalid("Undertekster kræver tidsjusteret tekst. Vælg den tidskodede original, eller eksportér som tekst.".into()));
+                    return Err(Error::InvalidMessage(crate::UserMessage::new(
+                        "transcription.subtitle_timing",
+                    )));
                 }
                 t.validate(self.duration)?;
                 let mut cues: Vec<(f64, f64, String)> = vec![];
@@ -391,7 +394,9 @@ impl TranscriptionDocument {
                 }
                 Ok(out)
             }
-            _ => Err(Error::Invalid("Ukendt eksportformat.".into())),
+            _ => Err(Error::InvalidMessage(crate::UserMessage::new(
+                "transcription.export_format",
+            ))),
         }
     }
 }

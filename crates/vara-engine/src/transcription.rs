@@ -12,7 +12,7 @@ impl Engines {
         cancel: &Cancellation,
         progress: &(dyn Fn(f64) + Sync),
     ) -> Result<Transcript> {
-        engine.validate().map_err(|e| e.to_string())?;
+        engine.validate().map_err(|e| e.wire())?;
         cancel.check()?;
         if engine.provider == Provider::LocalParakeet {
             return self.parakeet.transcript(
@@ -77,7 +77,7 @@ impl Engines {
             Ok(())
         })?;
         if result.text.trim().is_empty() {
-            return Err("Ingen tale genkendt i filen.".into());
+            return Err(vara_core::UserMessage::new("speech.file_empty").wire());
         }
         if result.timing == Timing::None {
             result.timing_source = "none".into();

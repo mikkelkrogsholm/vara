@@ -91,7 +91,7 @@
     "component.engines": {
       "kind": "component",
       "label": "Engines",
-      "description": "Expose separately typed speech/text capabilities and provider readiness through adapters.",
+      "description": "Expose separately typed speech/text capabilities and provider readiness through adapters. Runtime-origin user messages use versioned codes, numeric safe parameters and structured classified causes; locale formatting belongs at presentation.",
       "maturity": "specified",
       "source_refs": [
         {
@@ -110,7 +110,7 @@
         }
       ],
       "boundary": {
-        "responsibility": "Expose separately typed speech/text capabilities and provider readiness through adapters.",
+        "responsibility": "Expose separately typed speech/text capabilities and provider readiness through adapters. Runtime-origin user messages use versioned codes, numeric safe parameters and structured classified causes; locale formatting belongs at presentation.",
         "rationale": "A single owner keeps this responsibility replaceable behind public contracts in one desktop application.",
         "excludes": [
           "Session delivery, application policy and history ownership."
@@ -202,7 +202,7 @@
     "component.experience": {
       "kind": "component",
       "label": "Experience",
-      "description": "Present onboarding, history, configuration and honest session status. The main UI supports Danish and English using stable message keys; locale changes preserve user input, focus, selection, dialogs and active operations. User content and edited engine labels remain unchanged. File transcription follows the same localization boundary; native messages have separate localization work.",
+      "description": "Present onboarding, history, configuration and honest session status. The main UI supports Danish and English using stable message keys; locale changes preserve user input, focus, selection, dialogs and active operations. User content and edited engine labels remain unchanged. File transcription follows the same localization boundary; native messages have separate localization work. Runtime message transport exists in Rust; host, web and native presentation migration remains incomplete.",
       "maturity": "specified",
       "source_refs": [
         {
@@ -221,7 +221,7 @@
         }
       ],
       "boundary": {
-        "responsibility": "Present onboarding, history, configuration and honest session status. The main UI supports Danish and English using stable message keys; locale changes preserve user input, focus, selection, dialogs and active operations. User content and edited engine labels remain unchanged. File transcription follows the same localization boundary; native messages have separate localization work.",
+        "responsibility": "Present onboarding, history, configuration and honest session status. The main UI supports Danish and English using stable message keys; locale changes preserve user input, focus, selection, dialogs and active operations. User content and edited engine labels remain unchanged. File transcription follows the same localization boundary; native messages have separate localization work. Runtime message transport exists in Rust; host, web and native presentation migration remains incomplete.",
         "rationale": "A single owner keeps this responsibility replaceable behind public contracts in one desktop application.",
         "excludes": [
           "OS focus decisions, secret values and provider protocol logic."
@@ -10924,7 +10924,7 @@
       "format": "text/markdown",
       "normative": false,
       "revision": {
-        "sha256": "58e5f8bab578e03d0ced3eaf10f1b456ccfcf05ce7499296043fa55b7d5c87a0"
+        "sha256": "47f5cec09f7b4d4b2d9df8d1a880c9369f15763eb90fce020f99c9f0baaceba9"
       }
     },
     "source.transcription": {

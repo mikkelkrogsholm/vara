@@ -38,7 +38,7 @@ impl Local {
     ) -> Result<vara_core::Transcript> {
         let (samples, _) = read_audio(path)?;
         if samples.len() < 1600 {
-            return Err("Optagelsen er for kort.".into());
+            return Err(vara_core::UserMessage::new("audio.too_short").wire());
         }
         let mut guard = self.speech.lock();
         cancel.check()?;
@@ -46,15 +46,20 @@ impl Local {
             let mut params = WhisperContextParameters::default();
             params.use_gpu(false);
             *guard = Some(
-                WhisperContext::new_with_params(model.to_str().ok_or("Ugyldig modelsti.")?, params)
-                    .map_err(|_| "Whisper kunne ikke indlæses. Hent modellen i Indstillinger.")?,
+                WhisperContext::new_with_params(
+                    model
+                        .to_str()
+                        .ok_or(vara_core::UserMessage::new("model.invalid_path").wire())?,
+                    params,
+                )
+                .map_err(|_| vara_core::UserMessage::new("whisper.load").wire())?,
             );
         }
         let mut state = guard
             .as_ref()
             .unwrap()
             .create_state()
-            .map_err(|_| "Whisper kunne ikke starte.")?;
+            .map_err(|_| vara_core::UserMessage::new("whisper.start").wire())?;
         let mut params = FullParams::new(SamplingStrategy::Greedy { best_of: 1 });
         params.set_n_threads(
             std::thread::available_parallelism()
@@ -84,14 +89,16 @@ impl Local {
         }
         state
             .full(params, &samples)
-            .map_err(|_| "Transskriptionen mislykkedes. Optagelsen kan genprøves.")?;
+            .map_err(|_| vara_core::UserMessage::new("whisper.transcription").wire())?;
         cancel.check()?;
         let mut text = String::new();
         let mut segments = Vec::new();
         for i in 0..state.full_n_segments() {
             if let Some(s) = state.get_segment(i) {
                 if s.no_speech_probability() < 0.85 {
-                    let part = s.to_str().map_err(|_| "Teksten kunne ikke afkodes.")?;
+                    let part = s
+                        .to_str()
+                        .map_err(|_| vara_core::UserMessage::new("local.text_decode").wire())?;
                     text.push_str(part);
                     if timed {
                         segments.push(vara_core::TranscriptSegment {
@@ -128,13 +135,13 @@ impl Local {
         cancel.check()?;
         if guard.is_none() {
             let mut file = File::open(dir.join("Qwen3-0.6B-Q8_0.gguf"))
-                .map_err(|_| "Hent først den lokale tekstmodel.")?;
-            let ct =
-                gguf_file::Content::read(&mut file).map_err(|_| "Tekstmodellen er beskadiget.")?;
+                .map_err(|_| vara_core::UserMessage::new("local.model_missing").wire())?;
+            let ct = gguf_file::Content::read(&mut file)
+                .map_err(|_| vara_core::UserMessage::new("local.model_corrupt").wire())?;
             let weights = ModelWeights::from_gguf(ct, &mut file, &Device::Cpu)
-                .map_err(|_| "Tekstmodellen kunne ikke indlæses.")?;
+                .map_err(|_| vara_core::UserMessage::new("local.model_load").wire())?;
             let tokenizer = tokenizers::Tokenizer::from_file(dir.join("tokenizer.json"))
-                .map_err(|_| "Tokenizer kunne ikke indlæses.")?;
+                .map_err(|_| vara_core::UserMessage::new("local.tokenizer_load").wire())?;
             *guard = Some((weights, tokenizer));
         }
         let (model, tokenizer) = guard.as_mut().unwrap();
@@ -148,11 +155,11 @@ impl Local {
         );
         let mut tokens = tokenizer
             .encode(prompt, false)
-            .map_err(|_| "Teksten kunne ikke tokeniseres.")?
+            .map_err(|_| vara_core::UserMessage::new("local.tokenize").wire())?
             .get_ids()
             .to_vec();
         if tokens.len() > 3072 {
-            return Err("Teksten er for lang til den lokale model. Originalen er bevaret.".into());
+            return Err(vara_core::UserMessage::new("local.text_too_long").wire());
         }
         let mut sampler = LogitsProcessor::new(42, None, None);
         let mut output = Vec::new();
@@ -161,51 +168,52 @@ impl Local {
         for _ in 0..1024 {
             cancel.check()?;
             if std::time::Instant::now() > deadline {
-                return Err("Lokal AI nåede tidsgrænsen. Originalen er bevaret.".into());
+                return Err(vara_core::UserMessage::new("local.timeout").wire());
             }
             let input = Tensor::new(tokens.as_slice(), &Device::Cpu)
                 .and_then(|t| t.unsqueeze(0))
-                .map_err(|_| "Tekstmodellen kunne ikke køre.")?;
+                .map_err(|_| vara_core::UserMessage::new("local.model_run").wire())?;
             let logits = model
                 .forward(&input, offset)
                 .and_then(|t| t.squeeze(0))
-                .map_err(|_| "Tekstmodellen kunne ikke køre.")?;
+                .map_err(|_| vara_core::UserMessage::new("local.model_run").wire())?;
             offset += tokens.len();
             let token = sampler
                 .sample(&logits)
-                .map_err(|_| "AI-generering mislykkedes.")?;
+                .map_err(|_| vara_core::UserMessage::new("local.generation").wire())?;
             if Some(token) == tokenizer.token_to_id("<|im_end|>")
                 || Some(token) == tokenizer.token_to_id("<|endoftext|>")
             {
                 return tokenizer
                     .decode(&output, true)
-                    .map_err(|_| "AI-teksten kunne ikke afkodes.".into());
+                    .map_err(|_| vara_core::UserMessage::new("local.output_decode").wire());
             }
             output.push(token);
             tokens = vec![token];
         }
-        Err("AI nåede tekstgrænsen. Originalen er bevaret.".into())
+        Err(vara_core::UserMessage::new("ai.text_limit").wire())
     }
 }
 /// Decode mono PCM and resample to Whisper's 16kHz. Cloud gets this same bounded WAV.
 pub(crate) fn read_audio(path: &Path) -> Result<(Vec<f32>, f64)> {
-    let mut reader = hound::WavReader::open(path).map_err(|_| "Optagelsen kunne ikke læses.")?;
+    let mut reader = hound::WavReader::open(path)
+        .map_err(|_| vara_core::UserMessage::new("audio.recording_read").wire())?;
     let spec = reader.spec();
     if spec.sample_format != hound::SampleFormat::Int
         || spec.bits_per_sample != 16
         || spec.channels != 1
         || spec.sample_rate == 0
     {
-        return Err("Optagelsen har et ugyldigt lydformat.".into());
+        return Err(vara_core::UserMessage::new("audio.invalid_format").wire());
     }
     let source: Vec<f32> = reader
         .samples::<i16>()
         .map(|s| s.map(|v| v as f32 / 32768.0))
         .collect::<std::result::Result<_, _>>()
-        .map_err(|_| "Optagelsen er beskadiget.")?;
+        .map_err(|_| vara_core::UserMessage::new("audio.corrupt").wire())?;
     let duration = source.len() as f64 / spec.sample_rate as f64;
     if duration > 600.0 {
-        return Err("Optagelsen overstiger 10 minutter.".into());
+        return Err(vara_core::UserMessage::new("audio.too_long").wire());
     }
     if spec.sample_rate == 16000 {
         return Ok((source, duration));

@@ -134,13 +134,13 @@ pub fn set_physical_shortcut(value: &str, callback: extern "C" fn(bool)) -> Resu
     {
         match unsafe { vara_shortcut_set(keys.as_ptr(), keys.len(), callback) } {
             1 => Ok(()),
-            _ => Err("Genvejen kunne ikke aktiveres. Giv Vara adgang til Inputovervågning i Indstillinger → Tilladelser. Den tidligere genvej er bevaret.".into()),
+            _ => Err(vara_core::UserMessage::new("shortcut.activation").wire()),
         }
     }
     #[cfg(not(target_os = "macos"))]
     {
         let _ = (keys, callback);
-        Err("Denne platformadapter understøtter endnu ikke fysiske flertastgenveje. Vælg en enkelt tast eller en kombination med Ctrl, Alt eller Shift.".into())
+        Err(vara_core::UserMessage::new("shortcut.unsupported").wire())
     }
 }
 pub fn clear_physical_shortcut() {
@@ -153,14 +153,13 @@ fn physical_keys(value: &str) -> Result<Vec<u16>> {
     let mut keys = Vec::new();
     for code in value
         .strip_prefix("Physical:")
-        .ok_or("Ugyldig fysisk genvej.")?
+        .ok_or(vara_core::UserMessage::new("shortcut.invalid").wire())?
         .split('+')
     {
-        let key = keycode(code).ok_or_else(|| {
-            format!("Tasten {code} kunne ikke knyttes til en fysisk tast på denne platform.")
-        })?;
+        let key = keycode(code)
+            .ok_or_else(|| vara_core::UserMessage::new("shortcut.unknown_key").wire())?;
         if keys.contains(&key) {
-            return Err("Genvejen indeholder samme tast flere gange.".into());
+            return Err(vara_core::UserMessage::new("shortcut.duplicate").wire());
         }
         keys.push(key);
     }

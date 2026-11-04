@@ -177,7 +177,9 @@ impl Store {
     pub fn retain(&mut self, now: i64, days: Option<u32>) -> Result<usize> {
         let Some(days) = days else { return Ok(0) };
         if days == 0 {
-            return Err(Error::Invalid("Vælg et positivt antal dage.".into()));
+            return Err(Error::InvalidMessage(crate::UserMessage::new(
+                "settings.retention_days",
+            )));
         }
         let count = self
             .db

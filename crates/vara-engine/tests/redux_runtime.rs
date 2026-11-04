@@ -48,7 +48,10 @@ async fn real_redux_cancellation_and_next_session() {
     tokio::time::sleep(std::time::Duration::from_millis(100)).await;
     assert!(cancel.cancel());
     let error = task.await.unwrap().unwrap_err();
-    assert_eq!(error, "Annulleret.");
+    assert_eq!(
+        error,
+        vara_core::UserMessage::new("runtime.cancelled").wire()
+    );
     // The cached model is reusable; decoder/session state from the cancelled request is gone.
     let next = engines
         .speech(&engine, &fixture, None, None, &Cancellation::default())

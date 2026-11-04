@@ -23,10 +23,10 @@ pub fn input_devices() -> Result<Vec<InputDevice>> {
     unsafe {
         let raw = vara_input_devices();
         if raw.is_null() {
-            return Err("Mikrofoner kunne ikke findes.".into());
+            return Err(vara_core::UserMessage::new("microphone.find").wire());
         }
         let result = serde_json::from_slice(std::ffi::CStr::from_ptr(raw).to_bytes())
-            .map_err(|_| "Mikrofonlisten kunne ikke læses.".into());
+            .map_err(|_| vara_core::UserMessage::new("microphone.list").wire());
         crate::vara_free(raw);
         result
     }
@@ -35,14 +35,14 @@ pub fn input_devices() -> Result<Vec<InputDevice>> {
 pub fn input_devices() -> Result<Vec<InputDevice>> {
     cpal::default_host()
         .input_devices()
-        .map_err(|_| "Mikrofoner kunne ikke findes.")?
+        .map_err(|_| vara_core::UserMessage::new("microphone.find").wire())?
         .map(|d| {
             d.name()
                 .map(|name| InputDevice {
                     id: name.clone(),
                     label: name,
                 })
-                .map_err(|_| "En mikrofon kunne ikke læses.".into())
+                .map_err(|_| vara_core::UserMessage::new("microphone.read").wire())
         })
         .collect()
 }
@@ -77,7 +77,7 @@ impl Recorder {
                 match command {
                     Command::Start(path, device, reply) => {
                         let result = if live.is_some() {
-                            Err("Der optages allerede.".into())
+                            Err(vara_core::UserMessage::new("microphone.already_recording").wire())
                         } else {
                             start(device, capture_level.clone()).map(|(stream, capture)| {
                                 live = Some((stream, capture, path));
@@ -98,7 +98,7 @@ impl Recorder {
                                 write(&path, &c)
                             }
                         } else {
-                            Err("Der er ingen optagelse i gang.".into())
+                            Err(vara_core::UserMessage::new("microphone.not_recording").wire())
                         };
                         let _ = reply.send(result);
                     }
@@ -111,8 +111,9 @@ impl Recorder {
         let (tx, rx) = mpsc::channel();
         self.tx
             .send(Command::Start(path, device, tx))
-            .map_err(|_| "Lydmotoren er stoppet.")?;
-        rx.recv().map_err(|_| "Lydmotoren svarede ikke.")?
+            .map_err(|_| vara_core::UserMessage::new("microphone.worker_stopped").wire())?;
+        rx.recv()
+            .map_err(|_| vara_core::UserMessage::new("microphone.worker_unresponsive").wire())?
     }
     pub fn level(&self) -> f32 {
         f32::from_bits(self.level.load(Ordering::Relaxed))
@@ -122,8 +123,9 @@ impl Recorder {
         let (tx, rx) = mpsc::channel();
         self.tx
             .send(Command::Stop(save, tx))
-            .map_err(|_| "Lydmotoren er stoppet.")?;
-        rx.recv().map_err(|_| "Lydmotoren svarede ikke.")?
+            .map_err(|_| vara_core::UserMessage::new("microphone.worker_stopped").wire())?;
+        rx.recv()
+            .map_err(|_| vara_core::UserMessage::new("microphone.worker_unresponsive").wire())?
     }
 }
 fn append<T: cpal::Sample>(data: &[T], channels: usize, capture: &Arc<Mutex<Capture>>)
@@ -135,8 +137,7 @@ where
         return;
     }
     if c.samples.len() + data.len() / channels > c.rate as usize * 600 {
-        c.error =
-            Some("Optagelsen nåede grænsen på 10 minutter. Start en kortere diktering.".into());
+        c.error = Some(vara_core::UserMessage::new("microphone.time_limit").wire());
         return;
     }
     let start = c.samples.len();
@@ -162,15 +163,15 @@ fn start(
     let device = if let Some(name) = name {
         // Do not probe every device's supported formats just to find a name.
         host.devices()
-            .map_err(|_| "Mikrofonerne kunne ikke læses.")?
+            .map_err(|_| vara_core::UserMessage::new("microphone.devices").wire())?
             .find(|d| d.name().is_ok_and(|n| n == name))
     } else {
         host.default_input_device()
     }
-    .ok_or("Den valgte mikrofon er ikke tilgængelig. Vælg en anden i Indstillinger.")?;
+    .ok_or_else(|| vara_core::UserMessage::new("microphone.unavailable").wire())?;
     let supported = device
         .default_input_config()
-        .map_err(|_| "Mikrofonens lydformat er ikke tilgængeligt.")?;
+        .map_err(|_| vara_core::UserMessage::new("microphone.format").wire())?;
     let config: cpal::StreamConfig = supported.clone().into();
     let channels = config.channels as usize;
     let capture = Arc::new(Mutex::new(Capture {
@@ -182,8 +183,7 @@ fn start(
     let data = capture.clone();
     let errors = capture.clone();
     let on_error = move |_: cpal::StreamError| {
-        errors.lock().error =
-            Some("Mikrofonen blev afbrudt. Kontroller forbindelsen og prøv igen.".into());
+        errors.lock().error = Some(vara_core::UserMessage::new("microphone.disconnected").wire());
     };
     let stream = match supported.sample_format() {
         cpal::SampleFormat::F32 => device.build_input_stream(
@@ -204,15 +204,17 @@ fn start(
             on_error,
             None,
         ),
-        _ => return Err("Mikrofonens sampleformat understøttes ikke endnu.".into()),
+        _ => return Err(vara_core::UserMessage::new("microphone.sample_format").wire()),
     }
-    .map_err(|_| "Mikrofonen kunne ikke åbnes. Kontroller tilladelsen i systemindstillingerne.")?;
-    stream.play().map_err(|_| "Mikrofonen kunne ikke starte.")?;
+    .map_err(|_| vara_core::UserMessage::new("microphone.open").wire())?;
+    stream
+        .play()
+        .map_err(|_| vara_core::UserMessage::new("microphone.start").wire())?;
     Ok((stream, capture))
 }
 fn write(path: &std::path::Path, c: &Capture) -> Result<f64> {
     if c.samples.is_empty() {
-        return Err("Mikrofonen leverede ingen lyd.".into());
+        return Err(vara_core::UserMessage::new("microphone.empty").wire());
     }
     let mut writer = hound::WavWriter::create(
         path,
@@ -223,14 +225,32 @@ fn write(path: &std::path::Path, c: &Capture) -> Result<f64> {
             sample_format: hound::SampleFormat::Int,
         },
     )
-    .map_err(|_| "Optagelsen kunne ikke gemmes.")?;
+    .map_err(|_| vara_core::UserMessage::new("microphone.recording_save").wire())?;
     for sample in &c.samples {
         writer
             .write_sample(*sample)
-            .map_err(|_| "Der er ikke plads til optagelsen.")?;
+            .map_err(|_| vara_core::UserMessage::new("microphone.disk_space").wire())?;
     }
     writer
         .finalize()
-        .map_err(|_| "Optagelsen kunne ikke afsluttes.")?;
+        .map_err(|_| vara_core::UserMessage::new("microphone.finish").wire())?;
     Ok(c.samples.len() as f64 / c.rate as f64)
+}
+
+#[cfg(test)]
+mod message_tests {
+    use super::*;
+    #[test]
+    fn empty_capture_is_reported_without_accessing_a_microphone() {
+        let capture = Capture {
+            samples: vec![],
+            error: None,
+            rate: 16000,
+            level: Arc::new(AtomicU32::new(0)),
+        };
+        let error = write(std::path::Path::new("/unused"), &capture).unwrap_err();
+        let message = vara_core::UserMessage::decode(&error).unwrap();
+        assert_eq!(message.code, "microphone.empty");
+        assert_ne!(message.format("da"), message.format("en"));
+    }
 }

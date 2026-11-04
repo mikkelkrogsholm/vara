@@ -5,24 +5,30 @@ use vara_core::{EngineConfig, Provider, TextPlan};
 async fn response(request: reqwest::RequestBuilder, cancel: &Cancellation) -> Result<Value> {
     cancel.check()?;
     let work = async {
-        let r = request
-            .send()
-            .await
-            .map_err(|_| "Forbindelsen mislykkedes. Kontroller netværk og endpoint.")?;
+        let r = request.send().await.map_err(|error| {
+            vara_core::UserMessage::new("provider.network")
+                .caused_by(crate::network_cause(&error))
+                .wire()
+        })?;
         let status = r.status();
         if !status.is_success() {
-            return Err(match status.as_u16() {
-                401 | 403 => "Adgang afvist. Kontroller API-nøgle og modeladgang.",
-                429 => "Udbyderens grænse er nået. Prøv igen senere.",
-                _ => "Udbyderen kunne ikke behandle forespørgslen.",
-            }
-            .into());
+            let message = match status.as_u16() {
+                401 | 403 => vara_core::UserMessage::new("provider.access"),
+                429 => vara_core::UserMessage::new("provider.rate_limit"),
+                code => vara_core::UserMessage::new("provider.http").number("status", code.into()),
+            };
+            return Err(message.wire());
         }
-        let bytes = r.bytes().await.map_err(|_| "Svaret blev afbrudt.")?;
+        let bytes = r.bytes().await.map_err(|e| {
+            vara_core::UserMessage::new("provider.response_interrupted")
+                .caused_by(crate::network_cause(&e))
+                .wire()
+        })?;
         if bytes.len() > 2_000_000 {
-            return Err("Svaret overstiger tekstgrænsen.".into());
+            return Err(vara_core::UserMessage::new("provider.response_too_large").wire());
         }
-        serde_json::from_slice(&bytes).map_err(|_| "Udbyderen returnerede et ugyldigt svar.".into())
+        serde_json::from_slice(&bytes)
+            .map_err(|_| vara_core::UserMessage::new("provider.invalid_response").wire())
     };
     tokio::pin!(work);
     loop {
@@ -32,7 +38,7 @@ async fn response(request: reqwest::RequestBuilder, cancel: &Cancellation) -> Re
 fn key(value: Option<&str>) -> Result<&str> {
     value
         .filter(|s| !s.trim().is_empty())
-        .ok_or_else(|| "Tilføj din API-nøgle i Forbindelser.".into())
+        .ok_or_else(|| vara_core::UserMessage::new("provider.missing_key").wire())
 }
 pub async fn speech(
     client: &reqwest::Client,
@@ -60,17 +66,19 @@ async fn speech_at(
 ) -> Result<String> {
     cancel.check()?;
     key(secret)?;
-    let bytes = tokio::fs::read(path)
-        .await
-        .map_err(|_| "Optagelsen kunne ikke læses.")?;
+    let bytes = tokio::fs::read(path).await.map_err(|e| {
+        vara_core::UserMessage::new("audio.recording_read")
+            .caused_by(vara_core::UserMessage::io_cause(&e))
+            .wire()
+    })?;
     cancel.check()?;
     if bytes.len() > 24_000_000 {
-        return Err("Optagelsen er for stor til denne forbindelse.".into());
+        return Err(vara_core::UserMessage::new("provider.recording_too_large").wire());
     }
     let part = reqwest::multipart::Part::bytes(bytes)
         .file_name("dictation.wav")
         .mime_str("audio/wav")
-        .map_err(|_| "Lydformatet kunne ikke sendes.")?;
+        .map_err(|_| vara_core::UserMessage::new("provider.audio_format").wire())?;
     let mut form = reqwest::multipart::Form::new().part("file", part);
     let request = if e.provider == Provider::ElevenLabs {
         form = form
@@ -108,7 +116,7 @@ async fn speech_at(
     v.get("text")
         .and_then(Value::as_str)
         .map(str::to_string)
-        .ok_or_else(|| "Svaret indeholder ingen transskription.".into())
+        .ok_or_else(|| vara_core::UserMessage::new("provider.no_transcription").wire())
 }
 pub async fn text(
     client: &reqwest::Client,
@@ -125,11 +133,11 @@ pub async fn text(
             let request=client.post("https://api.anthropic.com/v1/messages").header("x-api-key",key(secret)?).header("anthropic-version","2023-06-01").json(&json!({"model":e.model,"max_tokens":4096,"system":p.system_prompt,"messages":[{"role":"user","content":user}]}));
             let v = response(request, cancel).await?;
             if v["stop_reason"] == "max_tokens" {
-                return Err("AI nåede tekstgrænsen. Originalen er bevaret.".into());
+                return Err(vara_core::UserMessage::new("ai.text_limit").wire());
             }
             let s = v["content"]
                 .as_array()
-                .ok_or("AI returnerede et ugyldigt svar.")?
+                .ok_or(vara_core::UserMessage::new("ai.invalid_response").wire())?
                 .iter()
                 .filter_map(|c| c["text"].as_str())
                 .collect::<Vec<_>>()
@@ -143,16 +151,16 @@ pub async fn text(
                 .chars()
                 .all(|c| c.is_ascii_alphanumeric() || "-._".contains(c))
             {
-                return Err("Gemini-modelnavnet er ugyldigt.".into());
+                return Err(vara_core::UserMessage::new("provider.gemini_model").wire());
             }
             let request=client.post(format!("https://generativelanguage.googleapis.com/v1beta/models/{}:generateContent",e.model)).header("x-goog-api-key",key(secret)?).json(&json!({"systemInstruction":{"parts":[{"text":p.system_prompt}]},"contents":[{"role":"user","parts":[{"text":user}]}],"generationConfig":{"maxOutputTokens":4096}}));
             let v = response(request, cancel).await?;
             if v["candidates"][0]["finishReason"] != "STOP" {
-                return Err("AI kunne ikke færdiggøre teksten. Originalen er bevaret.".into());
+                return Err(vara_core::UserMessage::new("ai.incomplete").wire());
             }
             let s = v["candidates"][0]["content"]["parts"]
                 .as_array()
-                .ok_or("AI returnerede ingen tekst.")?
+                .ok_or(vara_core::UserMessage::new("ai.empty").wire())?
                 .iter()
                 .filter(|c| c["thought"] != true)
                 .filter_map(|c| c["text"].as_str())
@@ -174,11 +182,14 @@ pub async fn text(
         Provider::Groq | Provider::Custom | Provider::Ollama => {
             let base = match e.provider {
                 Provider::Groq => "https://api.groq.com/openai/v1",
-                _ => e.endpoint.as_deref().ok_or("Angiv endpoint.")?,
+                _ => e
+                    .endpoint
+                    .as_deref()
+                    .ok_or(vara_core::UserMessage::new("provider.endpoint_required").wire())?,
             };
             completion_at(client, p, &user, secret, cancel, base).await
         }
-        _ => Err("Denne udbyder understøtter ikke tekstbehandling.".into()),
+        _ => Err(vara_core::UserMessage::new("provider.text_unsupported").wire()),
     }
 }
 
@@ -202,35 +213,35 @@ async fn responses_at(
     )
     .await?;
     if v["status"] != "completed" {
-        return Err("AI kunne ikke færdiggøre teksten. Originalen er bevaret.".into());
+        return Err(vara_core::UserMessage::new("ai.incomplete").wire());
     }
     let output = v["output"]
         .as_array()
-        .ok_or("AI returnerede ingen tekst.")?;
+        .ok_or(vara_core::UserMessage::new("ai.empty").wire())?;
     let mut result = String::new();
     for item in output {
         if item["type"] != "message" || item["role"] != "assistant" {
             continue;
         }
         if item["status"] != "completed" {
-            return Err("AI kunne ikke færdiggøre teksten. Originalen er bevaret.".into());
+            return Err(vara_core::UserMessage::new("ai.incomplete").wire());
         }
         for part in item["content"]
             .as_array()
-            .ok_or("AI returnerede et ugyldigt svar.")?
+            .ok_or(vara_core::UserMessage::new("ai.invalid_response").wire())?
         {
             match part["type"].as_str() {
                 Some("output_text") => result.push_str(
                     part["text"]
                         .as_str()
-                        .ok_or("AI returnerede et ugyldigt svar.")?,
+                        .ok_or(vara_core::UserMessage::new("ai.invalid_response").wire())?,
                 ),
-                _ => return Err("AI kunne ikke levere teksten. Originalen er bevaret.".into()),
+                _ => return Err(vara_core::UserMessage::new("ai.delivery_failed").wire()),
             }
         }
     }
     if result.trim().is_empty() {
-        return Err("AI returnerede ingen tekst. Originalen er bevaret.".into());
+        return Err(vara_core::UserMessage::new("ai.empty_original_preserved").wire());
     }
     Ok(result)
 }
@@ -266,12 +277,12 @@ async fn completion_at(
     }
     let v = response(request, cancel).await?;
     if v["choices"][0]["finish_reason"] != "stop" {
-        return Err("AI kunne ikke færdiggøre teksten. Originalen er bevaret.".into());
+        return Err(vara_core::UserMessage::new("ai.incomplete").wire());
     }
     v["choices"][0]["message"]["content"]
         .as_str()
         .map(str::to_string)
-        .ok_or_else(|| "AI returnerede ingen tekst.".into())
+        .ok_or_else(|| vara_core::UserMessage::new("ai.empty").wire())
 }
 pub async fn groq_models(
     client: &reqwest::Client,
@@ -295,7 +306,7 @@ async fn models_at(
     let v = response(client.get(url).bearer_auth(key(Some(secret))?), cancel).await?;
     let data = v["data"]
         .as_array()
-        .ok_or("Udbyderen returnerede en ugyldig modelliste.")?;
+        .ok_or(vara_core::UserMessage::new("provider.invalid_models").wire())?;
     Ok(data
         .iter()
         .filter_map(|entry| entry["id"].as_str().map(str::to_string))
@@ -503,7 +514,7 @@ mod tests {
             )
             .await
             .unwrap_err()
-            .contains("API-nøgle")
+            .contains("provider.missing_key")
         );
         let cancel = Cancellation::default();
         cancel.cancel();
@@ -511,7 +522,7 @@ mod tests {
             responses_at(&client(), &p, "Original", Some("test-key"), &cancel, &url)
                 .await
                 .unwrap_err(),
-            "Annulleret."
+            vara_core::UserMessage::new("runtime.cancelled").wire()
         );
         assert_eq!(
             listener.accept().unwrap_err().kind(),
@@ -524,7 +535,7 @@ mod tests {
         let error = models_at(&client(), "test-key", &Cancellation::default(), &base)
             .await
             .unwrap_err();
-        assert!(error.contains("ugyldigt svar"));
+        assert!(error.contains("provider.invalid_response"));
         assert!(!error.contains("PRIVATE-DATA"));
         request.recv().unwrap();
         task.join().unwrap();
@@ -583,7 +594,12 @@ mod tests {
             )
             .await
             .unwrap_err();
-            assert!(error.contains("Originalen er bevaret"));
+            assert!(
+                vara_core::UserMessage::decode(&error)
+                    .unwrap()
+                    .format("da")
+                    .contains("Originalen er bevaret")
+            );
             request.recv().unwrap();
             task.join().unwrap();
         }
@@ -634,13 +650,32 @@ mod tests {
         )
         .await
         .unwrap_err();
-        assert!(error.contains("Originalen er bevaret"));
+        assert!(error.contains("ai.incomplete"));
+        request.recv().unwrap();
+        task.join().unwrap();
+    }
+    #[tokio::test]
+    async fn unknown_http_status_keeps_safe_code_not_response_body() {
+        let (base, request, task) = server(503, "PRIVATE-DATA test-key", Duration::ZERO);
+        let error = models_at(&client(), "test-key", &Cancellation::default(), &base)
+            .await
+            .unwrap_err();
+        let message = vara_core::UserMessage::decode(&error).unwrap();
+        assert_eq!(message.code, "provider.http");
+        assert_eq!(message.params.get("status"), Some(&503));
+        assert!(message.format("da").contains("503"));
+        assert!(message.format("en").contains("503"));
+        assert!(
+            !error.contains("PRIVATE-DATA")
+                && !error.contains("test-key")
+                && !error.contains(&base)
+        );
         request.recv().unwrap();
         task.join().unwrap();
     }
     #[tokio::test]
     async fn authentication_and_rate_errors_never_echo_upstream_data() {
-        for (code, expected) in [(401, "Adgang afvist"), (429, "grænse")] {
+        for (code, expected) in [(401, "provider.access"), (429, "provider.rate_limit")] {
             let (base, request, task) =
                 server(code, r#"{"error":"PRIVATE-DATA test-key"}"#, Duration::ZERO);
             let error = models_at(&client(), "test-key", &Cancellation::default(), &base)
@@ -692,7 +727,10 @@ mod tests {
             tokio::time::sleep(Duration::from_millis(5)).await;
         }
         assert!(cancel.cancel());
-        assert_eq!(work.await.unwrap().unwrap_err(), "Annulleret.");
+        assert_eq!(
+            work.await.unwrap().unwrap_err(),
+            vara_core::UserMessage::new("runtime.cancelled").wire()
+        );
         task.join().unwrap();
     }
 }
@@ -711,17 +749,19 @@ pub(crate) async fn file_transcript(
             .await
             .map(vara_core::Transcript::plain);
     }
-    let bytes = tokio::fs::read(path)
-        .await
-        .map_err(|_| "Arbejdslyden kunne ikke læses.")?;
+    let bytes = tokio::fs::read(path).await.map_err(|e| {
+        vara_core::UserMessage::new("audio.work_read")
+            .caused_by(vara_core::UserMessage::io_cause(&e))
+            .wire()
+    })?;
     if bytes.len() > 24_000_000 {
-        return Err("Lydstykket overstiger forbindelsens grænse.".into());
+        return Err(vara_core::UserMessage::new("provider.audio_chunk_too_large").wire());
     }
     cancel.check()?;
     let part = reqwest::multipart::Part::bytes(bytes)
         .file_name("transcription.wav")
         .mime_str("audio/wav")
-        .map_err(|_| "Lydformatet kunne ikke sendes.")?;
+        .map_err(|_| vara_core::UserMessage::new("provider.audio_format").wire())?;
     let mut form = reqwest::multipart::Form::new().part("file", part);
     let request = if e.provider == Provider::ElevenLabs {
         form = form
@@ -757,7 +797,7 @@ fn parse_file_transcript(v: &Value) -> Result<vara_core::Transcript> {
     use vara_core::{TimedWord, Timing, Transcript, TranscriptSegment};
     let text = v["text"]
         .as_str()
-        .ok_or("Svaret indeholder ingen transskription.")?
+        .ok_or(vara_core::UserMessage::new("provider.no_transcription").wire())?
         .to_string();
     let Some(words) = v["words"].as_array().filter(|v| !v.is_empty()) else {
         return Ok(Transcript::plain(text));
@@ -770,14 +810,18 @@ fn parse_file_transcript(v: &Value) -> Result<vara_core::Transcript> {
         let part = w["text"]
             .as_str()
             .or_else(|| w["word"].as_str())
-            .ok_or("Udbyderen returnerede ugyldige orddata.")?;
+            .ok_or(vara_core::UserMessage::new("provider.invalid_words").wire())?;
         if part.trim().is_empty() {
             continue;
         }
-        let start = w["start"].as_f64().ok_or("Et ord mangler starttid.")?;
-        let end = w["end"].as_f64().ok_or("Et ord mangler sluttid.")?;
+        let start = w["start"]
+            .as_f64()
+            .ok_or(vara_core::UserMessage::new("provider.word_start").wire())?;
+        let end = w["end"]
+            .as_f64()
+            .ok_or(vara_core::UserMessage::new("provider.word_end").wire())?;
         if !start.is_finite() || !end.is_finite() || start < 0. || end < start {
-            return Err("Udbyderen returnerede ugyldige ordtider.".into());
+            return Err(vara_core::UserMessage::new("provider.invalid_word_times").wire());
         }
         let speaker = w["speaker_id"].as_str().map(str::to_owned);
         if segments

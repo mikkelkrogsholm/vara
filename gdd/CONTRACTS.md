@@ -8,10 +8,10 @@ Derived from `gdd.json`; the graph owns action/type/scenario details. Regenerate
 | --- | --- | --- |
 | `component.session` | Own the dictation lifecycle, generation validity and finalization order. | OS calls, provider protocols, storage implementation. |
 | `component.desktop` | Own microphone, shortcut, permissions, focus identity and clipboard-safe OS delivery. | Prompt selection, provider networking and history retention. |
-| `component.engines` | Expose separately typed speech/text capabilities and provider readiness through adapters. | Session delivery, application policy and history ownership. |
+| `component.engines` | Expose separately typed speech/text capabilities and provider readiness through adapters. Runtime-origin user messages use versioned codes, numeric safe parameters and structured classified causes; locale formatting belongs at presentation. | Session delivery, application policy and history ownership. |
 | `component.preferences` | Resolve deliberate processing choices into immutable per-session plans. | Running providers, reading target app content and owning secrets. |
 | `component.history` | Own durable text, staged recovery and bounded temporary audio lifecycle. | Provider protocols and implicit paste replay. |
-| `component.experience` | Present onboarding, history, configuration and honest session status. The main UI supports Danish and English using stable message keys; locale changes preserve user input, focus, selection, dialogs and active operations. User content and edited engine labels remain unchanged. File transcription follows the same localization boundary; native messages have separate localization work. | OS focus decisions, secret values and provider protocol logic. |
+| `component.experience` | Present onboarding, history, configuration and honest session status. The main UI supports Danish and English using stable message keys; locale changes preserve user input, focus, selection, dialogs and active operations. User content and edited engine labels remain unchanged. File transcription follows the same localization boundary; native messages have separate localization work. Runtime message transport exists in Rust; host, web and native presentation migration remains incomplete. | OS focus decisions, secret values and provider protocol logic. |
 | `component.transcription` | Own durable file jobs and document library independently from OS dictation delivery and captured-audio retention. | OS focus/insertion, provider protocols, changing or deleting user original files. |
 
 ## Main flow

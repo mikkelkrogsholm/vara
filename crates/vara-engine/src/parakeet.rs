@@ -29,17 +29,17 @@ impl Parakeet {
                 let pool = rayon::ThreadPoolBuilder::new()
                     .num_threads(8)
                     .build()
-                    .map_err(|_| "Talemotoren kunne ikke starte.")?;
+                    .map_err(|_| vara_core::UserMessage::new("speech.start").wire())?;
                 let model = pool
                     .install(|| Transcriber::load_on(dir, Precision::Int8, Device::Auto))
-                    .map_err(|_| "Hent Parakeet Redux i Modeller og nøgler.")?;
+                    .map_err(|_| vara_core::UserMessage::new("parakeet.model_missing").wire())?;
                 *guard = Some((model, pool));
             }
             let (model, pool) = guard.as_ref().unwrap();
             pool.install(|| {
                 let mut stream = LongForm::new(model);
-                let mut reader =
-                    hound::WavReader::open(audio).map_err(|_| "Arbejdslyden kunne ikke åbnes.")?;
+                let mut reader = hound::WavReader::open(audio)
+                    .map_err(|_| vara_core::UserMessage::new("audio.work_open").wire())?;
                 let mut input = reader.samples::<i16>();
 
                 loop {
@@ -49,7 +49,7 @@ impl Parakeet {
                         .take(16000 * 10)
                         .map(|v| v.map(|v| v as f32 / 32768.))
                         .collect::<std::result::Result<Vec<_>, _>>()
-                        .map_err(|_| "Arbejdslyden er beskadiget.")?;
+                        .map_err(|_| vara_core::UserMessage::new("media.work_corrupt").wire())?;
                     if chunk.is_empty() {
                         break;
                     }
@@ -61,7 +61,7 @@ impl Parakeet {
                 cancel.check()?;
                 let text = stream.text();
                 if text.trim().is_empty() {
-                    return Err("Ingen tale genkendt i filen.".into());
+                    return Err(vara_core::UserMessage::new("speech.file_empty").wire());
                 }
                 let segments = stream
                     .segments
@@ -104,7 +104,7 @@ impl Parakeet {
             Ok(r) => r,
             Err(_) => {
                 *self.runtime.lock() = None;
-                Err("Den lokale talemotor blev afbrudt. Genprøv filen.".into())
+                Err(vara_core::UserMessage::new("speech.file_interrupted").wire())
             }
         }
     }
@@ -117,7 +117,7 @@ impl Parakeet {
             Ok(result) => result,
             Err(_) => {
                 *self.runtime.lock() = None;
-                Err("Den lokale talemotor blev afbrudt. Prøv optagelsen igen.".into())
+                Err(vara_core::UserMessage::new("speech.recording_interrupted").wire())
             }
         }
     }
@@ -125,7 +125,7 @@ impl Parakeet {
         cancel.check()?;
         let (samples, _) = crate::local::read_audio(audio)?;
         if samples.len() < 1600 {
-            return Err("Optagelsen er for kort.".into());
+            return Err(vara_core::UserMessage::new("audio.too_short").wire());
         }
         let mut guard = self.runtime.lock();
         cancel.check()?;
@@ -133,14 +133,12 @@ impl Parakeet {
             let pool = rayon::ThreadPoolBuilder::new()
                 .num_threads(8)
                 .build()
-                .map_err(|_| "Talemotorens arbejdstråde kunne ikke starte.")?;
+                .map_err(|_| vara_core::UserMessage::new("speech.threads").wire())?;
             // Explicit backend selection ignores external VOXRT_DEVICE overrides.
             // Auto uses Metal on supported Apple builds and CPU elsewhere.
             let model = pool
                 .install(|| Transcriber::load_on(dir, Precision::Int8, Device::Auto))
-                .map_err(
-                    |_| "Parakeet Redux kunne ikke indlæses. Hent modellen igen i Forbindelser.",
-                )?;
+                .map_err(|_| vara_core::UserMessage::new("parakeet.load").wire())?;
             *guard = Some((model, pool));
         }
         cancel.check()?;

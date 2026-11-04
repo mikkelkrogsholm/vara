@@ -3,7 +3,7 @@ use crate::Result;
 
 fn validate(id: &str) -> Result<()> {
     if id.is_empty() || id.len() > 160 || id.contains('\0') {
-        return Err("Ugyldigt forbindelses-id.".into());
+        return Err(vara_core::UserMessage::new("credential.invalid_id").wire());
     }
     Ok(())
 }
@@ -12,7 +12,7 @@ fn validate(id: &str) -> Result<()> {
 fn entry(id: &str) -> Result<keyring::Entry> {
     validate(id)?;
     keyring::Entry::new("dk.vara.desktop", id)
-        .map_err(|_| "Systemets nøglelager er ikke tilgængeligt. Åbn det og prøv igen.".into())
+        .map_err(|_| vara_core::UserMessage::new("credential.store_unavailable").wire())
 }
 
 pub fn has_secret(id: &str) -> Result<bool> {
@@ -25,9 +25,7 @@ pub fn has_secret(id: &str) -> Result<bool> {
         match entry(id)?.get_attributes() {
             Ok(_) => Ok(true),
             Err(keyring::Error::NoEntry) => Ok(false),
-            Err(_) => {
-                Err("Nøglelagerets status kunne ikke læses. Åbn nøglelageret og prøv igen.".into())
-            }
+            Err(_) => Err(vara_core::UserMessage::new("credential.status").wire()),
         }
     }
 }
@@ -42,9 +40,7 @@ pub fn secret(id: &str) -> Result<Option<String>> {
         match entry(id)?.get_password() {
             Ok(s) => Ok(Some(s)),
             Err(keyring::Error::NoEntry) => Ok(None),
-            Err(_) => {
-                Err("API-nøglen kunne ikke læses. Åbn systemets nøglelager og prøv igen.".into())
-            }
+            Err(_) => Err(vara_core::UserMessage::new("credential.read").wire()),
         }
     }
 }
@@ -52,7 +48,7 @@ pub fn secret(id: &str) -> Result<Option<String>> {
 pub fn set_secret(id: &str, key: &str) -> Result<()> {
     let key = key.trim();
     if key.is_empty() || key.len() > 4096 || key.chars().any(char::is_control) {
-        return Err("Indtast en gyldig API-nøgle.".into());
+        return Err(vara_core::UserMessage::new("credential.invalid_key").wire());
     }
     #[cfg(target_os = "macos")]
     {
@@ -61,9 +57,9 @@ pub fn set_secret(id: &str, key: &str) -> Result<()> {
     }
     #[cfg(not(target_os = "macos"))]
     {
-        entry(id)?.set_password(key.trim()).map_err(|_| {
-            "API-nøglen kunne ikke gemmes. Åbn systemets nøglelager og prøv igen.".into()
-        })
+        entry(id)?
+            .set_password(key.trim())
+            .map_err(|_| vara_core::UserMessage::new("credential.save").wire())
     }
 }
 
@@ -77,9 +73,7 @@ pub fn delete_secret(id: &str) -> Result<()> {
     {
         match entry(id)?.delete_credential() {
             Ok(()) | Err(keyring::Error::NoEntry) => Ok(()),
-            Err(_) => {
-                Err("API-nøglen kunne ikke slettes. Åbn systemets nøglelager og prøv igen.".into())
-            }
+            Err(_) => Err(vara_core::UserMessage::new("credential.delete").wire()),
         }
     }
 }
@@ -109,8 +103,14 @@ mod mac {
     };
     const FLAG: &str = "--vara-credential-worker";
     const DEADLINE: Duration = Duration::from_secs(15);
-    const UNAVAILABLE: &str =
-        "Systemets nøglelager er ikke tilgængeligt. Åbn Nøglering og prøv igen.";
+    fn unavailable() -> String {
+        vara_core::UserMessage::new("credential.mac_unavailable").wire()
+    }
+    fn unavailable_io(error: &std::io::Error) -> String {
+        vara_core::UserMessage::new("credential.mac_unavailable")
+            .caused_by(vara_core::UserMessage::io_cause(error))
+            .wire()
+    }
     unsafe extern "C" {
         fn vara_credential_parent_is_trusted() -> bool;
         fn vara_credential(
@@ -135,23 +135,23 @@ mod mac {
 
     pub(super) fn request(operation: &str, id: &str, key: &str) -> Result<Reply> {
         validate(id)?;
-        let mut child = Command::new(std::env::current_exe().map_err(|_| UNAVAILABLE)?)
+        let mut child = Command::new(std::env::current_exe().map_err(|e| unavailable_io(&e))?)
             .arg(FLAG)
             .stdin(Stdio::piped())
             .stdout(Stdio::piped())
             .stderr(Stdio::null())
             .spawn()
-            .map_err(|_| UNAVAILABLE)?;
+            .map_err(|e| unavailable_io(&e))?;
         let input = serde_json::to_vec(&Request {
             operation: operation.into(),
             id: id.into(),
             key: key.into(),
         })
-        .map_err(|_| UNAVAILABLE)?;
+        .map_err(|_| unavailable())?;
         let Some(mut stdin) = child.stdin.take() else {
             let _ = child.kill();
             let _ = child.wait();
-            return Err(UNAVAILABLE.into());
+            return Err(unavailable());
         };
         // Pipe writes are also covered by the deadline. Killing/reaping the
         // worker closes its read end and releases a blocked writer.
@@ -161,7 +161,7 @@ mod mac {
         match result {
             Err(error) => Err(error),
             Ok(reply) if written => Ok(reply),
-            Ok(_) => Err(UNAVAILABLE.into()),
+            Ok(_) => Err(unavailable()),
         }
     }
     fn finish(
@@ -173,30 +173,49 @@ mod mac {
         loop {
             match child.try_wait() {
                 Ok(Some(status)) if status.success() => break,
-                Ok(Some(_)) => return Err(UNAVAILABLE.into()),
-                Err(_) => {
+                Ok(Some(status)) => {
+                    let mut message = vara_core::UserMessage::new("credential.mac_unavailable");
+                    if let Some(code) = status.code() {
+                        message = message.caused_by(
+                            vara_core::UserMessage::new("process.exit_code")
+                                .number("code", code.into()),
+                        );
+                    }
+                    return Err(message.wire());
+                }
+                Err(error) => {
                     let _ = child.kill();
                     let _ = child.wait();
-                    return Err(UNAVAILABLE.into());
+                    return Err(unavailable_io(&error));
                 }
                 Ok(None) => (),
             }
             if started.elapsed() >= deadline {
                 let _ = child.kill();
                 let _ = child.wait();
-                return Err(if matches!(operation, "set" | "delete") {
-                    "Nøglelageret svarede ikke inden 15 sekunder. Ændringen kan være gennemført. Åbn Nøglering, og brug Prøv igen for at kontrollere status, før du gentager ændringen."
-                } else { "Nøglelageret svarede ikke inden 15 sekunder. Åbn Nøglering og prøv igen." }.into());
+                return Err(vara_core::UserMessage::new(
+                    if matches!(operation, "set" | "delete") {
+                        "credential.timeout_mutation"
+                    } else {
+                        "credential.timeout"
+                    },
+                )
+                .wire());
             }
             std::thread::sleep(Duration::from_millis(20));
         }
         let reply: Reply =
-            serde_json::from_reader(child.stdout.take().ok_or(UNAVAILABLE)?.take(32_768))
-                .map_err(|_| UNAVAILABLE)?;
+            serde_json::from_reader(child.stdout.take().ok_or_else(unavailable)?.take(32_768))
+                .map_err(|_| unavailable())?;
         match reply.status {
             0 | -25300 => Ok(reply), // errSecItemNotFound is an ordinary missing entry.
-            -25308 | -25293 | -128 => Err("Nøgleringen er låst, eller Vara mangler adgang. Lås login-nøgleringen op i Nøglering, og kontrollér nøglens adgangskontrol for Vara. Prøv derefter igen.".into()),
-            _ => Err(UNAVAILABLE.into()),
+            -25308 | -25293 | -128 => Err(vara_core::UserMessage::new("credential.locked").wire()),
+            status => Err(vara_core::UserMessage::new("credential.mac_unavailable")
+                .caused_by(
+                    vara_core::UserMessage::new("credential.os_status")
+                        .number("code", status.into()),
+                )
+                .wire()),
         }
     }
     #[cfg(test)]
@@ -216,7 +235,10 @@ mod mac {
                     .err()
                     .unwrap();
                 assert!(started.elapsed() < Duration::from_secs(2));
-                assert_eq!(error.contains("kan være gennemført"), operation != "status");
+                assert_eq!(
+                    error.contains("credential.timeout_mutation"),
+                    operation != "status"
+                );
                 let still_exists = Command::new("/bin/kill")
                     .args(["-0", &pid.to_string()])
                     .stderr(Stdio::null())
@@ -262,5 +284,18 @@ mod mac {
             }
         }
         true
+    }
+}
+
+#[cfg(test)]
+mod message_tests {
+    #[test]
+    fn invalid_key_is_structured_without_copying_the_input() {
+        let error = super::set_secret("test", "private\nkey").unwrap_err();
+        assert_eq!(
+            vara_core::UserMessage::decode(&error).unwrap().code,
+            "credential.invalid_key"
+        );
+        assert!(!error.contains("private"));
     }
 }

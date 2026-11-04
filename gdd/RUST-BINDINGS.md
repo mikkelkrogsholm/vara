@@ -281,3 +281,41 @@ annotate leaf labels only, never an editable container. For a new language add a
 complete catalog and supported resolution, implement required plural categories,
 and run `node desktop/tests/i18n.test.cjs` plus the browser locale check. Keep
 user content and model metadata outside the catalogs.
+
+## Runtime messages: partial issue 22 delivery
+
+`vara_core::UserMessage` serializes as `vara-message-v1:` followed by JSON
+`{"code":"provider.http","params":{"status":503}}`. An optional `cause` is
+another message of the same shape. Parameters are signed integers, intended for
+safe status, error and signal codes; never put user data, secrets, URLs or raw
+provider responses in codes or parameter names. IO details retain a safe error
+kind and optional numeric OS code. Provider transport errors retain a class or
+HTTP status; subprocess failures retain exit code or signal. SQLite retains its
+numeric extended code. `UserMessage::decode` accepts only this version and schema;
+legacy raw strings and unknown versions are not classified as known messages.
+Unknown *codes* format as the catalog's localized unknown error.
+
+`crates/vara-core/messages/runtime.json` is the single source of runtime strings.
+Rust embeds it; a web consumer must bundle this exact JSON as a static build
+asset (or expose its bytes through a host command), without fetching a remote
+catalog or maintaining a second copy. Its entries map stable codes to locale
+strings. Resolve exact locale, then base language, then English; replace named
+numeric placeholders as plain text. Render causes as separate safe details rather
+than concatenating untrusted values into HTML. Catalog checks verify literal
+origin codes, locale completeness and matching placeholder names.
+
+Core `Error::wire()` preserves structured variants; `Display` remains readable
+for local clients. `Invalid(String)` and `Policy(String)` are legacy escape
+hatches and `wire()` leaves them raw. Existing host `to_string()` calls on core
+errors must be changed to `wire()`, particularly `desktop/src-tauri/src/service.rs`,
+`transcription.rs` and `lib.rs`; do not blindly change unrelated OS/JSON error
+conversions. Engine and platform `Result<_, String>` now carry the envelope at
+migrated origins. Until host/UI and native consumers decode and render it, they
+can show the envelope literally. This commit is an intermediate dependency, not
+release acceptance. Issue 22b must migrate host-owned errors and status text,
+CLI status consumers, HUD and native menus/dialogs, refresh active status on
+locale changes, and handle unknown legacy messages safely. Native Objective-C
+sources are deferred. The non-Mac fallback destination `Ukendt app` remains a
+literal presentation label and needs presentation-boundary treatment; persisted
+user app/model names and the Danish default AI prompt are user content, not
+runtime errors. No native Windows/Linux or live microphone acceptance is claimed.
