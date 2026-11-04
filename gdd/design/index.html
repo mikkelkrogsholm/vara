@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="da">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -15,31 +15,29 @@
     <script src="js/app.js" defer></script>
   </head>
   <body>
-    <a class="skip" href="#workspace">Gå til indhold</a>
+    <a class="skip" href="#workspace">Skip to content</a>
     <div class="app-window" id="app-window">
-      <aside class="sidebar" id="sidebar" aria-label="Hovednavigation"></aside>
+      <aside class="sidebar" id="sidebar" aria-label="Main navigation"></aside>
       <main id="workspace" class="workspace" tabindex="-1"></main>
     </div>
     <div
       id="hud-region"
       class="hud-region"
-      aria-label="Dikteringsstatus — simuleret"
+      aria-label="Dictation status — simulated"
     ></div>
     <footer class="prototype-footer">
       <span
-        >Interaktiv prototype · eksempeldata · ingen lyd eller varig
-        lagring</span
+        >Interactive prototype · sample data · no audio or persistent storage</span
       >
-      <button class="text-button" data-action="open-demo">Afprøv forløb</button>
+      <button class="text-button" data-action="open-demo">Try flows</button>
       <a href="../DESIGN.md">DESIGN.md</a>
-      <a href="mockups/01-warm-precision.png">Visuel reference ↗</a>
+      <a href="mockups/01-warm-precision.png">Visual reference ↗</a>
     </footer>
     <dialog id="modal" aria-labelledby="dialog-title"></dialog>
     <div id="toast" class="toast" hidden></div>
     <div class="sr-only" role="status" aria-live="polite" id="live"></div>
     <noscript
-      >Denne klikbare prototype kræver JavaScript. Den sender ingen data til en
-      server.</noscript
+      >This interactive prototype requires JavaScript. It sends no data to a server.</noscript
     >
   </body>
 </html>

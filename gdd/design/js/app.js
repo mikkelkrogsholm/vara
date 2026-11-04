@@ -81,14 +81,14 @@
       $("#app-prompt").setAttribute("aria-invalid", "true");
       $("#app-prompt").setAttribute("aria-describedby", "app-prompt-error");
       $("#app-prompt-error").textContent =
-        "Skriv en systemprompt, før du slår AI til.";
+        "Enter a system prompt before enabling AI.";
       $("#app-prompt").focus();
       return false;
     }
     if (enabled && s.settings.strictLocal && engine !== "local") {
       error(
         "app-form-message",
-        "Denne engine er ikke på enheden. Vælg en lokal model, eller ændr din lokale politik.",
+        "This engine is not on device. Choose a local model or change your local policy.",
       );
       return false;
     }
@@ -121,7 +121,7 @@
     ) {
       error(
         "dialog-error",
-        "Kun behandling på denne enhed er valgt. Ret enginevalget, før du fortsætter.",
+        "On-device-only processing is selected. Change the engine before continuing.",
       );
       return;
     }
@@ -141,14 +141,14 @@
     closeModal();
     s.hudMessage = "";
     renderHUD();
-    announce("Lytter i demoen. Ingen lyd optages.");
+    announce("Listening in the demo. No audio is recorded.");
   }
   function stopSession() {
     if (!s.active || s.active.stage !== "recording") return;
     const token = s.active.token;
     s.active.stage = "speech";
     renderHUD();
-    announce("Finder dine ord i demoen.");
+    announce("Finding your words in the demo.");
     setTimeout(() => {
       if (!s.active || s.active.token !== token) return;
       const a = s.active;
@@ -156,7 +156,7 @@
         s.recoveries = s.recoveries.filter((r) => r.id !== a.retryId);
         s.active = null;
         render();
-        toast("Optagelsen er udløbet og kan ikke genprøves.");
+        toast("The recording expired and cannot be retried.");
         return;
       }
       if (a.outcome === "asr") {
@@ -166,18 +166,18 @@
           expires: a.created + 86400000,
         });
         s.active = null;
-        s.hudMessage = "Kunne ikke transskribere";
+        s.hudMessage = "Could not transcribe";
         if (s.page === "history") render();
         else renderHUD();
         announce(
-          "Transskriptionen fejlede. Optagelsen kan genprøves inden fristen.",
+          "Transcription failed. The recording can be retried before the deadline.",
         );
         return;
       }
       if (a.processing) {
         s.active.stage = "text";
         renderHUD();
-        announce("Tilpasser teksten i demoen.");
+        announce("Refining the text in the demo.");
         setTimeout(() => finishSession(token), 550);
       } else finishSession(token);
     }, 550);
@@ -189,18 +189,18 @@
       s.recoveries = s.recoveries.filter((r) => r.id !== a.retryId);
       s.active = null;
       render();
-      toast("Optagelsen udløb inden genprøvningen blev færdig.");
+      toast("The recording expired before the retry finished.");
       return;
     }
     const processed = a.processing && a.outcome !== "ai";
     const r = {
       id: s.nextId++,
       app: a.app,
-      date: "Lige nu",
+      date: "Just now",
       duration: 12,
-      raw: "hej anna tak for din mail jeg kan godt torsdag klokken ti send gerne en invitation",
+      raw: "hi anna thanks for your email thursday at ten works for me please send an invitation",
       text: processed
-        ? "Hej Anna. Tak for din mail. Jeg kan godt torsdag kl. 10. Send gerne en invitation."
+        ? "Hi Anna. Thanks for your email. Thursday at 10 works for me. Please send an invitation."
         : undefined,
       processed,
       fallback: a.processing && a.outcome === "ai",
@@ -217,28 +217,28 @@
     s.collapsed = [];
     s.active = null;
     s.hudMessage =
-      r.status === "manual" ? "Klar til indsættelse" : "Indsat · demo";
+      r.status === "manual" ? "Ready to paste" : "Inserted · demo";
     if (s.page === "history") render();
     else renderHUD();
     toast(
       r.status === "manual"
-        ? "Fokus ændrede sig. Teksten er klar i historikken."
+        ? "Focus changed. The text is ready in history."
         : r.fallback
-          ? "AI fejlede. Originalen er brugt i demoen."
-          : "Dikteringen er indsat og gemt i demoen.",
+          ? "AI failed. The original was used in the demo."
+          : "The dictation was inserted and saved in the demo.",
     );
   }
   function cancelSession() {
     if (!s.active) return;
     ++s.generation;
     s.active = null;
-    s.hudMessage = "Annulleret";
+    s.hudMessage = "Cancelet";
     renderHUD();
-    toast("Dikteringen er annulleret. Intet resultat er gemt.");
+    toast("The dictation was cancelled. No result was saved.");
   }
   function retry(id) {
     if (s.active) {
-      toast("Afslut eller annullér den aktuelle diktering først.");
+      toast("Finish or cancel the current dictation first.");
       return;
     }
     const r = s.recoveries.find((r) => r.id === id);
@@ -246,7 +246,7 @@
     if (r.expires <= Date.now()) {
       s.recoveries = s.recoveries.filter((r) => r.id !== id);
       render();
-      toast("Optagelsen er udløbet.");
+      toast("The recording expired.");
       return;
     }
     s.active = {
@@ -285,14 +285,14 @@
       render();
     },
     "copy-result": () =>
-      toast("Kopiér er simuleret. Din udklipsholder er ikke ændret."),
+      toast("Copying is simulated. Your clipboard was not changed."),
     "result-menu": (b) => {
       s.deleteId = Number(b.dataset.id);
       openModal("result-menu");
     },
     "menu-copy": () => {
       closeModal();
-      toast("Kopiér er simuleret. Din udklipsholder er ikke ændret.");
+      toast("Copying is simulated. Your clipboard was not changed.");
     },
     "ask-delete": () => openModal("delete", { replace: true }),
     "confirm-delete": () => {
@@ -300,7 +300,7 @@
       if (s.selected === s.deleteId) s.selected = s.results[0]?.id ?? null;
       closeModal();
       render();
-      toast("Dikteringen og begge tekstversioner er slettet i demoen.");
+      toast("The dictation and both text versions were deleted in the demo.");
     },
     "select-pref": (b) =>
       guardNavigate(() => {
@@ -312,7 +312,7 @@
     "save-app": () => {
       if (saveApp()) {
         render();
-        toast("App-indstillingen er gemt i demoen.");
+        toast("The app setting was saved in the demo.");
       }
     },
     "reset-app": () => {
@@ -342,12 +342,12 @@
     "save-general": () => {
       const t = $("#general-prompt").value.trim();
       if (!t) {
-        $("#general-prompt-error").textContent = "Skriv en systemprompt.";
+        $("#general-prompt-error").textContent = "Enter a system prompt.";
         $("#general-prompt").focus();
         return;
       }
       s.settings.general = t;
-      toast("Den generelle prompt er gemt i demoen.");
+      toast("The general prompt was saved in the demo.");
     },
     "record-shortcut": () => {
       s.shortcutDraft = "";
@@ -358,21 +358,21 @@
       if (!s.shortcutDraft) {
         error(
           "shortcut-error",
-          "Tryk en kombination med Ctrl, Alt eller Command.",
+          "Press a combination with Ctrl, Alt, or Command.",
         );
         return;
       }
       if (/(?:⌘|Ctrl) Q$/.test(s.shortcutDraft)) {
         error(
           "shortcut-error",
-          "Denne genvej er reserveret i demoen. Den tidligere genvej er bevaret.",
+          "This shortcut is reserved in the demo. The previous shortcut was kept.",
         );
         return;
       }
       s.settings.shortcut = s.shortcutDraft;
       closeModal();
       render();
-      toast("Genvejen er gemt i demoen. Ingen systembinding er registreret.");
+      toast("The shortcut was saved in the demo. No system shortcut was registered.");
     },
     "open-key": (b) => {
       s.keyProvider = b.dataset.provider;
@@ -380,7 +380,7 @@
     },
     "save-key": () => {
       if ($("#api-key").value.trim().length < 4) {
-        error("key-error", "Angiv en fiktiv nøgle på mindst fire tegn.");
+        error("key-error", "Enter a fictional key of at least four characters.");
         $("#api-key").setAttribute("aria-invalid", "true");
         $("#api-key").focus();
         return;
@@ -390,7 +390,7 @@
       closeModal();
       render();
       toast(
-        "Nøglens status er simuleret. Ingen nøgle er gemt eller valideret.",
+        "The key status is simulated. No key was saved or validated.",
       );
     },
     "save-endpoint": () => {
@@ -398,25 +398,25 @@
         model = $("#endpoint-model").value.trim(),
         locality = $("#endpoint-locality").value;
       try {
-        if (!name || !model) throw Error("Angiv navn og model.");
+        if (!name || !model) throw Error("Enter a name and model.");
         const url = new URL($("#endpoint-url").value);
         if (!["http:", "https:"].includes(url.protocol))
-          throw Error("Angiv en HTTP- eller HTTPS-adresse.");
+          throw Error("Enter an HTTP or HTTPS address.");
         if (s.settings.strictLocal && locality !== "on_device")
           throw Error(
-            "Kun behandling på denne enhed er valgt. LAN/cloud kan ikke tilføjes med denne politik.",
+            "On-device-only processing is selected. LAN/cloud cannot be added under this policy.",
           );
         s.endpoints.push({ name, model, locality });
         $("#endpoint-key").value = "";
         render();
         toast(
-          "Forbindelsen er gemt som eksempel. Ingen netværkskald er foretaget.",
+          "The connection was saved as an example. No network calls were made.",
         );
       } catch (e) {
         error(
           "endpoint-error",
           e instanceof TypeError
-            ? "Angiv en gyldig HTTP- eller HTTPS-adresse."
+            ? "Enter a valid HTTP or HTTPS address."
             : e.message,
         );
       }
@@ -425,12 +425,12 @@
       const days = Number($("#cleanup-days").value),
         enabled = $("#cleanup-toggle").checked;
       if (enabled && (!Number.isInteger(days) || days < 1)) {
-        error("retention-error", "Vælg et positivt antal hele dage.");
+        error("retention-error", "Choose a positive whole number of days.");
         return;
       }
       s.settings.cleanup = enabled;
       s.settings.days = days > 0 ? days : 30;
-      toast("Oprydningen er gemt i demoen.");
+      toast("Cleanup was saved in the demo.");
     },
     "open-demo": () => openModal("demo"),
     "close-modal": () => closeModal(),
@@ -443,7 +443,7 @@
       if (s.active?.retryId === id) cancelSession();
       s.recoveries = s.recoveries.filter((r) => r.id !== id);
       render();
-      toast("Optagelsen er slettet i demoen.");
+      toast("The recording was deleted in the demo.");
     },
     "empty-history": () => {
       cancelSession();
@@ -466,8 +466,8 @@
         ...s.results[0],
         id: s.nextId++,
         app: "code",
-        date: "Lige nu",
-        raw: "En længere teknisk note med danske tegn, navne og tal. Bevar betydningen og lad teksten ombryde naturligt.\n\n".repeat(
+        date: "Just now",
+        raw: "A longer technical note with names and numbers. Preserve the meaning and let the text wrap naturally.\n\n".repeat(
           120,
         ),
         text: undefined,
@@ -545,7 +545,7 @@
     },
     "setup-finish": () => {
       closeModal();
-      toast("Første brug er gennemført i demoen. Ingen rigtig lyd er optaget.");
+      toast("First-time setup is complete in the demo. No real audio was recorded.");
     },
   };
   document.addEventListener("click", (event) => {
@@ -601,16 +601,16 @@
     if (t.id === "activation-style") {
       s.settings.style = t.value;
       $("#sidebar").innerHTML = Vara.views.sidebar(s);
-      toast("Betjeningen er ændret i demoen.");
+      toast("Activation was changed in the demo.");
     }
     if (t.id === "input-device") {
       s.settings.device = t.value;
-      toast("Mikrofonvalget er simuleret.");
+      toast("The microphone selection is simulated.");
     }
     if (t.id === "speech-choice") {
       if (s.settings.strictLocal && t.value !== "local") {
         t.value = "local";
-        toast("Kun behandling på denne enhed er valgt. Cloud er afvist.");
+        toast("On-device-only processing is selected. Cloud was rejected.");
         return;
       }
       s.settings.speech = t.value;
@@ -624,19 +624,19 @@
       ) {
         t.checked = false;
         toast(
-          "Vælg først lokale lyd- og tekstmodeller. Den tidligere politik er bevaret.",
+          "Choose local audio and text models first. The previous policy was kept.",
         );
         return;
       }
       s.settings.strictLocal = t.checked;
-      toast("Den lokale politik er gemt i demoen.");
+      toast("The local policy was saved in the demo.");
     }
     if (t.id === "app-engine")
       $("#app-engine-help").textContent = Vara.views.locality
         ? Vara.views.locality(t.value)
         : t.value === "local"
-          ? "Teksten bliver på enheden."
-          : "Teksten sendes til den valgte udbyder.";
+          ? "The text stays on this device."
+          : "The text is sent to the selected provider.";
     if (t.id === "cleanup-toggle") $("#cleanup-period").hidden = !t.checked;
   });
   document.addEventListener(
