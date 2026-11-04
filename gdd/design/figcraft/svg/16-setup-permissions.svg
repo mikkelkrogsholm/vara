@@ -4,35 +4,34 @@
 <rect x="230.390625" y="-1" width="1049.609375" height="820" rx="0" fill="rgb(247, 244, 238)"/>
 <rect x="415.6875" y="55.5" width="25" height="25" rx="50" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
 <svg x="420.6875" y="60.5" width="15" height="15" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(99, 100, 89)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"></path></svg>
-<text  x="449.1875" y="71.8" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Gør Vara klar</text>
+<text  x="449.1875" y="71.8" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Prepare Vara</text>
 <rect x="649.84375" y="55" width="26" height="26" rx="50" fill="rgb(47, 53, 39)"/>
 <rect x="650.34375" y="55.5" width="25" height="25" rx="50" fill="none" stroke="rgb(47, 53, 39)" stroke-width="1"/>
 <text  x="659.0625" y="71.7" fill="rgb(246, 244, 235)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="12px" font-weight="bold">2</text>
-<text  x="683.84375" y="71.8" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="bold">Giv adgang</text>
+<text  x="683.84375" y="71.8" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="bold">Grant access</text>
 <rect x="885.015625" y="55.5" width="25" height="25" rx="50" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
 <text  x="893.75" y="71.7" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="12px" font-weight="normal">3</text>
-<text  x="918.515625" y="71.8" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Prøv din genvej</text>
-<text  x="415.1875" y="164.3" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="28px" font-weight="bold">Giv Vara adgang.</text>
-<text  x="415.1875" y="204.25" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Mikrofonen er nødvendig for at diktere. Du kan altid kopiere teksten</text>
-<text  x="415.1875" y="226.75" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">manuelt, hvis du springer automatisk indsættelse over.</text>
+<text  x="918.515625" y="71.8" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Try your shortcut</text>
+<text  x="415.1875" y="164.3" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="28px" font-weight="bold">Give Vara access.</text>
+<text  x="415.1875" y="204.25" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">The microphone is needed for dictation. You can always copy text manually</text>
+<text  x="415.1875" y="226.75" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">if you skip automatic insertion.</text>
 <line x1="415.1875" y1="344" x2="1095.1875" y2="344" stroke="rgb(220, 214, 202)" stroke-width="1"/>
-<text  x="415.1875" y="297.25" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="bold">Mikrofon</text>
-<text  x="415.1875" y="321.05" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Bruges kun, når du starter en diktering.</text>
-<svg x="993.390625" y="296" width="16" height="16" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(56, 102, 65)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"></path></svg>
-<text  x="1015.390625" y="307.8" fill="rgb(56, 102, 65)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Adgang givet</text>
+<text  x="415.1875" y="297.25" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="bold">Microphone</text>
+<text  x="415.1875" y="321.05" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Used only when you start a dictation.</text>
+<svg x="979.078125" y="296" width="16" height="16" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(56, 102, 65)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"></path></svg>
+<text  x="1001.078125" y="307.8" fill="rgb(56, 102, 65)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Access granted</text>
 <line x1="415.1875" y1="456.5" x2="1095.1875" y2="456.5" stroke="rgb(220, 214, 202)" stroke-width="1"/>
-<text  x="415.1875" y="390.25" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="bold">Globale genveje</text>
-<text  x="415.1875" y="414.05" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Inputovervågning lader Vara registrere din genvej, mens du</text>
-<text  x="415.1875" y="433.55" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">arbejder i andre apps.</text>
-<svg x="993.390625" y="398.75" width="16" height="16" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(56, 102, 65)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"></path></svg>
-<text  x="1015.390625" y="410.55" fill="rgb(56, 102, 65)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Adgang givet</text>
-<line x1="415.1875" y1="569" x2="1095.1875" y2="569" stroke="rgb(220, 214, 202)" stroke-width="1"/>
-<text  x="415.1875" y="502.75" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="bold">Indsættelse i andre apps</text>
-<text  x="415.1875" y="526.55" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Tilgængelighed gør det muligt at indsætte i det oprindelige</text>
-<text  x="415.1875" y="546.05" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">tekstfelt.</text>
-<svg x="993.390625" y="511.25" width="16" height="16" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(56, 102, 65)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"></path></svg>
-<text  x="1015.390625" y="523.05" fill="rgb(56, 102, 65)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Adgang givet</text>
-<text  x="432.1875" y="626.4" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Tilbage</text>
-<line x1="415.1875" y1="690.59375" x2="1095.1875" y2="690.59375" stroke="rgb(220, 214, 202)" stroke-width="1"/>
-<text  x="416.1875" y="732.99375" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Fortsæt senere</text>
+<text  x="415.1875" y="390.25" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="bold">Global shortcuts</text>
+<text  x="415.1875" y="414.05" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Input monitoring lets Vara detect your shortcut while you work</text>
+<text  x="415.1875" y="433.55" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">in other apps.</text>
+<svg x="979.078125" y="398.75" width="16" height="16" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(56, 102, 65)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"></path></svg>
+<text  x="1001.078125" y="410.55" fill="rgb(56, 102, 65)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Access granted</text>
+<line x1="415.1875" y1="549.5" x2="1095.1875" y2="549.5" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<text  x="415.1875" y="502.75" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="bold">Insertion in other apps</text>
+<text  x="415.1875" y="526.55" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Accessibility allows insertion into the original text field.</text>
+<svg x="979.078125" y="501.5" width="16" height="16" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(56, 102, 65)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"></path></svg>
+<text  x="1001.078125" y="513.3" fill="rgb(56, 102, 65)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Access granted</text>
+<text  x="432.1875" y="606.9" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Back</text>
+<line x1="415.1875" y1="671.09375" x2="1095.1875" y2="671.09375" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<text  x="416.1875" y="713.49375" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Continue later</text>
 </svg>

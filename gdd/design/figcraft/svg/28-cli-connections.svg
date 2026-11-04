@@ -5,41 +5,41 @@
 <line x1="270.390625" y1="-617.078125" x2="1240" y2="-617.078125" stroke="rgb(220, 214, 202)" stroke-width="1"/>
 <line x1="270.390625" y1="16.578125" x2="1240" y2="16.578125" stroke="rgb(220, 214, 202)" stroke-width="1"/>
 <line x1="270.390625" y1="91.171875" x2="1240" y2="91.171875" stroke="rgb(220, 214, 202)" stroke-width="1"/>
-<text  x="270.390625" y="48.953125" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="bold">Ollama · lokal tjeneste</text>
-<text  x="270.390625" y="68.753125" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">qwen3:0.6b · På denne enhed</text>
-<rect x="1153.71875" y="32.578125" width="86.28125" height="41.59375" rx="10" fill="rgb(255, 252, 247)"/>
-<rect x="1154.21875" y="33.078125" width="85.28125" height="40.59375" rx="10" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
-<text  x="1170.71875" y="57.978125" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Redigér</text>
+<text  x="270.390625" y="48.953125" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="bold">Ollama · local service</text>
+<text  x="270.390625" y="68.753125" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">qwen3:0.6b · On this device</text>
+<rect x="1179.6875" y="32.578125" width="60.3125" height="41.59375" rx="10" fill="rgb(255, 252, 247)"/>
+<rect x="1180.1875" y="33.078125" width="59.3125" height="40.59375" rx="10" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
+<text  x="1196.6875" y="57.978125" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Edit</text>
 <text  x="270.390625" y="123.546875" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="bold">Groq · Whisper Large-v3</text>
-<text  x="270.390625" y="143.346875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">whisper-large-v3 · Hos valgt udbyder</text>
-<rect x="1153.71875" y="107.171875" width="86.28125" height="41.59375" rx="10" fill="rgb(255, 252, 247)"/>
-<rect x="1154.21875" y="107.671875" width="85.28125" height="40.59375" rx="10" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
-<text  x="1170.71875" y="132.571875" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Redigér</text>
-<rect x="270.390625" y="164.765625" width="130.984375" height="41.59375" rx="10" fill="rgb(255, 252, 247)"/>
-<rect x="270.890625" y="165.265625" width="129.984375" height="40.59375" rx="10" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
-<text  x="287.390625" y="190.165625" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Tilføj endpoint</text>
+<text  x="270.390625" y="143.346875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">whisper-large-v3 · At selected provider</text>
+<rect x="1179.6875" y="107.171875" width="60.3125" height="41.59375" rx="10" fill="rgb(255, 252, 247)"/>
+<rect x="1180.1875" y="107.671875" width="59.3125" height="40.59375" rx="10" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
+<text  x="1196.6875" y="132.571875" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Edit</text>
+<rect x="270.390625" y="164.765625" width="124.5625" height="41.59375" rx="10" fill="rgb(255, 252, 247)"/>
+<rect x="270.890625" y="165.265625" width="123.5625" height="40.59375" rx="10" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
+<text  x="287.390625" y="190.165625" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Add endpoint</text>
 <line x1="270.390625" y1="246.359375" x2="1240" y2="246.359375" stroke="rgb(220, 214, 202)" stroke-width="1"/>
-<text  x="270.390625" y="297.859375" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="20px" font-weight="bold">Installerede CLI-værktøjer</text>
+<text  x="270.390625" y="297.859375" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="20px" font-weight="bold">Installed CLI tools</text>
 <svg x="1222" y="282.359375" width="18" height="18" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(37, 37, 31)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg>
-<text  x="270.390625" y="331.609375" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Valgfrie tekstforbindelser med eget login.</text>
+<text  x="270.390625" y="331.609375" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Optional text connections with their own login.</text>
 <line x1="270.390625" y1="432.453125" x2="1240" y2="432.453125" stroke="rgb(220, 214, 202)" stroke-width="1"/>
 <text  x="270.390625" y="390.234375" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="bold">Claude Code</text>
-<text  x="270.390625" y="410.034375" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Ikke kontrolleret. Teksten kan behandles hos en ekstern udbyder.</text>
-<rect x="1139.546875" y="373.859375" width="100.453125" height="41.59375" rx="10" fill="rgb(255, 252, 247)"/>
-<rect x="1140.046875" y="374.359375" width="99.453125" height="40.59375" rx="10" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
-<text  x="1156.546875" y="399.259375" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Kontrollér</text>
+<text  x="270.390625" y="410.034375" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Not checked. Text may be processed by an external provider.</text>
+<rect x="1163.328125" y="373.859375" width="76.671875" height="41.59375" rx="10" fill="rgb(255, 252, 247)"/>
+<rect x="1163.828125" y="374.359375" width="75.671875" height="40.59375" rx="10" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
+<text  x="1180.328125" y="399.259375" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Check</text>
 <line x1="270.390625" y1="507.046875" x2="1240" y2="507.046875" stroke="rgb(220, 214, 202)" stroke-width="1"/>
 <text  x="270.390625" y="464.828125" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="bold">Codex</text>
-<text  x="270.390625" y="484.628125" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Ikke kontrolleret. Teksten kan behandles hos en ekstern udbyder.</text>
-<rect x="1139.546875" y="448.453125" width="100.453125" height="41.59375" rx="10" fill="rgb(255, 252, 247)"/>
-<rect x="1140.046875" y="448.953125" width="99.453125" height="40.59375" rx="10" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
-<text  x="1156.546875" y="473.853125" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Kontrollér</text>
+<text  x="270.390625" y="484.628125" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Not checked. Text may be processed by an external provider.</text>
+<rect x="1163.328125" y="448.453125" width="76.671875" height="41.59375" rx="10" fill="rgb(255, 252, 247)"/>
+<rect x="1163.828125" y="448.953125" width="75.671875" height="40.59375" rx="10" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
+<text  x="1180.328125" y="473.853125" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Check</text>
 <text  x="270.390625" y="539.421875" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="bold">Gemini CLI</text>
-<text  x="270.390625" y="559.221875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Ikke kontrolleret. Teksten kan behandles hos en ekstern udbyder.</text>
-<rect x="1139.546875" y="523.046875" width="100.453125" height="41.59375" rx="10" fill="rgb(255, 252, 247)"/>
-<rect x="1140.046875" y="523.546875" width="99.453125" height="40.59375" rx="10" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
-<text  x="1156.546875" y="548.446875" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Kontrollér</text>
-<text  x="270.390625" y="601.096875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Modelvalg ændres under</text>
-<text  x="425.359375" y="601.096875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="bold">Diktering →</text>
-<text  x="499.6875" y="601.096875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">.</text>
+<text  x="270.390625" y="559.221875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Not checked. Text may be processed by an external provider.</text>
+<rect x="1163.328125" y="523.046875" width="76.671875" height="41.59375" rx="10" fill="rgb(255, 252, 247)"/>
+<rect x="1163.828125" y="523.546875" width="75.671875" height="40.59375" rx="10" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
+<text  x="1180.328125" y="548.446875" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Check</text>
+<text  x="270.390625" y="601.096875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Change model selections under</text>
+<text  x="466.375" y="601.096875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="bold">Dictation →</text>
+<text  x="540.140625" y="601.096875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">.</text>
 </svg>

@@ -16,9 +16,9 @@ Dictate wherever you work. Turn recordings into text you can use. Local processi
 
 <br>
 
-![Vara's transcription tab with speaker names, word highlighting and playback](gdd/reports/transcription/editor.png)
+![Vara's transcription tab with fictional speaker names and playback controls](gdd/design/figcraft/references/12-transcription-editor.png)
 
-<div align="center"><sub>A calm workspace for your voice. Shown here with sample data from the app's UI tests.</sub></div>
+<div align="center"><sub>A calm workspace for your voice. Shown here with fictional data adapted from the app's UI tests.</sub></div>
 
 <br>
 
