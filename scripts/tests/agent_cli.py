@@ -185,9 +185,9 @@ def wait_running(profile_root, job_id, extra):
         if v.get('who',{}).get('stage')=='running': return v
         time.sleep(.05)
     raise AssertionError('Who did not enter running state')
-def list_rpc(r):
+def rpc(r, operation):
     path=pathlib.Path('/tmp')/f'vara-{os.getuid()}'/(hashlib.sha256(str(r.resolve()).encode()).digest()[:16].hex()+'.sock')
-    payload=json.dumps({'version':2,'operation':{'action':'list'}}).encode()
+    payload=json.dumps({'version':2,'operation':operation}).encode()
     with socket.socket(socket.AF_UNIX) as conn:
         conn.settimeout(5); conn.connect(str(path)); conn.sendall(struct.pack('>I',len(payload))+payload)
         def exact(n):
@@ -196,6 +196,7 @@ def list_rpc(r):
                 part=conn.recv(n-len(b)); assert part; b+=part
             return b
         return json.loads(exact(struct.unpack('>I',exact(4))[0]))
+def list_rpc(r): return rpc(r, {'action':'list'})
 who=profile('who-success')
 p=run(who,'transcribe',audio,'--diarize','--speakers','2','--no-wait','--request-id','who-id',extra=fixture_env)
 wid=js(p)['job_id']; v=wait_running(who,wid,fixture_env); assert v['status']=='processing'
@@ -232,6 +233,33 @@ asr_fail_id=js(run(asr_failed,'transcribe',audio,'--diarize','--no-wait'))['job_
 assert js(run(asr_failed,'job','wait',asr_fail_id,expected=3))['error']['code']=='provider.missing_key'
 db=sqlite3.connect(asr_failed/'transcriptions.sqlite3'); saved=json.loads(db.execute('SELECT value FROM documents WHERE id=?',(asr_fail_id,)).fetchone()[0]); db.close()
 assert saved['stage']=='failed' and saved['who_plan']['stage']=='skipped'
+# Explicit UI retry restarts a previously skipped Who plan, using the same queue.
+retry_root=profile('retry-asr'); retry_asr=base/'retry-asr.json'
+retry_env={'VARA_TEST_ASR_FIXTURE':str(retry_asr),'VARA_TEST_ASR_DELAY_MS':'400','VARA_TEST_WHO_FIXTURE':str(who_fixture),'VARA_TEST_WHO_DELAY_MS':'300'}
+retry_id=js(run(retry_root,'transcribe',audio,'--diarize','--speakers','2','--no-wait',extra=retry_env))['job_id']
+assert js(run(retry_root,'job','wait',retry_id,expected=2,extra=retry_env))['error']['code']=='file.source_missing'
+retry_asr.write_bytes(asr_fixture.read_bytes())
+assert rpc(retry_root,{'action':'retry','id':retry_id})['error'] is None
+pending_doc=next(x for x in list_rpc(retry_root)['result']['documents'] if x['id']==retry_id)
+assert pending_doc['who_plan']['stage']=='pending' and pending_doc['who_plan']['known_speaker_count']==2
+assert js(run(retry_root,'job','wait',retry_id,extra=retry_env))['document']['who_plan']['stage']=='ready'
+# A planned Who failure can be explicitly retried through the real UI RPC.
+retry_who_root=profile('retry-who'); retry_who=base/'retry-who.json'
+retry_who_env={'VARA_TEST_ASR_FIXTURE':str(asr_fixture),'VARA_TEST_WHO_FIXTURE':str(retry_who),'VARA_TEST_WHO_DELAY_MS':'300'}
+retry_who_id=js(run(retry_who_root,'transcribe',audio,'--diarize','--no-wait',extra=retry_who_env))['job_id']
+assert js(run(retry_who_root,'job','wait',retry_who_id,expected=4,extra=retry_who_env))['status']=='who_failed'
+retry_who.write_bytes(who_fixture.read_bytes())
+assert rpc(retry_who_root,{'action':'who','id':retry_who_id,'known_speaker_count':3})['error'] is None
+retried=js(run(retry_who_root,'job','result',retry_who_id,extra=retry_who_env)); assert retried['status']=='ready' and retried['document']['who_plan']['known_speaker_count']==3
+# Force the actual SQLite publication and terminal-state writes to fail.
+unsaved_root=profile('unsaved-who'); unsaved_env={**fixture_env,'VARA_TEST_WHO_DELAY_MS':'2500'}
+unsaved_id=js(run(unsaved_root,'transcribe',audio,'--diarize','--no-wait',extra=unsaved_env))['job_id']; wait_running(unsaved_root,unsaved_id,unsaved_env)
+db=sqlite3.connect(unsaved_root/'transcriptions.sqlite3'); db.execute("CREATE TRIGGER deny_who_terminal BEFORE UPDATE ON documents WHEN json_extract(NEW.value,'$.who_plan.stage') IN ('ready','failed') BEGIN SELECT RAISE(FAIL,'fixture failure'); END"); db.commit(); db.close()
+unsaved=js(run(unsaved_root,'job','wait',unsaved_id,expected=4,extra=unsaved_env)); assert unsaved['status']=='who_failed' and unsaved['error']['code']=='file.result_unsaved'
+ui=list_rpc(unsaved_root); current=next(x for x in ui['result']['documents'] if x['id']==unsaved_id)
+assert current['stage']=='ready' and current['who_plan']['stage']=='failed' and current['transcript']['text']=='Fixture words' and not current['who_busy']
+assert ui['notice'] is not None and (unsaved_root/'transcriptions'/f'{unsaved_id}.wav').exists()
+db=sqlite3.connect(unsaved_root/'transcriptions.sqlite3'); db.execute('DROP TRIGGER deny_who_terminal'); db.commit(); db.close()
 failed=profile('who-failed'); failure_env={'VARA_TEST_ASR_FIXTURE':str(asr_fixture),'VARA_TEST_WHO_DELAY_MS':'300'}
 fid=js(run(failed,'transcribe',audio,'--diarize','--no-wait',extra=failure_env))['job_id']
 f=js(run(failed,'job','wait',fid,expected=4,extra=failure_env)); assert f['status']=='who_failed' and f['error']['code'] in ('file.resource_missing','who.runtime_missing')
@@ -242,6 +270,8 @@ cancel_receipt=js(run(cancel,'job','cancel',cid,extra=fixture_env)); assert canc
 assert js(run(cancel,'job','wait',cid,expected=4,extra=fixture_env))['status']=='who_cancelled'
 time.sleep(.3); db=sqlite3.connect(cancel/'transcriptions.sqlite3'); saved=json.loads(db.execute('SELECT value FROM documents WHERE id=?',(cid,)).fetchone()[0]); db.close()
 assert saved['stage']=='ready' and saved['transcript']['text']=='Fixture words' and saved['diarization'] is None and (cancel/'transcriptions'/f'{cid}.wav').exists()
+assert rpc(cancel,{'action':'who','id':cid,'known_speaker_count':None})['error'] is None
+assert js(run(cancel,'job','result',cid,extra=fixture_env))['status']=='ready'
 pending_root=profile('who-pending-cancel'); pe={**fixture_env,'VARA_TEST_ASR_DELAY_MS':'2000'}
 pid2=js(run(pending_root,'transcribe',audio,'--diarize','--no-wait',extra=pe))['job_id']; run(pending_root,'job','cancel',pid2,extra=pe)
 assert js(run(pending_root,'job','wait',pid2,expected=4,extra=pe))['status']=='cancelled'
@@ -258,7 +288,7 @@ f=js(run(restart,'job','status',jid,expected=4,extra=fixture_env)); assert f['st
 db=sqlite3.connect(restart/'transcriptions.sqlite3'); saved=json.loads(db.execute('SELECT value FROM documents WHERE id=?',(jid,)).fetchone()[0]); db.close(); assert saved['stage']=='ready' and saved['transcript']['text']=='Fixture words'
 
 # Wait for every actual fixture backend to finish work and exit on idle.
-roots=[root,strict,late,sig,pipe,slow,ready,who,asr_failed,failed,cancel,pending_root,restart]
+roots=[root,strict,late,sig,pipe,slow,ready,who,asr_failed,retry_root,retry_who_root,unsaved_root,failed,cancel,pending_root,restart]
 deadline=time.monotonic()+15
 while True:
     sockets=[pathlib.Path('/tmp')/f'vara-{os.getuid()}'/(hashlib.sha256(str(r.resolve()).encode()).digest()[:16].hex()+'.sock') for r in roots]

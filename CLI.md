@@ -53,7 +53,10 @@ A diarized job remains processing after ASR becomes ready until Who finishes.
 The status receipt includes `asr_stage` and `who`; Who failure or cancellation
 returns a nonzero error with `who_failed` or `who_cancelled` and the job ID.
 ASR text and audio remain accessible in Vara. A backend interruption marks unfinished
-Who failed with `file.interrupted`; it does not silently rerun inference.
+Who failed with `file.interrupted`; it does not silently rerun inference. An explicit
+retry in Vara restarts the required phase and updates its current outcome. If the
+Who outcome cannot be saved, the active owner reports `file.result_unsaved`; the
+ASR stays available and a restart reports the unfinished phase as interrupted.
 
 A status query for a failed or cancelled job returns the corresponding nonzero
 error with its job ID and terminal status. JSON errors contain stable `error.code` and optional catalogued numeric causes;

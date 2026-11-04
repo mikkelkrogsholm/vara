@@ -505,21 +505,6 @@ impl Files {
                 } else {
                     format!("who:{}", id()?)
                 };
-                let document = if download {
-                    None
-                } else {
-                    let i = self.inner.lock();
-                    let d = i
-                        .documents
-                        .iter()
-                        .find(|d| Some(d.id.as_str()) == p["id"].as_str())
-                        .cloned()
-                        .ok_or(host_message("file.document_missing"))?;
-                    if d.stage.busy() || d.transcript.is_none() {
-                        return Err(host_message("file.who_wait").into());
-                    }
-                    Some(d)
-                };
                 let known_count = if download || p["known_speaker_count"].is_null() {
                     None
                 } else {
@@ -531,15 +516,39 @@ impl Files {
                     )
                 };
                 let cancel = Cancellation::default();
-                {
+                let (document, planned) = {
                     let mut i = self.inner.lock();
                     if i.cancel.contains_key(&key) {
-                        return Err(host_message("file.who_busy").into());
+                        return Err(host_message("file.who_busy"));
+                    }
+                    let mut document = if download {
+                        None
+                    } else {
+                        let d = i
+                            .documents
+                            .iter()
+                            .find(|d| Some(d.id.as_str()) == p["id"].as_str())
+                            .cloned()
+                            .ok_or(host_message("file.document_missing"))?;
+                        if d.stage.busy() || d.transcript.is_none() {
+                            return Err(host_message("file.who_wait"));
+                        }
+                        Some(d)
+                    };
+                    let planned = document.as_ref().is_some_and(|d| d.who_plan.is_some());
+                    if let Some(d) = &mut document {
+                        if let Some(plan) = &mut d.who_plan {
+                            plan.known_speaker_count = known_count;
+                            plan.stage = WhoStage::Running;
+                            plan.error = None;
+                            Self::save(&mut i, d.clone())?;
+                        }
                     }
                     i.cancel.insert(key.clone(), cancel.clone());
-                }
+                    (document, planned)
+                };
                 self.emit();
-                return self.execute_who(download, document, known_count, cancel, key, false);
+                return self.execute_who(download, document, known_count, cancel, key, planned);
             }
             "file_add" => {
                 let paths: Vec<String> = serde_json::from_value(p["paths"].clone())
@@ -770,8 +779,12 @@ impl Files {
                 d.stage = FileStage::Queued;
                 d.error = None;
                 d.completed_seconds = 0.;
-                i.cancel.insert(id.into(), Cancellation::default());
+                if let Some(plan) = &mut d.who_plan {
+                    plan.stage = WhoStage::Pending;
+                    plan.error = None;
+                }
                 Self::save(&mut i, d)?;
+                i.cancel.insert(id.into(), Cancellation::default());
                 drop(i);
                 self.kick();
                 self.emit();
@@ -1009,7 +1022,8 @@ impl Files {
                     }
                 }
                 cancel.publish(|| {
-                    Self::save(&mut i, current)?;
+                    Self::save(&mut i, current)
+                        .map_err(|e| host_wrapped("file.result_unsaved", &e))?;
                     i.speaker_transcripts.insert(d.id.clone(), annotated);
                     Ok(())
                 })?;
@@ -1018,33 +1032,53 @@ impl Files {
         })();
         let mut i = self.inner.lock();
         i.cancel.remove(&key);
-        if let (Some(d), Err(error)) = (&document, &result) {
-            if cancel.check().is_ok() {
-                if let Some(mut current) = i.documents.iter().find(|v| v.id == d.id).cloned() {
-                    current.diarization_error = Some(error.clone());
-                    let _ = Self::save(&mut i, current);
+        let mut save_notice = None;
+        if let Some(d) = &document {
+            if let Some(mut current) = i.documents.iter().find(|v| v.id == d.id).cloned() {
+                let mut changed = false;
+                if let Err(error) = &result {
+                    if cancel.check().is_ok() {
+                        current.diarization_error = Some(error.clone());
+                        changed = true;
+                    }
                 }
-            }
-        }
-        if planned {
-            if let Some(d) = &document {
-                if let Some(mut current) = i.documents.iter().find(|v| v.id == d.id).cloned() {
+                if planned {
                     if let Some(plan) = &mut current.who_plan {
                         if plan.stage == WhoStage::Running {
                             if cancel.check().is_err() {
                                 plan.stage = WhoStage::Cancelled;
                                 plan.error = None;
+                                changed = true;
                             } else if let Err(error) = &result {
                                 plan.stage = WhoStage::Failed;
                                 plan.error = Some(error.clone());
+                                changed = true;
                             }
-                            let _ = Self::save(&mut i, current);
                         }
+                    }
+                }
+                if changed {
+                    if let Err(error) = Self::save(&mut i, current.clone()) {
+                        let unsaved = host_wrapped("file.result_unsaved", &error);
+                        if let Some(plan) = &mut current.who_plan {
+                            if planned {
+                                plan.stage = WhoStage::Failed;
+                                plan.error = Some(unsaved.clone());
+                            }
+                        }
+                        current.diarization_error = Some(unsaved);
+                        if let Some(old) = i.documents.iter_mut().find(|v| v.id == current.id) {
+                            *old = current;
+                        }
+                        save_notice = Some(error);
                     }
                 }
             }
         }
         drop(i);
+        if let Some(error) = save_notice {
+            (self.host.notify)(Some(error));
+        }
         self.emit();
         result
     }

@@ -260,7 +260,9 @@ Original ASR and corrections remain separate from `Diarization`/`SpeakerTurn`.
 The optional durable `WhoPlan` records requested count and phase on the same
 document. The queue registers cancellation atomically with the ASR-to-Who
 transition; ASR stays Ready while CLI completion waits for Who. Interrupted Who
-is failed on restart without replay. JSON exports derive `speaker_transcript`
+is failed on restart without replay. Explicit ASR and Who retries update the
+same plan; a failed phase-state save reports `file.result_unsaved` in memory and
+notifies the host instead of leaving an ownerless running phase. JSON exports derive `speaker_transcript`
 through the same core annotation as the UI and retain original ASR separately.
 The `test-harness` feature can inject explicit synthetic ASR/Who fixtures and
 delays only for isolated process tests; it is excluded from production builds.

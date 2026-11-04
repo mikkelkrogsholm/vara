@@ -265,7 +265,7 @@ forbliver `Ready` efter gemt ASR, mens CLI viser `processing` indtil Who er fær
 Kvitteringen indeholder særskilt `asr_stage` og `who`. Who-fejl eller annullering
 giver ikke-nul exit, status `who_failed`/`who_cancelled` og dokument-ID; tekst, lyd
 og eksisterende data bevares. Pending/running Who markeres afbrudt efter backend-
-genstart og genkøres ikke automatisk. Cancel dækker begge faser, også overgangen. Hvis ASR fejler før Who, gemmes Who som `skipped`.
+genstart og genkøres ikke automatisk. Cancel dækker begge faser, også overgangen. Hvis ASR fejler før Who, gemmes Who som `skipped`. Eksplicit ASR-retry nulstiller Who til pending; eksplicit Who-retry opdaterer samme fase og det valgte talerantal. Kan Who-resultatet eller fasens slutstatus ikke gemmes, melder den aktive ejer `file.result_unsaved` uden at miste gemt ASR.
 
 `--original` vælger oprindelig ASR-tekst og timing til eksport; ellers bruges gemt
 redigering. Usendte GUI-udkast er ikke tilgængelige. SRT/VTT kræver reelle tider og
