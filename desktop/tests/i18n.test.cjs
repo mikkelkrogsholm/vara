@@ -33,7 +33,7 @@ i18n.setLocale('da'); i18n.setLocale('da'); unsubscribe(); i18n.setLocale('en');
 assert.equal(changes, 1);
 // Every literal key consumed by the owned main UI must exist in both catalogs.
 const fs = require('node:fs'), path = require('node:path');
-for (const file of ['app.js', 'components.js', 'views.js']) {
+for (const file of ['app.js', 'components.js', 'views.js', 'transcription.js']) {
   const source = fs.readFileSync(path.join(__dirname, '../ui', file), 'utf8');
   for (const match of source.matchAll(/(?:Vara\.i18n\.bind|\btr)\(\s*["']([^"']+)["']/g)) {
     for (const [locale, catalog] of Object.entries(catalogs))

@@ -586,7 +586,7 @@ async function run(page) {
   await page.locator("#tx-who-count").selectOption("2");
   await act("tx-who-run").click();
   await page.waitForFunction(() => document.querySelector("#tx-who-tools").textContent.includes("usikker"));
-  assert((await page.locator("#tx-who-tools").innerText()).includes("2 talere · 0:02 med usikker taler"), "Known count excludes and measures uncertainty");
+  assert((await page.locator("#tx-who-tools").innerText()).includes("2 talere · 2 sekunder med usikker taler"), "Known count excludes and measures uncertainty");
   await page.locator(".tx-who-turns summary").click();
   assert((await page.locator(".tx-who-turns").innerText()).includes("Usikker taler"), "Uncertain interval visible");
   assert((await page.locator('[data-action="tx-speaker"][data-id="who-uncertain"]').count()) === 0, "Uncertainty cannot be renamed");

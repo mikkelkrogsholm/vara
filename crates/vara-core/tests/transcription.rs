@@ -51,6 +51,7 @@ fn document() -> TranscriptionDocument {
         ai_text: None,
         ai_engine: None,
         speakers: Default::default(),
+        auto_speakers: Default::default(),
         diarization: None,
         diarization_error: None,
     }
@@ -277,4 +278,42 @@ fn known_count_uncertainty_and_legacy_diarization() {
     assert!(d.validate(2.).is_ok()); // Abstention may leave fewer IDs than the chosen count.
     d.known_speakers.as_mut().unwrap().count = 0;
     assert!(d.validate(2.).is_err());
+}
+
+#[test]
+fn generated_speaker_provenance_is_optional_and_never_changes_exports() {
+    let mut original = document();
+    original.speakers.insert("legacy".into(), "Taler 1".into());
+    let legacy_json = serde_json::to_string(&original).unwrap();
+    assert!(!legacy_json.contains("auto_speakers"));
+    let legacy: TranscriptionDocument = serde_json::from_str(&legacy_json).unwrap();
+    assert!(legacy.auto_speakers.is_empty());
+    assert_eq!(legacy.speakers["legacy"], "Taler 1");
+
+    let baseline: Vec<_> = ["txt", "md", "json", "srt", "vtt"]
+        .iter()
+        .map(|format| original.export(format, true).unwrap())
+        .collect();
+    original.auto_speakers.insert("speaker_1".into(), 1);
+    let persisted = serde_json::to_string(&original).unwrap();
+    let restored: TranscriptionDocument = serde_json::from_str(&persisted).unwrap();
+    assert_eq!(restored.auto_speakers["speaker_1"], 1);
+    let dir = tempfile::tempdir().unwrap();
+    let path = dir.path().join("speakers.sqlite3");
+    {
+        TranscriptionStore::open(&path)
+            .unwrap()
+            .save(&restored)
+            .unwrap();
+    }
+    let restored = TranscriptionStore::open(&path)
+        .unwrap()
+        .all()
+        .unwrap()
+        .remove(0);
+    assert_eq!(restored.auto_speakers["speaker_1"], 1);
+    assert_eq!(restored.speakers["legacy"], "Taler 1");
+    for (format, expected) in ["txt", "md", "json", "srt", "vtt"].iter().zip(baseline) {
+        assert_eq!(restored.export(format, true).unwrap(), expected, "{format}");
+    }
 }

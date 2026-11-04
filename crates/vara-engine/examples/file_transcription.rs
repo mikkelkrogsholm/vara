@@ -50,6 +50,7 @@ fn main() -> std::result::Result<(), Box<dyn std::error::Error>> {
         ai_text: None,
         ai_engine: None,
         speakers: BTreeMap::new(),
+        auto_speakers: BTreeMap::new(),
         diarization: None,
         diarization_error: None,
     };

@@ -10,6 +10,7 @@
     notice,
     empty,
   } = Vara.ui;
+  const { bind: tr, message: msg, bindNumber } = Vara.i18n;
   const tx = {
     documents: [],
     media: {},
@@ -32,52 +33,54 @@
   let host, main, saveTimer, refreshTimer;
   const audio = new Audio();
   audio.preload = "metadata";
+  const uiError = (key) => Object.assign(new Error(msg(key)), { uiKey: key, uiMessage: tr(key) });
   const busy = (d) => ["queued", "decoding", "transcribing"].includes(d.stage);
   const stage = {
-    queued: "Venter",
-    decoding: "Åbner lyd…",
-    transcribing: "Transskriberer…",
-    ready: "Klar",
-    failed: "Mislykkedes",
-    cancelled: "Annulleret",
+    queued: tr("tx.waiting"),
+    decoding: tr("tx.opening-audio"),
+    transcribing: tr("tx.transcribing"),
+    ready: tr("tx.ready"),
+    failed: tr("tx.failed"),
+    cancelled: tr("tx.cancelled"),
   };
   const stamp = (t) => {
     t = Math.max(0, Math.floor(t || 0));
     return `${Math.floor(t / 60)}:${String(t % 60).padStart(2, "0")}`;
   };
   const doc = () => tx.documents.find((d) => d.id === tx.selected);
+  const speakerName = (d, id) => d.auto_speakers?.[id] ? tr("tx.speaker-label", { number: d.auto_speakers[id] }) : (d.speakers?.[id] || id);
   const selectedEngine = () =>
     main?.data.settings.engines.find((x) => x.id === tx.engine);
   const error = () =>
     tx.error
       ? notice(
-          tx.error,
+          tx.error.key ? tr(tx.error.key) : tx.error,
           "error",
-          b("Luk besked", "tx-dismiss", { variant: "quiet" }),
+          b(tr("tx.close-message"), "tx-dismiss", { variant: "quiet" }),
         )
       : "";
   function fileRow(d) {
-    return `<li class="tx-file ${d.id === tx.selected ? "is-selected" : ""}"><button class="tx-file-select" data-action="tx-select" data-id="${e(d.id)}" aria-pressed="${d.id === tx.selected}">${icon("document")}<span><strong>${e(d.title)}</strong><small>${e(d.language || "Automatisk")} · ${d.duration ? stamp(d.duration) + " · " : ""}${stage[d.stage]}</small></span></button>${busy(d) ? ib("close", "Annuller " + d.title, "tx-cancel", `data-id="${e(d.id)}"`) : ib("trash", "Slet " + d.title, "tx-delete", `data-id="${e(d.id)}"`)}</li>`;
+    return `<li class="tx-file ${d.id === tx.selected ? "is-selected" : ""}"><button class="tx-file-select" data-action="tx-select" data-id="${e(d.id)}" aria-pressed="${d.id === tx.selected}">${icon("document")}<span><strong>${e(d.title)}</strong><small>${e(d.language || tr("tx.automatic"))} · ${d.duration ? stamp(d.duration) + " · " : ""}${stage[d.stage]}</small></span></button>${busy(d) ? ib("close", tr("tx.cancel-file", { name: d.title }), "tx-cancel", `data-id="${e(d.id)}"`) : ib("trash", tr("tx.delete-file", { name: d.title }), "tx-delete", `data-id="${e(d.id)}"`)}</li>`;
   }
   function importView() {
     const engine = selectedEngine(),
       local = engine?.locality === "on_device";
-    return `<section class="tx-import page-scroll"><header class="page-header"><h1 id="view-title" tabindex="-1">Transskribering</h1><p class="muted">Fra lyd og video til tekst.</p></header>${error()}<div class="tx-drop" id="tx-drop" role="region" aria-label="Tilføj lyd eller video"><span class="tx-drop-icon">${icon("document")}</span><h2>Tilføj lyd eller video</h2><p>Træk filer hertil, eller vælg dem på computeren.</p>${b("Vælg filer", "tx-pick")}<p class="tx-format-note">WAV, MP3, FLAC, M4A og video med understøttet lydspor</p></div>${tx.files.length ? `<ul class="tx-staged">${tx.files.map((v, i) => `<li>${icon("document")}<span>${e(v.name)}<small>${(v.bytes / 1e6).toLocaleString("da-DK", { maximumFractionDigits: 1 })} MB</small></span>${ib("close", "Fjern " + v.name, "tx-remove", `data-id="${i}"`)}</li>`).join("")}</ul><p class="muted">${tx.files.length} ${tx.files.length === 1 ? "fil klar" : "filer klar"}</p>` : ""}<div class="tx-import-options">${Vara.views.modelPicker(main, "tx-engine", "Talemodel", "speech", tx.engine)}${f(
+    return `<section class="tx-import page-scroll"><header class="page-header"><h1 id="view-title" tabindex="-1">${tr("tx.transcription")}</h1><p class="muted">${tr("tx.turn-audio-and-video-into-text")}</p></header>${error()}<div class="tx-drop" id="tx-drop" role="region" aria-label="${tr("tx.add-audio-or-video")}"><span class="tx-drop-icon">${icon("document")}</span><h2>${tr("tx.add-audio-or-video")}</h2><p>${tr("tx.import.drop-hint")}</p>${b(tr("tx.choose-files"), "tx-pick")}<p class="tx-format-note">${tr("tx.import.formats")}</p></div>${tx.files.length ? `<ul class="tx-staged">${tx.files.map((v, i) => `<li>${icon("document")}<span>${e(v.name)}<small>${tr("tx.file-size", { size: bindNumber(v.bytes / 1e6, { maximumFractionDigits: 1 }) })}</small></span>${ib("close", tr("tx.remove-file", { name: v.name }), "tx-remove", `data-id="${i}"`)}</li>`).join("")}</ul><p class="muted">${tr("tx.files-ready", { count: tx.files.length })}</p>` : ""}<div class="tx-import-options">${Vara.views.modelPicker(main, "tx-engine", tr("tx.speech-model"), "speech", tx.engine)}${f(
       {
         id: "tx-language",
-        label: "Sprog",
+        label: tr("tx.language"),
         value: tx.language,
         options: [
-          ["", "Automatisk"],
-          ["da", "Dansk"],
-          ["en", "Engelsk"],
-          ["sv", "Svensk"],
-          ["no", "Norsk"],
-          ["de", "Tysk"],
+          ["", tr("tx.automatic")],
+          ["da", tr("tx.danish")],
+          ["en", tr("tx.english")],
+          ["sv", tr("tx.swedish")],
+          ["no", tr("tx.norwegian")],
+          ["de", tr("tx.german")],
         ],
         attrs: engine?.provider === "local_parakeet" ? "disabled" : "",
       },
-    )}</div><p class="muted tx-locality">${local ? "Filerne behandles på din enhed." : `Lyd sendes til ${e(engine?.label || "den valgte udbyder")}.`} Originalerne ændres ikke.</p><p class="muted tx-storage">Vara gemmer en lydkopi til afspilning og genprøvning. Slet dokumentet for at fjerne kopien; annullering rydder arbejdslyden. Op til 8 timer pr. fil.</p>${engine?.provider === "local_parakeet" ? '<p class="muted tx-format-note">Parakeet registrerer automatisk sproget.</p>' : ""}<div class="tx-start actions">${tx.files.length ? b("Ryd valg", "tx-clear", { variant: "quiet" }) : ""}${b(tx.files.length > 1 ? `Transskriber ${tx.files.length} filer` : "Transskriber", "tx-start", { variant: "primary", attrs: tx.files.length ? "" : "disabled" })}</div>${tx.documents.length ? `<section class="tx-recent"><header><h2>Seneste</h2>${f({ id: "tx-query", label: "Søg i transskriptioner", type: "search", value: tx.query })}</header><ul>${filtered().map(fileRow).join("")}</ul></section>` : ""}</section>`;
+    )}</div><p class="muted tx-locality">${local ? tr("tx.local-files") : tr("tx.remote-files", { provider: engine ? Vara.desktopUi.displayEngineName(engine) : tr("tx.selected-provider") })}</p><p class="muted tx-storage">${tr("tx.import.retention")}</p>${engine?.provider === "local_parakeet" ? `<p class="muted tx-format-note">${tr("tx.import.parakeet-language")}</p>` : ""}<div class="tx-start actions">${tx.files.length ? b(tr("tx.clear-selection"), "tx-clear", { variant: "quiet" }) : ""}${b(tx.files.length > 1 ? tr("tx.transcribe-files", { count: tx.files.length }) : tr("tx.transcribe"), "tx-start", { variant: "primary", attrs: tx.files.length ? "" : "disabled" })}</div>${tx.documents.length ? `<section class="tx-recent"><header><h2>${tr("tx.recent")}</h2>${f({ id: "tx-query", label: tr("tx.search-transcriptions"), type: "search", value: tx.query })}</header><ul>${filtered().map(fileRow).join("")}</ul></section>` : ""}</section>`;
   }
   function filtered() {
     const q = tx.query.toLocaleLowerCase();
@@ -96,11 +99,11 @@
     const uncertain = turns.filter((t) => t.speaker === "who-uncertain").sort((a, b) => a.start - b.start);
     let seconds = 0, end = 0;
     for (const t of uncertain) { seconds += Math.max(0, t.end - Math.max(end, t.start)); end = Math.max(end, t.end); }
-    return `${b(running ? "Finder talere…" : d.diarization ? "Taleropdeling · Who" : "Find talere", "tx-who-open", { variant: "quiet" })}${running ? b("Annuller taleropdeling", "tx-who-cancel", { variant: "quiet" }) : ""}${d.diarization ? `<span class="muted">${count} ${count === 1 ? "taler" : "talere"}${uncertain.length ? ` · ${stamp(seconds)} med usikker taler` : ""} · på enheden</span>` : ""}${d.diarization_error ? notice(d.diarization_error, "error") : ""}`;
+    return `${b(running ? tr("tx.finding-speakers") : d.diarization ? tr("tx.speaker-identification-who") : tr("tx.find-speakers"), "tx-who-open", { variant: "quiet" })}${running ? b(tr("tx.cancel-speaker-identification"), "tx-who-cancel", { variant: "quiet" }) : ""}${d.diarization ? `<span class="muted">${tr(uncertain.length ? "tx.speaker-summary-uncertain" : "tx.speaker-summary", { count, duration: bindNumber(seconds, { style: "unit", unit: "second", unitDisplay: "long", maximumFractionDigits: 1 }) })}</span>` : ""}${d.diarization_error ? notice(d.diarization_error, "error") : ""}`;
   }
   function whoTurns(d) {
     if (!d.diarization) return "";
-    return `<details class="tx-who-turns"><summary>Talerintervaller · Who</summary><p class="muted">Stemmer navngives Taler 1, Taler 2 osv. Overlap og usikre ord kan stå uden én taler. ${d.transcript.timing !== "word" ? "Uden ordtidskoder kan vi ikke fordele teksten præcist mellem talerne." : "Rettelser ændrer ikke originalens talermarkeringer."}</p>${d.diarization.turns.map((t) => `<div class="tx-who-turn">${t.speaker === "who-uncertain" ? '<span>Usikker taler</span>' : b(d.speakers[t.speaker] || t.speaker, "tx-speaker", { variant: "quiet", attrs: `data-id="${e(t.speaker)}"` })}${b(`${stamp(t.start)}–${stamp(t.end)}`, "tx-seek", { variant: "quiet", attrs: `data-time="${t.start}"` })}</div>`).join("")}</details>`;
+    return `<details class="tx-who-turns"><summary>${tr("tx.speaker-intervals-who")}</summary><p class="muted">${tr("tx.speaker-explanation")} ${d.transcript.timing !== "word" ? tr("tx.who.no-word-timing") : tr("tx.who.edits-preserve-labels")}</p>${d.diarization.turns.map((t) => `<div class="tx-who-turn">${t.speaker === "who-uncertain" ? `<span>${tr("tx.uncertain-speaker")}</span>` : b(speakerName(d, t.speaker), "tx-speaker", { variant: "quiet", attrs: `data-id="${e(t.speaker)}"` })}${b(`${stamp(t.start)}–${stamp(t.end)}`, "tx-seek", { variant: "quiet", attrs: `data-time="${t.start}"` })}</div>`).join("")}</details>`;
   }
   function whoDialog() {
     const status = tx.whoStatus,
@@ -108,8 +111,8 @@
       running = d?.who_busy || tx.whoBusy.has(d?.id);
     if (!d) return;
     host.modal(
-      "Taleropdeling med Who",
-      `<p>Find hvem der taler hvornår. Lyden behandles lokalt; transskriptionen, rettelser og originalfil bevares.</p><p class="muted">Who by <a href="https://desertant.com" data-action="tx-who-link" data-id="vendor">Desert Ant Labs</a> · model v0.3.4. Vara anvender en tilpasset SDK-version. Op til fire stemmer pr. fem minutter; stemmer matches på tværs af længere optagelser. Modellen kan forveksle stemmer, især ved overlap, støj og korte indspark. Korte eller stille klip kan give ingen talere.</p><p class="muted">SDK’et sender en installations-id samt model-, platform- og appoplysninger til Desert Ant Labs’ licenssystem. Lyd og tekst sendes ikke. <a href="https://license.desertant.com/1.0" data-action="tx-who-link" data-id="license">Licens og brugstælling</a>.</p>${status?.error ? notice(status.error, "error") : ""}${tx.whoDownload ? `<p role="status">Henter og klargør Who…</p>${b("Annuller download", "tx-who-download-cancel")}` : running ? `<p role="status">Finder talere. Du kan fortsætte med resten af Vara.</p>${b("Annuller", "tx-who-cancel")}` : status?.ready ? `<label for="tx-who-count">Antal talere</label><select id="tx-who-count"><option value="">Automatisk</option>${Array.from({length: 16}, (_, i) => `<option value="${i + 1}" ${d.diarization?.known_speakers?.count === i + 1 ? "selected" : ""}>${i + 1}</option>`).join("")}</select><p class="muted">Angiv kun antal, hvis du kender det. Who krydstjekker med forskudte tidsvinduer. Passager uden enighed vises som usikre.</p>${b(d.diarization ? "Find talere igen" : "Find talere", "tx-who-run", { variant: "primary" })}` : status?.available ? `<p>Hent modellen før første brug (omkring 81 MB på Mac). Download og brug sker under den viste licens.</p>${b("Hent Who", "tx-who-download", { variant: "primary" })}` : ""}`,
+      tr("tx.speaker-identification-with-who"),
+      `<p>${tr("tx.who.introduction")}</p><p class="muted">Who by <a href="https://desertant.com" data-action="tx-who-link" data-id="vendor">Desert Ant Labs</a> · ${tr("tx.who-model")}</p><p class="muted">${tr("tx.who-telemetry")} <a href="https://license.desertant.com/1.0" data-action="tx-who-link" data-id="license">${tr("tx.who-license")}</a>.</p>${status?.error ? notice(status.error, "error") : ""}${tx.whoDownload ? `<p role="status">${tr("tx.downloading-and-preparing-who")}</p>${b(tr("tx.cancel-download"), "tx-who-download-cancel")}` : running ? `<p role="status">${tr("tx.who.running")}</p>${b(tr("tx.cancel"), "tx-who-cancel")}` : status?.ready ? `<div class="tx-who-count"><label for="tx-who-count">${tr("tx.number-of-speakers")}</label><select id="tx-who-count"><option value="">${tr("tx.automatic")}</option>${Array.from({length: 16}, (_, i) => `<option value="${i + 1}" ${d.diarization?.known_speakers?.count === i + 1 ? "selected" : ""}>${i + 1}</option>`).join("")}</select></div><p class="muted">${tr("tx.who.count-help")}</p>${b(d.diarization ? tr("tx.find-speakers-again") : tr("tx.find-speakers"), "tx-who-run", { variant: "primary" })}` : status?.available ? `<p>${tr("tx.who.download-help")}</p>${b(tr("tx.download-who"), "tx-who-download", { variant: "primary" })}` : ""}`,
     );
   }
   function transcriptText(d) {
@@ -119,20 +122,20 @@
         stage[d.stage],
         d.error ||
           (d.stage === "transcribing"
-            ? `${stamp(d.completed_seconds)} af ${stamp(d.duration)} lyd behandlet.`
-            : "Du kan bruge resten af Vara imens."),
+            ? tr("tx.progress", { completed: stamp(d.completed_seconds), duration: stamp(d.duration) })
+            : tr("tx.job.background-hint")),
         ["failed", "cancelled"].includes(d.stage)
-          ? b("Prøv igen", "tx-retry", {
+          ? b(tr("tx.try-again"), "tx-retry", {
               variant: "primary",
               attrs: `data-id="${e(d.id)}"`,
             })
-          : b("Annuller", "tx-cancel", { attrs: `data-id="${e(d.id)}"` }),
+          : b(tr("tx.cancel"), "tx-cancel", { attrs: `data-id="${e(d.id)}"` }),
       );
     const draft = tx.drafts.get(d.id);
     const edited = draft?.text ?? d.edited_text;
     if (!tx.original && edited !== null && edited !== undefined)
-      return `<div class="tx-edit-notice">${notice("Teksten er rettet og kræver ny tidsjustering. Afspilning følger den bevarede original.", "info")}</div><textarea class="tx-editor-text" id="tx-editor-text" data-document="${e(d.id)}" aria-label="Redigér transskription" spellcheck="true" dir="auto">${e(edited)}</textarea>`;
-    return `<div class="tx-segments">${t.segments.map((s) => `<section class="tx-segment"><div class="tx-segment-meta">${s.speaker ? `<button data-action="tx-speaker" data-id="${e(s.speaker)}" aria-label="Omdøb taler ${e(d.speakers[s.speaker] || s.speaker)}">${e(d.speakers[s.speaker] || s.speaker)}</button>` : ""}${s.start !== null ? `<button class="tx-segment-time" data-action="tx-seek" data-time="${s.start}" aria-label="Afspil fra ${stamp(s.start)}">${stamp(s.start)}</button>` : ""}</div><p class="tx-prose" dir="auto">${s.words.length ? s.words.map((w) => `<button class="tx-word" tabindex="-1" data-action="tx-seek" data-word="${e(w.id)}" data-time="${w.start}" data-end="${w.end}">${e(w.text)}</button>`).join(" ") : e(s.text)}</p></section>`).join("")}</div>`;
+      return `<div class="tx-edit-notice">${notice(tr("tx.editor.alignment-notice"), "info")}</div><textarea class="tx-editor-text" id="tx-editor-text" data-document="${e(d.id)}" aria-label="${tr("tx.edit-transcription")}" spellcheck="true" dir="auto">${e(edited)}</textarea>`;
+    return `<div class="tx-segments">${t.segments.map((s) => `<section class="tx-segment"><div class="tx-segment-meta">${s.speaker ? `<button data-action="tx-speaker" data-id="${e(s.speaker)}" aria-label="${tr("tx.rename-speaker-name", { name: speakerName(d, s.speaker) })}">${e(speakerName(d, s.speaker))}</button>` : ""}${s.start !== null ? `<button class="tx-segment-time" data-action="tx-seek" data-time="${s.start}" aria-label="${tr("tx.play-from", { time: stamp(s.start) })}">${stamp(s.start)}</button>` : ""}</div><p class="tx-prose" dir="auto">${s.words.length ? s.words.map((w) => `<button class="tx-word" tabindex="-1" data-action="tx-seek" data-word="${e(w.id)}" data-time="${w.start}" data-end="${w.end}">${e(w.text)}</button>`).join(" ") : e(s.text)}</p></section>`).join("")}</div>`;
   }
   function editor() {
     const d = doc();
@@ -140,10 +143,10 @@
     const timed = d.transcript?.timing || "none",
       draft = tx.drafts.get(d.id),
       hasMedia = !!tx.media[d.id];
-    return `<section class="tx-library"><header class="pane-toolbar"><h1 id="view-title" tabindex="-1">Transskribering</h1></header><div class="tx-library-controls">${b("Tilføj filer", "tx-import", { glyph: "plus" })}${f({ id: "tx-query", label: "Søg i transskriptioner", type: "search", value: tx.query })}</div><ul class="tx-library-list">${filtered().map(fileRow).join("") || '<li class="muted">Ingen match</li>'}</ul><p class="tx-library-note">Lyd og video · Lokale afspilningskopier</p></section><section class="tx-detail" aria-label="Valgt transskription"><header class="tx-detail-header"><div><button class="tx-title" data-action="tx-rename" aria-label="Omdøb ${e(d.title)}"><h2>${e(d.title)}</h2>${icon("edit")}</button><p class="muted">${e(d.source_name)} · ${e(d.language || "Automatisk")} ${d.duration ? " · " + stamp(d.duration) : ""}</p></div><div class="actions"><span id="tx-save-status" class="muted" role="status">${tx.saving.has(d.id) ? "Gemmer…" : draft || (d.transcript && d.stage === "failed") ? "Ikke gemt" : "Gemt"}</span>${d.transcript ? ib("copy", "Kopiér transskription", "tx-copy") : ""}${ib("trash", "Slet transskription", "tx-delete", `data-id="${e(d.id)}"`)}${b("Eksportér", "tx-export", { variant: "primary", attrs: d.transcript ? "" : "disabled" })}</div></header><nav class="tx-tabs" aria-label="Dokumentvisning"><button data-action="tx-tab" data-id="transcript" class="${tx.tab === "transcript" ? "is-current" : ""}" aria-pressed="${tx.tab === "transcript"}">Transskription</button><button data-action="tx-tab" data-id="ai" class="${tx.tab === "ai" ? "is-current" : ""}" aria-pressed="${tx.tab === "ai"}">AI-bearbejdning</button>${d.transcript ? b(tx.original ? "Vis rettet tekst" : "Vis original", "tx-original", { variant: "quiet" }) : ""}</nav><div class="tx-reading"><div id="tx-errors">${error()}</div>${d.error && d.transcript ? notice(d.error, "error", b("Gem resultat igen", "tx-persist")) : ""}<p class="tx-provenance"><span class="status-dot"></span>${e(d.engine.locality === "on_device" ? "På enheden" : d.engine.label)} · ${timed === "word" ? "Ordtidskoder" : timed === "segment" ? "Tidskoder pr. afsnit" : "Ingen tidskoder"}</p>${d.engine.provider === "eleven_labs" ? '<p class="muted tx-format-note">Talere genkendes pr. lydstykke på op til fem minutter. Navne forbindes ikke automatisk mellem lydstykker.</p>' : ""}${d.transcript && tx.tab === "transcript" ? `<div id="tx-who-tools" class="tx-text-tools">${whoControls(d)}</div>${whoTurns(d)}<div class="tx-text-tools">${b(draft || d.edited_text !== null ? "Gem igen" : "Redigér tekst", draft || d.edited_text !== null ? "tx-save" : "tx-edit", { variant: "quiet" })}${draft || d.edited_text !== null ? b("Gendan original", "tx-reset", { variant: "quiet" }) : ""}${timed !== "none" ? b("Afspil markering", "tx-selection", { variant: "quiet" }) : ""}</div>` : ""}${tx.tab === "ai" ? aiView(d) : transcriptText(d)}${d.transcript && tx.tab === "transcript" ? '<p class="tx-reading-help muted">Klik på et ord eller en tidskode for at lytte herfra. Originalen bevares, når du retter teksten.</p>' : ""}</div><footer class="tx-player"><div class="tx-player-actions">${b("−10 s", "tx-rewind", { variant: "quiet", attrs: hasMedia ? "" : "disabled" })}${b(audio.paused ? "Afspil" : "Pause", "tx-play", { variant: "primary", attrs: hasMedia ? "" : "disabled" })}${b("+10 s", "tx-forward", { variant: "quiet", attrs: hasMedia ? "" : "disabled" })}</div><span id="tx-time" class="tx-time">${stamp(audio.currentTime)} / ${stamp(d.duration)}</span><div class="tx-seek-track"><div class="tx-waveform" aria-hidden="true">${(d.waveform || []).map((v) => `<i style="height:${Math.max(2, Math.min(1, v) * 30)}px"></i>`).join("")}</div><input id="tx-position" type="range" min="0" max="${d.duration || 1}" step="0.1" value="${audio.currentTime || 0}" aria-label="Afspilningsposition" ${hasMedia ? "" : "disabled"}></div><label class="sr-only" for="tx-speed">Afspilningshastighed</label><select id="tx-speed">${[0.75, 1, 1.25, 1.5, 2].map((n) => `<option ${audio.playbackRate === n ? "selected" : ""} value="${n}">${n}×</option>`).join("")}</select>${!hasMedia ? '<p class="tx-missing">Afspilningskopien mangler. Teksten er bevaret.</p>' : ""}</footer></section>`;
+    return `<section class="tx-library"><header class="pane-toolbar"><h1 id="view-title" tabindex="-1">${tr("tx.transcription")}</h1></header><div class="tx-library-controls">${b(tr("tx.add-files"), "tx-import", { glyph: "plus" })}${f({ id: "tx-query", label: tr("tx.search-transcriptions"), type: "search", value: tx.query })}</div><ul class="tx-library-list">${filtered().map(fileRow).join("") || `<li class="muted">${tr("tx.no-matches")}</li>`}</ul><p class="tx-library-note">${tr("tx.audio-and-video-local-playback-copies")}</p></section><section class="tx-detail" aria-label="${tr("tx.selected-transcription")}"><header class="tx-detail-header"><div><button class="tx-title" data-action="tx-rename" aria-label="${tr("tx.rename-title", { title: d.title })}"><h2>${e(d.title)}</h2>${icon("edit")}</button><p class="muted">${e(d.source_name)} · ${e(d.language || tr("tx.automatic"))} ${d.duration ? " · " + stamp(d.duration) : ""}</p></div><div class="actions"><span id="tx-save-status" class="muted" role="status">${tx.saving.has(d.id) ? tr("tx.saving") : draft || (d.transcript && d.stage === "failed") ? tr("tx.not-saved") : tr("tx.saved")}</span>${d.transcript ? ib("copy", tr("tx.copy-transcription"), "tx-copy") : ""}${ib("trash", tr("tx.delete-transcription"), "tx-delete", `data-id="${e(d.id)}"`)}${b(tr("tx.export"), "tx-export", { variant: "primary", attrs: d.transcript ? "" : "disabled" })}</div></header><nav class="tx-tabs" aria-label="${tr("tx.document-view")}"><button data-action="tx-tab" data-id="transcript" class="${tx.tab === "transcript" ? "is-current" : ""}" aria-pressed="${tx.tab === "transcript"}">${tr("tx.transcript")}</button><button data-action="tx-tab" data-id="ai" class="${tx.tab === "ai" ? "is-current" : ""}" aria-pressed="${tx.tab === "ai"}">${tr("tx.ai-processing")}</button>${d.transcript ? b(tx.original ? tr("tx.show-edited-text") : tr("tx.show-original"), "tx-original", { variant: "quiet" }) : ""}</nav><div class="tx-reading"><div id="tx-errors">${error()}</div>${d.error && d.transcript ? notice(d.error, "error", b(tr("tx.save-result-again"), "tx-persist")) : ""}<p class="tx-provenance"><span class="status-dot"></span>${e(d.engine.locality === "on_device" ? tr("tx.on-device") : Vara.desktopUi.displayEngineName(d.engine))} · ${timed === "word" ? tr("tx.word-timestamps") : timed === "segment" ? tr("tx.segment-timestamps") : tr("tx.no-timestamps")}</p>${d.engine.provider === "eleven_labs" ? `<p class="muted tx-format-note">${tr("tx.editor.provider-speaker-note")}</p>` : ""}${d.transcript && tx.tab === "transcript" ? `<div id="tx-who-tools" class="tx-text-tools">${whoControls(d)}</div>${whoTurns(d)}<div class="tx-text-tools">${b(draft || d.edited_text !== null ? tr("tx.save-again") : tr("tx.edit-text"), draft || d.edited_text !== null ? "tx-save" : "tx-edit", { variant: "quiet" })}${draft || d.edited_text !== null ? b(tr("tx.restore-original"), "tx-reset", { variant: "quiet" }) : ""}${timed !== "none" ? b(tr("tx.play-selection"), "tx-selection", { variant: "quiet" }) : ""}</div>` : ""}${tx.tab === "ai" ? aiView(d) : transcriptText(d)}${d.transcript && tx.tab === "transcript" ? `<p class="tx-reading-help muted">${tr("tx.editor.playback-help")}</p>` : ""}</div><footer class="tx-player"><div class="tx-player-actions">${b("−10 s", "tx-rewind", { variant: "quiet", attrs: hasMedia ? "" : "disabled" })}${b(audio.paused ? tr("tx.play") : tr("tx.pause"), "tx-play", { variant: "primary", attrs: hasMedia ? "" : "disabled" })}${b("+10 s", "tx-forward", { variant: "quiet", attrs: hasMedia ? "" : "disabled" })}</div><span id="tx-time" class="tx-time">${stamp(audio.currentTime)} / ${stamp(d.duration)}</span><div class="tx-seek-track"><div class="tx-waveform" aria-hidden="true">${(d.waveform || []).map((v) => `<i style="height:${Math.max(2, Math.min(1, v) * 30)}px"></i>`).join("")}</div><input id="tx-position" type="range" min="0" max="${d.duration || 1}" step="0.1" value="${audio.currentTime || 0}" aria-label="${tr("tx.playback-position")}" ${hasMedia ? "" : "disabled"}></div><label class="sr-only" for="tx-speed">${tr("tx.playback-speed")}</label><select id="tx-speed">${[0.75, 1, 1.25, 1.5, 2].map((n) => `<option ${audio.playbackRate === n ? "selected" : ""} value="${n}">${bindNumber(n)}×</option>`).join("")}</select>${!hasMedia ? `<p class="tx-missing">${tr("tx.player.missing-copy-detail")}</p>` : ""}</footer></section>`;
   }
   function aiView(d) {
-    return `<div class="tx-ai"><h3>Bearbejd teksten</h3><p class="muted">Oprydning, resumé eller dine egne instruktioner. Den tidskodede original ændres ikke.</p>${Vara.views.modelPicker(main, "tx-ai-engine", "Tekstmodel", "text", tx.aiEngine || d.ai_engine?.id || main.data.settings.general_engine)}${f({ id: "tx-ai-prompt", label: "Instruktioner til AI", rows: true, value: tx.aiPrompt || "Lav et kort resumé af transskriptionen." })}<p class="muted" id="tx-ai-destination">${aiDestination()}</p>${b(tx.aiBusy.has(d.id) ? "Bearbejder…" : "Bearbejd tekst", "tx-ai", { variant: "primary", attrs: !d.transcript || tx.aiBusy.has(d.id) ? "disabled" : "" })}${tx.aiBusy.has(d.id) ? b("Annuller", "tx-ai-cancel") : ""}${d.ai_text ? `<article class="tx-ai-result"><h3>AI-resultat</h3><p dir="auto">${e(d.ai_text)}</p>${b("Kopiér AI-tekst", "tx-copy-ai", { glyph: "copy" })}</article>` : ""}</div>`;
+    return `<div class="tx-ai"><h3>${tr("tx.process-the-text")}</h3><p class="muted">${tr("tx.ai.description")}</p>${Vara.views.modelPicker(main, "tx-ai-engine", tr("tx.text-model"), "text", tx.aiEngine || d.ai_engine?.id || main.data.settings.general_engine)}${f({ id: "tx-ai-prompt", label: tr("tx.instructions-for-ai"), rows: true, value: tx.aiPrompt ?? msg("tx.ai-default-prompt") })}<p class="muted" id="tx-ai-destination">${aiDestination()}</p>${b(tx.aiBusy.has(d.id) ? tr("tx.processing") : tr("tx.process-text"), "tx-ai", { variant: "primary", attrs: !d.transcript || tx.aiBusy.has(d.id) ? "disabled" : "" })}${tx.aiBusy.has(d.id) ? b(tr("tx.cancel"), "tx-ai-cancel") : ""}${d.ai_text ? `<article class="tx-ai-result"><h3>${tr("tx.ai-result")}</h3><p dir="auto">${e(d.ai_text)}</p>${b(tr("tx.copy-ai-text"), "tx-copy-ai", { glyph: "copy" })}</article>` : ""}</div>`;
   }
   function aiDestination() {
     const id =
@@ -153,8 +156,8 @@
       main.data.settings.general_engine;
     const engine = main.data.settings.engines.find((v) => v.id === id);
     return engine?.locality === "on_device"
-      ? "Teksten behandles på din enhed."
-      : `Teksten sendes til ${engine?.label || "din valgte forbindelse"}.`;
+      ? tr("tx.text-is-processed-on-your-device")
+      : tr("tx.remote-text", { provider: engine ? Vara.desktopUi.displayEngineName(engine) : tr("tx.selected-connection") });
   }
   async function reload() {
     const data = await host.api("file_list");
@@ -196,7 +199,7 @@
     if (!draft) return;
     const save = (async () => {
       tx.saving.add(id);
-      document.getElementById("tx-save-status")?.replaceChildren("Gemmer…");
+      document.getElementById("tx-save-status")?.replaceChildren(tr("tx.saving"));
       try {
         const result = await host.api("file_save", {
           id,
@@ -228,8 +231,8 @@
   }
   async function seek(time) {
     if (main.data.session?.stage === "recording")
-      throw Error("Afslut dikteringen, før du afspiller lyd.");
-    if (!tx.media[tx.selected]) throw Error("Afspilningskopien mangler.");
+      throw uiError("tx.finish-dictation-before-playing-audio");
+    if (!tx.media[tx.selected]) throw uiError("tx.playback-copy-missing");
     setAudio();
     audio.currentTime = Math.max(0, Math.min(time, doc().duration));
     tx.stopAt = null;
@@ -357,8 +360,8 @@
         break;
       case "tx-delete":
         host.modal(
-          "Slet transskription?",
-          `<p>Tekst, rettelser og Varas lydkopi slettes. Din originalfil ændres ikke.</p><div class="actions">${b("Slet transskription", "tx-delete-confirm", { variant: "destructive", attrs: `data-id="${e(id)}"` })}${b("Behold", "close-modal")}</div>`,
+          tr("tx.delete.confirm-title"),
+          `<p>${tr("tx.delete.explanation")}</p><div class="actions">${b(tr("tx.delete-transcription"), "tx-delete-confirm", { variant: "destructive", attrs: `data-id="${e(id)}"` })}${b(tr("tx.keep"), "close-modal")}</div>`,
         );
         break;
       case "tx-delete-confirm":
@@ -405,17 +408,17 @@
           original: tx.original,
           draft: !tx.original ? tx.drafts.get(d.id)?.text : undefined,
         });
-        host.toast("Teksten er kopieret.");
+        host.toast(tr("tx.text-copied"));
         break;
       case "tx-copy-ai":
         await host.api("file_copy", { id: d.id, ai: true });
-        host.toast("AI-teksten er kopieret.");
+        host.toast(tr("tx.ai-text-copied"));
         break;
       case "tx-rename":
         host.modal(
-          "Omdøb transskription",
-          f({ id: "tx-title-input", label: "Titel", value: d.title }) +
-            b("Gem titel", "tx-rename-save", { variant: "primary" }),
+          tr("tx.rename-transcription"),
+          f({ id: "tx-title-input", label: tr("tx.title"), value: d.title }) +
+            b(tr("tx.save-title"), "tx-rename-save", { variant: "primary" }),
         );
         break;
       case "tx-rename-save":
@@ -429,12 +432,12 @@
       case "tx-speaker":
         tx.speaker = id;
         host.modal(
-          "Omdøb taler",
+          tr("tx.rename-speaker"),
           f({
             id: "tx-speaker-input",
-            label: "Navn",
-            value: d.speakers[id] || id,
-          }) + b("Gem navn", "tx-speaker-save", { variant: "primary" }),
+            label: tr("tx.name"),
+            value: Vara.i18n.resolve(speakerName(d, id)),
+          }) + b(tr("tx.save-name"), "tx-speaker-save", { variant: "primary" }),
         );
         break;
       case "tx-speaker-save":
@@ -448,31 +451,31 @@
         break;
       case "tx-export":
         host.modal(
-          "Eksportér transskription",
+          tr("tx.export-transcription"),
           f({
             id: "tx-export-format",
-            label: "Format",
+            label: tr("tx.format"),
             value: "txt",
             options: [
-              ["txt", "Tekst (.txt)"],
+              ["txt", tr("tx.text-txt")],
               ["md", "Markdown (.md)"],
-              ["json", "Dokument med orddata (.json)"],
-              ["srt", "Undertekster (.srt)"],
-              ["vtt", "Web-undertekster (.vtt)"],
+              ["json", tr("tx.document-with-word-data-json")],
+              ["srt", tr("tx.subtitles-srt")],
+              ["vtt", tr("tx.web-subtitles-vtt")],
             ],
           }) +
             f({
               id: "tx-export-original",
-              label: "Tekstversion",
+              label: tr("tx.text-version"),
               value: tx.original ? "original" : "edited",
               options: [
-                ["edited", "Aktuel tekst"],
-                ["original", "Tidskodet original"],
-                ...(d.ai_text ? [["ai", "AI-resultat"]] : []),
+                ["edited", tr("tx.current-text")],
+                ["original", tr("tx.timestamped-original")],
+                ...(d.ai_text ? [["ai", tr("tx.ai-result")]] : []),
               ],
             }) +
-            '<p class="muted">Undertekster kræver tidsdata. Rettet tekst skal tidsjusteres igen; vælg originalen til undertekster.</p>' +
-            b("Gem fil", "tx-export-save", { variant: "primary" }),
+            `<p class="muted">${tr("tx.export.subtitle-help")}</p>` +
+            b(tr("tx.save-file"), "tx-export-save", { variant: "primary" }),
         );
         break;
       case "tx-export-save": {
@@ -489,7 +492,7 @@
         });
         if (saved !== false) {
           host.closeModal();
-          host.toast("Eksporten er gemt.");
+          host.toast(tr("tx.export-saved"));
         }
         break;
       }
@@ -510,14 +513,12 @@
       case "tx-selection": {
         const selection = window.getSelection();
         if (!selection || selection.isCollapsed)
-          throw Error("Markér først en passage i den tidskodede original.");
+          throw uiError("tx.selection.empty-error");
         const nodes = [...document.querySelectorAll(".tx-word")].filter((n) =>
           selection.containsNode(n, true),
         );
         if (!nodes.length)
-          throw Error(
-            "Markering kræver ordtidskoder. Klik på en afsnitstid for segmenter.",
-          );
+          throw uiError("tx.selection.word-timing-error");
         await seek(Number(nodes[0].dataset.time));
         tx.stopAt = Number(nodes.at(-1).dataset.end);
         break;
@@ -606,7 +607,7 @@
           text: ev.target.value,
           revision: previous?.revision ?? d.revision,
         });
-        document.getElementById("tx-save-status").textContent = "Ikke gemt";
+        document.getElementById("tx-save-status").textContent = tr("tx.not-saved");
         clearTimeout(saveTimer);
         saveTimer = setTimeout(() => flush(d.id).catch(() => {}), 600);
       }
@@ -639,7 +640,7 @@
     // Update only the player label so editor focus/selection stays intact.
     const updatePlaybackLabel = () => {
       const button = document.querySelector('[data-action="tx-play"]');
-      if (button) button.textContent = audio.paused ? "Afspil" : "Pause";
+      if (button) button.textContent = audio.paused ? tr("tx.play") : tr("tx.pause");
     };
     audio.addEventListener("play", updatePlaybackLabel);
     audio.addEventListener("pause", updatePlaybackLabel);
@@ -665,7 +666,7 @@
     });
     audio.addEventListener("error", () => {
       if (audio.getAttribute("src")) {
-        tx.error = "Afspilningskopien kunne ikke læses. Teksten er bevaret.";
+        tx.error = { key: "tx.player.read-error" };
         draw();
       }
     });
@@ -680,7 +681,7 @@
       try {
         return await action(button);
       } catch (error) {
-        tx.error = String(error.message || error);
+        tx.error = error.uiKey ? { key: error.uiKey } : String(error.message || error);
         draw();
         throw error;
       }
@@ -707,10 +708,10 @@
         .getElementById("tx-save-status")
         ?.replaceChildren(
           tx.saving.has(d.id)
-            ? "Gemmer…"
+            ? tr("tx.saving")
             : tx.drafts.has(d.id)
-              ? "Ikke gemt"
-              : "Gemt",
+              ? tr("tx.not-saved")
+              : tr("tx.saved"),
         );
       const who = document.getElementById("tx-who-tools");
       if (who) who.innerHTML = whoControls(d);
@@ -729,7 +730,7 @@
       if (!hasMedia && !document.querySelector(".tx-missing")) {
         const p = document.createElement("p");
         p.className = "tx-missing";
-        p.textContent = "Afspilningskopien mangler. Teksten er bevaret.";
+        p.textContent = tr("tx.player.missing-copy-detail");
         document.querySelector(".tx-player")?.append(p);
       }
     },

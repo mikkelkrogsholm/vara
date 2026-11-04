@@ -705,3 +705,7 @@ html[data-platform="macos"] .brand {
 @media (min-width: 981px) {
   .app-window { grid-template-columns: minmax(224px, max(18%, min(40vw, 18ch))) minmax(0, 1fr); }
 }
+
+/* Keep the count label and control distinct when text is enlarged. */
+.tx-who-count { display: grid; gap: 8px; justify-items: start; margin-bottom: 12px; }
+.tx-who-count select { max-width: 100%; }

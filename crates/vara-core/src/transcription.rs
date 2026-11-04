@@ -279,6 +279,9 @@ pub struct TranscriptionDocument {
     pub ai_text: Option<String>,
     pub ai_engine: Option<EngineConfig>,
     pub speakers: BTreeMap<String, String>,
+    /// Provenance for generated display labels; absent in legacy documents.
+    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    pub auto_speakers: BTreeMap<String, u32>,
     #[serde(default)]
     pub diarization: Option<Diarization>,
     #[serde(default)]
@@ -306,7 +309,12 @@ impl TranscriptionDocument {
         match format {
             "txt" => Ok(text.into()),
             "md" => Ok(format!("# {}\n\n{}\n", self.title, text)),
-            "json" => Ok(serde_json::to_string_pretty(self)?),
+            "json" => {
+                // Keep the established export shape independent of UI metadata.
+                let mut exported = self.clone();
+                exported.auto_speakers.clear();
+                Ok(serde_json::to_string_pretty(&exported)?)
+            }
             "srt" | "vtt" => {
                 if (!original && self.edited_text.is_some()) || t.timing == Timing::None {
                     return Err(Error::Invalid("Undertekster kræver tidsjusteret tekst. Vælg den tidskodede original, eller eksportér som tekst.".into()));

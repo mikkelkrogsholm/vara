@@ -11,7 +11,7 @@ Derived from `gdd.json`; the graph owns action/type/scenario details. Regenerate
 | `component.engines` | Expose separately typed speech/text capabilities and provider readiness through adapters. | Session delivery, application policy and history ownership. |
 | `component.preferences` | Resolve deliberate processing choices into immutable per-session plans. | Running providers, reading target app content and owning secrets. |
 | `component.history` | Own durable text, staged recovery and bounded temporary audio lifecycle. | Provider protocols and implicit paste replay. |
-| `component.experience` | Present onboarding, history, configuration and honest session status. The main UI supports Danish and English using stable message keys; locale changes preserve user input, focus, selection, dialogs and active operations. User content and edited engine labels remain unchanged. File transcription and native messages have separate localization work. | OS focus decisions, secret values and provider protocol logic. |
+| `component.experience` | Present onboarding, history, configuration and honest session status. The main UI supports Danish and English using stable message keys; locale changes preserve user input, focus, selection, dialogs and active operations. User content and edited engine labels remain unchanged. File transcription follows the same localization boundary; native messages have separate localization work. | OS focus decisions, secret values and provider protocol logic. |
 | `component.transcription` | Own durable file jobs and document library independently from OS dictation delivery and captured-audio retention. | OS focus/insertion, provider protocols, changing or deleting user original files. |
 
 ## Main flow
@@ -206,7 +206,7 @@ An ASR/alignment estimate relative to media start; identity stable within the or
 ### File transcription document
 `entity.file_document`
 
-Own imported-source provenance, stage, preserved transcript, optional correction, separate AI and explicit timing precision. Playback copy is distinct from dictation capture.
+Own imported-source provenance, stage, preserved transcript, optional correction, separate AI and explicit timing precision. Playback copy is distinct from dictation capture. New generated speaker ordinals have explicit optional provenance for localized presentation; legacy and renamed labels remain literal. Export omits presentation provenance.
 
 | Field | Type |
 | --- | --- |
@@ -221,6 +221,7 @@ Own imported-source provenance, stage, preserved transcript, optional correction
 | `transcript` | file_transcript ID? |
 | `diarization` | diarization ID? |
 | `diarization_error` | string? |
+| `auto_speakers` | {  }? |
 
 ### Transcript segment
 `entity.file_segment`

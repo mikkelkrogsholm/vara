@@ -157,3 +157,15 @@ med tilhørende evidens. Denne note ændrer ikke i sig selv eksisterende kontrak
 Annullering af et uafsluttet filjob fjerner dets private arbejdslyd; originalfilen
 forbliver urørt. Ved genprøvning af mislykket talegenkendelse kan en gyldig lokal
 lydkopi genbruges, selv hvis den eksterne original er flyttet.
+
+## Grænsefladesprog og talernavne
+
+Filtransskriptionens app-ejede labels, dialoger og tilgængelige navne vises på
+dansk eller engelsk uafhængigt af talesproget. Sprogskift opdaterer synlige
+labels uden at starte arbejde eller erstatte en aktiv editor eller afspiller.
+Ord, tidsdata, stier, AI-resultater og brugervalgte talernavne ændres ikke.
+Nye automatisk genererede talernavne får eksplicit ordinal-proveniens, så UI kan
+vise Taler 1 eller Speaker 1. Gamle gemte navne fortolkes aldrig heuristisk;
+omdøbning fjerner proveniensen for det pågældende navn. Proveniensen gemmes i
+dokumentet, men indgår ikke i eksport, hvis eksisterende eksportformat skal
+bevares. Usikre passager tælles ikke som en person.

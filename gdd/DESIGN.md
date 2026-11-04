@@ -1280,6 +1280,10 @@ app rules, settings and onboarding present app-owned labels and accessible names
 in Danish or English. Keep speech and transcription language independent of the
 interface choice. Translate a built-in engine label only while both its identity
 and original default label match; retain user-edited labels verbatim. The
-transcription workspace and native host messages have separate localization work.
+file transcription workspace follows the same in-place language behavior; native
+host messages have separate localization work. New generated speaker names use
+recorded ordinal provenance for localized display. Existing and explicitly edited
+names remain literal, even when they resemble an automatic label. Export content
+and media timestamps remain independent of interface language.
 At larger text sizes, navigation wraps and remains keyboard reachable in its own
 scrollable area rather than clipping labels.

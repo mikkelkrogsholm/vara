@@ -110,9 +110,9 @@ Keyboard navigation, visible focus, semantic labels and screen-reader status
 announcements apply to the whole essential journey. Do not require color, hover,
 motion or a global shortcut for access to essential controls. Honor text scaling
 and reduced motion. The main shell, history, app preferences, settings and
-onboarding provide Danish and English UI labels. Interface language does not
-change speech language, transcription language or AI instructions. The file
-transcription workspace and native host messages are separate localization work.
+onboarding and the file transcription workspace provide Danish and English UI
+labels. Interface language does not change speech language, transcription
+language or AI instructions. Native host messages remain separate localization work.
 
 ## Architecture direction
 
@@ -184,5 +184,7 @@ English is the fallback. The user may persist System, Dansk or English. Profiles
 saved before this choice existed retain Danish; malformed saved choices safely
 fall back to English. Changing this preference takes effect without restarting,
 saving other pending settings, replacing live edits or repeating work. Translation
-of remaining existing interface text is delivered separately; user content and
-model names are never automatically translated.
+of native host messages is delivered separately; user content and custom model
+names are never automatically translated. New anonymous speaker labels are
+localized only when their generated provenance is recorded; legacy names and
+explicitly edited names are preserved verbatim.

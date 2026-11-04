@@ -43,3 +43,22 @@ for actual runtime tests and Danish-context limitations.
 
 Work is on `codex/file-transcription`, based on main at `7aba54d`. Cancelled,
 pre-existing untracked dictionary research remains untouched and unpublished.
+
+## Interface language — 2026-11-04
+
+The file workspace uses the shared Danish/English catalog for import, jobs,
+editor, player, AI, Who and export. Language changes update existing controls
+and open dialogs in place. Newly generated speaker labels carry explicit ordinal
+provenance; legacy labels and renamed speakers remain literal. The provenance
+survives the file store but is omitted from the existing JSON export shape.
+
+Verification uses sanitised in-memory UI fixtures and the existing local browser:
+`desktop/tests/transcription-i18n.playwright.cjs` exercises both languages,
+active AI/Who jobs, actual audio instance and editor selection retention, open
+rename/Who/export dialogs, every export option, 1280×820 views and 720×560 views
+with computed text sizes doubled. `desktop/tests/transcription.playwright.js`
+continues to cover the existing transcription journey. Core store/export and
+host speaker-provenance tests cover the persisted representation and legacy
+names. These browser fixtures do not establish native Windows/Linux acceptance or
+exercise real inference, cloud providers, downloads or user profiles. Native and
+provider error localization remains separate work.

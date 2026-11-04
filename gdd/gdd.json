@@ -202,7 +202,7 @@
     "component.experience": {
       "kind": "component",
       "label": "Experience",
-      "description": "Present onboarding, history, configuration and honest session status. The main UI supports Danish and English using stable message keys; locale changes preserve user input, focus, selection, dialogs and active operations. User content and edited engine labels remain unchanged. File transcription and native messages have separate localization work.",
+      "description": "Present onboarding, history, configuration and honest session status. The main UI supports Danish and English using stable message keys; locale changes preserve user input, focus, selection, dialogs and active operations. User content and edited engine labels remain unchanged. File transcription follows the same localization boundary; native messages have separate localization work.",
       "maturity": "specified",
       "source_refs": [
         {
@@ -221,7 +221,7 @@
         }
       ],
       "boundary": {
-        "responsibility": "Present onboarding, history, configuration and honest session status. The main UI supports Danish and English using stable message keys; locale changes preserve user input, focus, selection, dialogs and active operations. User content and edited engine labels remain unchanged. File transcription and native messages have separate localization work.",
+        "responsibility": "Present onboarding, history, configuration and honest session status. The main UI supports Danish and English using stable message keys; locale changes preserve user input, focus, selection, dialogs and active operations. User content and edited engine labels remain unchanged. File transcription follows the same localization boundary; native messages have separate localization work.",
         "rationale": "A single owner keeps this responsibility replaceable behind public contracts in one desktop application.",
         "excludes": [
           "OS focus decisions, secret values and provider protocol logic."
@@ -7470,7 +7470,7 @@
     "entity.file_document": {
       "kind": "entity",
       "label": "File transcription document",
-      "description": "Own imported-source provenance, stage, preserved transcript, optional correction, separate AI and explicit timing precision. Playback copy is distinct from dictation capture.",
+      "description": "Own imported-source provenance, stage, preserved transcript, optional correction, separate AI and explicit timing precision. Playback copy is distinct from dictation capture. New generated speaker ordinals have explicit optional provenance for localized presentation; legacy and renamed labels remain literal. Export omits presentation provenance.",
       "maturity": "specified",
       "source_refs": [
         {
@@ -7535,6 +7535,12 @@
         "diarization_error": {
           "type": "string",
           "optional": true
+        },
+        "auto_speakers": {
+          "type": "object",
+          "properties": {},
+          "optional": true,
+          "description": "Speaker ID to generated ordinal, absent for legacy or explicitly named speakers."
         }
       }
     },
@@ -10868,7 +10874,7 @@
       "format": "text/markdown",
       "normative": true,
       "revision": {
-        "sha256": "3f80c43d95b661df9b5aa6b1877ba7fb334bcd23efdd3a6265517bc900f1a4e9"
+        "sha256": "85bee31dbacff653f302bcd5e3ec99512f786a09bd706993144342318c92596c"
       }
     },
     "source.design": {
@@ -10878,7 +10884,7 @@
       "format": "text/markdown",
       "normative": true,
       "revision": {
-        "sha256": "e027b273bb9675339acdc19d5d75811034a4b89e93ec5b2f72cc2aae212b9619"
+        "sha256": "48f9ced54ba91d48c13d42ca982eb484becedfad3b3e17572901f5f8b6018da5"
       }
     },
     "source.design_selection": {
@@ -10928,7 +10934,7 @@
       "format": "text/markdown",
       "normative": true,
       "revision": {
-        "sha256": "2cb1afacf267e7b825230fa3226fbb45eed2cc73897649eba2b42390f383005e"
+        "sha256": "9955e95019f2a95c35cea9202fc2c2c298d642c5653215c3021a452ceeeb6017"
       }
     }
   },
