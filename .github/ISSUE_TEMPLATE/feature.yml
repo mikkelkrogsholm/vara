@@ -1,0 +1,19 @@
+name: Feature request
+description: Suggest an improvement
+title: "Feature: "
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What would you like to accomplish?
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: Suggested approach and alternatives
+  - type: textarea
+    id: context
+    attributes:
+      label: Relevant platform, version, model or UI examples
+      description: Do not include private audio, transcripts, API keys or other sensitive data.

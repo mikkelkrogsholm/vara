@@ -2,6 +2,7 @@
 # Stable bundle/signing identity prevents each development rebuild from invalidating TCC access.
 set -eu
 cd "$(dirname "$0")/.."
+python3 scripts/check-version.py
 if [ -z "${APPLE_SIGNING_IDENTITY:-}" ]; then
   APPLE_SIGNING_IDENTITY=$(security find-identity -v -p codesigning | sed -n 's/.*"\(Developer ID Application:.*\)"/\1/p' | head -1)
 fi

@@ -1,0 +1,21 @@
+name: Version check
+on:
+  pull_request:
+  push:
+    branches: [main]
+    tags: ['v*']
+permissions:
+  contents: read
+jobs:
+  version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Check versions and fixtures
+        shell: bash
+        run: |
+          python3 scripts/check-version.py
+          python3 -m unittest discover -s scripts/tests -p 'test_version.py'
+          if [[ "$GITHUB_REF_TYPE" == tag ]]; then
+            python3 scripts/check-version.py --tag "$GITHUB_REF_NAME"
+          fi

@@ -138,11 +138,13 @@ The app is built at `target/release/bundle/macos/Vara.app`. Follow the [desktop 
 | `gdd` | Product specification, contracts, design and test results |
 | `scripts` | Build, design synchronization and model measurements |
 
+Vara is licensed under the [MIT License](LICENSE). Third-party software and models have separate notices and licenses; see [bundled notices](desktop/src-tauri/notices).
+
 Design sources are in `gdd/design`. The earlier Swift app exists only in Git history; the Rust/Tauri version is the active app.
 
 </details>
 
-[Product specification](gdd/PRODUCT-SPEC.md) · [Design](gdd/DESIGN.md) · [Contracts](gdd/CONTRACTS.md) · [Transcription tests](gdd/reports/transcription/README.md) · [Who tests](gdd/reports/who/README.md)
+[Contributing](CONTRIBUTING.md) · [Changelog](CHANGELOG.md) · [License](LICENSE) · [Product specification](gdd/PRODUCT-SPEC.md) · [Design](gdd/DESIGN.md) · [Contracts](gdd/CONTRACTS.md) · [Transcription tests](gdd/reports/transcription/README.md) · [Who tests](gdd/reports/who/README.md)
 
 ---
 

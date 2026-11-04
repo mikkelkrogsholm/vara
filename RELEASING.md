@@ -36,9 +36,27 @@ developer entrypoint against the supplied app. It does not verify native UI. The
 downloaded and no cloud engine is selected. Run only with models whose license
 has already been accepted.
 
-For a version change, keep the workspace version in `Cargo.toml`, the package
-version in `desktop/src-tauri/Cargo.toml` and `desktop/src-tauri/tauri.conf.json`
-consistent, and update `Cargo.lock` as necessary.
+## Versions
+
+The workspace version in `Cargo.toml` is the source of truth; every workspace
+package, including the desktop manifest, inherits it. Keep the literal version
+in `desktop/src-tauri/tauri.conf.json` and the local packages in `Cargo.lock` in
+sync. Validate without a build using Python 3.11+:
+
+```sh
+python3 scripts/check-version.py
+python3 -m unittest discover -s scripts/tests -p 'test_version.py'
+# For an explicit release tag:
+python3 scripts/check-version.py --tag vX.Y.Z
+```
+
+Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html):
+`MAJOR.MINOR.PATCH`. Before 1.0, use patch releases for fixes and minor releases
+for features and intentional breaking changes. Public compatibility contracts,
+including CLI schemas and RPC, can be versioned independently as needed. A
+maintainer creates a `vX.Y.Z` tag only for an explicit release; these checks do
+not create tags or publish anything. The changelog records unreleased changes
+until an actual release is made.
 
 ## Distribution status
 
