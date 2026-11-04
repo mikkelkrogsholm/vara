@@ -97,6 +97,8 @@ Til længere optagelser: Åbn **Transskribering**, tilføj dine filer, og start 
 | **Windows og Linux** | Planlagte desktopmål. Native integration, pakning og sluttest mangler. |
 | **iOS og Android** | Mulig senere udvidelse med den fælles Rust-motor. Ingen mobilapp endnu. |
 
+På macOS kan agenter bruge den pakkede `vara`-kommando; se [CLI-vejledningen](CLI.md) for installation og eksempler.
+
 Appen signeres med Apple Developer ID, men er endnu ikke notariseret. Filunderstøttelsen afhænger af format og codec; en separat installeret FFmpeg kan udvide den. Se [aktuel status](IMPLEMENTATION.md) og [udgivelsesvejledningen](RELEASING.md).
 
 ## Bygget til at vokse

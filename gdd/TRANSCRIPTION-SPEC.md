@@ -216,8 +216,8 @@ worker; den eksponerer ikke en generel invoke- eller secret-grænse.
 
 ## Agent-CLI v1 — kontrakt (#27–28)
 
-Desktop-binæren accepterer `cli` før kommandoen; den signerede `vara`-launcher
-leveres i #29. Kommandoer: `transcribe FILE [--model ID] [--language CODE] [--diarize] [--speakers 1–16]
+Den pakkede `vara`-launcher viderestiller til den signerede app i `/Applications`;
+den interne desktop-indgang `cli` er kun til udvikling. Installationen er beskrevet i `CLI.md`. Kommandoer: `transcribe FILE [--model ID] [--language CODE] [--diarize] [--speakers 1–16]
 [--original] [--request-id ID] [--no-wait] [--timeout SECONDS] [--format json|txt|md|srt|vtt]
 [--output FILE] [--overwrite]`, `job status|wait|result|cancel ID` (wait/result
 accepterer format/output/overwrite/original, wait også timeout), `models [--json]`,
@@ -260,7 +260,9 @@ nøgler, endpoints eller provider-fejltekster returneres.
 
 `--diarize` gemmer et påkrævet Who-trin med dokumentet; `--speakers` kræver
 `--diarize` og skal være 1–16. Valgene indgår i request-identiteten. Who benytter
-eksisterende lokal runtime og opsætning uden download eller licensaccept. ASR
+eksisterende lokal runtime og opsætning uden download eller licensaccept. Ved
+manglende talerintervaller meldes `file.who_unclear`; et kendt talerantal uden
+tilstrækkelig evidens på tværs af dele meldes `who.known_count`. ASR
 forbliver `Ready` efter gemt ASR, mens CLI viser `processing` indtil Who er færdig.
 Kvitteringen indeholder særskilt `asr_stage` og `who`. Who-fejl eller annullering
 giver ikke-nul exit, status `who_failed`/`who_cancelled` og dokument-ID; tekst, lyd

@@ -13,7 +13,7 @@ export APPLE_SIGNING_IDENTITY
 export CARGO_INCREMENTAL=0
 export CARGO_PROFILE_RELEASE_DEBUG=0
 sh scripts/build-who-runtime.sh
-cargo tauri build --bundles app
+cargo tauri build --bundles app -- --locked
 codesign --verify --deep --strict target/release/bundle/macos/Vara.app
 
 # Hardened runtime also needs the audio-input entitlement, independently of TCC consent.

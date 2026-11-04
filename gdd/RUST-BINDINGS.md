@@ -223,7 +223,7 @@ recorder remain on Diktering. No settings-schema or database migration is added.
   transaction. Other platforms retain the in-process adapter; their transport is
   not implemented or verified. `desktop/src-tauri/src/agent_cli.rs` exposes the
   versioned CLI through this same backend before Tauri startup; the packaged
-  `vara` launcher remains #29. RPC v2 rejects mixed older owners instead of silently dropping requested Who options; it does not stop an old owner or its active jobs. The owner validates all known source paths and
+  `vara` launcher forwards to the signed app binary in `/Applications` (see `CLI.md`). RPC v2 rejects mixed older owners instead of silently dropping requested Who options; it does not stop an old owner or its active jobs. The owner validates all known source paths and
   writes protected exports atomically; the CLI does not access credentials directly.
   `vara-app` owns the shared catalog-filtered response projection for both RPC
   documents and exported JSON, including legacy endpoint and raw error removal.

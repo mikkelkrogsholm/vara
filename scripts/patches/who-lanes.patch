@@ -1,5 +1,11 @@
 --- a/Sources/Who/Model.swift
 +++ b/Sources/Who/Model.swift
+@@ -157,4 +157,4 @@
+-        if pieces.count == 1 {
++        if pieces.count == 1 && ProcessInfo.processInfo.environment["VARA_WHO_LANE_PAYLOAD"] == nil {
+             let (presence, masks, _) = try await logits(audio, piece: pieces[0], means: means)
+             let stretches = decision.stretches(presence: Decision.sigmoid(presence), masks: Decision.sigmoid(masks), frames: pieces[0].frames)
+             return Diarization(stretches: stretches, clock: clock, duration: seconds)
 @@ -236,18 +236,45 @@
          }
          var labels = [Int](repeating: -1, count: lanes.count)

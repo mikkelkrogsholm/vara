@@ -1,0 +1,16 @@
+#!/bin/sh
+# Stable public entrypoint: all work runs in the installed app's signed binary.
+app=/Applications/Vara.app
+binary="$app/Contents/MacOS/vara-desktop"
+marker="$app/Contents/Resources/vara-cli-v1"
+if [ ! -x "$binary" ]; then
+  printf '%s\n' '{"schema_version":1,"ok":false,"error":{"code":"cli.app_missing"}}'
+  printf '%s\n' 'Vara CLI: /Applications/Vara.app is missing or moved. Install Vara in /Applications and try again.' >&2
+  exit 5
+fi
+if [ ! -f "$marker" ]; then
+  printf '%s\n' '{"schema_version":1,"ok":false,"error":{"code":"cli.app_incompatible"}}'
+  printf '%s\n' 'Vara CLI: /Applications/Vara.app does not support this launcher. Install a compatible Vara app and try again.' >&2
+  exit 5
+fi
+exec "$binary" cli "$@"

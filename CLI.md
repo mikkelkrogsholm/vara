@@ -1,19 +1,33 @@
-# Agent CLI (desktop executable)
+# Vara agent CLI
 
-Until the packaged `vara` launcher is delivered, invoke the desktop executable
-with `cli` before these commands. On macOS it starts or connects to the same
-local backend and profile as the application. An incompatible older backend is
-reported as `backend.version_mismatch`; it and any active old jobs are not
-stopped automatically. Use matching application and CLI versions after the old
-work has finished.
+Install Vara in `/Applications`, then install the bundled launcher for your user:
 
 ```sh
-vara-desktop cli models --json
-vara-desktop cli transcribe "interview æ.wav" --diarize --speakers 2 --no-wait --request-id interview-1
-vara-desktop cli job status JOB_ID
-vara-desktop cli job wait JOB_ID --timeout 120
-vara-desktop cli job result JOB_ID --format srt --original --output interview.srt
-vara-desktop cli job cancel JOB_ID
+mkdir -p "$HOME/.local/bin"
+install -m 755 /Applications/Vara.app/Contents/Resources/vara "$HOME/.local/bin/vara"
+"$HOME/.local/bin/vara" --version
+```
+
+Use the absolute path above if `~/.local/bin` is not on your PATH. The installer
+changes no shell profile and requires no administrator access. The launcher calls
+the signed app binary in `/Applications/Vara.app`; app updates therefore use the
+same executable for the app and CLI. If the app is moved or missing, restore it
+to `/Applications`. An older app without CLI support returns `cli.app_incompatible`;
+a missing or moved app returns `cli.app_missing`, both as JSON with exit 5. Reinstall the launcher after updating Vara to pick up any
+future launcher changes. On macOS it starts or connects to the same local backend
+and profile as the application. An incompatible older backend is reported as
+`backend.version_mismatch`; it and active old jobs are not stopped automatically.
+Use matching application and CLI versions after the old work has finished.
+
+For development only, the equivalent internal entrypoint is `vara-desktop cli`.
+
+```sh
+vara models --json
+vara transcribe "interview æ.wav" --diarize --speakers 2 --no-wait --request-id interview-1
+vara job status JOB_ID
+vara job wait JOB_ID --timeout 120
+vara job result JOB_ID --format srt --original --output interview.srt
+vara job cancel JOB_ID
 ```
 
 Default transcribe waits without a deadline. The configured speech engine and

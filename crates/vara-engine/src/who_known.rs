@@ -326,6 +326,14 @@ mod tests {
         )
     }
     #[test]
+    fn single_piece_cannot_establish_known_count() {
+        let (mut raw, mut payload) = fixture();
+        raw.turns.retain(|turn| turn.end <= 10.);
+        payload["lanes"].as_array_mut().unwrap().retain(|lane| lane["piece"] == 0);
+        let error = group(raw, payload.to_string().as_bytes(), 1, 10.).unwrap_err();
+        assert!(error.contains("who.known_count"));
+    }
+    #[test]
     fn unique_matches_and_uncertainty_preserve_all_intervals() {
         let (raw, payload) = fixture();
         let out = group(raw.clone(), payload.to_string().as_bytes(), 2, 20.).unwrap();

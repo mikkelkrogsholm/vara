@@ -22,6 +22,19 @@ Rust/Tauri workspace. Its bundle identifier is `dk.vara.desktop`.
    user data and OS credential-store entries; installation is not a profile reset.
 4. Verify microphone, the chosen global shortcut and insertion into another app.
    Input Monitoring, Accessibility and microphone access are separate permissions.
+5. Install and verify the bundled CLI launcher using [CLI.md](CLI.md). The guide
+   is also included as `Contents/Resources/CLI.md`; it invokes the installed app,
+   and no test harness or model weights belong in the release.
+
+For an opt-in, isolated local ASR and Who smoke test with repeated tracked `Samples/da_test.wav`, synthetic video, and a short synthetic Sara voice, run `python3 scripts/tests/real_local_cli.py APP MODELS NEW_OUTPUT_DIR [LAUNCHER]`.
+Point `APP` at the signed app and `MODELS` at an existing model directory; the
+new output directory retains the profile, inputs and JSON/stderr for
+review. Supply the installed launcher as the optional fourth argument to test
+the public entrypoint of `/Applications/Vara.app`; otherwise it uses the internal
+developer entrypoint against the supplied app. It does not verify native UI. The known-count audio repeats the 10.312-second sample 31 times to span a
+300-second SDK window; this is a smoke test, not an accuracy score. No models are
+downloaded and no cloud engine is selected. Run only with models whose license
+has already been accepted.
 
 For a version change, keep the workspace version in `Cargo.toml`, the package
 version in `desktop/src-tauri/Cargo.toml` and `desktop/src-tauri/tauri.conf.json`
