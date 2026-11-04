@@ -7680,7 +7680,9 @@
           },
           "engine": {
             "type": "reference",
-            "target": "entity.engine"
+            "target": "entity.engine",
+            "optional": true,
+            "description": "Omitted by the agent CLI to snapshot the configured speech engine at first acceptance."
           },
           "language": {
             "type": "string",
@@ -7745,7 +7747,7 @@
           },
           "idempotency": {
             "relevant": true,
-            "rationale": "One request ID with the same absolute lexical source path, engine ID and language returns the durable original document; changed parameters conflict. Document and request commit atomically. Explicit deletion releases the ID.",
+            "rationale": "One request ID with the same absolute source path and the same requested engine choice (including omission) and language returns the original document, even if defaults change; changed options conflict. Document and request commit atomically; deletion releases the ID.",
             "scenarios": [
               "scenario.file_import.idempotency"
             ]
@@ -8682,9 +8684,9 @@
       ],
       "scenario": {
         "category": "concurrency",
-        "given": "One request ID identifies a file path, engine ID and language in a profile.",
-        "when": "Identical submissions race or are repeated after restart.",
-        "then": "One document is committed and the same ID returned; different parameters conflict until explicit document deletion."
+        "given": "One request ID identifies a file path, requested engine choice (including omission) and language in a profile.",
+        "when": "Identical submissions race, are repeated after restart, or are retried after the configured default changes.",
+        "then": "One original document is returned; its engine snapshot is preserved, and explicitly changed parameters conflict until deletion."
       }
     }
   },
@@ -10962,7 +10964,7 @@
       "format": "text/markdown",
       "normative": false,
       "revision": {
-        "sha256": "05493babac8887c86fd575aaf4eb44e114ae93171099436d81686d21616cc14b"
+        "sha256": "88ceac351e42dd720c9872b814c016492747bc8073012124b0141b5e0ccfd15d"
       }
     },
     "source.transcription": {
@@ -10972,7 +10974,7 @@
       "format": "text/markdown",
       "normative": true,
       "revision": {
-        "sha256": "aa1b9e6788e1d589ca517be300b3f316e2f4446e1f0d30884a456301851b850d"
+        "sha256": "e3ea9d008ba4b4adc3268af8de549871237eeba191be597acc0b4399dbe8323c"
       }
     }
   },

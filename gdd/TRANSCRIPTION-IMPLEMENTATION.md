@@ -132,8 +132,19 @@ queue, documents and profile media with other local clients. Native dialogs,
 clipboard, links, playback scope and draft-aware export remain in the GUI;
 closing the GUI does not cancel accepted backend jobs. Existing Windows and
 other non-Mac GUI file handling remains in process until a native transport
-adapter exists. There is no public CLI yet. An isolated Tauri adapter fixture
+adapter exists. The desktop executable now exposes the #27 `cli` subcommand;
+the packaged launcher is still #29. An isolated Tauri adapter fixture
 and socket/process checks used synthetic data on the development Mac, including
 reconnection, long AI waiting and cancellation, asset scope and GUI exit. A
 different OS user, signed installation, actual model inference, credential
 prompts, and Windows/Linux transport were not verified.
+
+
+## Agent CLI (#27)
+
+The desktop executable dispatches `cli` after internal workers and before Tauri.
+The CLI uses the shared backend and document exporter. A test-harness-only delay
+can hold submit responses or status calls; it does not simulate inference. Process
+tests use synthetic audio and a separately seeded ready-document fixture to test
+export and timing. They do not exercise real local inference or cloud providers.
+Windows/Linux local transport and the signed launcher remain unverified.

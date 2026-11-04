@@ -1,4 +1,5 @@
 {
+  "file.language_unsupported": {"da": "Denne model vælger selv talesprog. Fjern sprogvalget.", "en": "This model detects speech language automatically. Remove the language option."},
   "runtime.unknown": {
     "da": "Der opstod en ukendt fejl.",
     "en": "An unknown error occurred."

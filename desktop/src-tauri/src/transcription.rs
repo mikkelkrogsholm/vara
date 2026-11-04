@@ -302,7 +302,7 @@ pub fn test_fixture_entry() -> bool {
             Operation::Submit {
                 request: vara_app::SubmitRequest {
                     source,
-                    engine_id: "openai.speech".into(),
+                    engine_id: Some("openai.speech".into()),
                     language: None,
                     request_id: Some("adapter-fixture".into()),
                 },

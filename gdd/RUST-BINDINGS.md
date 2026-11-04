@@ -221,7 +221,12 @@ recorder remain on Diktering. No settings-schema or database migration is added.
   preferences and retains the existing credential-worker path without exposing a
   key-read command. Request identity and document acceptance share a SQLite
   transaction. Other platforms retain the in-process adapter; their transport is
-  not implemented or verified. The public CLI remains future work.
+  not implemented or verified. `desktop/src-tauri/src/agent_cli.rs` exposes the
+  versioned CLI through this same backend before Tauri startup; the packaged
+  `vara` launcher remains #29. The owner validates all known source paths and
+  writes protected exports atomically; the CLI does not access credentials directly.
+  `vara-app` owns the shared catalog-filtered response projection for both RPC
+  documents and exported JSON, including legacy endpoint and raw error removal.
 - Rich recognition/media: `crates/vara-engine/src/{transcription,media}.rs` plus
   Redux/Whisper/cloud adapters. Redux returns actual runtime word times; Whisper
   currently returns segment times; OpenAI's selected speech route may return

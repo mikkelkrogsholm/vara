@@ -180,7 +180,7 @@ beholder den eksisterende in-process adapter; deres lokale transport er ikke lev
 eksport bevares. En separat CLI-database eller konkurrerende kø er ikke tilladt.
 
 Den fælles Rust-grænse tilbyder `submit`, `status`, `result` og `cancel`.
-`submit` modtager én sti, tale-engine-ID, valgfrit talesprog og valgfrit
+`submit` modtager én sti, valgfrit tale-engine-ID, valgfrit talesprog og valgfrit
 request-ID; kvitteringens job-ID er dokument-ID'et. Indstillinger for engine og
 sprog gemmes på dokumentet ved accept uden at ændre globale indstillinger.
 `status` returnerer dokumentets faktiske stage; `result` kræver Ready og giver
@@ -191,7 +191,7 @@ resultat. Desktopbatch anvender samme kø og lager, uden request-ID som standard
 Et request-ID er scoped til profilen og det tilhørende dokuments levetid. Det
 skal være 1–200 UTF-8-byte, indeholde mindst ét tegn, der ikke er whitespace,
 og kan kun bruges til ét filjob. Inputidentiteten består af
-absolut, leksikalt normaliseret sti, engine-ID og normaliseret talesprog (tomt
+absolut sti, det anmodede engine-ID (også udeladt) og normaliseret talesprog (tomt
 sprog svarer til automatisk). Den identificerer stien, ikke filens indhold eller
 symlink-mål. Samme ID og identitet giver den oprindelige kvittering, også efter
 at kilden er fjernet; ændrede parametre giver `file.request_conflict`.
@@ -212,5 +212,48 @@ annulleres efter GUI-genforbindelse. Lukkes GUI'en, fortsætter accepteret arbej
 backend stopper normalt efter 60 sekunders inaktivitet uden klienter eller jobs.
 Framing er tidsbegrænset, men ventetid på AI/Who er ikke en jobdeadline.
 Backend læser profilens gemte indstillinger og holder nøgler hos den betroede
-worker; den eksponerer ikke en generel invoke- eller secret-grænse. CLI,
-agent-JSON og automatisk Who som submit-option er endnu ikke leveret.
+worker; den eksponerer ikke en generel invoke- eller secret-grænse. Automatisk
+Who som submit-option er endnu ikke leveret.
+
+## Agent-CLI v1 — kontrakt (#27)
+
+Desktop-binæren accepterer `cli` før kommandoen; den signerede `vara`-launcher
+leveres i #29. Kommandoer: `transcribe FILE [--model ID] [--language CODE]
+[--request-id ID] [--no-wait] [--timeout SECONDS] [--format json|txt|md|srt|vtt]
+[--output FILE] [--overwrite]`, `job status|wait|result|cancel ID` (wait/result
+accepterer format/output/overwrite, wait også timeout), `models [--json]`,
+`--help`, `--version`. Ingen interaktion. Udeladt model er den gemte
+`speech_engine`, udeladt sprog automatisk; Redux understøtter kun automatisk.
+Inputstier gøres absolutte i klientens aktuelle mappe; deres eksisterende
+forældremappe opløses, uden krav om at filen stadig findes ved retry. Request-ID sammenligner
+rå valg inkl. udeladt model før defaults opløses, og første job fastholder sin
+engine. Ingen globale indstillinger ændres.
+
+JSON på stdout er ét objekt med `schema_version: 1`, `ok`, og ved succes
+`job_id`, `document_id`, `status` og eventuelt `document`; models bruger
+`models`, `default_speech_engine` og `strict_local`; cloud-readiness `null`
+betyder ikke kontrolleret. `timing_capability` beskriver adapterens mulighed
+(`word_or_segment`, `segment`, `word_requested`, `none`), mens dokumentets
+`transcript.timing` og `timing_source` beskriver faktisk data. Fejl har `error: {code, message?}` med sikre,
+stabile maskinkoder og katalogiserede numeriske årsager. Exit: 0 succes/kvittering,
+2 ugyldig brug/input, 3 utilgængelig model/nøgle/runtime/privacy, 4 job fejlet
+eller annulleret, 5 transport/version, 6 eksport, 7 timeout/afbrud. Help/version
+har menneskeligt output. Kun eksplicit ikke-JSON færdig eksport uden `--output`
+skriver eksporttekst på stdout. `--output` giver JSON-kvittering og kræver
+`--overwrite` for eksisterende mål. Alle kilder kendt af dokumentejeren, arbejdslyd og profilinterne filer må
+ikke overskrives, heller ikke via links. Ejerens lås dækker kildekontrol og
+atomisk publicering. En relativ outputsti opløses i klientens arbejdsmappe.
+RPC-dokument og JSON-eksport bruger samme sikre projektion af gamle endpoints
+og rå fejl uden at ændre det gemte dokument eller transskriptionens tekst. Eksportfejl ændrer ikke dokumentet.
+
+Default venter uden jobdeadline; `--no-wait` giver holdbar kvittering. Accepteret
+job-ID skrives straks på stderr. Før submit skriver klienten altid et request-ID
+på stderr: enten brugerens eller et nyt UUID for netop dette kald. `--no-wait` med `--output` eller `--overwrite` er en inputfejl; brug
+`job result` til fileksport efterfølgende. `--no-wait --format` giver JSON-kvittering. Hvis accept
+er ukendt ved timeout/afbrydelse, indeholder fejl-JSON dette `request_id`;
+gentag de samme argumenter med `--request-id` for at genfinde jobbet. Separate
+kald uden eksplicit ID er separate jobs. `--no-wait` giver status `accepted`.
+Timeout, signal og lukket pipe stopper alene
+klientventning; cancel er eksplicit. Timing og faktiske ord/segmenter kommer fra
+dokumentet, uden konstruerede ordtider. Backendfejl er katalogiserede og ingen
+nøgler, endpoints eller provider-fejltekster returneres.

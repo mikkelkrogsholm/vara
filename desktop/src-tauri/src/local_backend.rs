@@ -27,6 +27,12 @@ pub enum Operation {
     Cancel {
         id: String,
     },
+    Export {
+        id: String,
+        format: String,
+        path: PathBuf,
+        overwrite: bool,
+    },
     Retry {
         id: String,
     },
@@ -344,72 +350,7 @@ mod mac {
         }
         Ok(())
     }
-    fn safe_error(raw: &str) -> String {
-        fn filter(
-            message: vara_core::UserMessage,
-            catalog: &Value,
-            depth: usize,
-        ) -> Option<vara_core::UserMessage> {
-            if depth >= 6 {
-                return None;
-            }
-            let entry = catalog.get(&message.code)?;
-            let mut clean = vara_core::UserMessage::new(&message.code);
-            for (key, value) in message.params {
-                let placeholder = format!("{{{key}}}");
-                if entry
-                    .get("da")
-                    .and_then(Value::as_str)
-                    .is_some_and(|s| s.contains(&placeholder))
-                    || entry
-                        .get("en")
-                        .and_then(Value::as_str)
-                        .is_some_and(|s| s.contains(&placeholder))
-                {
-                    clean.params.insert(key, value);
-                }
-            }
-            clean.cause = message
-                .cause
-                .and_then(|cause| filter(*cause, catalog, depth + 1).map(Box::new));
-            Some(clean)
-        }
-        let sanitized = vara_core::UserMessage::decode(raw)
-            .and_then(|m| {
-                let catalog: Value = serde_json::from_str(vara_core::message::CATALOG).ok()?;
-                filter(m, &catalog, 0)
-            })
-            .unwrap_or_else(|| vara_core::UserMessage::new("backend.operation_failed"));
-        sanitized.wire()
-    }
-    // Preserve document text, but never return legacy free-form provider errors.
-    fn sanitize(value: &mut Value) {
-        match value {
-            Value::Object(map) => {
-                // A saved historical engine may contain a credential-bearing URL.
-                // Clients only need its identity/provenance; URLs stay in the host.
-                if map.contains_key("provider")
-                    && map.contains_key("model")
-                    && map.contains_key("endpoint")
-                {
-                    map.insert("endpoint".into(), Value::Null);
-                }
-                for (key, v) in map.iter_mut() {
-                    if (key == "error" || key == "diarization_error") && v.is_string() {
-                        *v = Value::String(safe_error(v.as_str().unwrap()));
-                    } else {
-                        sanitize(v);
-                    }
-                }
-            }
-            Value::Array(items) => {
-                for v in items {
-                    sanitize(v);
-                }
-            }
-            _ => {}
-        }
-    }
+    use vara_app::{safe_error, sanitize};
     struct State {
         root: PathBuf,
         files: Arc<vara_app::Files>,
@@ -420,6 +361,15 @@ mod mac {
     }
     impl State {
         fn run(&self, operation: Operation) -> Result<Value, String> {
+            #[cfg(feature = "test-harness")]
+            if matches!(&operation, Operation::Status { .. }) {
+                if let Some(ms) = std::env::var("VARA_TEST_BACKEND_DELAY_STATUS_MS")
+                    .ok()
+                    .and_then(|s| s.parse::<u64>().ok())
+                {
+                    std::thread::sleep(Duration::from_millis(ms.min(45_000)));
+                }
+            }
             let settings = vara_core::Store::read_settings(&self.root.join("vara.sqlite3"))
                 .map_err(|e| e.wire())?;
             let args = match operation {
@@ -427,11 +377,19 @@ mod mac {
                 Operation::Models => {
                     let engines = vara_engine::Engines::new(self.root.join("models"))?;
                     return Ok(
-                        json!({"strict_local":settings.strict_local,"models": settings.engines.iter().map(|e| json!({"id":e.id,"label":e.label,"kind":e.kind,"locality":e.locality,"ready":if e.locality == vara_core::Locality::OnDevice { Some(engines.ready(&e.id)) } else { None }})).collect::<Vec<_>>() }),
+                        json!({"default_speech_engine":settings.speech_engine,"strict_local":settings.strict_local,"models": settings.engines.iter().map(|e| json!({"id":e.id,"label":e.label,"kind":e.kind,"locality":e.locality,"timing_capability":e.file_timing_capability(),"ready":if e.locality == vara_core::Locality::OnDevice { Some(engines.ready(&e.id)) } else { None }})).collect::<Vec<_>>() }),
                     );
                 }
                 Operation::Submit { request } => {
-                    return serde_json::to_value(self.files.submit(request, &settings)?)
+                    let receipt = self.files.submit(request, &settings)?;
+                    #[cfg(feature = "test-harness")]
+                    if let Some(ms) = std::env::var("VARA_TEST_BACKEND_DELAY_SUBMIT_MS")
+                        .ok()
+                        .and_then(|s| s.parse::<u64>().ok())
+                    {
+                        std::thread::sleep(Duration::from_millis(ms.min(45_000)));
+                    }
+                    return serde_json::to_value(receipt)
                         .map_err(|_| err("backend.operation_failed"));
                 }
                 Operation::Status { id } => {
@@ -450,6 +408,15 @@ mod mac {
                     "file_add",
                     json!({"paths":paths,"engine":engine,"language":language}),
                 ),
+                Operation::Export {
+                    id,
+                    format,
+                    path,
+                    overwrite,
+                } => {
+                    self.files.export_to(&id, &format, &path, overwrite)?;
+                    return Ok(Value::Null);
+                }
                 Operation::Cancel { id } => ("file_cancel", json!({"id":id})),
                 Operation::List => ("file_list", json!({})),
                 Operation::Retry { id } => ("file_retry", json!({"id":id})),
@@ -794,7 +761,7 @@ mod mac {
                 Operation::Submit {
                     request: vara_app::SubmitRequest {
                         source: PathBuf::from(std::env::var_os("VARA_TEST_SIGNAL_SOURCE").unwrap()),
-                        engine_id: "openai.speech".into(),
+                        engine_id: Some("openai.speech".into()),
                         language: None,
                         request_id: Some("signal-test".into()),
                     },
@@ -972,7 +939,7 @@ mod mac {
                 operation: Operation::Submit {
                     request: vara_app::SubmitRequest {
                         source: source.clone(),
-                        engine_id: "openai.speech".into(),
+                        engine_id: Some("openai.speech".into()),
                         language: Some("da".into()),
                         request_id: Some("disconnect".into()),
                     },

@@ -47,6 +47,18 @@ pub struct EngineConfig {
     pub locality: Locality,
 }
 impl EngineConfig {
+    /// What the file adapter can request; actual result timing is carried by Transcript.
+    pub fn file_timing_capability(&self) -> Option<&'static str> {
+        if self.kind != EngineKind::Speech {
+            return None;
+        }
+        Some(match self.provider {
+            Provider::LocalParakeet => "word_or_segment",
+            Provider::LocalWhisper => "segment",
+            Provider::Groq | Provider::ElevenLabs => "word_requested",
+            _ => "none",
+        })
+    }
     pub fn validate(&self) -> Result<()> {
         if self.id.is_empty() || self.label.trim().is_empty() || self.model.trim().is_empty() {
             return Err(Error::InvalidMessage(crate::UserMessage::new(

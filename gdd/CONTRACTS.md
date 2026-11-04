@@ -43,6 +43,10 @@ One application, shared Rust domain core. Public calls are explicit `calls` edge
 
 `?` means the field may be absent; `or null` permits a present null value. Reference IDs do not automatically embed the referred entity.
 
+## Agent CLI v1
+
+The CLI uses the shared file queue and exports. Its complete command, JSON, error, lifecycle and overwrite contract is normative in `TRANSCRIPTION-SPEC.md` under Agent-CLI v1; `CLI.md` gives usage. An omitted model is part of request identity and is resolved only on first acceptance. Interruption stops the client, not the accepted job.
+
 ### Invocation target
 `entity.destination`
 
@@ -957,7 +961,7 @@ Scenario IDs: `scenario.diagnostics.normal`.
 ### Import and control file jobs
 `action.file_import`
 
-**Input:** `paths`: list<string>; `engine`: engine ID; `language`: string?; `request_id`: string?.
+**Input:** `paths`: list<string>; `engine`: engine ID?; `language`: string?; `request_id`: string?.
 
 **Output:** list<file_document ID>.
 
