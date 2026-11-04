@@ -29,17 +29,28 @@ impl Parakeet {
                 let pool = rayon::ThreadPoolBuilder::new()
                     .num_threads(8)
                     .build()
-                    .map_err(|_| vara_core::UserMessage::new("speech.start").wire())?;
+                    .map_err(|e| {
+                        vara_core::UserMessage::new("speech.start")
+                            .caused_by(crate::backend_error::boxed(&e, "backend.threads"))
+                            .wire()
+                    })?;
                 let model = pool
                     .install(|| Transcriber::load_on(dir, Precision::Int8, Device::Auto))
-                    .map_err(|_| vara_core::UserMessage::new("parakeet.model_missing").wire())?;
+                    .map_err(|e| {
+                        vara_core::UserMessage::new("parakeet.model_missing")
+                            .caused_by(crate::backend_error::voxrt(&e))
+                            .wire()
+                    })?;
                 *guard = Some((model, pool));
             }
             let (model, pool) = guard.as_ref().unwrap();
             pool.install(|| {
                 let mut stream = LongForm::new(model);
-                let mut reader = hound::WavReader::open(audio)
-                    .map_err(|_| vara_core::UserMessage::new("audio.work_open").wire())?;
+                let mut reader = hound::WavReader::open(audio).map_err(|e| {
+                    vara_core::UserMessage::new("audio.work_open")
+                        .caused_by(crate::media::hound_cause(&e))
+                        .wire()
+                })?;
                 let mut input = reader.samples::<i16>();
 
                 loop {
@@ -49,7 +60,11 @@ impl Parakeet {
                         .take(16000 * 10)
                         .map(|v| v.map(|v| v as f32 / 32768.))
                         .collect::<std::result::Result<Vec<_>, _>>()
-                        .map_err(|_| vara_core::UserMessage::new("media.work_corrupt").wire())?;
+                        .map_err(|e| {
+                            vara_core::UserMessage::new("media.work_corrupt")
+                                .caused_by(crate::media::hound_cause(&e))
+                                .wire()
+                        })?;
                     if chunk.is_empty() {
                         break;
                     }
@@ -133,12 +148,20 @@ impl Parakeet {
             let pool = rayon::ThreadPoolBuilder::new()
                 .num_threads(8)
                 .build()
-                .map_err(|_| vara_core::UserMessage::new("speech.threads").wire())?;
+                .map_err(|e| {
+                    vara_core::UserMessage::new("speech.threads")
+                        .caused_by(crate::backend_error::boxed(&e, "backend.threads"))
+                        .wire()
+                })?;
             // Explicit backend selection ignores external VOXRT_DEVICE overrides.
             // Auto uses Metal on supported Apple builds and CPU elsewhere.
             let model = pool
                 .install(|| Transcriber::load_on(dir, Precision::Int8, Device::Auto))
-                .map_err(|_| vara_core::UserMessage::new("parakeet.load").wire())?;
+                .map_err(|e| {
+                    vara_core::UserMessage::new("parakeet.load")
+                        .caused_by(crate::backend_error::voxrt(&e))
+                        .wire()
+                })?;
             *guard = Some((model, pool));
         }
         cancel.check()?;

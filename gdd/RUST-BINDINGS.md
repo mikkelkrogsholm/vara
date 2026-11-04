@@ -319,3 +319,53 @@ sources are deferred. The non-Mac fallback destination `Ukendt app` remains a
 literal presentation label and needs presentation-boundary treatment; persisted
 user app/model names and the Danish default AI prompt are user content, not
 runtime errors. No native Windows/Linux or live microphone acceptance is claimed.
+
+### Backend-cause audit for issue 22a
+
+The following is the static classification of the previously lossy sites in
+`local.rs`, `parakeet.rs`, `who.rs`, `recorder.rs` and `credentials.rs`:
+
+- `local.rs`: Whisper context/state/full/segment conversions retain a typed
+  Whisper category and numeric `GenericError` code. GGUF/model and tensor
+  operations retain Candle IO, shape, type, device, archive or operation
+  categories; nested Candle path/context/backtrace wrappers retain the inner
+  category. Model-file opens retain OS errors. Tokenizer load/encode/decode
+  retain typed IO/JSON and known BPE/WordPiece/WordLevel error categories. Hound
+  recording opens and samples retain IO or wave-format classes.
+- `parakeet.rs`: both thread-pool builds retain an IO source when exposed by
+  Rayon; both model loads retain VoxRT IO, JSON, safetensors, format or audio
+  classes. Safetensors retain header, tensor, range, limit or IO/JSON classes.
+  File opens/samples retain Hound causes. The two `catch_unwind` branches retain
+  `speech.file_interrupted` or `speech.recording_interrupted`: a panic payload
+  is arbitrary and cannot safely be disclosed.
+- `who.rs`: Hound read/write/finalize, JSON conversions, metadata and file reads
+  retain typed causes; library load and each symbol lookup retain loader
+  operation class and any typed OS error. The download FFI status is numeric;
+  failed worker process exit/signal is numeric. `CString::new`, integer-size and
+  count parsing failures are input validation (`model.invalid_path`,
+  `who.too_large`, `who.invalid_count`). SDK create/run return only null on
+  failure and provide no error object: `who.create` and `who.no_speakers` are
+  the available classifications.
+- `recorder.rs`: CPAL config/build/play/stream errors retain their typed device,
+  configuration, argument, stream-limit or backend category. The non-Mac device
+  list/name and selected-device enumeration errors expose only CPAL's opaque
+  `BackendSpecificError` description, so `audio.backend` is the safe type.
+  JSON parsing retains location; Hound creation/write/finalize retain format or
+  IO cause. Four channel send/receive failures identify disconnected worker or
+  absent reply directly; no lower-level cause is exposed by those channel types.
+- `credentials.rs`: non-Mac keyring errors retain their enum category, limit
+  where available, and nested typed IO; secret bytes, attribute values and boxed
+  platform descriptions are never copied. Mac worker spawn/exit, pipe writes, OS status and
+  JSON parsing retain safe causes; a panicked writer supplies no trusted detail. Worker-entry malformed JSON exits 64 as an
+  internal protocol validation error, not a user-facing error message.
+
+Opaque source limits are deliberate. VoxRT `Format(String)`/`Audio(String)` can
+contain model names, paths or backend error text and have no finer typed variant;
+only `voxrt.format`/`voxrt.audio` is safe. Candle `Msg`, `Wrapped` and opaque
+backend payloads have the same limitation (`candle.backend`); typed inner causes
+are retained where the library exposes them. Tokenizer unknown boxed errors use
+`backend.tokenizer` after searching their source chain for typed IO/JSON; Rayon
+uses `backend.threads` when no IO source exists. Unix loader descriptions and
+CPAL backend descriptions may contain paths/device data and are never copied.
+These restrictions do not change cancellation, provider selection, model
+publication, Keychain trust or worker protocols.

@@ -52,14 +52,18 @@ impl Local {
                         .ok_or(vara_core::UserMessage::new("model.invalid_path").wire())?,
                     params,
                 )
-                .map_err(|_| vara_core::UserMessage::new("whisper.load").wire())?,
+                .map_err(|e| {
+                    vara_core::UserMessage::new("whisper.load")
+                        .caused_by(crate::backend_error::whisper(&e))
+                        .wire()
+                })?,
             );
         }
-        let mut state = guard
-            .as_ref()
-            .unwrap()
-            .create_state()
-            .map_err(|_| vara_core::UserMessage::new("whisper.start").wire())?;
+        let mut state = guard.as_ref().unwrap().create_state().map_err(|e| {
+            vara_core::UserMessage::new("whisper.start")
+                .caused_by(crate::backend_error::whisper(&e))
+                .wire()
+        })?;
         let mut params = FullParams::new(SamplingStrategy::Greedy { best_of: 1 });
         params.set_n_threads(
             std::thread::available_parallelism()
@@ -87,18 +91,22 @@ impl Local {
                 std::sync::Arc::as_ptr(&cancel.0) as *mut std::ffi::c_void
             );
         }
-        state
-            .full(params, &samples)
-            .map_err(|_| vara_core::UserMessage::new("whisper.transcription").wire())?;
+        state.full(params, &samples).map_err(|e| {
+            vara_core::UserMessage::new("whisper.transcription")
+                .caused_by(crate::backend_error::whisper(&e))
+                .wire()
+        })?;
         cancel.check()?;
         let mut text = String::new();
         let mut segments = Vec::new();
         for i in 0..state.full_n_segments() {
             if let Some(s) = state.get_segment(i) {
                 if s.no_speech_probability() < 0.85 {
-                    let part = s
-                        .to_str()
-                        .map_err(|_| vara_core::UserMessage::new("local.text_decode").wire())?;
+                    let part = s.to_str().map_err(|e| {
+                        vara_core::UserMessage::new("local.text_decode")
+                            .caused_by(crate::backend_error::whisper(&e))
+                            .wire()
+                    })?;
                     text.push_str(part);
                     if timed {
                         segments.push(vara_core::TranscriptSegment {
@@ -134,14 +142,27 @@ impl Local {
         let mut guard = self.text.lock();
         cancel.check()?;
         if guard.is_none() {
-            let mut file = File::open(dir.join("Qwen3-0.6B-Q8_0.gguf"))
-                .map_err(|_| vara_core::UserMessage::new("local.model_missing").wire())?;
-            let ct = gguf_file::Content::read(&mut file)
-                .map_err(|_| vara_core::UserMessage::new("local.model_corrupt").wire())?;
-            let weights = ModelWeights::from_gguf(ct, &mut file, &Device::Cpu)
-                .map_err(|_| vara_core::UserMessage::new("local.model_load").wire())?;
-            let tokenizer = tokenizers::Tokenizer::from_file(dir.join("tokenizer.json"))
-                .map_err(|_| vara_core::UserMessage::new("local.tokenizer_load").wire())?;
+            let mut file = File::open(dir.join("Qwen3-0.6B-Q8_0.gguf")).map_err(|e| {
+                vara_core::UserMessage::new("local.model_missing")
+                    .caused_by(vara_core::UserMessage::io_cause(&e))
+                    .wire()
+            })?;
+            let ct = gguf_file::Content::read(&mut file).map_err(|e| {
+                vara_core::UserMessage::new("local.model_corrupt")
+                    .caused_by(crate::backend_error::candle(&e))
+                    .wire()
+            })?;
+            let weights = ModelWeights::from_gguf(ct, &mut file, &Device::Cpu).map_err(|e| {
+                vara_core::UserMessage::new("local.model_load")
+                    .caused_by(crate::backend_error::candle(&e))
+                    .wire()
+            })?;
+            let tokenizer =
+                tokenizers::Tokenizer::from_file(dir.join("tokenizer.json")).map_err(|e| {
+                    vara_core::UserMessage::new("local.tokenizer_load")
+                        .caused_by(crate::backend_error::boxed(e.as_ref(), "backend.tokenizer"))
+                        .wire()
+                })?;
             *guard = Some((weights, tokenizer));
         }
         let (model, tokenizer) = guard.as_mut().unwrap();
@@ -155,7 +176,11 @@ impl Local {
         );
         let mut tokens = tokenizer
             .encode(prompt, false)
-            .map_err(|_| vara_core::UserMessage::new("local.tokenize").wire())?
+            .map_err(|e| {
+                vara_core::UserMessage::new("local.tokenize")
+                    .caused_by(crate::backend_error::boxed(e.as_ref(), "backend.tokenizer"))
+                    .wire()
+            })?
             .get_ids()
             .to_vec();
         if tokens.len() > 3072 {
@@ -172,21 +197,33 @@ impl Local {
             }
             let input = Tensor::new(tokens.as_slice(), &Device::Cpu)
                 .and_then(|t| t.unsqueeze(0))
-                .map_err(|_| vara_core::UserMessage::new("local.model_run").wire())?;
+                .map_err(|e| {
+                    vara_core::UserMessage::new("local.model_run")
+                        .caused_by(crate::backend_error::candle(&e))
+                        .wire()
+                })?;
             let logits = model
                 .forward(&input, offset)
                 .and_then(|t| t.squeeze(0))
-                .map_err(|_| vara_core::UserMessage::new("local.model_run").wire())?;
+                .map_err(|e| {
+                    vara_core::UserMessage::new("local.model_run")
+                        .caused_by(crate::backend_error::candle(&e))
+                        .wire()
+                })?;
             offset += tokens.len();
-            let token = sampler
-                .sample(&logits)
-                .map_err(|_| vara_core::UserMessage::new("local.generation").wire())?;
+            let token = sampler.sample(&logits).map_err(|e| {
+                vara_core::UserMessage::new("local.generation")
+                    .caused_by(crate::backend_error::candle(&e))
+                    .wire()
+            })?;
             if Some(token) == tokenizer.token_to_id("<|im_end|>")
                 || Some(token) == tokenizer.token_to_id("<|endoftext|>")
             {
-                return tokenizer
-                    .decode(&output, true)
-                    .map_err(|_| vara_core::UserMessage::new("local.output_decode").wire());
+                return tokenizer.decode(&output, true).map_err(|e| {
+                    vara_core::UserMessage::new("local.output_decode")
+                        .caused_by(crate::backend_error::boxed(e.as_ref(), "backend.tokenizer"))
+                        .wire()
+                });
             }
             output.push(token);
             tokens = vec![token];
@@ -196,8 +233,11 @@ impl Local {
 }
 /// Decode mono PCM and resample to Whisper's 16kHz. Cloud gets this same bounded WAV.
 pub(crate) fn read_audio(path: &Path) -> Result<(Vec<f32>, f64)> {
-    let mut reader = hound::WavReader::open(path)
-        .map_err(|_| vara_core::UserMessage::new("audio.recording_read").wire())?;
+    let mut reader = hound::WavReader::open(path).map_err(|e| {
+        vara_core::UserMessage::new("audio.recording_read")
+            .caused_by(crate::media::hound_cause(&e))
+            .wire()
+    })?;
     let spec = reader.spec();
     if spec.sample_format != hound::SampleFormat::Int
         || spec.bits_per_sample != 16
@@ -210,7 +250,11 @@ pub(crate) fn read_audio(path: &Path) -> Result<(Vec<f32>, f64)> {
         .samples::<i16>()
         .map(|s| s.map(|v| v as f32 / 32768.0))
         .collect::<std::result::Result<_, _>>()
-        .map_err(|_| vara_core::UserMessage::new("audio.corrupt").wire())?;
+        .map_err(|e| {
+            vara_core::UserMessage::new("audio.corrupt")
+                .caused_by(crate::media::hound_cause(&e))
+                .wire()
+        })?;
     let duration = source.len() as f64 / spec.sample_rate as f64;
     if duration > 600.0 {
         return Err(vara_core::UserMessage::new("audio.too_long").wire());

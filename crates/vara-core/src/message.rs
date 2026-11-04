@@ -134,13 +134,15 @@ mod tests {
                     continue;
                 }
                 let source = std::fs::read_to_string(&path).unwrap();
-                for part in source.split(&marker).skip(1) {
-                    let code = part.split('"').next().unwrap();
-                    assert!(
-                        catalog.get(code).is_some(),
-                        "{}: missing {code}",
-                        path.display()
-                    );
+                for marker in [&marker[..], "M::new(\""] {
+                    for part in source.split(marker).skip(1) {
+                        let code = part.split('"').next().unwrap();
+                        assert!(
+                            catalog.get(code).is_some(),
+                            "{}: missing {code}",
+                            path.display()
+                        );
+                    }
                 }
             }
         }
@@ -170,6 +172,31 @@ mod tests {
             "cli.unknown",
             "credential.timeout_mutation",
             "credential.timeout",
+            "whisper.spectrogram_missing",
+            "whisper.spectrogram_failed",
+            "whisper.encode_incomplete",
+            "whisper.decode_incomplete",
+            "whisper.mel_bands",
+            "whisper.thread_count",
+            "whisper.invalid_text",
+            "whisper.null_byte",
+            "whisper.null_pointer",
+            "whisper.no_samples",
+            "whisper.sample_length",
+            "whisper.half_sample",
+            "whisper.init",
+            "whisper.state",
+            "whisper.spectrogram",
+            "whisper.encode",
+            "whisper.decode",
+            "whisper.evaluation",
+            "whisper.parameters",
+            "whisper.utf8",
+            "whisper.null",
+            "whisper.samples",
+            "loader.open",
+            "loader.symbol",
+            "loader.other",
         ] {
             assert!(catalog.get(code).is_some(), "missing dynamic code {code}");
         }

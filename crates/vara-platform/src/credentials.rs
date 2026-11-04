@@ -11,8 +11,11 @@ fn validate(id: &str) -> Result<()> {
 #[cfg(not(target_os = "macos"))]
 fn entry(id: &str) -> Result<keyring::Entry> {
     validate(id)?;
-    keyring::Entry::new("dk.vara.desktop", id)
-        .map_err(|_| vara_core::UserMessage::new("credential.store_unavailable").wire())
+    keyring::Entry::new("dk.vara.desktop", id).map_err(|e| {
+        vara_core::UserMessage::new("credential.store_unavailable")
+            .caused_by(crate::backend_error::keyring(&e))
+            .wire()
+    })
 }
 
 pub fn has_secret(id: &str) -> Result<bool> {
@@ -25,7 +28,9 @@ pub fn has_secret(id: &str) -> Result<bool> {
         match entry(id)?.get_attributes() {
             Ok(_) => Ok(true),
             Err(keyring::Error::NoEntry) => Ok(false),
-            Err(_) => Err(vara_core::UserMessage::new("credential.status").wire()),
+            Err(e) => Err(vara_core::UserMessage::new("credential.status")
+                .caused_by(crate::backend_error::keyring(&e))
+                .wire()),
         }
     }
 }
@@ -40,7 +45,9 @@ pub fn secret(id: &str) -> Result<Option<String>> {
         match entry(id)?.get_password() {
             Ok(s) => Ok(Some(s)),
             Err(keyring::Error::NoEntry) => Ok(None),
-            Err(_) => Err(vara_core::UserMessage::new("credential.read").wire()),
+            Err(e) => Err(vara_core::UserMessage::new("credential.read")
+                .caused_by(crate::backend_error::keyring(&e))
+                .wire()),
         }
     }
 }
@@ -57,9 +64,11 @@ pub fn set_secret(id: &str, key: &str) -> Result<()> {
     }
     #[cfg(not(target_os = "macos"))]
     {
-        entry(id)?
-            .set_password(key.trim())
-            .map_err(|_| vara_core::UserMessage::new("credential.save").wire())
+        entry(id)?.set_password(key.trim()).map_err(|e| {
+            vara_core::UserMessage::new("credential.save")
+                .caused_by(crate::backend_error::keyring(&e))
+                .wire()
+        })
     }
 }
 
@@ -73,7 +82,9 @@ pub fn delete_secret(id: &str) -> Result<()> {
     {
         match entry(id)?.delete_credential() {
             Ok(()) | Err(keyring::Error::NoEntry) => Ok(()),
-            Err(_) => Err(vara_core::UserMessage::new("credential.delete").wire()),
+            Err(e) => Err(vara_core::UserMessage::new("credential.delete")
+                .caused_by(crate::backend_error::keyring(&e))
+                .wire()),
         }
     }
 }
@@ -147,7 +158,11 @@ mod mac {
             id: id.into(),
             key: key.into(),
         })
-        .map_err(|_| unavailable())?;
+        .map_err(|e| {
+            vara_core::UserMessage::new("credential.mac_unavailable")
+                .caused_by(crate::backend_error::json(&e))
+                .wire()
+        })?;
         let Some(mut stdin) = child.stdin.take() else {
             let _ = child.kill();
             let _ = child.wait();
@@ -157,11 +172,14 @@ mod mac {
         // worker closes its read end and releases a blocked writer.
         let writer = std::thread::spawn(move || stdin.write_all(&input));
         let result = finish(child, operation, DEADLINE);
-        let written = matches!(writer.join(), Ok(Ok(())));
+        let written = writer.join();
         match result {
             Err(error) => Err(error),
-            Ok(reply) if written => Ok(reply),
-            Ok(_) => Err(unavailable()),
+            Ok(reply) => match written {
+                Ok(Ok(())) => Ok(reply),
+                Ok(Err(error)) => Err(unavailable_io(&error)),
+                Err(_) => Err(unavailable()), // Thread panic payload is not trusted.
+            },
         }
     }
     fn finish(
@@ -180,6 +198,14 @@ mod mac {
                             vara_core::UserMessage::new("process.exit_code")
                                 .number("code", code.into()),
                         );
+                    } else {
+                        use std::os::unix::process::ExitStatusExt;
+                        if let Some(signal) = status.signal() {
+                            message = message.caused_by(
+                                vara_core::UserMessage::new("process.signal")
+                                    .number("signal", signal.into()),
+                            );
+                        }
                     }
                     return Err(message.wire());
                 }
@@ -206,7 +232,11 @@ mod mac {
         }
         let reply: Reply =
             serde_json::from_reader(child.stdout.take().ok_or_else(unavailable)?.take(32_768))
-                .map_err(|_| unavailable())?;
+                .map_err(|e| {
+                    vara_core::UserMessage::new("credential.mac_unavailable")
+                        .caused_by(crate::backend_error::json(&e))
+                        .wire()
+                })?;
         match reply.status {
             0 | -25300 => Ok(reply), // errSecItemNotFound is an ordinary missing entry.
             -25308 | -25293 | -128 => Err(vara_core::UserMessage::new("credential.locked").wire()),

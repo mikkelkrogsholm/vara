@@ -1030,5 +1030,261 @@
   "media.cause_reset": {
     "da": "Medieafkoderen kræver nulstilling.",
     "en": "The media decoder requires a reset."
+  },
+  "whisper.init": {
+    "da": "Whisper kunne ikke oprette konteksten.",
+    "en": "Whisper could not create its context."
+  },
+  "whisper.state": {
+    "da": "Whisper kunne ikke oprette tilstanden.",
+    "en": "Whisper could not create its state."
+  },
+  "whisper.spectrogram": {
+    "da": "Whisper-fejl i spektrogrammet.",
+    "en": "Whisper spectrogram error."
+  },
+  "whisper.encode": {
+    "da": "Whisper-fejl i kodningen.",
+    "en": "Whisper encoder error."
+  },
+  "whisper.decode": {
+    "da": "Whisper-fejl i afkodningen.",
+    "en": "Whisper decoder error."
+  },
+  "whisper.evaluation": {
+    "da": "Whisper kunne ikke evaluere modellen.",
+    "en": "Whisper could not evaluate the model."
+  },
+  "whisper.parameters": {
+    "da": "Whisper rapporterede ugyldige parametre.",
+    "en": "Whisper reported invalid parameters."
+  },
+  "whisper.utf8": {
+    "da": "Whisper returnerede ugyldig UTF-8.",
+    "en": "Whisper returned invalid UTF-8."
+  },
+  "whisper.null": {
+    "da": "Whisper rapporterede en nulværdi.",
+    "en": "Whisper reported a null value."
+  },
+  "whisper.generic": {
+    "da": "Whisper-fejlkode {code}",
+    "en": "Whisper error code {code}"
+  },
+  "whisper.samples": {
+    "da": "Whisper rapporterede ugyldige lydsamples.",
+    "en": "Whisper reported invalid audio samples."
+  },
+  "voxrt.json": {
+    "da": "Parakeet-modeldata er ikke gyldig JSON.",
+    "en": "Parakeet model data is not valid JSON."
+  },
+  "voxrt.safetensors": {
+    "da": "Parakeet-modeldata fejlede safetensors-kontrol.",
+    "en": "Parakeet model data failed safetensors validation."
+  },
+  "voxrt.format": {
+    "da": "Parakeet rapporterede en modelformatfejl.",
+    "en": "Parakeet reported a model format error."
+  },
+  "voxrt.audio": {
+    "da": "Parakeet rapporterede en lydfejl.",
+    "en": "Parakeet reported an audio error."
+  },
+  "candle.dtype": {
+    "da": "Modellen rapporterede en datatypefejl.",
+    "en": "The model reported a data type error."
+  },
+  "candle.shape": {
+    "da": "Modellen rapporterede en dimensions- eller formfejl.",
+    "en": "The model reported a dimension or shape error."
+  },
+  "candle.device": {
+    "da": "Modellen rapporterede en enhedsfejl.",
+    "en": "The model reported a device error."
+  },
+  "candle.tensor": {
+    "da": "Modellens tensoroperation fejlede.",
+    "en": "The model tensor operation failed."
+  },
+  "candle.format": {
+    "da": "Modellens filformat kunne ikke læses.",
+    "en": "The model file format could not be read."
+  },
+  "candle.missing_tensor": {
+    "da": "Modellen mangler en tensor.",
+    "en": "The model is missing a tensor."
+  },
+  "candle.backend": {
+    "da": "Modelbiblioteket rapporterede en intern fejl.",
+    "en": "The model library reported an internal error."
+  },
+  "candle.cuda_unavailable": {
+    "da": "Modellen er bygget uden CUDA-understøttelse.",
+    "en": "The model library was built without CUDA support."
+  },
+  "candle.metal_unavailable": {
+    "da": "Modellen er bygget uden Metal-understøttelse.",
+    "en": "The model library was built without Metal support."
+  },
+  "json.parse": {
+    "da": "JSON-fejl ved linje {line}, kolonne {column}",
+    "en": "JSON error at line {line}, column {column}"
+  },
+  "loader.open": {
+    "da": "Systemet kunne ikke indlæse biblioteket.",
+    "en": "The system could not open the library."
+  },
+  "loader.symbol": {
+    "da": "Et symbol i biblioteket kunne ikke findes.",
+    "en": "A library symbol could not be found."
+  },
+  "loader.other": {
+    "da": "Systemets biblioteksindlæsning fejlede.",
+    "en": "The system library loader failed."
+  },
+  "backend.tokenizer": {
+    "da": "Tokenizerbiblioteket rapporterede en fejl.",
+    "en": "The tokenizer library reported an error."
+  },
+  "backend.threads": {
+    "da": "Trådpuljen kunne ikke oprettes.",
+    "en": "The thread pool could not be created."
+  },
+  "audio.backend": {
+    "da": "Lydsystemet rapporterede en backendfejl.",
+    "en": "The audio system reported a backend error."
+  },
+  "audio.device_unavailable": {
+    "da": "Lydenheden er ikke længere tilgængelig.",
+    "en": "The audio device is no longer available."
+  },
+  "audio.config_unsupported": {
+    "da": "Lydkonfigurationen understøttes ikke.",
+    "en": "The audio configuration is unsupported."
+  },
+  "audio.invalid_argument": {
+    "da": "Lydsystemet afviste en parameter.",
+    "en": "The audio system rejected an argument."
+  },
+  "audio.stream_limit": {
+    "da": "Lydsystemets streamgrænse blev nået.",
+    "en": "The audio system stream limit was reached."
+  },
+  "keyring.platform": {
+    "da": "Nøglelagerets platformbackend fejlede.",
+    "en": "The credential store platform backend failed."
+  },
+  "keyring.access": {
+    "da": "Nøglelageret afviste adgang.",
+    "en": "The credential store denied access."
+  },
+  "keyring.missing": {
+    "da": "Nøglelageret fandt ikke posten.",
+    "en": "The credential store did not find the entry."
+  },
+  "keyring.encoding": {
+    "da": "Nøglelagerets data havde ugyldig kodning.",
+    "en": "The credential store data had invalid encoding."
+  },
+  "keyring.too_long": {
+    "da": "Et nøglelagerfelt overstiger grænsen på {limit}.",
+    "en": "A credential store field exceeds the limit of {limit}."
+  },
+  "keyring.invalid": {
+    "da": "Et nøglelagerfelt er ugyldigt.",
+    "en": "A credential store field is invalid."
+  },
+  "keyring.ambiguous": {
+    "da": "Nøglelageret fandt flere matchende poster.",
+    "en": "The credential store found multiple matching entries."
+  },
+  "tensor.header": {
+    "da": "Modelarkivets header er ugyldig.",
+    "en": "The model archive header is invalid."
+  },
+  "tensor.missing": {
+    "da": "Modelarkivet mangler en tensor.",
+    "en": "The model archive is missing a tensor."
+  },
+  "tensor.offset": {
+    "da": "Modelarkivets dataområde er ugyldigt.",
+    "en": "The model archive data range is invalid."
+  },
+  "tensor.shape": {
+    "da": "Modelarkivets tensorformat er ugyldigt.",
+    "en": "The model archive tensor format is invalid."
+  },
+  "tensor.limit": {
+    "da": "Modelarkivets størrelsesgrænse blev overskredet.",
+    "en": "The model archive size limit was exceeded."
+  },
+  "tokenizer.vocabulary": {
+    "da": "Tokenizerens ordforråd er ugyldigt.",
+    "en": "The tokenizer vocabulary is invalid."
+  },
+  "tokenizer.missing_token": {
+    "da": "Tokenizerens ordforråd mangler et token.",
+    "en": "The tokenizer vocabulary is missing a token."
+  },
+  "tokenizer.merges": {
+    "da": "Tokenizerens fletningsdata er ugyldige.",
+    "en": "The tokenizer merge data is invalid."
+  },
+  "tokenizer.config": {
+    "da": "Tokenizerens konfiguration er ugyldig.",
+    "en": "The tokenizer configuration is invalid."
+  },
+  "who.sdk_status": {
+    "da": "Who-runtime statuskode {code}",
+    "en": "Who runtime status code {code}"
+  },
+  "whisper.spectrogram_missing": {
+    "da": "Whisper-spektrogrammet mangler.",
+    "en": "The Whisper spectrogram is missing."
+  },
+  "whisper.spectrogram_failed": {
+    "da": "Whisper kunne ikke beregne spektrogrammet.",
+    "en": "Whisper could not calculate the spectrogram."
+  },
+  "whisper.encode_incomplete": {
+    "da": "Whisper-kodningen er ikke færdig.",
+    "en": "Whisper encoding is incomplete."
+  },
+  "whisper.decode_incomplete": {
+    "da": "Whisper-afkodningen er ikke færdig.",
+    "en": "Whisper decoding is incomplete."
+  },
+  "whisper.mel_bands": {
+    "da": "Whisper rapporterede ugyldige mel-bånd.",
+    "en": "Whisper reported invalid mel bands."
+  },
+  "whisper.thread_count": {
+    "da": "Whisper rapporterede et ugyldigt antal tråde.",
+    "en": "Whisper reported an invalid thread count."
+  },
+  "whisper.invalid_text": {
+    "da": "Whisper kunne ikke tokenisere teksten.",
+    "en": "Whisper could not tokenize the text."
+  },
+  "whisper.null_byte": {
+    "da": "Whisper rapporterede en nulbyte i input.",
+    "en": "Whisper reported a null byte in input."
+  },
+  "whisper.null_pointer": {
+    "da": "Whisper returnerede en nulpeger.",
+    "en": "Whisper returned a null pointer."
+  },
+  "whisper.no_samples": {
+    "da": "Whisper modtog ingen lydsamples.",
+    "en": "Whisper received no audio samples."
+  },
+  "whisper.sample_length": {
+    "da": "Whisper rapporterede forskellige input- og outputlængder.",
+    "en": "Whisper reported mismatched input and output lengths."
+  },
+  "whisper.half_sample": {
+    "da": "Whisper rapporterede et ufuldstændigt sample.",
+    "en": "Whisper reported an incomplete sample."
   }
 }

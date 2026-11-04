@@ -1,4 +1,5 @@
 //! Desktop capabilities. No platform assumptions escape these adapters into vara-core.
+mod backend_error;
 mod credentials;
 pub use credentials::*;
 mod shortcut;

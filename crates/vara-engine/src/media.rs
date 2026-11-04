@@ -14,7 +14,7 @@ fn symphonia_cause(error: &Error) -> vara_core::UserMessage {
         Error::ResetRequired => vara_core::UserMessage::new("media.cause_reset"),
     }
 }
-fn hound_cause(error: &hound::Error) -> vara_core::UserMessage {
+pub(crate) fn hound_cause(error: &hound::Error) -> vara_core::UserMessage {
     match error {
         hound::Error::IoError(e) => vara_core::UserMessage::io_cause(e),
         hound::Error::Unsupported => vara_core::UserMessage::new("media.cause_unsupported"),

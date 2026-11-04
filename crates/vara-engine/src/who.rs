@@ -49,8 +49,11 @@ pub fn run_known(
     }
     if let Some(count) = known_count {
         let audio = audio.ok_or(vara_core::UserMessage::new("who.playback_missing").wire())?;
-        let mut reader = hound::WavReader::open(audio)
-            .map_err(|_| vara_core::UserMessage::new("who.playback_missing").wire())?;
+        let mut reader = hound::WavReader::open(audio).map_err(|e| {
+            vara_core::UserMessage::new("who.playback_missing")
+                .caused_by(crate::media::hound_cause(&e))
+                .wire()
+        })?;
         let spec = reader.spec();
         if spec.channels != 1
             || spec.sample_rate != 16000
@@ -71,7 +74,11 @@ pub fn run_known(
             false,
             cancel,
         )?)
-        .map_err(|_| vara_core::UserMessage::new("who.invalid_result").wire())?;
+        .map_err(|e| {
+            vara_core::UserMessage::new("who.invalid_result")
+                .caused_by(crate::backend_error::json(&e))
+                .wire()
+        })?;
         cancel.check()?;
         let temp = tempfile::tempdir().map_err(|e| {
             vara_core::UserMessage::new("who.temp_dir")
@@ -79,26 +86,39 @@ pub fn run_known(
                 .wire()
         })?;
         let padded = temp.path().join("padded.wav");
-        let mut writer = hound::WavWriter::create(&padded, spec)
-            .map_err(|_| vara_core::UserMessage::new("who.copy_create").wire())?;
+        let mut writer = hound::WavWriter::create(&padded, spec).map_err(|e| {
+            vara_core::UserMessage::new("who.copy_create")
+                .caused_by(crate::media::hound_cause(&e))
+                .wire()
+        })?;
         for _ in 0..(60 * 16000) {
-            writer
-                .write_sample(0_i16)
-                .map_err(|_| vara_core::UserMessage::new("who.copy_write").wire())?;
+            writer.write_sample(0_i16).map_err(|e| {
+                vara_core::UserMessage::new("who.copy_write")
+                    .caused_by(crate::media::hound_cause(&e))
+                    .wire()
+            })?;
         }
         for (i, sample) in reader.samples::<i16>().enumerate() {
             if i % 16000 == 0 {
                 cancel.check()?;
             }
             writer
-                .write_sample(
-                    sample.map_err(|_| vara_core::UserMessage::new("media.copy_read").wire())?,
-                )
-                .map_err(|_| vara_core::UserMessage::new("who.copy_write").wire())?;
+                .write_sample(sample.map_err(|e| {
+                    vara_core::UserMessage::new("media.copy_read")
+                        .caused_by(crate::media::hound_cause(&e))
+                        .wire()
+                })?)
+                .map_err(|e| {
+                    vara_core::UserMessage::new("who.copy_write")
+                        .caused_by(crate::media::hound_cause(&e))
+                        .wire()
+                })?;
         }
-        writer
-            .finalize()
-            .map_err(|_| vara_core::UserMessage::new("who.copy_write").wire())?;
+        writer.finalize().map_err(|e| {
+            vara_core::UserMessage::new("who.copy_write")
+                .caused_by(crate::media::hound_cause(&e))
+                .wire()
+        })?;
         cancel.check()?;
         let secondary: Diarization = serde_json::from_value(run_one(
             library,
@@ -109,11 +129,18 @@ pub fn run_known(
             true,
             cancel,
         )?)
-        .map_err(|_| vara_core::UserMessage::new("who.invalid_result").wire())?;
+        .map_err(|e| {
+            vara_core::UserMessage::new("who.invalid_result")
+                .caused_by(crate::backend_error::json(&e))
+                .wire()
+        })?;
         cancel.check()?;
         let consensus = crate::who_consensus::combine(primary, secondary, duration, cancel)?;
-        return serde_json::to_value(consensus)
-            .map_err(|_| vara_core::UserMessage::new("who.invalid_result").wire());
+        return serde_json::to_value(consensus).map_err(|e| {
+            vara_core::UserMessage::new("who.invalid_result")
+                .caused_by(crate::backend_error::json(&e))
+                .wire()
+        });
     }
     run_one(
         library,
@@ -199,8 +226,11 @@ fn run_one(
             .caused_by(vara_core::UserMessage::io_cause(&e))
             .wire()
     })?;
-    let value: serde_json::Value = serde_json::from_slice(&bytes)
-        .map_err(|_| vara_core::UserMessage::new("who.invalid_result").wire())?;
+    let value: serde_json::Value = serde_json::from_slice(&bytes).map_err(|e| {
+        vara_core::UserMessage::new("who.invalid_result")
+            .caused_by(crate::backend_error::json(&e))
+            .wire()
+    })?;
     if let Some(error) = value["error"].as_str() {
         return Err(error.to_owned());
     }
@@ -258,22 +288,48 @@ unsafe fn native(
     type Flush = unsafe extern "C" fn();
     // SAFETY: this path is an explicit signed/bundled SDK artifact, not discovered
     // from model files or the working directory. The ABI is pinned in the build.
-    let lib = unsafe { libloading::Library::new(library) }
-        .map_err(|_| vara_core::UserMessage::new("who.load").wire())?;
-    let create: libloading::Symbol<Create> = unsafe { lib.get(b"who_create") }
-        .map_err(|_| vara_core::UserMessage::new("who.incompatible").wire())?;
-    let state: libloading::Symbol<State> = unsafe { lib.get(b"dal_is_downloaded") }
-        .map_err(|_| vara_core::UserMessage::new("who.incompatible").wire())?;
-    let download: libloading::Symbol<State> = unsafe { lib.get(b"dal_download") }
-        .map_err(|_| vara_core::UserMessage::new("who.incompatible").wire())?;
-    let run: libloading::Symbol<Run> = unsafe { lib.get(b"dal_run") }
-        .map_err(|_| vara_core::UserMessage::new("who.incompatible").wire())?;
-    let destroy: libloading::Symbol<Destroy> = unsafe { lib.get(b"dal_destroy") }
-        .map_err(|_| vara_core::UserMessage::new("who.incompatible").wire())?;
-    let free: libloading::Symbol<Free> = unsafe { lib.get(b"dal_buffer_free") }
-        .map_err(|_| vara_core::UserMessage::new("who.incompatible").wire())?;
-    let flush: libloading::Symbol<Flush> = unsafe { lib.get(b"dal_flush_telemetry") }
-        .map_err(|_| vara_core::UserMessage::new("who.incompatible").wire())?;
+    let lib = unsafe { libloading::Library::new(library) }.map_err(|e| {
+        vara_core::UserMessage::new("who.load")
+            .caused_by(crate::backend_error::loader(&e))
+            .wire()
+    })?;
+    let create: libloading::Symbol<Create> = unsafe { lib.get(b"who_create") }.map_err(|e| {
+        vara_core::UserMessage::new("who.incompatible")
+            .caused_by(crate::backend_error::loader(&e))
+            .wire()
+    })?;
+    let state: libloading::Symbol<State> =
+        unsafe { lib.get(b"dal_is_downloaded") }.map_err(|e| {
+            vara_core::UserMessage::new("who.incompatible")
+                .caused_by(crate::backend_error::loader(&e))
+                .wire()
+        })?;
+    let download: libloading::Symbol<State> = unsafe { lib.get(b"dal_download") }.map_err(|e| {
+        vara_core::UserMessage::new("who.incompatible")
+            .caused_by(crate::backend_error::loader(&e))
+            .wire()
+    })?;
+    let run: libloading::Symbol<Run> = unsafe { lib.get(b"dal_run") }.map_err(|e| {
+        vara_core::UserMessage::new("who.incompatible")
+            .caused_by(crate::backend_error::loader(&e))
+            .wire()
+    })?;
+    let destroy: libloading::Symbol<Destroy> = unsafe { lib.get(b"dal_destroy") }.map_err(|e| {
+        vara_core::UserMessage::new("who.incompatible")
+            .caused_by(crate::backend_error::loader(&e))
+            .wire()
+    })?;
+    let free: libloading::Symbol<Free> = unsafe { lib.get(b"dal_buffer_free") }.map_err(|e| {
+        vara_core::UserMessage::new("who.incompatible")
+            .caused_by(crate::backend_error::loader(&e))
+            .wire()
+    })?;
+    let flush: libloading::Symbol<Flush> =
+        unsafe { lib.get(b"dal_flush_telemetry") }.map_err(|e| {
+            vara_core::UserMessage::new("who.incompatible")
+                .caused_by(crate::backend_error::loader(&e))
+                .wire()
+        })?;
     let name = CString::new("who").unwrap();
     let dir = CString::new(directory.to_string_lossy().as_bytes())
         .map_err(|_| vara_core::UserMessage::new("model.invalid_path").wire())?;
@@ -286,8 +342,13 @@ unsafe fn native(
             return Ok(serde_json::json!({"available":true,"ready":unsafe{state(handle)}==1}));
         }
         if operation == "download" {
-            if unsafe { download(handle) } != 0 {
-                return Err(vara_core::UserMessage::new("who.download").wire());
+            let status = unsafe { download(handle) };
+            if status != 0 {
+                return Err(vara_core::UserMessage::new("who.download")
+                    .caused_by(
+                        vara_core::UserMessage::new("who.sdk_status").number("code", status.into()),
+                    )
+                    .wire());
             }
             return Ok(serde_json::json!({"ready":unsafe{state(handle)}==1}));
         }
@@ -297,8 +358,11 @@ unsafe fn native(
         if unsafe { state(handle) } != 1 {
             return Err(vara_core::UserMessage::new("who.model_missing").wire());
         }
-        let mut wav = hound::WavReader::open(audio)
-            .map_err(|_| vara_core::UserMessage::new("who.playback_missing").wire())?;
+        let mut wav = hound::WavReader::open(audio).map_err(|e| {
+            vara_core::UserMessage::new("who.playback_missing")
+                .caused_by(crate::media::hound_cause(&e))
+                .wire()
+        })?;
         let spec = wav.spec();
         if spec.channels != 1
             || spec.sample_rate != 16000
@@ -318,8 +382,11 @@ unsafe fn native(
         let mut input = Vec::with_capacity(count as usize * 4 + 12);
         input.extend_from_slice(&count.to_be_bytes());
         for sample in wav.samples::<i16>() {
-            let v = sample.map_err(|_| vara_core::UserMessage::new("media.copy_read").wire())?
-                as f32
+            let v = sample.map_err(|e| {
+                vara_core::UserMessage::new("media.copy_read")
+                    .caused_by(crate::media::hound_cause(&e))
+                    .wire()
+            })? as f32
                 / 32768.;
             input.extend_from_slice(&v.to_bits().to_be_bytes());
         }
@@ -360,8 +427,11 @@ unsafe fn native(
                 .map_err(|_| vara_core::UserMessage::new("who.invalid_count").wire())?;
             let path = std::env::var_os("VARA_WHO_LANE_PAYLOAD")
                 .ok_or(vara_core::UserMessage::new("who.embeddings").wire())?;
-            let metadata = std::fs::metadata(&path)
-                .map_err(|_| vara_core::UserMessage::new("who.recording_embeddings").wire())?;
+            let metadata = std::fs::metadata(&path).map_err(|e| {
+                vara_core::UserMessage::new("who.recording_embeddings")
+                    .caused_by(vara_core::UserMessage::io_cause(&e))
+                    .wire()
+            })?;
             if metadata.len() > 32_000_000 {
                 return Err(vara_core::UserMessage::new("who.embeddings_too_large").wire());
             }

@@ -1,4 +1,5 @@
 //! Runtime adapters. Requests take immutable core plans; cancellation never changes providers.
+mod backend_error;
 pub mod cli;
 mod local;
 pub mod media;

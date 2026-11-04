@@ -25,8 +25,12 @@ pub fn input_devices() -> Result<Vec<InputDevice>> {
         if raw.is_null() {
             return Err(vara_core::UserMessage::new("microphone.find").wire());
         }
-        let result = serde_json::from_slice(std::ffi::CStr::from_ptr(raw).to_bytes())
-            .map_err(|_| vara_core::UserMessage::new("microphone.list").wire());
+        let result =
+            serde_json::from_slice(std::ffi::CStr::from_ptr(raw).to_bytes()).map_err(|e| {
+                vara_core::UserMessage::new("microphone.list")
+                    .caused_by(crate::backend_error::json(&e))
+                    .wire()
+            });
         crate::vara_free(raw);
         result
     }
@@ -35,14 +39,22 @@ pub fn input_devices() -> Result<Vec<InputDevice>> {
 pub fn input_devices() -> Result<Vec<InputDevice>> {
     cpal::default_host()
         .input_devices()
-        .map_err(|_| vara_core::UserMessage::new("microphone.find").wire())?
+        .map_err(|_| {
+            vara_core::UserMessage::new("microphone.find")
+                .caused_by(vara_core::UserMessage::new("audio.backend"))
+                .wire()
+        })?
         .map(|d| {
             d.name()
                 .map(|name| InputDevice {
                     id: name.clone(),
                     label: name,
                 })
-                .map_err(|_| vara_core::UserMessage::new("microphone.read").wire())
+                .map_err(|_| {
+                    vara_core::UserMessage::new("microphone.read")
+                        .caused_by(vara_core::UserMessage::new("audio.backend"))
+                        .wire()
+                })
         })
         .collect()
 }
@@ -163,15 +175,21 @@ fn start(
     let device = if let Some(name) = name {
         // Do not probe every device's supported formats just to find a name.
         host.devices()
-            .map_err(|_| vara_core::UserMessage::new("microphone.devices").wire())?
+            .map_err(|_| {
+                vara_core::UserMessage::new("microphone.devices")
+                    .caused_by(vara_core::UserMessage::new("audio.backend"))
+                    .wire()
+            })?
             .find(|d| d.name().is_ok_and(|n| n == name))
     } else {
         host.default_input_device()
     }
     .ok_or_else(|| vara_core::UserMessage::new("microphone.unavailable").wire())?;
-    let supported = device
-        .default_input_config()
-        .map_err(|_| vara_core::UserMessage::new("microphone.format").wire())?;
+    let supported = device.default_input_config().map_err(|e| {
+        vara_core::UserMessage::new("microphone.format")
+            .caused_by(crate::backend_error::config(&e))
+            .wire()
+    })?;
     let config: cpal::StreamConfig = supported.clone().into();
     let channels = config.channels as usize;
     let capture = Arc::new(Mutex::new(Capture {
@@ -182,8 +200,12 @@ fn start(
     }));
     let data = capture.clone();
     let errors = capture.clone();
-    let on_error = move |_: cpal::StreamError| {
-        errors.lock().error = Some(vara_core::UserMessage::new("microphone.disconnected").wire());
+    let on_error = move |e: cpal::StreamError| {
+        errors.lock().error = Some(
+            vara_core::UserMessage::new("microphone.disconnected")
+                .caused_by(crate::backend_error::stream(&e))
+                .wire(),
+        );
     };
     let stream = match supported.sample_format() {
         cpal::SampleFormat::F32 => device.build_input_stream(
@@ -206,10 +228,16 @@ fn start(
         ),
         _ => return Err(vara_core::UserMessage::new("microphone.sample_format").wire()),
     }
-    .map_err(|_| vara_core::UserMessage::new("microphone.open").wire())?;
-    stream
-        .play()
-        .map_err(|_| vara_core::UserMessage::new("microphone.start").wire())?;
+    .map_err(|e| {
+        vara_core::UserMessage::new("microphone.open")
+            .caused_by(crate::backend_error::build(&e))
+            .wire()
+    })?;
+    stream.play().map_err(|e| {
+        vara_core::UserMessage::new("microphone.start")
+            .caused_by(crate::backend_error::play(&e))
+            .wire()
+    })?;
     Ok((stream, capture))
 }
 fn write(path: &std::path::Path, c: &Capture) -> Result<f64> {
@@ -225,15 +253,23 @@ fn write(path: &std::path::Path, c: &Capture) -> Result<f64> {
             sample_format: hound::SampleFormat::Int,
         },
     )
-    .map_err(|_| vara_core::UserMessage::new("microphone.recording_save").wire())?;
+    .map_err(|e| {
+        vara_core::UserMessage::new("microphone.recording_save")
+            .caused_by(crate::backend_error::hound(&e))
+            .wire()
+    })?;
     for sample in &c.samples {
-        writer
-            .write_sample(*sample)
-            .map_err(|_| vara_core::UserMessage::new("microphone.disk_space").wire())?;
+        writer.write_sample(*sample).map_err(|e| {
+            vara_core::UserMessage::new("microphone.disk_space")
+                .caused_by(crate::backend_error::hound(&e))
+                .wire()
+        })?;
     }
-    writer
-        .finalize()
-        .map_err(|_| vara_core::UserMessage::new("microphone.finish").wire())?;
+    writer.finalize().map_err(|e| {
+        vara_core::UserMessage::new("microphone.finish")
+            .caused_by(crate::backend_error::hound(&e))
+            .wire()
+    })?;
     Ok(c.samples.len() as f64 / c.rate as f64)
 }
 
