@@ -804,9 +804,9 @@ persistent label. Options include meaningful location/readiness information;
 provider/model names are values, not additional visual accents. Missing/unavailable
 options remain identifiable with a reason and configuration path.
 
-A switch is for a boolean such as “AI-bearbejdning for Mail”. Track: 36 × 22px;
+A switch is for a boolean such as “AI processing for Mail”. Track: 36 × 22px;
 thumb: 18px, with 2px inset. On uses primary, off uses control-border; thumb is
-white. Text states “Til”/“Fra” or a clear associated description complement color.
+white. Text states “On”/“Off” or a clear associated description complement color.
 The entire label is clickable; keyboard Space toggles. In forms the switch changes
 the draft and the explicit Save commits it; it does not secretly save one field.
 
@@ -942,8 +942,8 @@ together; never claim physical deletion before the domain confirms it.
 | State | What remains visible | Next step |
 | --- | --- | --- |
 | Empty fresh profile | Calm explanation and actual shortcut; no fabricated rows | Guided setup or a real trial if already ready |
-| No search matches | Query, app/filter context and “Ingen match” | Clear/change query |
-| Loading history | Existing results if available, stable header, “Henter historik…” | Wait; no fake success/data |
+| No search matches | Query, app/filter context and “No matches” | Clear/change query |
+| Loading history | Existing results if available, stable header, “Loading history…” | Wait; no fake success/data |
 | Storage unavailable | Available in-memory text and clear unsaved state | Deliberate copy/retry; no automatic delivery claim |
 | Local model missing | Selected local choice and requirements | Download/retry local setup |
 | Offline with local engine ready | Actual local readiness | Keep local dictation available |
@@ -1248,7 +1248,7 @@ library deletion. Missing playback media is a recoverable state with readable te
 
 ### Optional local speaker labeling — Who
 
-Add “Find talere” as a quiet action in the transcription editor. Reuse the
+Add “Find speakers” as a quiet action in the transcription editor. Reuse the
 existing dialog, status/notice, buttons and editable speaker/time margin. The
 Who dialog shows explicit local processing, supplier/model/version, attribution,
 license link and SDK usage metadata before download/use. Download/preparation
@@ -1256,7 +1256,7 @@ and inference are indeterminate stages with a direct cancellation action. The di
 
 Keep the existing transcript and corrections readable throughout. Successful
 labeling opens the annotated original; corrections are retained. A native
-`details` disclosure “Talerintervaller · Who” exposes actual overlapping intervals
+`details` disclosure “Speaker intervals · Who” exposes actual overlapping intervals
 and uses the same speaker rename and seek buttons. Untimed transcripts show
 intervals without fabricated word assignment. Errors or zero detected speakers
 explain the limitation and keep prior data. No extra global navigation or new

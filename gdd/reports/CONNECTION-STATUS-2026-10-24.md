@@ -6,7 +6,7 @@ way to test it.
 ## Delivered
 
 Connections shows distinct loading, stored, missing and unavailable key states.
-Stored credentials expose Test nøgle directly for OpenAI/Groq. Key management
+Stored credentials expose Test key directly for OpenAI/Groq. Key management
 uses the same test action. Presence queries still read metadata only; stored keys
 are never returned to the UI or logged. Saving/deleting refreshes presence and
 invalidates prior test results. In-flight responses for an old/replaced key are

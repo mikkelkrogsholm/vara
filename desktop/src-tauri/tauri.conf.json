@@ -36,7 +36,7 @@
     "targets": [
       "app"
     ],
-    "shortDescription": "Lokal diktering med app-grupperet historik",
+    "shortDescription": "Local dictation with app-grouped history",
     "category": "Productivity",
     "macOS": {
       "minimumSystemVersion": "13.0",

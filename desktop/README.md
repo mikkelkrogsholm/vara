@@ -99,7 +99,7 @@ See the feature report for evidence, limits and native acceptance status.
 
 ## Who local speaker labeling
 
-Open a completed file document and choose **Find talere**. Download Who once via
+Open a completed file document and choose **Find speakers**. Download Who once via
 the explicit supplier/license/usage disclosure; then run it on the private audio
 copy. Speaker names and original word times remain inspectable; ambiguous words
 are not assigned a single speaker. The dialog optionally accepts a known speaker count; recurring SDK groups become references, checked against prototypes that omit the lane’s entire piece; lanes without exactly one matching reference remain uncertain. The raw SDK result and derived intervals are retained separately; temporary embeddings are not saved. Empty/failed results retain prior annotations.
