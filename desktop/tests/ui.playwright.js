@@ -1,16 +1,19 @@
 async function run(page) {
   const context=await page.context().browser().newContext();page=await context.newPage();globalThis.varaReviewPage=page;
-  const root='/Users/mikkelfreltoftkrogsholm/Projekter/vara';
+  const root=process.env.VARA_TEST_OUTPUT_ROOT || '/tmp/vara-22b-legacy';
   const fixture=await (await page.request.get('http://127.0.0.1:18770/tests/fixtures/ui-state.json')).json();
+  const runtimeCatalog=await (await page.request.get('http://127.0.0.1:18770/tests/runtime-catalog.json')).json();
   const checks=[],errors=[];page.on('pageerror',error=>errors.push(error.message));
   const assert=(value,message)=>{if(!value)throw Error(message);};
-  await page.addInitScript(data=>{
+  await page.addInitScript(({data,runtimeCatalog})=>{
+    const wire=code=>'vara-message-v1:'+JSON.stringify({code});
     window.testState=structuredClone(data);window.testCalls=[];window.testEmit=null;window.testFailure=null;window.testKeys=new Set();
     window.__TAURI__={core:{invoke:async(name,{action,payload})=>{
       window.testCalls.push({action,payload:action==='set_key'?{id:payload.id}:payload});
       if (action==='check_openai' && window.testCheckGate) await window.testCheckGate;
-      const d=window.testState;if(window.testFailure===action && ['key_status','set_key','delete_key'].includes(action))throw window.testKeyError||'Nøgleringen er låst. Lås den op og prøv igen.';if(window.testFailure===action)throw ['check_groq','check_openai'].includes(action)?'Adgang afvist. Kontroller API-nøgle og modeladgang.':'Kunne ikke kopiere. Teksten er stadig tilgængelig.';
+      const d=window.testState;if(window.testFailure===action && ['key_status','set_key','delete_key'].includes(action))throw window.testKeyError||wire('credential.locked');if(window.testFailure===action)throw ['check_groq','check_openai'].includes(action)?wire('provider.access'):wire('host.unsaved');
       switch(action){
+        case 'runtime_catalog':return runtimeCatalog;
         case 'snapshot':return structuredClone(d);
         case 'file_list':return {documents:[],media:{}};
         case 'devices':return [{id:'device1',label:'Indbygget mikrofon'}];
@@ -23,13 +26,13 @@ async function run(page) {
         case 'delete_key':window.testKeys.delete(payload.id);break;
         case 'check_openai':return {speech_model:'gpt-transcribe',speech_available:true,text_model:'gpt-6-luna',text_available:true};
         case 'check_groq':return {speech_model:'whisper-large-v3-turbo',speech_available:true,text_model:'openai/gpt-oss-120b',text_available:true};
-        case 'check_cli':return {installed:true,supported:true,detail:'Tekstkontrakten er understøttet. Login kontrolleres ved forespørgslen.'};
+        case 'check_cli':return {installed:true,supported:true,detail:wire('cli.supported')};
         case 'delete_result':d.history=d.history.filter(r=>r.id!==payload.id);break;
         case 'dismiss_message':d.message=null;break;
       }
       return null;
     }},event:{listen:async(name,callback)=>{if(name==='vara:state')window.testEmit=()=>callback({payload:structuredClone(window.testState)});if(name==='vara:shortcut-key')window.testShortcut=callback;return()=>{};}}};
-  },fixture);
+  },{data:fixture,runtimeCatalog});
   await page.setViewportSize({width:1586,height:992});await page.goto('http://127.0.0.1:18770/ui/index.html');await page.waitForSelector('.history-row');
   const act=name=>page.locator(`dialog[open] [data-action="${name}"], body:not(:has(dialog[open])) [data-action="${name}"]`).filter({visible:true}).first();
   const settingsTab=async id=>page.locator(`.settings-nav [data-action="settings-tab"][data-id="${id}"]`).click();
@@ -91,7 +94,7 @@ async function run(page) {
   await page.locator('[data-action="settings-tab"][data-id="connections"]').click();await shot('connections');await settingsTab('connections');await page.locator('[data-action="open-key"][data-id="open_ai"]').click();await shot('key-dialog');await page.locator('#api-key').fill('not-a-real-key');await page.keyboard.press('Escape');assert(await page.locator('#api-key').count()===0,'Secret DOM cleared');await page.locator('#advanced-engines summary').click();await act('add-endpoint').click();await shot('endpoint-dialog');await act('close-modal').click();await act('edit-engine').click();await shot('model-dialog');await act('close-modal').click();await page.locator('#cli-engines summary').click();await page.locator('[data-action="check-cli"]').first().click();checks.push('Connections and every connection dialog; secret clearing');
   await page.locator('[data-action="settings-tab"][data-id="privacy"]').click();await shot('privacy');await nav('apps');await act('add-app').click();await shot('app-picker');await act('close-modal').click();
   await nav('history');await act('choose-processing').click();await shot('processing-dialog');await act('close-modal').click();await page.locator('.history-row [data-action="confirm-delete"]').first().click();await shot('delete-dialog');await act('close-modal').click();checks.push('Privacy, app picker, one-shot processing, direct actions and deletion dialog');
-  await page.evaluate(()=>{window.testFailure='copy';});await act('copy').click();assert(await page.locator('.detail-pane .notice--error').isVisible(),'Copy failure stays visible');await shot('copy-error');await page.evaluate(()=>{window.testFailure=null;window.testState.message='Transskriptionen mislykkedes. Optagelsen kan genprøves.';window.testState.recoveries=[{id:'retry',origin:{app_name:'Mail'},expires_at:Math.floor(Date.now()/1000)+500}];window.testEmit();});await shot('recovery');await page.evaluate(()=>{window.testState.message=null;window.testState.recoveries=[];window.testState.history=[];window.testState.settings.onboarding_complete=false;window.testEmit();});await shot('empty');await act('setup').first().click();await shot('setup-model');await act('setup-next').click();await shot('setup-permissions');await act('setup-next').click();await shot('setup-trial');checks.push('Persistent failure, recovery, empty history and all setup steps');
+  await page.evaluate(()=>{window.testFailure='copy';});await act('copy').click();assert(await page.locator('.detail-pane .notice--error').isVisible(),'Copy failure stays visible');await shot('copy-error');await page.evaluate(()=>{window.testFailure=null;window.testState.message='vara-message-v1:{"code":"media.decode"}';window.testState.recoveries=[{id:'retry',origin:{app_name:'Mail'},expires_at:Math.floor(Date.now()/1000)+500}];window.testEmit();});await shot('recovery');await page.evaluate(()=>{window.testState.message=null;window.testState.recoveries=[];window.testState.history=[];window.testState.settings.onboarding_complete=false;window.testEmit();});await shot('empty');await act('setup').first().click();await shot('setup-model');await act('setup-next').click();await shot('setup-permissions');await act('setup-next').click();await shot('setup-trial');checks.push('Persistent failure, recovery, empty history and all setup steps');
   await page.evaluate(()=>{window.testState.permissions.microphone='denied';window.testState.permissions.accessibility=false;window.testState.models['local.parakeet']=false;window.testEmit();});await act('setup-back').click();await shot('permission-denied');await act('setup-back').click();await page.evaluate(()=>{window.testState.downloads=[{id:'local.parakeet',received:89502704,total:179005408,phase:'downloading'}];window.testEmit();});await shot('model-download');checks.push('Permission denial, not-ready model and real progress representation');
   await page.evaluate(data=>{window.testState=structuredClone(data);window.testState.history[0].original='Lang tekst '.repeat(1000);window.testState.history[0].processed=null;window.testEmit();},fixture);await nav('history');await page.locator('[data-action="select-result"][data-id="1"]').click();assert(await page.locator('.transcript').evaluate(e=>getComputedStyle(e).fontSize)==='20px','Long transcript compact');await shot('long-text');
   for(const width of [1280,1040,900,720,640,320]){await page.setViewportSize({width,height:900});if(await page.locator(".history-pane").isVisible())await page.locator('[data-action="select-result"][data-id="1"]').click();await noOverflow('History '+width);await shot('history-'+width);if(width<1040){assert(await page.locator('.back-button').isVisible(),'Narrow back route');await act('back-history').click();assert(await page.locator('.history-pane').isVisible(),'Narrow master returns');await page.locator('[data-action="select-result"][data-id="1"]').click();}await nav('settings');await noOverflow('Settings '+width);await nav('apps');await noOverflow('Apps '+width);await nav('history');}
@@ -144,7 +147,7 @@ async function run(page) {
   assert(await page.locator('#api-key').count()===0,'Unavailable status does not offer blind replacement');
   await page.evaluate(()=>{window.testFailure=null;});await page.locator('dialog [data-action="open-key"]').click();
   assert(await page.locator('#api-key').count()===1,'Retry re-queries key metadata and restores dialog');
-  await page.evaluate(()=>{window.testFailure='set_key';window.testKeyError='Nøglelageret svarede ikke inden 15 sekunder. Ændringen kan være gennemført.';});
+  await page.evaluate(()=>{window.testFailure='set_key';window.testKeyError='vara-message-v1:{"code":"credential.timeout_mutation"}';});
   await page.locator('#api-key').fill('fictional-timeout-key');await act('save-key').click();
   assert(await page.locator('#api-key').inputValue()==='','Secret cleared after failed save');
   assert((await page.locator('#dialog-error').innerText()).includes('kan være gennemført'),'Timeout explains uncertain mutation');

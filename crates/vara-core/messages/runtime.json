@@ -1286,5 +1286,481 @@
   "whisper.half_sample": {
     "da": "Whisper rapporterede et ufuldstændigt sample.",
     "en": "Whisper reported an incomplete sample."
+  },
+  "host.data_create": {
+    "da": "Vara kunne ikke oprette sin datamappe.",
+    "en": "Vara could not create its data folder."
+  },
+  "host.data_protect": {
+    "da": "Datamappen kunne ikke beskyttes.",
+    "en": "The data folder could not be protected."
+  },
+  "host.audio_protect": {
+    "da": "Lydmappen kunne ikke beskyttes.",
+    "en": "The audio folder could not be protected."
+  },
+  "host.recovered": {
+    "da": "Tekst fra en afbrudt diktering er gendannet i historikken. Indsæt den manuelt.",
+    "en": "Text from an interrupted dictation was recovered in history. Insert it manually."
+  },
+  "host.unsaved_first": {
+    "da": "Gem eller kopiér først teksten, der endnu ikke er gemt.",
+    "en": "First save or copy the text that has not been saved yet."
+  },
+  "host.mic_permission": {
+    "da": "Giv Vara adgang til mikrofonen i Indstillinger, før du dikterer.",
+    "en": "Give Vara microphone access in Settings before dictating."
+  },
+  "host.speech_model": {
+    "da": "Hent først den lokale talemodel i Indstillinger → Forbindelser.",
+    "en": "First download the local speech model in Settings → Connections."
+  },
+  "host.speech_key": {
+    "da": "Tilføj først en API-nøgle til den valgte taleudbyder.",
+    "en": "First add an API key for the selected speech provider."
+  },
+  "host.fixture_open": {
+    "da": "Testfixture kunne ikke åbnes.",
+    "en": "The test fixture could not be opened."
+  },
+  "host.no_session": {
+    "da": "Der er ingen aktiv diktering.",
+    "en": "There is no active dictation."
+  },
+  "host.audio_cleanup": {
+    "da": "Lyden kunne ikke slettes. Vara prøver oprydning igen.",
+    "en": "The audio could not be deleted. Vara will retry cleanup."
+  },
+  "host.unsaved": {
+    "da": "Teksten kunne ikke gemmes. Kopiér den, eller prøv at gemme igen.",
+    "en": "The text could not be saved. Copy it or try saving again."
+  },
+  "host.manual_ready": {
+    "da": "Teksten er gemt og klar til manuel indsættelse.",
+    "en": "The text is saved and ready to insert manually."
+  },
+  "host.recovery_missing": {
+    "da": "Optagelsen findes ikke længere.",
+    "en": "The recording no longer exists."
+  },
+  "host.audio_missing": {
+    "da": "Lydfilen findes ikke længere.",
+    "en": "The audio file no longer exists."
+  },
+  "host.cancel_retry": {
+    "da": "Annuller først genprøvningen.",
+    "en": "Cancel the retry first."
+  },
+  "host.recovery_delete": {
+    "da": "Optagelsen kunne ikke slettes.",
+    "en": "The recording could not be deleted."
+  },
+  "host.expired_delete": {
+    "da": "En udløbet optagelse kunne ikke slettes.",
+    "en": "An expired recording could not be deleted."
+  },
+  "host.model_unknown": {
+    "da": "Ukendt model.",
+    "en": "Unknown model."
+  },
+  "host.model_downloading": {
+    "da": "Modellen hentes allerede.",
+    "en": "The model is already downloading."
+  },
+  "host.id_missing": {
+    "da": "Id mangler.",
+    "en": "ID is missing."
+  },
+  "host.state_read": {
+    "da": "Tilstanden kunne ikke læses.",
+    "en": "The state could not be read."
+  },
+  "host.app_ids_invalid": {
+    "da": "Ugyldige app-id’er.",
+    "en": "Invalid app IDs."
+  },
+  "host.choice_invalid": {
+    "da": "Ugyldigt valg.",
+    "en": "Invalid selection."
+  },
+  "host.cli_unknown": {
+    "da": "Ukendt CLI.",
+    "en": "Unknown CLI."
+  },
+  "host.cli_read": {
+    "da": "CLI-status kunne ikke læses.",
+    "en": "CLI status could not be read."
+  },
+  "host.devices_read": {
+    "da": "Mikrofonerne kunne ikke læses.",
+    "en": "The microphones could not be listed."
+  },
+  "host.text_missing": {
+    "da": "Teksten findes ikke længere.",
+    "en": "The text no longer exists."
+  },
+  "host.model_installed": {
+    "da": "Modellen er allerede færdig med at installere.",
+    "en": "The model has already finished installing."
+  },
+  "host.key_save_first": {
+    "da": "Gem først din API-nøgle.",
+    "en": "Save your API key first."
+  },
+  "host.action_unknown": {
+    "da": "Ukendt handling.",
+    "en": "Unknown action."
+  },
+  "host.shortcut_parse": {
+    "da": "Tastkombinationen kunne ikke fortolkes. Vælg genvejen igen.",
+    "en": "The shortcut could not be interpreted. Choose it again."
+  },
+  "host.shortcut_register": {
+    "da": "Genvejen kunne ikke registreres; den kan være reserveret eller i brug. Den tidligere genvej er bevaret.",
+    "en": "The shortcut could not be registered; it may be reserved or in use. The previous shortcut has been retained."
+  },
+  "host.shortcut_recording": {
+    "da": "Afslut dikteringen, før du vælger en genvej.",
+    "en": "Finish dictating before choosing a shortcut."
+  },
+  "host.locale_invalid": {
+    "da": "Ugyldigt valg af grænsefladesprog.",
+    "en": "Invalid UI language preference."
+  },
+  "host.settings_read": {
+    "da": "Indstillingerne kunne ikke læses.",
+    "en": "Settings could not be read."
+  },
+  "host.task_interrupted": {
+    "da": "Handlingen blev afbrudt.",
+    "en": "The operation was interrupted."
+  },
+  "file.directory_create": {
+    "da": "Transskriptionsmappen kunne ikke oprettes.",
+    "en": "The transcription folder could not be created."
+  },
+  "file.interrupted": {
+    "da": "Vara blev lukket under behandlingen. Genprøv filen.",
+    "en": "Vara was closed during processing. Retry the file."
+  },
+  "file.audio_directory_read": {
+    "da": "Lydmappen kunne ikke læses.",
+    "en": "The audio folder could not be read."
+  },
+  "file.transcription_missing": {
+    "da": "Transskriptionen findes ikke længere.",
+    "en": "The transcription no longer exists."
+  },
+  "file.job_cancelled": {
+    "da": "Filjobbet er annulleret eller slettet.",
+    "en": "The file job was cancelled or deleted."
+  },
+  "file.resource_missing": {
+    "da": "Ressourcemappen mangler.",
+    "en": "The resource folder is missing."
+  },
+  "file.who_link_unknown": {
+    "da": "Ukendt Who-link.",
+    "en": "Unknown Who link."
+  },
+  "file.link_open": {
+    "da": "Linket kunne ikke åbnes i din browser.",
+    "en": "The link could not be opened in your browser."
+  },
+  "file.who_license": {
+    "da": "Læs Who-licensen før download.",
+    "en": "Read the Who license before downloading."
+  },
+  "file.document_missing": {
+    "da": "Dokumentet mangler.",
+    "en": "The document is missing."
+  },
+  "file.who_wait": {
+    "da": "Vent på transskriptionen, før du finder talere.",
+    "en": "Wait for transcription before finding speakers."
+  },
+  "file.who_count": {
+    "da": "Vælg et antal talere mellem 1 og 16.",
+    "en": "Choose a speaker count between 1 and 16."
+  },
+  "file.who_busy": {
+    "da": "Who arbejder allerede. Vent eller annuller.",
+    "en": "Who is already running. Wait or cancel."
+  },
+  "file.who_data": {
+    "da": "Who returnerede ugyldige data.",
+    "en": "Who returned invalid data."
+  },
+  "file.who_unclear": {
+    "da": "Who fandt ingen tydelige talere. Prøv en længere eller tydeligere optagelse. Tekst og tidligere taleropdeling er bevaret.",
+    "en": "Who found no clear speakers. Try a longer or clearer recording. The text and previous speaker identification are preserved."
+  },
+  "file.document_deleted": {
+    "da": "Dokumentet er slettet.",
+    "en": "The document was deleted."
+  },
+  "file.who_changed": {
+    "da": "Transskriptionen blev ændret. Find talere igen.",
+    "en": "The transcription changed. Find speakers again."
+  },
+  "file.choose_first": {
+    "da": "Vælg filer først.",
+    "en": "Choose files first."
+  },
+  "file.choose_count": {
+    "da": "Vælg mellem 1 og 100 filer ad gangen.",
+    "en": "Choose between 1 and 100 files at a time."
+  },
+  "file.choose_speech": {
+    "da": "Vælg en talemodel.",
+    "en": "Choose a speech model."
+  },
+  "file.privacy_only": {
+    "da": "Kun lokal behandling er slået til i Privatliv.",
+    "en": "On-device processing only is enabled in Privacy."
+  },
+  "file.model_download": {
+    "da": "Hent talemodellen under Modeller og nøgler først.",
+    "en": "Download the speech model under Models and keys first."
+  },
+  "file.source_missing": {
+    "da": "En kildefil mangler eller er ikke en almindelig fil. Vælg den igen.",
+    "en": "A source file is missing or is not a regular file. Choose it again."
+  },
+  "file.document_gone": {
+    "da": "Dokumentet findes ikke længere.",
+    "en": "The document no longer exists."
+  },
+  "file.not_processing": {
+    "da": "Filen er ikke under behandling.",
+    "en": "The file is not being processed."
+  },
+  "file.audio_busy": {
+    "da": "Lydkopien er stadig i brug og kunne ikke slettes. Stop afspilningen og prøv igen.",
+    "en": "The audio copy is still in use and could not be deleted. Stop playback and try again."
+  },
+  "file.gone": {
+    "da": "Filen findes ikke længere.",
+    "en": "The file no longer exists."
+  },
+  "file.queued": {
+    "da": "Filen er allerede i kø.",
+    "en": "The file is already queued."
+  },
+  "file.retry_cloud": {
+    "da": "Genprøvning kræver cloud, men kun lokal behandling er slået til.",
+    "en": "Retry requires cloud processing, but on-device processing only is enabled."
+  },
+  "file.already_done": {
+    "da": "Denne fil er allerede færdig.",
+    "en": "This file is already complete."
+  },
+  "file.no_text": {
+    "da": "Der er ingen tekst at gemme endnu.",
+    "en": "There is no text to save yet."
+  },
+  "file.revision_missing": {
+    "da": "Revision mangler.",
+    "en": "Revision is missing."
+  },
+  "file.text_missing": {
+    "da": "Teksten mangler.",
+    "en": "The text is missing."
+  },
+  "file.text_limit": {
+    "da": "Teksten overstiger dokumentgrænsen.",
+    "en": "The text exceeds the document limit."
+  },
+  "file.changed_elsewhere": {
+    "da": "Dokumentet er ændret et andet sted. Din kladde er bevaret; indlæs dokumentet igen.",
+    "en": "The document was changed elsewhere. Your draft is preserved; reload the document."
+  },
+  "file.not_ready": {
+    "da": "Transskriptionen er ikke klar.",
+    "en": "The transcription is not ready."
+  },
+  "file.title_required": {
+    "da": "Skriv en titel.",
+    "en": "Enter a title."
+  },
+  "file.instructions_required": {
+    "da": "Skriv instruktioner til AI.",
+    "en": "Enter AI instructions."
+  },
+  "file.choose_text_model": {
+    "da": "Vælg en tekstmodel.",
+    "en": "Choose a text model."
+  },
+  "file.local_only": {
+    "da": "Kun lokal behandling er slået til.",
+    "en": "On-device processing only is enabled."
+  },
+  "file.ai_busy": {
+    "da": "AI arbejder allerede på dokumentet.",
+    "en": "AI is already processing the document."
+  },
+  "file.ai_changed": {
+    "da": "Teksten blev rettet under AI-bearbejdningen. Prøv igen med den nye tekst.",
+    "en": "The text changed during AI processing. Try again with the new text."
+  },
+  "file.speaker_missing": {
+    "da": "Taler mangler.",
+    "en": "Speaker is missing."
+  },
+  "file.name_required": {
+    "da": "Skriv et navn.",
+    "en": "Enter a name."
+  },
+  "file.draft_limit": {
+    "da": "Kladde overstiger tekstgrænsen.",
+    "en": "The draft exceeds the text limit."
+  },
+  "file.no_ai_text": {
+    "da": "Ingen AI-tekst endnu.",
+    "en": "There is no AI text yet."
+  },
+  "file.ai_export_format": {
+    "da": "AI-tekst har ingen tidskoder. Eksportér som tekst, Markdown eller JSON.",
+    "en": "AI text has no timestamps. Export as text, Markdown or JSON."
+  },
+  "file.export_serialize": {
+    "da": "Dokumentet kunne ikke eksporteres.",
+    "en": "The document could not be exported."
+  },
+  "file.export_overwrite": {
+    "da": "Eksporten må ikke overskrive originalen eller lydkopien.",
+    "en": "The export must not overwrite the original or audio copy."
+  },
+  "file.export_source": {
+    "da": "Eksporten må ikke overskrive kildefilen eller arbejdslyden.",
+    "en": "The export must not overwrite the source file or working audio."
+  },
+  "file.export_save": {
+    "da": "Eksporten kunne ikke gemmes.",
+    "en": "The export could not be saved."
+  },
+  "file.action_unknown": {
+    "da": "Ukendt filhandling.",
+    "en": "Unknown file action."
+  },
+  "file.result_unsaved": {
+    "da": "Resultatet kunne ikke gemmes på disk. Teksten er bevaret i denne kørsel: kopiér, eksportér eller prøv at gemme igen, før Vara lukkes.",
+    "en": "The result could not be saved to disk. The text is preserved for this session: copy, export or try saving again before closing Vara."
+  },
+  "file.audio_finalize": {
+    "da": "Lydkopien kunne ikke færdiggøres.",
+    "en": "The audio copy could not be finalized."
+  },
+  "file.id_invalid": {
+    "da": "Ugyldigt dokument-id.",
+    "en": "Invalid document ID."
+  },
+  "host.ai_fallback": {
+    "da": "AI-bearbejdning mislykkedes. Originalen er bevaret.",
+    "en": "AI processing failed. The original is preserved."
+  },
+  "host.shortcut_restore": {
+    "da": "Den tidligere genvej kunne heller ikke genaktiveres.",
+    "en": "The previous shortcut could not be restored either."
+  },
+  "hud.recording": {
+    "da": "Lytter",
+    "en": "Listening"
+  },
+  "hud.recognizing": {
+    "da": "Finder dine ord",
+    "en": "Finding your words"
+  },
+  "hud.processing": {
+    "da": "Tilpasser teksten",
+    "en": "Refining the text"
+  },
+  "hud.saving": {
+    "da": "Gemmer",
+    "en": "Saving"
+  },
+  "hud.audio.local": {
+    "da": "Lyd: på enheden",
+    "en": "Audio: on this device"
+  },
+  "hud.audio.lan": {
+    "da": "Lyd: eget netværk",
+    "en": "Audio: your network"
+  },
+  "hud.audio.cloud": {
+    "da": "Lyd: cloud",
+    "en": "Audio: cloud"
+  },
+  "hud.audio.unknown": {
+    "da": "Lyd: ekstern/ukendt",
+    "en": "Audio: external/unknown"
+  },
+  "hud.ai.local.app": {
+    "da": "AI: lokal · app-prompt",
+    "en": "AI: on device · app prompt"
+  },
+  "hud.ai.local.general": {
+    "da": "AI: lokal · generel",
+    "en": "AI: on device · general"
+  },
+  "hud.ai.lan.app": {
+    "da": "AI: eget netværk · app-prompt",
+    "en": "AI: your network · app prompt"
+  },
+  "hud.ai.lan.general": {
+    "da": "AI: eget netværk · generel",
+    "en": "AI: your network · general"
+  },
+  "hud.ai.cloud.app": {
+    "da": "AI: cloud · app-prompt",
+    "en": "AI: cloud · app prompt"
+  },
+  "hud.ai.cloud.general": {
+    "da": "AI: cloud · generel",
+    "en": "AI: cloud · general"
+  },
+  "hud.ai.unknown.app": {
+    "da": "AI: ekstern/ukendt · app-prompt",
+    "en": "AI: external/unknown · app prompt"
+  },
+  "hud.ai.unknown.general": {
+    "da": "AI: ekstern/ukendt · generel",
+    "en": "AI: external/unknown · general"
+  },
+  "hud.panel": {
+    "da": "Vara diktering",
+    "en": "Vara dictation"
+  },
+  "hud.stop": {
+    "da": "Afslut diktering",
+    "en": "Stop dictation"
+  },
+  "hud.cancel": {
+    "da": "Annuller diktering",
+    "en": "Cancel dictation"
+  },
+  "app.unknown": {
+    "da": "Ukendt app",
+    "en": "Unknown app"
+  },
+  "native.menu.show": {
+    "da": "Åbn Vara",
+    "en": "Open Vara"
+  },
+  "native.menu.quit": {
+    "da": "Afslut Vara",
+    "en": "Quit Vara"
+  },
+  "native.tray.tooltip": {
+    "da": "Vara · diktering",
+    "en": "Vara · dictation"
+  },
+  "native.file.pick": {
+    "da": "Vælg lyd eller video",
+    "en": "Choose audio or video"
+  },
+  "native.file.transcription": {
+    "da": "Transskription",
+    "en": "Transcription"
   }
 }

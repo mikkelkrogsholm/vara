@@ -1,0 +1,66 @@
+// Exercise actual UI consumers against the canonical runtime catalog and an isolated host.
+const {chromium} = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
+const fs=require('node:fs'), path=require('node:path'), http=require('node:http'), assert=require('node:assert/strict');
+const desktop=path.resolve(__dirname,'..');
+const fixture=JSON.parse(fs.readFileSync(path.join(__dirname,'fixtures/ui-state.json')));
+const catalog=JSON.parse(fs.readFileSync(path.join(__dirname,'../../crates/vara-core/messages/runtime.json')));
+const shots=process.env.VARA_I18N_SHOTS || '/tmp/vara-22b-screens';fs.mkdirSync(shots,{recursive:true});
+const server=http.createServer((req,res)=>{const file=path.resolve(desktop,'.'+new URL(req.url,'http://localhost').pathname);if(!file.startsWith(desktop+path.sep))return res.writeHead(403).end();fs.readFile(file,(err,data)=>{if(err)return res.writeHead(404).end();res.setHeader('Content-Type',({'.js':'text/javascript','.html':'text/html','.css':'text/css'})[path.extname(file)]||'application/octet-stream');res.end(data);});});
+(async()=>{await new Promise(r=>server.listen(0,'127.0.0.1',r));let browser;
+try {
+ browser=await chromium.launch({headless:true,...(process.env.PLAYWRIGHT_CHROMIUM?{executablePath:process.env.PLAYWRIGHT_CHROMIUM}:{})});
+ const page=await browser.newPage({viewport:{width:1280,height:820}}),errors=[];page.on('pageerror',e=>errors.push(e.message));
+ await page.addInitScript(({fixture,catalog})=>{
+   const wire=(code,params={},cause)=>'vara-message-v1:'+JSON.stringify({code,params,...(cause?{cause}:{})});
+   window.wire=wire;window.calls=[];window.events={};window.state=fixture;state.settings.ui_locale='da';state.resolved_ui_locale='da';state.ui_locale_revision=0;
+   state.message=wire('host.ai_fallback',{}, {code:'provider.http',params:{status:503},cause:{code:'provider.network'}});
+   state.session={stage:'recording',origin:{app_id:'unknown',app_name:'Ukendt app'}};
+   const engine=state.settings.engines.find(e=>e.id==='local.parakeet');
+   window.doc={id:'doc',title:'Interview',source_name:'audio.wav',source_path:'/private/audio.wav',created_at:1,engine,language:'da',stage:'ready',duration:9,completed_seconds:9,revision:4,edited_text:null,ai_text:null,ai_engine:null,speakers:{},error:wire('file.result_unsaved'),diarization_error:wire('file.who_unclear'),transcript:{text:'User draft',timing:'none',segments:[{id:'s',text:'User draft',start:0,end:1,words:[]}]}};
+   window.__TAURI__={core:{invoke:async(_,{action,payload})=>{calls.push(action);switch(action){
+     case 'runtime_catalog':return catalog; case 'snapshot':return structuredClone(state);case 'devices':return [];case 'application_icons':return {};
+     case 'file_list':return {documents:[structuredClone(doc)],media:{}};
+     case 'copy':throw Error(window.failure||wire('host.unsaved',{}, {code:'io.permission_denied'}));
+     case 'check_cli':return {installed:true,supported:false,detail:wire('cli.unsupported')};
+     case 'file_who_status':return {available:true,ready:false,error:wire('file.who_data')};
+     case 'save_settings':window.savedSettings=structuredClone(payload);state.settings=structuredClone(payload);return;
+     case 'set_ui_locale':state.settings.ui_locale=payload.preference;state.resolved_ui_locale=payload.preference;return {locale:payload.preference,revision:++state.ui_locale_revision};
+   }return null;}},event:{listen:async(name,cb)=>{events[name]=cb;return()=>{};}}};
+ },{fixture,catalog});
+ await page.goto(`http://127.0.0.1:${server.address().port}/ui/index.html`);await page.locator('.history-row').first().waitFor();
+ const locale=async l=>{await page.evaluate(l=>Vara.i18n.setLocale(l),l);await page.waitForTimeout(30)};
+ const activity=page.locator('.activity-region').first();
+ assert.match(await activity.innerText(),/AI-bearbejdning mislykkedes/);assert.match(await activity.innerText(),/HTTP 503/);assert.match(await activity.innerText(),/Ukendt app/);
+ await page.evaluate(()=>window.activityNode=document.querySelector('.activity-region .inline-state p'));await locale('en');
+ assert.match(await activity.innerText(),/AI processing failed/);assert.match(await activity.innerText(),/HTTP 503/);assert.match(await activity.innerText(),/Unknown app/);
+ assert.equal(await page.evaluate(()=>activityNode===document.querySelector('.activity-region .inline-state p')),true);
+ await page.screenshot({path:path.join(shots,'en-status-1280x820.png')});
+ await page.locator('.detail-pane [data-action=copy]').first().click();let error=page.locator('.detail-pane .notice--error');assert.match(await error.innerText(),/could not be saved/i);assert.match(await error.innerText(),/denied access/i);
+ await page.evaluate(()=>window.noticeNode=document.querySelector('.detail-pane .notice--error'));await locale('da');assert.match(await error.innerText(),/Teksten kunne ikke gemmes/);assert.equal(await page.evaluate(()=>noticeNode===document.querySelector('.detail-pane .notice--error')),true);
+ await page.evaluate(()=>window.failure='Audio backend unavailable');await page.locator('.detail-pane [data-action=copy]').first().click();assert.match(await error.innerText(),/Audio backend unavailable/);
+ await page.evaluate(()=>window.failure='Audio backend unavailable token=secret /private/transcript');await page.locator('.detail-pane [data-action=copy]').first().click();assert.doesNotMatch(await error.innerText(),/secret|private|transcript/);
+ await page.evaluate(()=>window.failure='vara-message-v2:{"code":"x","secret":"private"}');await page.locator('.detail-pane [data-action=copy]').first().click();assert.doesNotMatch(await error.innerText(),/vara-message|private/);
+ await page.locator('[data-page=transcription]').click();await page.locator('[data-action=tx-select][data-id=doc]').click();
+ assert.match(await page.locator('.tx-reading').innerText(),/Resultatet kunne ikke gemmes/);assert.match(await page.locator('#tx-who-tools').innerText(),/Who fandt ingen tydelige talere/);
+ await page.locator('[data-action=tx-edit]').click();const edit=page.locator('#tx-editor-text');await edit.fill('Retained <draft>');await edit.evaluate(el=>{el.focus();el.setSelectionRange(2,6);window.editNode=el;});
+ await locale('en');assert.match(await page.locator('.tx-reading').innerText(),/result could not be saved/i);assert.match(await page.locator('#tx-who-tools').innerText(),/Who found no clear speakers/);
+ assert.deepEqual(await edit.evaluate(el=>[el===editNode,document.activeElement===el,el.value,el.selectionStart,el.selectionEnd]),[true,true,'Retained <draft>',2,6]);
+ await page.locator('[data-action=tx-who-open]').click();assert.match(await page.locator('dialog').innerText(),/Who returned invalid data/);await page.evaluate(()=>{window.dialogNode=document.querySelector('dialog');});await locale('da');assert.match(await page.locator('dialog').innerText(),/Who returnerede ugyldige data/);assert.equal(await page.evaluate(()=>document.querySelector('dialog')===dialogNode),true);
+ await page.screenshot({path:path.join(shots,'da-who-1280x820.png')});await page.setViewportSize({width:720,height:560});await page.screenshot({path:path.join(shots,'da-who-720x560.png')});
+ assert.equal(await page.evaluate(()=>document.body.innerText.includes('vara-message-v1:')),false);assert.equal(await page.evaluate(()=>[...document.querySelectorAll('*')].some(el=>[...el.attributes].some(a=>a.value.includes('vara-message-v1:')))),false);
+ await page.locator('dialog [data-action=close-modal]').first().click();await page.locator('[data-page=settings]').click();await page.locator('[data-action=settings-tab][data-id=connections]').click();
+ const cli=page.locator('#cli-engines');await cli.evaluate(el=>el.open=true);
+ await page.locator('[data-action=check-cli][data-id=claude_cli]').click();assert.ok((await cli.innerText()).includes(catalog['cli.unsupported'].da));
+ await locale('en');assert.ok((await cli.innerText()).includes(catalog['cli.unsupported'].en));assert.equal(await page.evaluate(()=>calls.filter(x=>x==='check_cli').length),1);
+ await page.evaluate(()=>{state.history[0].origin={app_id:'unknown',app_name:'Ukendt app'};state.history[1].origin.app_id='custom.literal';state.history[1].origin.app_name='My literal app';events['vara:state']({payload:structuredClone(state)});});
+ await locale('en');await page.locator('[data-page=apps]').click();await page.locator('[data-action=select-pref][data-id=unknown]').click();
+ assert.match(await page.locator('#app-form h2').innerText(),/Unknown app/);await page.locator('#app-ai').check();await page.locator('#app-prompt').fill('Safe user draft');await page.locator('[data-action=save-app]').click();
+ assert.equal(await page.evaluate(()=>savedSettings.app_rules.unknown.app_name),'Ukendt app');assert.equal(await page.evaluate(()=>JSON.stringify(savedSettings).includes('__vara_')),false);
+ await locale('da');assert.match(await page.locator('#app-form h2').innerText(),/Ukendt app/);assert.match(await page.locator('.app-selector').innerText(),/My literal app/);assert.equal(await page.evaluate(()=>state.history[1].origin.app_name),'My literal app');
+ assert.equal(await page.evaluate(()=>calls.filter(x=>x==='runtime_catalog').length),1);assert.deepEqual(errors,[]);
+ // Startup fallback also remains localized and actionable without the desktop host.
+ const startup=await browser.newPage();await startup.goto(`http://127.0.0.1:${server.address().port}/ui/index.html`);assert.match(await startup.locator('#workspace').innerText(),/Open Vara as a desktop app/);assert.equal(await startup.locator('#sidebar').getAttribute('aria-label'),'Main navigation');await startup.close();
+ const boot=await browser.newPage();await boot.addInitScript(()=>{window.__TAURI__={core:{invoke:()=>new Promise(()=>{})}}});await boot.goto(`http://127.0.0.1:${server.address().port}/ui/index.html`);
+ await boot.evaluate(()=>window.dispatchEvent(new ErrorEvent('error',{message:'secret token /private/path'})));assert.match(await boot.locator('#startup').innerText(),/Vara could not open/);assert.doesNotMatch(await boot.locator('#startup').innerText(),/secret|private/);await boot.close();
+ console.log(`PASS: runtime catalog, snapshot, report, causes, redaction, live locale, retained editor, Who and startup. Screenshots: ${shots}`);
+}finally{if(browser)await browser.close();await new Promise(r=>server.close(r));}})().catch(e=>{console.error(e);process.exitCode=1});

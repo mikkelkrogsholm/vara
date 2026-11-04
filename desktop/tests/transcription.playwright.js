@@ -7,13 +7,15 @@ async function run(page) {
       "http://127.0.0.1:18770/tests/fixtures/ui-state.json",
     )
   ).json();
+  const runtimeCatalog = await (await page.request.get("http://127.0.0.1:18770/tests/runtime-catalog.json")).json();
   const errors = [],
     checks = [];
   page.on("pageerror", (error) => errors.push(error.message));
   const assert = (v, m) => {
     if (!v) throw Error(m);
   };
-  await page.addInitScript((data) => {
+  await page.addInitScript(({data, runtimeCatalog}) => {
+    const wire = code => 'vara-message-v1:' + JSON.stringify({code});
     window.txMainState = data;
     window.txFixtureCalls = [];
     window.txFixtureEvents = {};
@@ -105,7 +107,7 @@ async function run(page) {
         title: "Noter.m4a",
         stage: "failed",
         transcript: null,
-        error: "Intet understøttet lydspor.",
+        error: wire("media.no_supported_audio"),
       },
     ];
     const emit = () =>
@@ -117,6 +119,7 @@ async function run(page) {
           window.txFixtureCalls.push({ action, payload });
           const d = window.txFixtureDocs.find((d) => d.id === payload?.id);
           switch (action) {
+            case "runtime_catalog": return runtimeCatalog;
             case "snapshot":
               return structuredClone(data);
             case "devices":
@@ -134,7 +137,7 @@ async function run(page) {
               return { available: true, ready: !!window.txWhoReady };
             case "file_who_download":
               if (!payload.acknowledge_license)
-                throw Error("Læs licensen først.");
+                throw Error(wire("file.who_license"));
               if (window.txWhoDownloadWait)
                 await new Promise(
                   (resolve) => (window.txWhoFinishDownload = resolve),
@@ -143,7 +146,7 @@ async function run(page) {
               return { ready: true };
             case "file_who":
               if (window.txWhoFails)
-                throw Error("Who kunne ikke finde talere. Teksten er bevaret.");
+                throw Error(wire("file.who_unclear"));
               d.diarization = {
                 model: "Who by Desert Ant Labs",
                 version: "v0.3.4",
@@ -195,9 +198,9 @@ async function run(page) {
               return ["new-file"];
             case "file_save":
               if (window.txSaveFails)
-                throw Error("Disken er fuld. Din kladde er bevaret.");
+                throw Error(wire("file.result_unsaved"));
               if (payload.revision !== d.revision)
-                throw Error("Dokumentet er ændret.");
+                throw Error(wire("file.changed_elsewhere"));
               d.edited_text =
                 payload.text === d.transcript.text ? null : payload.text;
               d.revision++;
@@ -235,7 +238,7 @@ async function run(page) {
                 ((!payload.original && d.edited_text !== null) ||
                   d.transcript.timing === "none")
               )
-                throw Error("Undertekster kræver tidsjusteret tekst.");
+                throw Error(wire("transcription.subtitle_timing"));
               return true;
           }
           return null;
@@ -248,7 +251,7 @@ async function run(page) {
         },
       },
     };
-  }, fixture);
+  }, {data:fixture, runtimeCatalog});
   await page.setViewportSize({ width: 1586, height: 992 });
   await page.goto("http://127.0.0.1:18770/ui/index.html");
   await page.locator('[data-page="transcription"]').click();
@@ -430,7 +433,7 @@ async function run(page) {
   await page.waitForFunction(() =>
     document
       .querySelector(".tx-reading")
-      ?.textContent.includes("Disken er fuld"),
+      ?.textContent.includes("Resultatet kunne ikke gemmes på disk"),
   );
   await act("tx-copy").click();
   assert(
@@ -495,7 +498,7 @@ async function run(page) {
   await page.locator('[data-action="tx-select"][data-id="file-3"]').click();
   assert(
     (await page.locator(".tx-detail").innerText()).includes(
-      "Intet understøttet lydspor",
+      "ingen understøttet lyd",
     ),
     "Actionable file error",
   );
@@ -601,7 +604,7 @@ async function run(page) {
   await page.waitForFunction(() =>
     document
       .querySelector(".tx-reading")
-      .textContent.includes("Who kunne ikke"),
+      .textContent.includes("Who fandt ingen tydelige talere"),
   );
   assert(
     (await page.locator('.tx-segment-meta [data-id="who-0"]').count()) === 1,

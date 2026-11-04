@@ -282,7 +282,7 @@ complete catalog and supported resolution, implement required plural categories,
 and run `node desktop/tests/i18n.test.cjs` plus the browser locale check. Keep
 user content and model metadata outside the catalogs.
 
-## Runtime messages: partial issue 22 delivery
+## Runtime messages
 
 `vara_core::UserMessage` serializes as `vara-message-v1:` followed by JSON
 `{"code":"provider.http","params":{"status":503}}`. An optional `cause` is
@@ -305,20 +305,28 @@ than concatenating untrusted values into HTML. Catalog checks verify literal
 origin codes, locale completeness and matching placeholder names.
 
 Core `Error::wire()` preserves structured variants; `Display` remains readable
-for local clients. `Invalid(String)` and `Policy(String)` are legacy escape
-hatches and `wire()` leaves them raw. Existing host `to_string()` calls on core
-errors must be changed to `wire()`, particularly `desktop/src-tauri/src/service.rs`,
-`transcription.rs` and `lib.rs`; do not blindly change unrelated OS/JSON error
-conversions. Engine and platform `Result<_, String>` now carry the envelope at
-migrated origins. Until host/UI and native consumers decode and render it, they
-can show the envelope literally. This commit is an intermediate dependency, not
-release acceptance. Issue 22b must migrate host-owned errors and status text,
-CLI status consumers, HUD and native menus/dialogs, refresh active status on
-locale changes, and handle unknown legacy messages safely. Native Objective-C
-sources are deferred. The non-Mac fallback destination `Ukendt app` remains a
-literal presentation label and needs presentation-boundary treatment; persisted
-user app/model names and the Danish default AI prompt are user content, not
-runtime errors. No native Windows/Linux or live microphone acceptance is claimed.
+for local Rust clients. `Invalid(String)` and `Policy(String)` are legacy escape
+hatches and `wire()` leaves them raw. Desktop host conversion points use `wire()`;
+host-owned messages use catalog codes and carry typed IO, JSON location or
+nested core causes when available. They never put paths, secret values, request
+bodies or transcript text in runtime parameters. A `runtime_catalog` IPC command
+returns the same embedded JSON once at web startup; older mocked hosts can omit
+it. Runtime tokens bind presentation to locale changes without replacing controls.
+Unknown or legacy free text receives a localized summary. The UI retains only
+bounded HTTP/OS numbers or a narrow allowlist of harmless technical classes;
+opaque free text is withheld because it can contain credentials or user content.
+Unknown protocol versions are not interpreted as the current schema.
+
+The macOS HUD receives localized stage, detail and accessible names from the
+catalog and reuses the existing panel during locale changes. Tray item labels and
+tooltip reuse stable handles, and file-picker labels use the current locale.
+A reserved `unknown` destination ID gets a presentation-only label; raw names
+and persisted app rules remain unchanged. macOS `da.lproj` and `en.lproj`
+provide OS-selected microphone purpose descriptions. They do not change the OS
+permission-dialog language. See `gdd/reports/i22-localization/README.md` for
+verification scope and native limitations. No native Windows/Linux or live
+microphone acceptance is claimed. Persisted user app/model names and the Danish
+default AI prompt are user content, not runtime errors.
 
 ### Backend-cause audit for issue 22a
 

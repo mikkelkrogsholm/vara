@@ -27,7 +27,7 @@
       .join(" ");
   const artwork = new Map();
   const appArtwork = (name, size = "", id = "") =>
-    `<span class="app-icon ${e(size)}" data-app-id="${e(id)}" aria-hidden="true">${artwork.get(id) ? `<img src="${e(artwork.get(id))}" alt="" draggable="false">` : `<span class="monogram">${e(String(name).slice(0,1).toUpperCase())}</span>`}</span>`;
+    `<span class="app-icon ${e(size)}" data-app-id="${e(id)}" aria-hidden="true">${artwork.get(id) ? `<img src="${e(artwork.get(id))}" alt="" draggable="false">` : `<span class="monogram">${e(id === "unknown" ? "?" : String(name).slice(0,1).toUpperCase())}</span>`}</span>`;
   const setAppArtwork = (images) => {
     for (const [id, src] of Object.entries(images || {})) {
       if (typeof src === "string" && /^data:image\/png;base64,[A-Za-z0-9+/=]+$/.test(src)) artwork.set(id, src);

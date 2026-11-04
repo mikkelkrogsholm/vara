@@ -41,7 +41,11 @@
     "macOS": {
       "minimumSystemVersion": "13.0",
       "infoPlist": "Info.plist",
-      "entitlements": "Entitlements.plist"
+      "entitlements": "Entitlements.plist",
+      "files": {
+        "Resources/da.lproj/InfoPlist.strings": "localizations/da.lproj/InfoPlist.strings",
+        "Resources/en.lproj/InfoPlist.strings": "localizations/en.lproj/InfoPlist.strings"
+      }
     },
     "icon": [
       "icons/32x32.png",

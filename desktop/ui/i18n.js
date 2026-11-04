@@ -160,6 +160,8 @@
       "engine.codex.cli": "Codex · own login",
       "engine.gemini.cli": "Gemini CLI · own login",
 
+      "startup.failed": "Vara could not open",
+      "startup.retry": "Try again",
       "startup.description": "Opening your local history…",
       "startup.title": "Vara is starting",
       "startup.navigation": "Main navigation",
@@ -644,6 +646,8 @@
       "engine.codex.cli": "Codex · eget login",
       "engine.gemini.cli": "Gemini CLI · eget login",
 
+      "startup.failed": "Vara kunne ikke åbne",
+      "startup.retry": "Prøv igen",
       "startup.description": "Åbner din lokale historik…",
       "startup.title": "Vara starter",
       "startup.navigation": "Hovednavigation",
@@ -983,12 +987,46 @@
   }
   function bind(key, args = {}) { return tokenFor({ key, args }); }
   function bindFormat(format, value, options) { return tokenFor({ format, value, options }); }
+  let runtimeCatalog = {};
+  function setRuntimeCatalog(catalog) { if (catalog && typeof catalog === "object") runtimeCatalog = catalog; }
+  function runtimeText(value) {
+    const unknown = () => runtimeCatalog["runtime.unknown"]?.[locale] || (locale === "da" ? "Der opstod en ukendt fejl." : "An unknown error occurred.");
+    if (typeof value !== "string" || !value.startsWith("vara-message-v1:")) {
+      // Free-form errors may contain credentials, paths, transcripts or provider bodies.
+      // Retain only well-defined numeric protocol/OS details; never copy free text.
+      const text = typeof value === "string" ? value : "";
+      const http = text.match(/\bHTTP(?:\s+(?:status|code))?\s*[:=]?\s*([1-5][0-9]{2})\b/i);
+      const os = text.match(/\b(?:os error|errno)\s*[:=]?\s*(-?[0-9]{1,6})\b/i);
+      const safeClasses = /^(?:Error:\s*)?(Audio backend unavailable|Connection refused|Connection timed out|Network unreachable|Permission denied|Device unavailable)$/i;
+      const safeClass = text.match(safeClasses);
+      const detail = http ? `HTTP ${http[1]}` : os ? `OS ${os[1]}` : safeClass ? safeClass[1] : "";
+      return unknown() + (detail ? ` (${detail})` : "");
+    }
+    try {
+      const format = (entry, depth = 0) => {
+        if (depth > 8 || !entry || typeof entry.code !== "string" || (entry.params && (typeof entry.params !== "object" || Array.isArray(entry.params)))) return unknown();
+        const values = Object.values(entry.params || {});
+        if (values.some(n => !Number.isSafeInteger(n))) return unknown();
+        const translations = runtimeCatalog[entry.code] || runtimeCatalog["runtime.unknown"];
+        let result = translations?.[locale] || translations?.en || unknown();
+        result = result.replace(/\{([A-Za-z][\w]*)\}/g, (_, key) => Object.hasOwn(entry.params || {}, key) ? String(entry.params[key]) : "");
+        return entry.cause ? result + ": " + format(entry.cause, depth + 1) : result;
+      };
+      return format(JSON.parse(value.slice("vara-message-v1:".length)));
+    } catch { return unknown(); }
+  }
+  function runtimeCode(value) {
+    try { return typeof value === "string" && value.startsWith("vara-message-v1:") ? JSON.parse(value.slice("vara-message-v1:".length)).code : null; }
+    catch { return null; }
+  }
+  function bindRuntime(value) { const text = String(value); return text.includes(tokenPrefix) ? text : tokenFor({ runtime: text }); }
   function resolve(template) {
     let value = template;
     for (let i = 0; i < 8 && value.includes(tokenPrefix); i++) {
       const next = value.replace(tokenPattern, (token, encoded) => {
         try {
           const entry = JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(encoded.replace(/-/g, "+").replace(/_/g, "/")), char => char.charCodeAt(0))));
+          if (entry.runtime !== undefined) return runtimeText(entry.runtime);
           if (entry.format === "date") return new Intl.DateTimeFormat(locale, entry.options).format(new Date(entry.value));
           if (entry.format === "number") return new Intl.NumberFormat(locale, entry.options).format(entry.value);
           return message(entry.key, entry.args);
@@ -1101,11 +1139,12 @@
     for (const listener of listeners) listener(locale);
   }
   const i18n = {
-    catalogs, message, bind, resolve, bindingCount: () => bindings.size, bindDate: (value, options) => bindFormat("date", value, options), bindNumber: (value, options) => bindFormat("number", value, options), refreshBindings, html: (key, args) => escape(message(key, args)), setLocale, getLocale: () => locale,
+    catalogs, message, bind, resolve, setRuntimeCatalog, runtimeText, runtimeCode, bindRuntime, bindingCount: () => bindings.size, bindDate: (value, options) => bindFormat("date", value, options), bindNumber: (value, options) => bindFormat("number", value, options), refreshBindings, html: (key, args) => escape(message(key, args)), setLocale, getLocale: () => locale,
     subscribe(listener) { listeners.add(listener); return () => listeners.delete(listener); },
     number(value, options) { return new Intl.NumberFormat(locale, options).format(value); },
     date(value, options) { return new Intl.DateTimeFormat(locale, options).format(value); },
   };
+  if (root.document) setLocale("en");
   if (typeof module !== "undefined" && module.exports) module.exports = i18n;
   else { root.Vara = root.Vara || {}; root.Vara.i18n = i18n; }
 })(typeof window === "undefined" ? globalThis : window);

@@ -36,6 +36,9 @@ unsafe extern "C" {
         app_name: *const std::ffi::c_char,
         title: *const std::ffi::c_char,
         detail: *const std::ffi::c_char,
+        panel_label: *const std::ffi::c_char,
+        stop_label: *const std::ffi::c_char,
+        cancel_label: *const std::ffi::c_char,
         recording: i32,
         cancel: extern "C" fn(),
         stop: extern "C" fn(),
@@ -203,6 +206,9 @@ pub struct Hud<'a> {
     pub title: &'a str,
     pub detail: &'a str,
     pub recording: bool,
+    pub panel_label: &'a str,
+    pub stop_label: &'a str,
+    pub cancel_label: &'a str,
 }
 pub struct HudCallbacks {
     pub cancel: extern "C" fn(),
@@ -211,11 +217,12 @@ pub struct HudCallbacks {
 }
 pub fn hud(view: Hud<'_>, callbacks: HudCallbacks) {
     #[cfg(target_os = "macos")]
-    if let (Ok(id), Ok(name), Ok(title), Ok(detail)) = (
+    if let (Ok(id), Ok(name), Ok(title), Ok(detail), Ok(panel), Ok(stop), Ok(cancel)) = (
         CString::new(view.origin.app_id.as_str()),
         CString::new(view.origin.app_name.as_str()),
         CString::new(view.title),
         CString::new(view.detail),
+        CString::new(view.panel_label), CString::new(view.stop_label), CString::new(view.cancel_label),
     ) {
         unsafe {
             vara_hud(
@@ -223,6 +230,7 @@ pub fn hud(view: Hud<'_>, callbacks: HudCallbacks) {
                 name.as_ptr(),
                 title.as_ptr(),
                 detail.as_ptr(),
+                panel.as_ptr(), stop.as_ptr(), cancel.as_ptr(),
                 i32::from(view.recording),
                 callbacks.cancel,
                 callbacks.stop,

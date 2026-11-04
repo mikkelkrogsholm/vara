@@ -6,6 +6,7 @@ const path = require('node:path');
 const assert = require('node:assert/strict');
 const desktop = path.resolve(__dirname, '..');
 const fixture = JSON.parse(fs.readFileSync(path.join(__dirname, 'fixtures/ui-state.json')));
+const runtimeCatalog = JSON.parse(fs.readFileSync(path.join(__dirname, '../../crates/vara-core/messages/runtime.json')));
 const shots = process.env.VARA_I18N_SHOTS || '/tmp/vara-i20-screens';
 fs.mkdirSync(shots, {recursive:true});
 const server = http.createServer((req, res) => {
@@ -26,12 +27,13 @@ const server = http.createServer((req, res) => {
     for (const lang of ['da', 'en']) {
       const page = await browser.newPage({viewport:{width:1100,height:800}});
       page.on('pageerror', error => errors.push(error.message));
-      await page.addInitScript(({data,lang}) => {
+      await page.addInitScript(({data,lang,runtimeCatalog}) => {
         window.testState=structuredClone(data); window.calls=[]; window.keys=new Set(['open_ai']);
         testState.settings.ui_locale=lang; testState.resolved_ui_locale=lang; testState.ui_locale_revision=0;
         window.__TAURI__={core:{invoke:async(_,{action,payload})=>{
           calls.push({action,payload}); const s=testState;
           switch(action){
+            case 'runtime_catalog': return runtimeCatalog;
             case 'snapshot': return structuredClone(s);
             case 'devices': return [];
             case 'file_list': return {documents:[],media:{}};
@@ -42,11 +44,11 @@ const server = http.createServer((req, res) => {
             case 'check_openai': return {speech_model:'speech-model',speech_available:true,text_model:'text-model',text_available:false};
             case 'save_settings': s.settings=structuredClone(payload);return;
             case 'delete_result': s.history=s.history.filter(r=>r.id!==payload.id);return;
-            case 'copy': if(window.failCopy) throw Error('Fixture copy failure');return;
+            case 'copy': if(window.failCopy) throw Error('vara-message-v1:{"code":"host.unsaved"}');return;
           }
           return null;
         }},event:{listen:async(name,cb)=>{if(name==='vara:state')window.emit=()=>cb({payload:structuredClone(testState)});return()=>{};}}};
-      },{data:fixture,lang});
+      },{data:fixture,lang,runtimeCatalog});
       await page.goto(`http://127.0.0.1:${server.address().port}/ui/index.html`);
       await page.locator('.history-row').first().waitFor();
       assert.equal(await page.locator('#sidebar').getAttribute('aria-label'),lang==='da'?'Hovednavigation':'Main navigation');
@@ -69,7 +71,7 @@ const server = http.createServer((req, res) => {
       await page.evaluate(()=>Vara.i18n.setLocale(testState.resolved_ui_locale));
       await page.evaluate(()=>window.failCopy=true);
       await page.locator('.detail-pane [data-action=copy]').first().click();
-      assert.match(await page.locator('.detail-pane .notice--error').textContent(),/Fixture copy failure/);
+      assert.match(await page.locator('.detail-pane .notice--error').textContent(),t(/Teksten kunne ikke gemmes/,/The text could not be saved/));
       await page.locator('.history-row [data-action=confirm-delete]').first().click();
       assert.equal(await page.locator('#dialog-title').textContent(),t('Slet diktering?','Delete dictation?'));
       await page.locator('dialog [data-action=close-modal]').first().click();

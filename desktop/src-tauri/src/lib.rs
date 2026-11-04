@@ -1,3 +1,41 @@
+fn host_message(code: &str) -> String {
+    vara_core::UserMessage::new(code).wire()
+}
+fn host_wrapped(code: &str, cause: &str) -> String {
+    let mut message = vara_core::UserMessage::new(code);
+    if let Some(cause) = vara_core::UserMessage::decode(cause) {
+        message = message.caused_by(cause);
+    }
+    message.wire()
+}
+fn host_io(code: &str, error: &std::io::Error) -> String {
+    vara_core::UserMessage::new(code)
+        .caused_by(vara_core::UserMessage::io_cause(error))
+        .wire()
+}
+fn host_json(code: &str, error: &serde_json::Error) -> String {
+    vara_core::UserMessage::new(code)
+        .caused_by(
+            vara_core::UserMessage::new("storage.json_location")
+                .number("line", error.line() as i64)
+                .number("column", error.column() as i64),
+        )
+        .wire()
+}
+fn with_restore_error(error: &str, restore: &str) -> String {
+    let mut message = vara_core::UserMessage::new("host.shortcut_restore");
+    if let Some(mut cause) = vara_core::UserMessage::decode(error) {
+        let mut tail = &mut cause;
+        while let Some(ref mut next) = tail.cause {
+            tail = next;
+        }
+        tail.cause = vara_core::UserMessage::decode(restore).map(Box::new);
+        message = message.caused_by(cause);
+    } else if let Some(cause) = vara_core::UserMessage::decode(restore) {
+        message = message.caused_by(cause);
+    }
+    message.wire()
+}
 mod service;
 mod transcription;
 use service::Service;
@@ -5,9 +43,65 @@ use std::sync::{Arc, OnceLock, Weak};
 use tauri::{
     Emitter, Manager,
     menu::{Menu, MenuItem},
-    tray::TrayIconBuilder,
+    tray::{TrayIcon, TrayIconBuilder},
 };
 use tauri_plugin_global_shortcut::{GlobalShortcutExt, Shortcut, ShortcutState};
+struct NativeMenu {
+    show: MenuItem<tauri::Wry>,
+    quit: MenuItem<tauri::Wry>,
+    tray: TrayIcon<tauri::Wry>,
+}
+impl NativeMenu {
+    fn localize(&self, locale: &str) {
+        let text = |code| vara_core::UserMessage::new(code).format(locale);
+        let _ = self.show.set_text(text("native.menu.show"));
+        let _ = self.quit.set_text(text("native.menu.quit"));
+        let _ = self.tray.set_tooltip(Some(text("native.tray.tooltip")));
+    }
+}
+fn build_native_menu(app: &tauri::App, locale: &str) -> tauri::Result<NativeMenu> {
+    let show = MenuItem::with_id(
+        app,
+        "show",
+        vara_core::UserMessage::new("native.menu.show").format(locale),
+        true,
+        None::<&str>,
+    )?;
+    let quit = MenuItem::with_id(
+        app,
+        "quit",
+        vara_core::UserMessage::new("native.menu.quit").format(locale),
+        true,
+        None::<&str>,
+    )?;
+    let menu = Menu::with_items(app, &[&show, &quit])?;
+    let tray = TrayIconBuilder::new()
+        .icon(app.default_window_icon().cloned().unwrap_or_else(|| {
+            tauri::image::Image::new_owned(vec![47, 53, 39, 255].repeat(16 * 16), 16, 16)
+        }))
+        .tooltip(vara_core::UserMessage::new("native.tray.tooltip").format(locale))
+        .menu(&menu)
+        .on_menu_event(|app, event| match event.id.as_ref() {
+            "show" => {
+                if let Some(window) = app.get_webview_window("main") {
+                    let _ = window.show();
+                    let _ = window.set_focus();
+                }
+            }
+            "quit" => {
+                app.state::<Arc<transcription::Files>>().stop();
+                if let Some(service) = app.try_state::<Arc<Service>>() {
+                    let _ = service.cancel();
+                }
+                app.exit(0);
+            }
+            _ => {}
+        })
+        .build(app)?;
+    let native_menu = NativeMenu { show, quit, tray };
+    native_menu.localize(locale);
+    Ok(native_menu)
+}
 static PHYSICAL_REGISTERED: std::sync::atomic::AtomicBool =
     std::sync::atomic::AtomicBool::new(false);
 static CAPTURING: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
@@ -37,10 +131,12 @@ fn register_shortcut(app: &tauri::AppHandle, value: &str) -> Result<(), String> 
         PHYSICAL_REGISTERED.store(result.is_ok(), std::sync::atomic::Ordering::SeqCst);
         result
     } else {
-        let shortcut: Shortcut = value.parse().map_err(|_| {
-            "Tastkombinationen kunne ikke fortolkes. Vælg genvejen igen.".to_string()
-        })?;
-        app.global_shortcut().register(shortcut).map_err(|_| "Genvejen kunne ikke registreres; den kan være reserveret eller i brug. Den tidligere genvej er bevaret.".to_string())
+        let shortcut: Shortcut = value
+            .parse()
+            .map_err(|_| crate::host_message("host.shortcut_parse").to_string())?;
+        app.global_shortcut()
+            .register(shortcut)
+            .map_err(|_| crate::host_message("host.shortcut_register").to_string())
     }
 }
 fn unregister_shortcut(app: &tauri::AppHandle, value: &str) {
@@ -55,9 +151,7 @@ fn replace_shortcut(app: &tauri::AppHandle, old: &str, new: &str) -> Result<(), 
     unregister_shortcut(app, old);
     if let Err(error) = register_shortcut(app, new) {
         if let Err(restore) = register_shortcut(app, old) {
-            return Err(format!(
-                "{error} Den tidligere genvej kunne heller ikke genaktiveres: {restore}"
-            ));
+            return Err(with_restore_error(&error, &restore));
         }
         return Err(error);
     }
@@ -130,6 +224,11 @@ async fn command(
 ) -> Result<serde_json::Value, String> {
     let service = state.inner().clone();
     tauri::async_runtime::spawn_blocking(move || {
+        if action == "runtime_catalog" {
+            return Ok(
+                serde_json::from_str(vara_core::message::CATALOG).expect("valid runtime catalog")
+            );
+        }
         if action.starts_with("file_") {
             use tauri::Manager;
             let files = app.state::<Arc<transcription::Files>>();
@@ -141,7 +240,7 @@ async fn command(
                 .and_then(|p| p["enabled"].as_bool())
                 .unwrap_or(false);
             if enabled && service.is_recording() {
-                return Err("Afslut dikteringen, før du vælger en genvej.".into());
+                return Err(crate::host_message("host.shortcut_recording").into());
             }
             if enabled {
                 CAPTURING.store(true, std::sync::atomic::Ordering::SeqCst);
@@ -166,16 +265,19 @@ async fn command(
                     .cloned()
                     .unwrap_or_default(),
             )
-            .map_err(|_| "Invalid UI language preference.")?;
+            .map_err(|e| crate::host_json("host.locale_invalid", &e))?;
             let (locale, revision) = service.set_ui_locale(preference)?;
+            if let Some(menu) = app.try_state::<NativeMenu>() {
+                menu.localize(locale);
+            }
             Ok(serde_json::json!({"locale": locale, "revision": revision}))
         } else if action == "save_settings" {
             let _settings_gate = service.settings_gate.lock();
             let mut settings: vara_core::Settings =
                 serde_json::from_value(payload.unwrap_or_default())
-                    .map_err(|_| "Indstillingerne kunne ikke læses.")?;
+                    .map_err(|e| crate::host_json("host.settings_read", &e))?;
             settings.ui_locale = service.preferences().ui_locale;
-            settings.validate().map_err(|e| e.to_string())?;
+            settings.validate().map_err(|e| e.wire())?;
             let old = service.shortcut();
             let changed = old != settings.shortcut;
             if changed {
@@ -184,7 +286,7 @@ async fn command(
             if let Err(error) = service.save_settings(settings.clone()) {
                 if changed {
                     if let Err(restore) = replace_shortcut(&app, &settings.shortcut, &old) {
-                        return Err(format!("{error} {restore}"));
+                        return Err(with_restore_error(&error, &restore));
                     }
                 }
                 return Err(error);
@@ -195,7 +297,10 @@ async fn command(
         }
     })
     .await
-    .map_err(|_| "Handlingen blev afbrudt.".to_string())?
+    .map_err(|_| crate::host_message("host.task_interrupted").to_string())?
+}
+fn app_context() -> tauri::Context<tauri::Wry> {
+    tauri::generate_context!()
 }
 pub fn run() {
     tauri::Builder::default()
@@ -259,32 +364,9 @@ pub fn run() {
             } {
                 service.warn(error);
             }
-            let show = MenuItem::with_id(app, "show", "Åbn Vara", true, None::<&str>)?;
-            let quit = MenuItem::with_id(app, "quit", "Afslut Vara", true, None::<&str>)?;
-            let menu = Menu::with_items(app, &[&show, &quit])?;
-            TrayIconBuilder::new()
-                .icon(app.default_window_icon().cloned().unwrap_or_else(|| {
-                    tauri::image::Image::new_owned(vec![47, 53, 39, 255].repeat(16 * 16), 16, 16)
-                }))
-                .tooltip("Vara · diktering")
-                .menu(&menu)
-                .on_menu_event(|app, event| match event.id.as_ref() {
-                    "show" => {
-                        if let Some(window) = app.get_webview_window("main") {
-                            let _ = window.show();
-                            let _ = window.set_focus();
-                        }
-                    }
-                    "quit" => {
-                        app.state::<Arc<transcription::Files>>().stop();
-                        if let Some(service) = app.try_state::<Arc<Service>>() {
-                            let _ = service.cancel();
-                        }
-                        app.exit(0);
-                    }
-                    _ => {}
-                })
-                .build(app)?;
+            let locale = vara_core::resolve_ui_locale(service.preferences().ui_locale, &vara_platform::preferred_languages());
+            let native_menu = build_native_menu(app, locale)?;
+            app.manage(native_menu);
             let maintenance = service.clone();
             tauri::async_runtime::spawn(async move {
                 loop {
@@ -320,7 +402,7 @@ pub fn run() {
             }
             _ => {}
         })
-        .build(tauri::generate_context!())
+        .build(app_context())
         .expect("Vara kunne ikke starte")
         .run(|app, event| match event {
             #[cfg(target_os = "macos")]
@@ -338,4 +420,65 @@ pub fn run() {
             }
             _ => {}
         });
+}
+
+/// Isolated native verification entry; never included in the release feature set.
+#[cfg(all(feature = "test-harness", target_os = "macos"))]
+pub fn run_native_localization_fixture() {
+    unsafe extern "C" {
+        fn vara_fixture_probe_panel(
+            message: *const std::ffi::c_char,
+            extension: *const std::ffi::c_char,
+            directory: *const std::ffi::c_char,
+        );
+        fn vara_fixture_panel_result() -> i32;
+        fn vara_fixture_tray_tooltip(expected: *const std::ffi::c_char) -> i32;
+    }
+    let directory = std::env::temp_dir().join(format!("vara-native-dialog-{}", std::process::id()));
+    std::fs::create_dir(&directory).expect("fixture directory");
+    let directory_c = std::ffi::CString::new(directory.to_str().unwrap()).unwrap();
+    let mut context = app_context();
+    context.config_mut().app.windows.clear();
+    tauri::Builder::default().setup(move |app| {
+        let menu = build_native_menu(app, "en")?;
+        assert_eq!(menu.show.text()?, "Open Vara");
+        assert_eq!(menu.quit.text()?, "Quit Vara");
+        assert_eq!(menu.show.id().as_ref(), "show");
+        assert_eq!(menu.quit.id().as_ref(), "quit");
+        menu.localize("da");
+        assert_eq!(menu.show.text()?, "Åbn Vara");
+        assert_eq!(menu.quit.text()?, "Afslut Vara");
+        menu.localize("en");
+        assert_eq!(menu.show.text()?, "Open Vara");
+        assert_eq!(menu.quit.text()?, "Quit Vara");
+        println!("PASS: actual Tauri tray menu handles initial and live locale changes");
+        let handle = app.handle().clone();
+        app.handle().run_on_main_thread(move || {
+            std::thread::spawn(|| { std::thread::sleep(std::time::Duration::from_secs(30)); eprintln!("fixture watchdog timeout"); std::process::exit(2); });
+            let en_tip = std::ffi::CString::new("Vara · dictation").unwrap();
+            let da_tip = std::ffi::CString::new("Vara · diktering").unwrap();
+            let en_seen = unsafe { vara_fixture_tray_tooltip(en_tip.as_ptr()) } == 1;
+            menu.localize("da");
+            let da_seen = unsafe { vara_fixture_tray_tooltip(da_tip.as_ptr()) } == 1;
+            menu.localize("en");
+            assert!(en_seen && da_seen, "status bar tooltip en={en_seen} da={da_seen}");
+            println!("PASS: actual status bar tooltip en/da");
+            for (locale, expected) in [("da", "Vælg lyd eller video"), ("en", "Choose audio or video")] {
+                let expected = std::ffi::CString::new(expected).unwrap();
+                unsafe { vara_fixture_probe_panel(expected.as_ptr(), std::ptr::null(), directory_c.as_ptr()); }
+                assert!(transcription::pick_dialog(locale).set_directory(&directory).pick_files().is_none());
+                assert_eq!(unsafe { vara_fixture_panel_result() }, 1, "pick panel {locale}");
+            }
+            for locale in ["da", "en"] {
+                let ext = std::ffi::CString::new("txt").unwrap();
+                unsafe { vara_fixture_probe_panel(std::ptr::null(), ext.as_ptr(), directory_c.as_ptr()); }
+                assert!(transcription::export_dialog(locale, "txt", "fixture.txt").set_directory(&directory).save_file().is_none());
+                assert_eq!(unsafe { vara_fixture_panel_result() }, 1, "save panel {locale}");
+            }
+            std::fs::remove_dir(&directory).expect("empty fixture directory");
+            println!("PASS: actual RFD open/save panels da/en, localized message and preserved txt filter");
+            handle.exit(0);
+        })?;
+        Ok(())
+    }).run(context).expect("native fixture app");
 }

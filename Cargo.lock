@@ -6168,6 +6168,7 @@ dependencies = [
 name = "vara-desktop"
 version = "0.1.0"
 dependencies = [
+ "cc",
  "parking_lot",
  "rfd",
  "same-file",

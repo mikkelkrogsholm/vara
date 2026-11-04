@@ -17,7 +17,7 @@ char *vara_capture_target(void) {
     @autoreleasepool {
         NSRunningApplication *app=NSWorkspace.sharedWorkspace.frontmostApplication;
         NSString *identity=app.bundleIdentifier ?: [NSString stringWithFormat:@"pid:%d",app.processIdentifier];
-        NSString *name=app.localizedName ?: @"Ukendt app";
+        NSString *name=app.localizedName ?: identity;
         NSString *token=nil;
         if(AXIsProcessTrusted() && ![app.bundleIdentifier isEqualToString:NSBundle.mainBundle.bundleIdentifier]) {
             AXUIElementRef application=AXUIElementCreateApplication(app.processIdentifier);

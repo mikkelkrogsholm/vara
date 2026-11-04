@@ -25,5 +25,15 @@ fn main() {
     // Optional runtime is produced by the platform packaging script. A source
     // checkout without it still builds; Who reports unavailable explicitly.
     fs::create_dir_all(manifest.join("runtime/who")).expect("Who resource directory");
+    if env::var_os("CARGO_FEATURE_TEST_HARNESS").is_some()
+        && env::var("CARGO_CFG_TARGET_OS").as_deref() == Ok("macos")
+    {
+        println!("cargo:rerun-if-changed=../tests/dialog-native.m");
+        cc::Build::new()
+            .file(manifest.join("../tests/dialog-native.m"))
+            .flag("-fobjc-arc")
+            .compile("vara_dialog_fixture");
+        println!("cargo:rustc-link-lib=framework=AppKit");
+    }
     tauri_build::build();
 }

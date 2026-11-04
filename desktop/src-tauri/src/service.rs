@@ -55,24 +55,97 @@ pub struct Snapshot {
     models: BTreeMap<String, bool>,
     downloads: Vec<Progress>,
 }
+fn hud_message_codes(
+    stage: Stage,
+    speech: Locality,
+    text: Option<(Locality, bool)>,
+) -> (&'static str, Option<String>) {
+    let locality = |place: Locality| match place {
+        Locality::OnDevice => "local",
+        Locality::Lan => "lan",
+        Locality::Cloud => "cloud",
+        Locality::Unknown => "unknown",
+    };
+    let title = match stage {
+        Stage::Recording => "hud.recording",
+        Stage::Recognizing => "hud.recognizing",
+        Stage::Processing => "hud.processing",
+        _ => "hud.saving",
+    };
+    let detail = if stage == Stage::Processing {
+        text.map(|(place, app)| {
+            format!(
+                "hud.ai.{}.{}",
+                locality(place),
+                if app { "app" } else { "general" }
+            )
+        })
+    } else {
+        Some(format!("hud.audio.{}", locality(speech)))
+    };
+    (title, detail)
+}
+
+#[cfg(test)]
+mod hud_message_tests {
+    use super::*;
+    #[test]
+    fn stages_and_locality_use_canonical_messages() {
+        let (stage, detail) = hud_message_codes(Stage::Recording, Locality::OnDevice, None);
+        assert_eq!(UserMessage::new(stage).format("en"), "Listening");
+        assert_eq!(
+            UserMessage::new(&detail.unwrap()).format("da"),
+            "Lyd: på enheden"
+        );
+        let (stage, detail) = hud_message_codes(
+            Stage::Processing,
+            Locality::OnDevice,
+            Some((Locality::Cloud, true)),
+        );
+        assert_eq!(UserMessage::new(stage).format("da"), "Tilpasser teksten");
+        assert_eq!(
+            UserMessage::new(&detail.unwrap()).format("en"),
+            "AI: cloud · app prompt"
+        );
+        assert!(
+            hud_message_codes(Stage::Processing, Locality::OnDevice, None)
+                .1
+                .is_none()
+        );
+        for place in [
+            Locality::OnDevice,
+            Locality::Lan,
+            Locality::Cloud,
+            Locality::Unknown,
+        ] {
+            for app in [false, true] {
+                let (_, code) = hud_message_codes(Stage::Processing, place, Some((place, app)));
+                assert_ne!(
+                    UserMessage::new(&code.unwrap()).format("en"),
+                    UserMessage::new("runtime.unknown").format("en")
+                );
+            }
+        }
+    }
+}
 impl Service {
     pub fn new(app: AppHandle, root: PathBuf) -> Result<Arc<Self>> {
         std::fs::create_dir_all(root.join("audio"))
-            .map_err(|_| "Vara kunne ikke oprette sin datamappe.")?;
+            .map_err(|e| crate::host_io("host.data_create", &e))?;
         #[cfg(unix)]
         {
             use std::os::unix::fs::PermissionsExt;
             std::fs::set_permissions(&root, std::fs::Permissions::from_mode(0o700))
-                .map_err(|_| "Datamappen kunne ikke beskyttes.")?;
+                .map_err(|e| crate::host_io("host.data_protect", &e))?;
             std::fs::set_permissions(root.join("audio"), std::fs::Permissions::from_mode(0o700))
-                .map_err(|_| "Lydmappen kunne ikke beskyttes.")?;
+                .map_err(|e| crate::host_io("host.audio_protect", &e))?;
         }
-        let mut store = Store::open(&root.join("vara.sqlite3")).map_err(|e| e.to_string())?;
-        let settings = store.settings().map_err(|e| e.to_string())?;
-        settings.validate().map_err(|e| e.to_string())?;
+        let mut store = Store::open(&root.join("vara.sqlite3")).map_err(|e| e.wire())?;
+        let settings = store.settings().map_err(|e| e.wire())?;
+        settings.validate().map_err(|e| e.wire())?;
         let mut recovered = false;
         // Interrupted post-ASR work is recovered as original text, never reprocessed or dispatched automatically.
-        for stage in store.staged().map_err(|e| e.to_string())? {
+        for stage in store.staged().map_err(|e| e.wire())? {
             store
                 .commit(&Dictation {
                     id: uuid::Uuid::new_v4().to_string(),
@@ -86,10 +159,28 @@ impl Service {
                     plan: stage.plan,
                     duration_secs: 0.,
                 })
-                .map_err(|e| e.to_string())?;
+                .map_err(|e| e.wire())?;
             recovered = true;
         }
-        let service=Arc::new(Self{#[cfg(feature="test-harness")] fixture:std::env::var_os("VARA_TEST_WAV").map(PathBuf::from),settings_gate:Mutex::new(()),engines:Arc::new(Engines::new(root.join("models"))?),recorder:platform::Recorder::new(),audio:root.join("audio"),inner:Mutex::new(Inner{store,settings,ui_locale_revision:0,next_choice:ProcessingChoice::Default,active:None,unsaved:None,message:recovered.then(||"Tekst fra en afbrudt diktering er gendannet i historikken. Indsæt den manuelt.".into()),downloads:BTreeMap::new()}),app});
+        let service = Arc::new(Self {
+            #[cfg(feature = "test-harness")]
+            fixture: std::env::var_os("VARA_TEST_WAV").map(PathBuf::from),
+            settings_gate: Mutex::new(()),
+            engines: Arc::new(Engines::new(root.join("models"))?),
+            recorder: platform::Recorder::new(),
+            audio: root.join("audio"),
+            inner: Mutex::new(Inner {
+                store,
+                settings,
+                ui_locale_revision: 0,
+                next_choice: ProcessingChoice::Default,
+                active: None,
+                unsaved: None,
+                message: recovered.then(|| crate::host_message("host.recovered").into()),
+                downloads: BTreeMap::new(),
+            }),
+            app,
+        });
         service.maintenance()?;
         Ok(service)
     }
@@ -106,11 +197,11 @@ impl Service {
             ),
             ui_locale_revision: i.ui_locale_revision,
             next_choice: i.next_choice,
-            history: i.store.history(None, None).map_err(|e| e.to_string())?,
+            history: i.store.history(None, None).map_err(|e| e.wire())?,
             recoveries: i
                 .store
                 .recoveries()
-                .map_err(|e| e.to_string())?
+                .map_err(|e| e.wire())?
                 .into_iter()
                 .filter(|r| r.failed && r.eligible(now()))
                 .collect(),
@@ -125,49 +216,40 @@ impl Service {
             downloads: i.downloads.values().map(|(_, p)| p.clone()).collect(),
         })
     }
-    fn show_hud(&self, title: &str, recording: bool) {
+    fn show_hud(&self) {
         let i = self.inner.lock();
         if let Some(active) = &i.active {
-            let location = |place: Locality| match place {
-                Locality::OnDevice => "lokal",
-                Locality::Lan => "eget netværk",
-                Locality::Cloud => "cloud",
-                Locality::Unknown => "ekstern/ukendt",
-            };
-            let detail = if active.session.stage == Stage::Processing {
+            let locale = resolve_ui_locale(i.settings.ui_locale, &platform::preferred_languages());
+            let (title_code, detail_code) = hud_message_codes(
+                active.session.stage,
+                active.session.plan.speech.locality,
                 active
                     .session
                     .plan
                     .text
                     .as_ref()
-                    .map(|p| {
-                        format!(
-                            "AI: {} · {}",
-                            location(p.engine.locality),
-                            if p.app_specific {
-                                "app-prompt"
-                            } else {
-                                "generel"
-                            }
-                        )
-                    })
-                    .unwrap_or_default()
-            } else {
-                format!(
-                    "Lyd: {}",
-                    if active.session.plan.speech.locality == Locality::OnDevice {
-                        "på enheden"
-                    } else {
-                        location(active.session.plan.speech.locality)
-                    }
-                )
-            };
+                    .map(|p| (p.engine.locality, p.app_specific)),
+            );
+            let title = UserMessage::new(title_code).format(locale);
+            let detail = detail_code
+                .map(|code| UserMessage::new(&code).format(locale))
+                .unwrap_or_default();
+            let panel = UserMessage::new("hud.panel").format(locale);
+            let stop = UserMessage::new("hud.stop").format(locale);
+            let cancel = UserMessage::new("hud.cancel").format(locale);
+            let mut origin = active.session.origin.clone();
+            if origin.app_id == "unknown" {
+                origin.app_name = UserMessage::new("app.unknown").format(locale);
+            }
             platform::hud(
                 platform::Hud {
-                    origin: &active.session.origin,
-                    title,
+                    origin: &origin,
+                    title: &title,
                     detail: &detail,
-                    recording,
+                    panel_label: &panel,
+                    stop_label: &stop,
+                    cancel_label: &cancel,
+                    recording: active.session.stage == Stage::Recording,
                 },
                 crate::hud_callbacks(),
             );
@@ -201,14 +283,14 @@ impl Service {
     pub fn start(self: &Arc<Self>, choice: ProcessingChoice) -> Result<()> {
         let mut i = self.inner.lock();
         if i.active.is_some() {
-            return Err(Error::Busy.to_string());
+            return Err(Error::Busy.wire());
         }
         if i.unsaved.is_some() {
-            return Err("Gem eller kopiér først teksten, der endnu ikke er gemt.".into());
+            return Err(crate::host_message("host.unsaved_first").into());
         }
         let permissions = platform::permissions();
         if permissions.microphone == "not_determined" || permissions.microphone == "denied" {
-            return Err("Giv Vara adgang til mikrofonen i Indstillinger, før du dikterer.".into());
+            return Err(crate::host_message("host.mic_permission").into());
         }
         let choice = if choice == ProcessingChoice::Default {
             i.next_choice
@@ -216,18 +298,18 @@ impl Service {
             choice
         };
         let origin = platform::capture_target()?;
-        let plan = Plan::resolve(&i.settings, &origin, choice).map_err(|e| e.to_string())?;
+        let plan = Plan::resolve(&i.settings, &origin, choice).map_err(|e| e.wire())?;
         if matches!(
             plan.speech.provider,
             Provider::LocalWhisper | Provider::LocalParakeet
         ) && !self.engines.ready(&plan.speech.id)
         {
             platform::release_target(&origin);
-            return Err("Hent først den lokale talemodel i Indstillinger → Forbindelser.".into());
+            return Err(crate::host_message("host.speech_model").into());
         }
         if needs_key(plan.speech.provider) && platform::secret(&key_id(&plan.speech))?.is_none() {
             platform::release_target(&origin);
-            return Err("Tilføj først en API-nøgle til den valgte taleudbyder.".into());
+            return Err(crate::host_message("host.speech_key").into());
         }
         let session = Session::new(origin, plan, now());
         let path = self.audio.join(format!("{}.wav", session.recovery_id));
@@ -242,12 +324,12 @@ impl Service {
             failed: false,
             recognized: false,
         };
-        i.store.put_recovery(&recovery).map_err(|e| e.to_string())?;
+        i.store.put_recovery(&recovery).map_err(|e| e.wire())?;
         #[cfg(feature = "test-harness")]
         let capture_started = if let Some(fixture) = &self.fixture {
             std::fs::copy(fixture, &path)
                 .map(|_| ())
-                .map_err(|_| "Testfixture kunne ikke åbnes.".to_string())
+                .map_err(|e| crate::host_io("host.fixture_open", &e).to_string())
         } else {
             self.recorder
                 .start(path.clone(), i.settings.input_device.clone())
@@ -270,13 +352,16 @@ impl Service {
             duration: 0.,
         });
         drop(i);
-        self.show_hud("Lytter", true);
+        self.show_hud();
         self.emit();
         Ok(())
     }
     pub fn stop(self: &Arc<Self>) -> Result<()> {
         let mut i = self.inner.lock();
-        let active = i.active.as_mut().ok_or("Der er ingen aktiv diktering.")?;
+        let active = i
+            .active
+            .as_mut()
+            .ok_or(crate::host_message("host.no_session"))?;
         if active.session.stage != Stage::Recording {
             return Ok(());
         }
@@ -303,10 +388,10 @@ impl Service {
         active
             .session
             .advance(Stage::Recording, Stage::Recognizing)
-            .map_err(|e| e.to_string())?;
+            .map_err(|e| e.wire())?;
         let active = active.clone();
         drop(i);
-        self.show_hud("Finder dine ord", false);
+        self.show_hud();
         self.emit();
         self.launch(active);
         Ok(())
@@ -378,16 +463,18 @@ impl Service {
                 recovery.failed = false;
                 let _ = i.store.put_recovery(&recovery);
             }
-            if std::fs::remove_file(&a.path).is_err() && a.path.exists() {
-                i.message = Some("Lyden kunne ikke slettes. Vara prøver oprydning igen.".into());
-            } else {
-                let _ = i.store.delete_recovery(&a.session.recovery_id);
+            match std::fs::remove_file(&a.path) {
+                Err(error) if a.path.exists() => {
+                    i.message = Some(crate::host_io("host.audio_cleanup", &error))
+                }
+                _ => {
+                    let _ = i.store.delete_recovery(&a.session.recovery_id);
+                }
             }
-            if staged.is_err() {
+            if let Err(error) = staged {
                 i.unsaved = Some(result(&a, original, None, true));
                 i.active = None;
-                i.message =
-                    Some("Teksten kunne ikke gemmes. Kopiér den, eller prøv at gemme igen.".into());
+                i.message = Some(crate::host_wrapped("host.unsaved", &error.wire()));
                 drop(i);
                 platform::release_target(&a.session.origin);
                 platform::hide_hud();
@@ -403,7 +490,7 @@ impl Service {
         let mut fallback = false;
         let mut ai_error = None;
         let processed = if let Some(plan) = &a.session.plan.text {
-            self.show_hud("Tilpasser teksten", false);
+            self.show_hud();
             self.emit();
             let key = engine_secret(&plan.engine);
             let output = match key {
@@ -435,10 +522,9 @@ impl Service {
         }
         match i.store.commit(&r) {
             Ok(saved) => r = saved,
-            Err(_) => {
+            Err(error) => {
                 i.unsaved = Some(r);
-                i.message =
-                    Some("Teksten kunne ikke gemmes. Kopiér den, eller prøv at gemme igen.".into());
+                i.message = Some(crate::host_wrapped("host.unsaved", &error.wire()));
                 i.active = None;
                 drop(i);
                 platform::release_target(&a.session.origin);
@@ -451,16 +537,18 @@ impl Service {
         if i.store.update_delivery(&r.id, Delivery::Unknown).is_ok() {
             let delivery = platform::insert(&r.origin, r.finished_text());
             if let Err(error) = i.store.update_delivery(&r.id, delivery) {
-                i.message = Some(error.to_string());
+                i.message = Some(error.wire());
             }
         } else {
-            i.message = Some("Teksten er gemt og klar til manuel indsættelse.".into());
+            i.message = Some(crate::host_message("host.manual_ready").into());
         }
         i.active = None;
         if let Some(error) = ai_error {
-            i.message = Some(format!(
-                "AI-bearbejdning mislykkedes. Originalen er bevaret. {error}"
-            ));
+            let mut message = UserMessage::new("host.ai_fallback");
+            if let Some(cause) = UserMessage::decode(&error) {
+                message = message.caused_by(cause);
+            }
+            i.message = Some(message.wire());
         }
         i.settings.onboarding_complete = true;
         let _ = i.store.save_settings(&i.settings);
@@ -482,7 +570,7 @@ impl Service {
         let durable_cancel = i
             .store
             .cancel_generation(&active.session.generation)
-            .map_err(|e| e.to_string());
+            .map_err(|e| e.wire());
         active.cancel.cancel();
         let _ = self.recorder.stop(false);
         let _ = std::fs::remove_file(&active.path);
@@ -499,17 +587,17 @@ impl Service {
         self.maintenance()?;
         let mut i = self.inner.lock();
         if i.active.is_some() || i.unsaved.is_some() {
-            return Err(Error::Busy.to_string());
+            return Err(Error::Busy.wire());
         }
         let r = i
             .store
             .recovery(id)
-            .map_err(|e| e.to_string())?
-            .ok_or("Optagelsen findes ikke længere.")?;
+            .map_err(|e| e.wire())?
+            .ok_or(crate::host_message("host.recovery_missing"))?;
         if !r.eligible(now()) {
-            return Err(Error::Expired.to_string());
+            return Err(Error::Expired.wire());
         }
-        r.plan.check_locations().map_err(|e| e.to_string())?;
+        r.plan.check_locations().map_err(|e| e.wire())?;
         // A retry cannot safely infer that the old field has stayed focused across failure/restart.
         let mut origin = r.origin.clone();
         origin.target_token = None;
@@ -527,8 +615,8 @@ impl Service {
             duration: 0.,
         };
         if !active.path.is_file() {
-            i.store.delete_recovery(id).map_err(|e| e.to_string())?;
-            return Err("Lydfilen findes ikke længere.".into());
+            i.store.delete_recovery(id).map_err(|e| e.wire())?;
+            return Err(crate::host_message("host.audio_missing").into());
         }
         i.active = Some(active.clone());
         i.message = None;
@@ -543,9 +631,9 @@ impl Service {
             .as_ref()
             .is_some_and(|a| a.session.recovery_id == id)
         {
-            return Err("Annuller først genprøvningen.".into());
+            return Err(crate::host_message("host.cancel_retry").into());
         }
-        if let Some(r) = i.store.recovery(id).map_err(|e| e.to_string())? {
+        if let Some(r) = i.store.recovery(id).map_err(|e| e.wire())? {
             std::fs::remove_file(self.audio.join(r.file_name))
                 .or_else(|e| {
                     if e.kind() == std::io::ErrorKind::NotFound {
@@ -554,8 +642,8 @@ impl Service {
                         Err(e)
                     }
                 })
-                .map_err(|_| "Optagelsen kunne ikke slettes.")?;
-            i.store.delete_recovery(id).map_err(|e| e.to_string())?;
+                .map_err(|e| crate::host_io("host.recovery_delete", &e))?;
+            i.store.delete_recovery(id).map_err(|e| e.wire())?;
         }
         drop(i);
         self.emit();
@@ -565,10 +653,8 @@ impl Service {
         let mut i = self.inner.lock();
         let current_time = now();
         let days = i.settings.retention_days;
-        i.store
-            .retain(current_time, days)
-            .map_err(|e| e.to_string())?;
-        for mut r in i.store.recoveries().map_err(|e| e.to_string())? {
+        i.store.retain(current_time, days).map_err(|e| e.wire())?;
+        for mut r in i.store.recoveries().map_err(|e| e.wire())? {
             if current_time >= r.expires_at || r.recognized {
                 if i.active
                     .as_ref()
@@ -583,9 +669,9 @@ impl Service {
                 let path = self.audio.join(&r.file_name);
                 if path.exists() {
                     std::fs::remove_file(path)
-                        .map_err(|_| "En udløbet optagelse kunne ikke slettes.")?;
+                        .map_err(|e| crate::host_io("host.expired_delete", &e))?;
                 }
-                i.store.delete_recovery(&r.id).map_err(|e| e.to_string())?;
+                i.store.delete_recovery(&r.id).map_err(|e| e.wire())?;
             } else if !r.failed
                 && i.active
                     .as_ref()
@@ -593,9 +679,9 @@ impl Service {
             {
                 if self.audio.join(&r.file_name).exists() {
                     r.failed = true;
-                    i.store.put_recovery(&r).map_err(|e| e.to_string())?;
+                    i.store.put_recovery(&r).map_err(|e| e.wire())?;
                 } else {
-                    i.store.delete_recovery(&r.id).map_err(|e| e.to_string())?;
+                    i.store.delete_recovery(&r.id).map_err(|e| e.wire())?;
                 }
             }
         }
@@ -605,22 +691,21 @@ impl Service {
         let mut i = self.inner.lock();
         let mut settings = i.settings.clone();
         settings.ui_locale = preference;
-        i.store
-            .save_settings(&settings)
-            .map_err(|e| e.to_string())?;
+        i.store.save_settings(&settings).map_err(|e| e.wire())?;
         i.settings = settings;
         i.ui_locale_revision += 1;
+        let revision = i.ui_locale_revision;
+        drop(i);
+        self.show_hud();
         Ok((
             resolve_ui_locale(preference, &platform::preferred_languages()),
-            i.ui_locale_revision,
+            revision,
         ))
     }
     pub fn save_settings(&self, settings: Settings) -> Result<()> {
-        settings.validate().map_err(|e| e.to_string())?;
+        settings.validate().map_err(|e| e.wire())?;
         let mut i = self.inner.lock();
-        i.store
-            .save_settings(&settings)
-            .map_err(|e| e.to_string())?;
+        i.store.save_settings(&settings).map_err(|e| e.wire())?;
         i.settings = settings;
         drop(i);
         self.maintenance()?;
@@ -629,12 +714,12 @@ impl Service {
     }
     pub fn install(self: &Arc<Self>, id: String) -> Result<()> {
         if vara_engine::artifacts(&id).is_none() {
-            return Err("Ukendt model.".into());
+            return Err(crate::host_message("host.model_unknown").into());
         }
         let cancel = Cancellation::default();
         let mut i = self.inner.lock();
         if i.downloads.contains_key(&id) {
-            return Err("Modellen hentes allerede.".into());
+            return Err(crate::host_message("host.model_downloading").into());
         }
         i.downloads.insert(
             id.clone(),
@@ -677,38 +762,42 @@ impl Service {
         Ok(())
     }
     pub fn command(self: &Arc<Self>, action: &str, p: Value) -> Result<Value> {
-        let id = || p["id"].as_str().ok_or_else(|| "Id mangler.".to_string());
+        let id = || {
+            p["id"]
+                .as_str()
+                .ok_or_else(|| crate::host_message("host.id_missing").to_string())
+        };
         match action {
             "snapshot" => {
                 self.maintenance()?;
                 return serde_json::to_value(self.snapshot()?)
-                    .map_err(|_| "Tilstanden kunne ikke læses.".into());
+                    .map_err(|e| crate::host_json("host.state_read", &e).into());
             }
             "applications" => return platform::applications(),
             "application_icons" => {
-                let ids: Vec<String> =
-                    serde_json::from_value(p["ids"].clone()).map_err(|_| "Ugyldige app-id’er.")?;
+                let ids: Vec<String> = serde_json::from_value(p["ids"].clone())
+                    .map_err(|e| crate::host_json("host.app_ids_invalid", &e))?;
                 return platform::application_icons(&ids);
             }
             "set_next_choice" => {
-                self.inner.lock().next_choice =
-                    serde_json::from_value(p["choice"].clone()).map_err(|_| "Ugyldigt valg.")?;
+                self.inner.lock().next_choice = serde_json::from_value(p["choice"].clone())
+                    .map_err(|e| crate::host_json("host.choice_invalid", &e))?;
             }
             "check_cli" => {
-                let provider: Provider =
-                    serde_json::from_value(p["provider"].clone()).map_err(|_| "Ukendt CLI.")?;
+                let provider: Provider = serde_json::from_value(p["provider"].clone())
+                    .map_err(|e| crate::host_json("host.cli_unknown", &e))?;
                 return serde_json::to_value(tauri::async_runtime::block_on(
                     vara_engine::cli::status(provider),
                 ))
-                .map_err(|_| "CLI-status kunne ikke læses.".into());
+                .map_err(|e| crate::host_json("host.cli_read", &e).into());
             }
             "devices" => {
                 return serde_json::to_value(platform::input_devices()?)
-                    .map_err(|_| "Mikrofonerne kunne ikke læses.".into());
+                    .map_err(|e| crate::host_json("host.devices_read", &e).into());
             }
             "start" => self.start(
                 serde_json::from_value(p.get("choice").cloned().unwrap_or(json!("default")))
-                    .map_err(|_| "Ugyldigt valg.")?,
+                    .map_err(|e| crate::host_json("host.choice_invalid", &e))?,
             )?,
             "stop" => self.stop()?,
             "cancel" => return Ok(json!(self.cancel()?)),
@@ -719,16 +808,16 @@ impl Service {
                     .lock()
                     .store
                     .delete(id()?)
-                    .map_err(|e| e.to_string())?;
+                    .map_err(|e| e.wire())?;
             }
             "copy" => {
                 let i = self.inner.lock();
                 let r = if p["unsaved"] == true {
                     i.unsaved.clone()
                 } else {
-                    i.store.result(id()?).map_err(|e| e.to_string())?
+                    i.store.result(id()?).map_err(|e| e.wire())?
                 }
-                .ok_or("Teksten findes ikke længere.")?;
+                .ok_or(crate::host_message("host.text_missing"))?;
                 platform::copy(if p["original"] == true {
                     &r.original
                 } else {
@@ -739,7 +828,7 @@ impl Service {
                 let mut i = self.inner.lock();
                 if let Some(mut r) = i.unsaved.clone() {
                     r.delivery = Delivery::ManualReady;
-                    i.store.commit(&r).map_err(|e| e.to_string())?;
+                    i.store.commit(&r).map_err(|e| e.wire())?;
                     i.unsaved = None;
                     i.message = None;
                 }
@@ -747,9 +836,7 @@ impl Service {
             "discard_unsaved" => {
                 let mut i = self.inner.lock();
                 if let Some(r) = i.unsaved.take() {
-                    i.store
-                        .remove_staged(&r.generation)
-                        .map_err(|e| e.to_string())?;
+                    i.store.remove_staged(&r.generation).map_err(|e| e.wire())?;
                 }
             }
             "permission" => platform::request_permission(p["kind"].as_str().unwrap_or(""))?,
@@ -757,7 +844,7 @@ impl Service {
             "cancel_install" => {
                 if let Some((cancel, _)) = self.inner.lock().downloads.get(id()?) {
                     if !cancel.cancel() {
-                        return Err("Modellen er allerede færdig med at installere.".into());
+                        return Err(crate::host_message("host.model_installed").into());
                     }
                 }
             }
@@ -770,7 +857,7 @@ impl Service {
                 };
                 let prefix = if openai { "openai" } else { "groq" };
                 let key = platform::secret(if openai { "open_ai" } else { "groq" })?
-                    .ok_or("Gem først din API-nøgle.")?;
+                    .ok_or(crate::host_message("host.key_save_first"))?;
                 let available = tauri::async_runtime::block_on(async {
                     if openai {
                         self.engines
@@ -785,17 +872,17 @@ impl Service {
                 let settings = self.inner.lock().settings.clone();
                 let selected = settings
                     .engine(&settings.speech_engine)
-                    .map_err(|e| e.to_string())?;
+                    .map_err(|e| e.wire())?;
                 let speech = if selected.provider == provider {
                     selected
                 } else {
                     settings
                         .engine(&format!("{prefix}.speech"))
-                        .map_err(|e| e.to_string())?
+                        .map_err(|e| e.wire())?
                 };
                 let text = settings
                     .engine(&format!("{prefix}.text"))
-                    .map_err(|e| e.to_string())?;
+                    .map_err(|e| e.wire())?;
                 return Ok(
                     json!({"speech_model": speech.model, "speech_available": available.contains(&speech.model),
                     "text_model": text.model, "text_available": available.contains(&text.model)}),
@@ -809,7 +896,7 @@ impl Service {
             "dismiss_message" => {
                 self.inner.lock().message = None;
             }
-            _ => return Err("Ukendt handling.".into()),
+            _ => return Err(crate::host_message("host.action_unknown").into()),
         }
         self.emit();
         Ok(Value::Null)

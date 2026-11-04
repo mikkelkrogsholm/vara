@@ -46,7 +46,7 @@
     return error;
   };
   const report = (error) => {
-    const message = String(error?.uiMessage || error?.message || error);
+    const message = error?.uiMessage || Vara.i18n.bindRuntime(String(error?.message || error));
     const target = document.querySelector("form .form-message");
     if (target) {
       target.innerHTML = notice(message, "error");
@@ -341,7 +341,7 @@
       if (state.keyStates[id]?.present !== present) delete state.connectionChecks[id];
       state.keyStates[id] = { present };
     } catch (error) {
-      state.keyStates[id] = { error: String(error?.message || error) };
+      state.keyStates[id] = { error: Vara.i18n.bindRuntime(String(error?.message || error)) };
     }
     renderConnections();
   }
@@ -349,7 +349,7 @@
     let exists;
     try { exists = await api("key_status", { id }); state.keyStates[id] = { present: exists }; renderConnections(); }
     catch (error) {
-      modal(name, `<p role="alert">${e(String(error))}</p><div class="actions">${b(Vara.i18n.bind("ui.try-again"), "open-key", { variant: "primary", attrs: `data-id="${e(id)}" data-name="${e(name)}"` })}</div>`);
+      modal(name, `<p role="alert">${e(Vara.i18n.bindRuntime(String(error?.message || error)))}</p><div class="actions">${b(Vara.i18n.bind("ui.try-again"), "open-key", { variant: "primary", attrs: `data-id="${e(id)}" data-name="${e(name)}"` })}</div>`);
       return;
     }
     modal(
@@ -621,7 +621,7 @@
           if (status?.isConnected) status.textContent = message;
         } catch (error) {
           if (state.connectionChecks[provider] !== check) break;
-          state.connectionChecks[provider] = { phase: "error", message: String(error?.message || error) };
+          state.connectionChecks[provider] = { phase: "error", message: Vara.i18n.bindRuntime(String(error?.message || error)) };
           if (status?.isConnected) { status.textContent = ""; throw error; }
           $("live").textContent = state.connectionChecks[provider].message;
         } finally { renderConnections(); }
@@ -741,7 +741,7 @@
       if ($("retry-key-store")) $("retry-key-store").hidden = false;
       if ($("modal").open)
         $("dialog-error").innerHTML = notice(
-          String(error?.uiMessage || error?.message || error),
+          error?.uiMessage || Vara.i18n.bindRuntime(String(error?.message || error)),
           "error",
         );
       else report(error);
@@ -891,6 +891,7 @@
     if (state.data) refresh().catch(report);
   });
   try {
+    try { Vara.i18n.setRuntimeCatalog(await api("runtime_catalog")); } catch { /* Older hosts and test fixtures may not expose the catalog. */ }
     const data = await api("snapshot");
     if (!data.settings.onboarding_complete && data.history.length === 0)
       state.page = "setup";
@@ -912,12 +913,12 @@
     ]).then(devices => {
       state.devices = devices;
     }).catch(error => {
-      state.deviceError = String(error.uiMessage || error.message || error);
+      state.deviceError = error.uiMessage || Vara.i18n.bindRuntime(String(error.message || error));
     }).finally(() => {
       clearTimeout(deviceDeadline);
       if (state.page === "settings" && !state.dirty) render();
     });
   } catch (error) {
-    $("workspace").innerHTML = notice(String(error?.message || error), "error");
+    $("workspace").innerHTML = notice(error?.uiMessage || Vara.i18n.bindRuntime(String(error?.message || error)), "error");
   }
 })();
