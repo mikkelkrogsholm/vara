@@ -344,6 +344,9 @@ fn run(args: Vec<String>) -> Result<(), Failure> {
         return Ok(());
     }
     if args.len() == 1 && args[0] == "--version" {
+        #[cfg(feature = "test-harness")]
+        println!("vara {} (test-harness)", env!("CARGO_PKG_VERSION"));
+        #[cfg(not(feature = "test-harness"))]
         println!("vara {}", env!("CARGO_PKG_VERSION"));
         return Ok(());
     }

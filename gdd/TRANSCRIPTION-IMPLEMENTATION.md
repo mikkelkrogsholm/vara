@@ -148,3 +148,12 @@ can hold submit responses or status calls; it does not simulate inference. Proce
 tests use synthetic audio and a separately seeded ready-document fixture to test
 export and timing. They do not exercise real local inference or cloud providers.
 Windows/Linux local transport and the signed launcher remain unverified.
+
+The process regression checks the executable's test-harness-only version marker
+before creating a profile or starting the backend; it refuses normal builds.
+Build and run the fixture using the existing release cache and no network:
+
+```sh
+DEVELOPER_DIR=/Library/Developer/CommandLineTools CARGO_INCREMENTAL=0 CARGO_PROFILE_RELEASE_DEBUG=0 cargo build --release --locked --offline -p vara-desktop --features test-harness
+python3 scripts/tests/agent_cli.py target/release/vara-desktop
+```

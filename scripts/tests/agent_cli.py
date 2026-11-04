@@ -6,6 +6,16 @@ Run against the release test-harness desktop executable passed as argv[1].
 import hashlib, json, os, pathlib, signal, sqlite3, subprocess, sys, tempfile, time, uuid, wave
 
 exe = str(pathlib.Path(sys.argv[1]).resolve())
+# The fixture variables are intentionally ignored by production builds. Probe
+# before creating a profile or launching any backend, and never fall back.
+probe_env = {k:v for k,v in os.environ.items() if not k.startswith('VARA_TEST_')}
+try:
+    probe = subprocess.run([exe, 'cli', '--version'], env=probe_env,
+                           stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=5)
+except (OSError, subprocess.TimeoutExpired):
+    sys.exit('Refusing: could not verify the test-harness executable')
+if probe.returncode != 0 or not probe.stdout.rstrip().endswith(b' (test-harness)'):
+    sys.exit('Refusing: executable is not a test-harness build')
 tmp = tempfile.TemporaryDirectory(prefix='vara-cli-')
 base = pathlib.Path(tmp.name)
 audio = base / 'lyd æ space.wav'
