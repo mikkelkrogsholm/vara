@@ -35,13 +35,18 @@
   };
   const api = async (action, payload = {}) => {
     if (!window.__TAURI__)
-      throw Error(
-        "Åbn Vara som desktopapp for at bruge mikrofon, modeller og historik.",
+      throw uiError(
+        Vara.i18n.bind("ui.open-vara-as-a-desktop-app-to-use-the-microphone-models-and-histo"),
       );
     return window.__TAURI__.core.invoke("command", { action, payload });
   };
+  const uiError = token => {
+    const error = Error(Vara.i18n.resolve(token));
+    error.uiMessage = token;
+    return error;
+  };
   const report = (error) => {
-    const message = String(error?.message || error);
+    const message = String(error?.uiMessage || error?.message || error);
     const target = document.querySelector("form .form-message");
     if (target) {
       target.innerHTML = notice(message, "error");
@@ -184,7 +189,7 @@
       if (!state.dirty && state.page !== "transcription") {
         state.page = "history";
         state.detailOpen = true;
-      } else toast("En ny diktering er gemt i historikken.");
+      } else toast(Vara.i18n.bind("ui.a-new-dictation-has-been-saved-in-history"));
     }
     if (state.selected && !data.history.some((r) => r.id === state.selected))
       state.selected = data.history[0]?.id || null;
@@ -223,7 +228,7 @@
   };
   function canLeave() {
     if (!state.dirty) return true;
-    toast("Gem ændringerne, eller vælg Fortryd ændringer først.");
+    toast(Vara.i18n.bind("ui.save-your-changes-or-choose-discard-changes-first"));
     return false;
   }
   function value(id) {
@@ -236,7 +241,7 @@
   function modal(title, content) {
     if (!$("modal").open) modalInvoker = focusIdentity();
     $("modal").innerHTML =
-      `<div class="dialog-content">${Vara.ui.iconButton("close", "Luk dialog", "close-modal")}<h2 id="dialog-title">${e(title)}</h2>${content}<div class="form-message" role="alert" id="dialog-error"></div></div>`;
+      `<div class="dialog-content">${Vara.ui.iconButton("close", Vara.i18n.bind("ui.close-dialog"), "close-modal")}<h2 id="dialog-title">${e(title)}</h2>${content}<div class="form-message" role="alert" id="dialog-error"></div></div>`;
     if (!$("modal").open) $("modal").showModal();
     const input = $("modal").querySelector(
       "input:not([type=hidden]),select,textarea",
@@ -261,7 +266,7 @@
     const error = $(id + "-error");
     if (error) error.textContent = message;
     input?.focus();
-    throw Error(message);
+    throw uiError(message);
   }
   function requireValue(id, message) {
     if (!value(id)?.trim()) invalid(id, message);
@@ -276,8 +281,8 @@
     }
     state.pendingRoute = run;
     modal(
-      "Ændringerne er ikke gemt",
-      `<p>Gem først dine ændringer, eller kassér dem for at fortsætte.</p><div class="actions">${b("Bliv her", "close-modal", { variant: "primary" })}${b("Kassér ændringer", "discard-route", { variant: "quiet" })}</div>`,
+      Vara.i18n.bind("ui.changes-are-not-saved"),
+      `<p>${Vara.i18n.bind("ui.save-your-changes-first-or-discard-them-to-continue")}</p><div class="actions">${b(Vara.i18n.bind("ui.stay-here"), "close-modal", { variant: "primary" })}${b(Vara.i18n.bind("ui.discard-changes-2"), "discard-route", { variant: "quiet" })}</div>`,
     );
   }
   function settingsDraft() {
@@ -314,11 +319,11 @@
   async function saveSettings() {
     const p = settingsDraft();
     if (state.tab === "dictation" && p.general_ai_enabled)
-      requireValue("general-prompt", "Skriv instruktioner, før du slår AI til.");
+      requireValue("general-prompt", Vara.i18n.bind("ui.enter-instructions-before-enabling-ai"));
     await api("save_settings", p);
     state.dirty = false;
     await refresh(true);
-    toast("Indstillinger gemt.");
+    toast(Vara.i18n.bind("ui.settings-saved"));
   }
   function renderConnections() {
     const list = document.querySelector("[data-connections]");
@@ -344,12 +349,12 @@
     let exists;
     try { exists = await api("key_status", { id }); state.keyStates[id] = { present: exists }; renderConnections(); }
     catch (error) {
-      modal(name, `<p role="alert">${e(String(error))}</p><div class="actions">${b("Prøv igen", "open-key", { variant: "primary", attrs: `data-id="${e(id)}" data-name="${e(name)}"` })}</div>`);
+      modal(name, `<p role="alert">${e(String(error))}</p><div class="actions">${b(Vara.i18n.bind("ui.try-again"), "open-key", { variant: "primary", attrs: `data-id="${e(id)}" data-name="${e(name)}"` })}</div>`);
       return;
     }
     modal(
       name,
-      `<form id="key-form" data-key-id="${e(id)}"><p>${exists ? "En nøgle er gemt i systemets nøglelager. Du kan erstatte eller slette den." : "Tilføj din egen API-nøgle. Den gemmes i systemets nøglelager."}</p>${["groq", "open_ai"].includes(id) ? "<p>Udbyderen kan transskribere din lyd og bearbejde tekst med AI. Data til de valgte funktioner behandles i cloud.</p>" : ""}${f({ id: "api-key", label: "API-nøgle", type: "password", attrs: 'autocomplete="off" spellcheck="false" autocapitalize="off"' })}<div class="actions">${b("Gem nøgle", "save-key", { variant: "primary", attrs: `data-id="${e(id)}"` })}${exists ? b("Slet nøgle", "delete-key", { variant: "quiet", attrs: `data-id="${e(id)}"` }) : ""}${["groq", "open_ai"].includes(id) && exists ? b("Test nøgle", id === "groq" ? "check-groq" : "check-openai", { variant: "quiet" }) : ""}${b("Prøv igen", "open-key", { variant: "quiet", attrs: `id="retry-key-store" hidden data-id="${e(id)}" data-name="${e(name)}"` })}</div>${["groq", "open_ai"].includes(id) ? `<p id="${id === "groq" ? "groq" : "openai"}-access-status" role="status" class="muted"></p>` : ""}</form>`,
+      `<form id="key-form" data-key-id="${e(id)}"><p>${exists ? Vara.i18n.bind("ui.a-key-is-saved-in-the-system-key-store-you-can-replace-or-delete-") : Vara.i18n.bind("ui.add-your-own-api-key-it-is-saved-in-the-system-key-store")}</p>${["groq", "open_ai"].includes(id) ? ("<p>"+Vara.i18n.bind("ui.the-provider-can-transcribe-your-audio-and-process-text-with-ai-d")+"</p>") : ""}${f({ id: "api-key", label: Vara.i18n.bind("ui.api-key"), type: "password", attrs: 'autocomplete="off" spellcheck="false" autocapitalize="off"' })}<div class="actions">${b(Vara.i18n.bind("ui.save-key"), "save-key", { variant: "primary", attrs: `data-id="${e(id)}"` })}${exists ? b(Vara.i18n.bind("ui.delete-key"), "delete-key", { variant: "quiet", attrs: `data-id="${e(id)}"` }) : ""}${["groq", "open_ai"].includes(id) && exists ? b(Vara.i18n.bind("ui.test-key"), id === "groq" ? "check-groq" : "check-openai", { variant: "quiet" }) : ""}${b(Vara.i18n.bind("ui.try-again"), "open-key", { variant: "quiet", attrs: `id="retry-key-store" hidden data-id="${e(id)}" data-name="${e(name)}"` })}</div>${["groq", "open_ai"].includes(id) ? `<p id="${id === "groq" ? "groq" : "openai"}-access-status" role="status" class="muted"></p>` : ""}</form>`,
     );
   }
   function engineDialog(id) {
@@ -357,32 +362,32 @@
     const engine = state.data.settings.engines.find((x) => x.id === id);
     const custom = !engine || ["custom", "ollama"].includes(engine.provider);
     modal(
-      engine ? "Redigér forbindelse" : "Eget endpoint",
-      `<form id="engine-form" data-engine-id="${e(id || "")}">${f({ id: "engine-label", label: "Navn", value: engine?.label || "" })}${custom ? f({ id: "engine-endpoint", label: "Endpoint-URL", value: engine?.endpoint || "", help: "OpenAI-kompatibel tekst-API. Eksempel: http://127.0.0.1:11434/v1" }) : ""}${f({ id: "engine-model", label: "Model", value: engine?.model || "" })}${
+      engine ? Vara.i18n.bind("ui.edit-connection") : Vara.i18n.bind("ui.custom-endpoint"),
+      `<form id="engine-form" data-engine-id="${e(id || "")}">${f({ id: "engine-label", label: Vara.i18n.bind("ui.name"), value: engine?.label || "" })}${custom ? f({ id: "engine-endpoint", label: Vara.i18n.bind("ui.endpoint-url"), value: engine?.endpoint || "", help: Vara.i18n.bind("ui.openai-compatible-text-api-example-http-127-0-0-1-11434-v1") }) : ""}${f({ id: "engine-model", label: Vara.i18n.bind("ui.model"), value: engine?.model || "" })}${
         custom
           ? f({
               id: "engine-locality",
-              label: "Hvor behandles teksten?",
+              label: Vara.i18n.bind("ui.where-is-text-processed"),
               value: engine?.locality || "on_device",
               options: [
-                ["on_device", "På denne enhed · kun loopback"],
-                ["lan", "På eget netværk · HTTPS"],
-                ["cloud", "Hos ekstern udbyder · HTTPS"],
+                ["on_device", Vara.i18n.bind("ui.on-this-device-loopback-only")],
+                ["lan", Vara.i18n.bind("ui.on-your-network-https")],
+                ["cloud", Vara.i18n.bind("ui.at-an-external-provider-https")],
               ],
             })
           : ""
-      }<div class="actions">${b("Gem forbindelse", "save-engine", { variant: "primary", attrs: `data-id="${e(id || "")}"` })}${custom && engine ? b("Administrer nøgle", "open-key", { attrs: `data-id="${e(engine.id)}" data-name="${e(engine.label)}"` }) : ""}</div></form>`,
+      }<div class="actions">${b(Vara.i18n.bind("ui.save-connection"), "save-engine", { variant: "primary", attrs: `data-id="${e(id || "")}"` })}${custom && engine ? b(Vara.i18n.bind("ui.manage-key"), "open-key", { attrs: `data-id="${e(engine.id)}" data-name="${e(engine.label)}"` }) : ""}</div></form>`,
     );
   }
   async function addApp() {
     if (!canLeave()) return;
     const apps = await api("applications");
     modal(
-      "Tilføj app",
+      Vara.i18n.bind("ui.add-app"),
       apps.length
-        ? `${f({ id: "new-app", label: "App", options: apps.sort((a, b) => a.label.localeCompare(b.label)).map((a) => [a.id, a.label]) })}${b("Tilføj app", "save-new-app", { variant: "primary" })}`
+        ? `${f({ id: "new-app", label: "App", options: apps.sort((a, b) => a.label.localeCompare(b.label)).map((a) => [a.id, a.label]) })}${b(Vara.i18n.bind("ui.add-app"), "save-new-app", { variant: "primary" })}`
         : notice(
-            "Begynd at diktere i en app. Den bliver tilgængelig her, når den første diktering er gemt.",
+            Vara.i18n.bind("ui.start-dictating-in-an-app-it-becomes-available-here-after-the-fir"),
           ),
     );
     state.availableApps = apps;
@@ -400,19 +405,19 @@
         break;
       case "choose-processing":
         modal(
-          "Næste diktering",
+          Vara.i18n.bind("ui.next-dictation"),
           f({
             id: "next-choice",
-            label: "Behandling",
+            label: Vara.i18n.bind("ui.processing"),
             value: state.data.next_choice || "default",
             options: [
-              ["default", "Følg dine indstillinger"],
-              ["direct", "Direkte transskription"],
-              ["general_ai", "Brug generel systemprompt"],
+              ["default", Vara.i18n.bind("ui.follow-your-settings")],
+              ["direct", Vara.i18n.bind("ui.direct-transcription")],
+              ["general_ai", Vara.i18n.bind("ui.use-general-system-prompt")],
             ],
           }) +
-            "<p>Gælder én diktering, også når du bruger genvejen i en anden app. AI bruger din valgte tekstforbindelse.</p>" +
-            b("Vælg", "arm-processing", { variant: "primary" }),
+            ("<p>"+Vara.i18n.bind("ui.applies-to-one-dictation-including-when-you-use-the-shortcut-in-a")+"</p>") +
+            b(Vara.i18n.bind("ui.select"), "arm-processing", { variant: "primary" }),
         );
         break;
       case "arm-processing":
@@ -431,15 +436,15 @@
         Object.values(state.shortcutSources).forEach(keys => keys.clear());
       state.shortcutImplied.clear();
         modal(
-          "Skift genvej",
-          `<p>Tryk og slip en tast eller en kombination. Venstre og højre modifikationstast kan vælges hver for sig.</p><div class="shortcut-recorder" id="shortcut-recorder" tabindex="0" role="group" aria-label="Optag genvej" aria-live="polite">Tryk din genvej…</div><p class="muted" id="shortcut-warning">Almindelige skrivetaster og systemgenveje kan også påvirke den app, du bruger.</p><div class="actions">${b("Brug genvej", "use-shortcut", { variant: "primary", attrs: "disabled" })}${b("Annuller", "close-modal")}</div>`,
+          Vara.i18n.bind("ui.change-shortcut"),
+          `<p>${Vara.i18n.bind("ui.press-and-release-a-key-or-combination-left-and-right-modifier-ke")}</p><div class="shortcut-recorder" id="shortcut-recorder" tabindex="0" role="group" aria-label="${Vara.i18n.bind("ui.record-shortcut")}" aria-live="polite">${Vara.i18n.bind("ui.press-your-shortcut")}</div><p class="muted" id="shortcut-warning">${Vara.i18n.bind("ui.regular-typing-keys-and-system-shortcuts-can-also-affect-the-app-")}</p><div class="actions">${b(Vara.i18n.bind("ui.use-shortcut"), "use-shortcut", { variant: "primary", attrs: "disabled" })}${b(Vara.i18n.bind("ui.cancel"), "close-modal")}</div>`,
         );
         $("shortcut-recorder").focus();
         break;
       case "use-shortcut":
         if (!state.shortcutDraft)
-          throw Error(
-            "Tryk og slip den ønskede tast eller kombination.",
+          throw uiError(
+            Vara.i18n.bind("ui.press-and-release-the-desired-key-or-combination"),
           );
         $("shortcut").value = state.shortcutDraft;
         $("shortcut-preview").textContent = Vara.desktopUi.binding(
@@ -522,16 +527,16 @@
         await api("copy", { id, original: a === "copy-original" });
         state.uiError = null;
         render();
-        toast(a === "copy" ? "Kopieret." : "Originalen er kopieret.");
+        toast(a === "copy" ? Vara.i18n.bind("ui.copied") : Vara.i18n.bind("ui.original-copied"));
         break;
       case "copy-unsaved":
         await api("copy", { unsaved: true });
-        toast("Teksten er kopieret.");
+        toast(Vara.i18n.bind("ui.text-copied"));
         break;
       case "confirm-delete":
         modal(
-          "Slet diktering?",
-          `<p>Både originalen og den færdige tekst slettes fra historikken.</p><div class="actions">${b("Slet diktering", "delete-result", { variant: "destructive", attrs: `data-id="${e(id)}"` })}${b("Behold", "close-modal")}</div>`,
+          Vara.i18n.bind("ui.delete-dictation-2"),
+          `<p>${Vara.i18n.bind("ui.both-the-original-and-finished-text-will-be-deleted-from-history")}</p><div class="actions">${b(Vara.i18n.bind("ui.delete-dictation"), "delete-result", { variant: "destructive", attrs: `data-id="${e(id)}"` })}${b(Vara.i18n.bind("ui.keep"), "close-modal")}</div>`,
         );
         break;
       case "delete-result":
@@ -552,7 +557,7 @@
         if (checked("app-ai"))
           requireValue(
             "app-prompt",
-            "Skriv en systemprompt, før du slår AI til.",
+            Vara.i18n.bind("ui.enter-a-system-prompt-before-enabling-ai"),
           );
         const p = structuredClone(state.data.settings);
         const name = Vara.views
@@ -568,7 +573,7 @@
         await api("save_settings", p);
         state.dirty = false;
         await refresh(true);
-        toast("App-indstilling gemt.");
+        toast(Vara.i18n.bind("ui.app-setting-saved"));
         break;
       }
       case "reset-form":
@@ -583,13 +588,13 @@
         await keyDialog(id, button.dataset.name);
         break;
       case "save-key":
-        requireValue("api-key", "Indtast din API-nøgle.");
+        requireValue("api-key", Vara.i18n.bind("ui.enter-your-api-key"));
         try {
           await api("set_key", { id, key: value("api-key") });
           closeModal();
           delete state.connectionChecks[id];
           await loadKeyStatus(id);
-          toast("Nøglen er gemt i systemets nøglelager.");
+          toast(Vara.i18n.bind("ui.the-key-is-saved-in-the-system-key-store"));
         } finally {
           if ($("api-key")) $("api-key").value = "";
         }
@@ -599,14 +604,19 @@
         const openai = a === "check-openai", provider = openai ? "open_ai" : "groq";
         if (state.connectionChecks[provider]?.phase === "testing") break;
         const status = $(openai ? "openai-access-status" : "groq-access-status");
-        const check = { phase: "testing", message: "Tester nøgle og modeladgang…" };
+        const check = { phase: "testing", message: Vara.i18n.bind("ui.testing-key-and-model-access") };
         state.connectionChecks[provider] = check;
         renderConnections();
-        if (status) status.textContent = "Tester nøgle og modeladgang…";
+        if (status) status.textContent = Vara.i18n.bind("ui.testing-key-and-model-access");
         try {
           const result = await api(openai ? "check_openai" : "check_groq");
           if (state.connectionChecks[provider] !== check) break;
-          const message = `Nøglen accepteres. Tale (${result.speech_model}): ${result.speech_available ? "i modelkataloget" : "mangler i modelkataloget"}. Tekst (${result.text_model}): ${result.text_available ? "i modelkataloget" : "mangler i modelkataloget"}. Ingen lyd eller tekst blev sendt. Testen kontrollerer API-adgang og modelkatalog; diktering testes separat.`;
+          const message = Vara.i18n.bind("key.test.result", {
+            speechModel: result.speech_model,
+            speechStatus: Vara.i18n.bind(result.speech_available ? "key.test.available" : "key.test.missing"),
+            textModel: result.text_model,
+            textStatus: Vara.i18n.bind(result.text_available ? "key.test.available" : "key.test.missing"),
+          });
           state.connectionChecks[provider] = { phase: "success", message };
           if (status?.isConnected) status.textContent = message;
         } catch (error) {
@@ -622,7 +632,7 @@
         closeModal();
         delete state.connectionChecks[id];
         await loadKeyStatus(id);
-        toast("Nøglen er slettet.");
+        toast(Vara.i18n.bind("ui.key-deleted"));
         break;
       case "add-endpoint":
         engineDialog(null);
@@ -631,14 +641,14 @@
         engineDialog(id);
         break;
       case "save-engine": {
-        requireValue("engine-label", "Giv forbindelsen et navn.");
-        requireValue("engine-model", "Angiv en model.");
+        requireValue("engine-label", Vara.i18n.bind("ui.give-the-connection-a-name"));
+        requireValue("engine-model", Vara.i18n.bind("ui.enter-a-model"));
         if ($("engine-endpoint")) {
-          requireValue("engine-endpoint", "Angiv endpointets URL.");
+          requireValue("engine-endpoint", Vara.i18n.bind("ui.enter-the-endpoint-url"));
           try {
             new URL(value("engine-endpoint"));
           } catch {
-            invalid("engine-endpoint", "Angiv en gyldig URL.");
+            invalid("engine-endpoint", Vara.i18n.bind("ui.enter-a-valid-url"));
           }
         }
         const p = structuredClone(state.data.settings);
@@ -662,7 +672,7 @@
         await api("save_settings", p);
         closeModal();
         await refresh();
-        toast("Forbindelsen er gemt.");
+        toast(Vara.i18n.bind("ui.connection-saved"));
         break;
       }
       case "add-app":
@@ -670,7 +680,7 @@
         break;
       case "save-new-app": {
         const app = state.availableApps.find((a) => a.id === value("new-app"));
-        if (!app) throw Error("Vælg en app.");
+        if (!app) throw uiError(Vara.i18n.bind("ui.select-an-app-2"));
         const p = structuredClone(state.data.settings);
         if (!p.app_rules[app.id])
           p.app_rules[app.id] = {
@@ -691,8 +701,8 @@
         break;
       case "discard-unsaved":
         modal(
-          "Kassér teksten?",
-          `<p>Teksten er ikke gemt i historikken. Kopiér den først, hvis du vil beholde den.</p>${b("Kassér teksten", "discard_unsaved", { variant: "destructive" })}`,
+          Vara.i18n.bind("ui.discard-text"),
+          `<p>${Vara.i18n.bind("ui.the-text-is-not-saved-in-history-copy-it-first-if-you-want-to-kee")}</p>${b(Vara.i18n.bind("ui.discard-text-2"), "discard_unsaved", { variant: "destructive" })}`,
         );
         break;
       case "discard_unsaved":
@@ -731,7 +741,7 @@
       if ($("retry-key-store")) $("retry-key-store").hidden = false;
       if ($("modal").open)
         $("dialog-error").innerHTML = notice(
-          String(error?.message || error),
+          String(error?.uiMessage || error?.message || error),
           "error",
         );
       else report(error);
@@ -782,7 +792,7 @@
             if ($("ui-locale")) $("ui-locale").value = previous;
           }
           if ($("ui-locale")) $("ui-locale").disabled = false;
-          report(Error(Vara.i18n.message("locale.error")));
+          report(uiError(Vara.i18n.bind("locale.error")));
           return;
         }
         if (pendingLocale === preference) pendingLocale = null;
@@ -799,7 +809,7 @@
         if (automatic && !language.disabled) { language.dataset.previousLanguage = language.value; language.value = ""; }
         if (!automatic && language.disabled) language.value = language.dataset.previousLanguage || "";
         language.disabled = automatic;
-        document.getElementById("language-help").textContent = automatic ? "Parakeet registrerer automatisk sproget." : "";
+        document.getElementById("language-help").textContent = automatic ? Vara.i18n.bind("ui.parakeet-detects-the-language-automatically") : "";
       }
       if (["speech-engine", "general-engine", "general-ai", "direct-text", "app-engine", "app-ai", "strict-local"].includes(event.target.id)) refreshModelControls();
       state.dirty = true;
@@ -818,8 +828,8 @@
         state.originalOpen = event.target.open;
         event.target.querySelector("summary span").textContent = event.target
           .open
-          ? "Skjul original"
-          : "Vis original";
+          ? Vara.i18n.bind("ui.hide-original")
+          : Vara.i18n.bind("ui.show-original");
       }
       if (event.target.matches?.(".settings-disclosure"))
         state.disclosures[event.target.id] = event.target.open;
@@ -833,7 +843,7 @@
   function recordShortcutKey(code, down, source = "dom", flags = null) {
     if (!$("modal").open || !$("shortcut-recorder")) return;
     if (!code || code === "Unidentified") {
-      $("shortcut-warning").textContent = "Systemet sender ikke en genkendelig tast. Prøv en anden tast.";
+      $("shortcut-warning").textContent = Vara.i18n.bind("ui.the-system-did-not-send-a-recognizable-key-try-another-key");
       return;
     }
     if (source === "dom" && flags && !/^(Control|Alt|Shift|Meta)(Left|Right)$/.test(code)) {
@@ -897,12 +907,12 @@
     Promise.race([
       api("devices"),
       new Promise((_, reject) => {
-        deviceDeadline = setTimeout(() => reject(Error("Mikrofonlisten kunne ikke indlæses. Systemets standard kan stadig vælges.")), 5000);
+        deviceDeadline = setTimeout(() => reject(uiError(Vara.i18n.bind("ui.the-microphone-list-could-not-be-loaded-the-system-default-can-st"))), 5000);
       }),
     ]).then(devices => {
       state.devices = devices;
     }).catch(error => {
-      state.deviceError = String(error.message || error);
+      state.deviceError = String(error.uiMessage || error.message || error);
     }).finally(() => {
       clearTimeout(deviceDeadline);
       if (state.page === "settings" && !state.dirty) render();

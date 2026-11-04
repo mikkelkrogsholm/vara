@@ -202,7 +202,7 @@
     "component.experience": {
       "kind": "component",
       "label": "Experience",
-      "description": "Present onboarding, history, configuration and honest session status.",
+      "description": "Present onboarding, history, configuration and honest session status. The main UI supports Danish and English using stable message keys; locale changes preserve user input, focus, selection, dialogs and active operations. User content and edited engine labels remain unchanged. File transcription and native messages have separate localization work.",
       "maturity": "specified",
       "source_refs": [
         {
@@ -221,7 +221,7 @@
         }
       ],
       "boundary": {
-        "responsibility": "Present onboarding, history, configuration and honest session status.",
+        "responsibility": "Present onboarding, history, configuration and honest session status. The main UI supports Danish and English using stable message keys; locale changes preserve user input, focus, selection, dialogs and active operations. User content and edited engine labels remain unchanged. File transcription and native messages have separate localization work.",
         "rationale": "A single owner keeps this responsibility replaceable behind public contracts in one desktop application.",
         "excludes": [
           "OS focus decisions, secret values and provider protocol logic."
@@ -10868,7 +10868,7 @@
       "format": "text/markdown",
       "normative": true,
       "revision": {
-        "sha256": "77fa6bc75ae6c7b9f2367d79fccf4d9df4e5c7b4667bb1de8bc9897a86fa2920"
+        "sha256": "3f80c43d95b661df9b5aa6b1877ba7fb334bcd23efdd3a6265517bc900f1a4e9"
       }
     },
     "source.design": {
@@ -10878,7 +10878,7 @@
       "format": "text/markdown",
       "normative": true,
       "revision": {
-        "sha256": "62e174b9bd4eba6444b71e3009c4a5a75e440c9bb379aab548350b574ed0c6da"
+        "sha256": "e027b273bb9675339acdc19d5d75811034a4b89e93ec5b2f72cc2aae212b9619"
       }
     },
     "source.design_selection": {

@@ -31,4 +31,13 @@ assert.equal(i18n.message('example.items', {count:2}), '2 items');
 let changes = 0; const unsubscribe = i18n.subscribe(() => changes++);
 i18n.setLocale('da'); i18n.setLocale('da'); unsubscribe(); i18n.setLocale('en');
 assert.equal(changes, 1);
+// Every literal key consumed by the owned main UI must exist in both catalogs.
+const fs = require('node:fs'), path = require('node:path');
+for (const file of ['app.js', 'components.js', 'views.js']) {
+  const source = fs.readFileSync(path.join(__dirname, '../ui', file), 'utf8');
+  for (const match of source.matchAll(/(?:Vara\.i18n\.bind|\btr)\(\s*["']([^"']+)["']/g)) {
+    for (const [locale, catalog] of Object.entries(catalogs))
+      assert.ok(Object.hasOwn(catalog, match[1]), `${file}: ${locale} missing ${match[1]}`);
+  }
+}
 console.log('Catalog parity, placeholders, escaping, plural, Intl formatting and locale hooks passed.');

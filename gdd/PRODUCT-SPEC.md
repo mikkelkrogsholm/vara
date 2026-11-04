@@ -109,8 +109,10 @@ remain responsive while providers work.
 Keyboard navigation, visible focus, semantic labels and screen-reader status
 announcements apply to the whole essential journey. Do not require color, hover,
 motion or a global shortcut for access to essential controls. Honor text scaling
-and reduced motion. The design proposal uses Danish UI; the release retains a
-Danish/English localization boundary. Exact translations are implementation work.
+and reduced motion. The main shell, history, app preferences, settings and
+onboarding provide Danish and English UI labels. Interface language does not
+change speech language, transcription language or AI instructions. The file
+transcription workspace and native host messages are separate localization work.
 
 ## Architecture direction
 

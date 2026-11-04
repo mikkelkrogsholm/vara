@@ -692,3 +692,16 @@ html[data-platform="macos"] .brand {
 .tx-who-turns { margin: 0 0 var(--space-xl); font-size: 14px; }
 .tx-who-turns summary { cursor: pointer; color: var(--color-muted); padding: 8px 0; }
 .tx-who-turn { display: flex; gap: 12px; align-items: center; }
+
+/* Long localized labels and larger text must stay within the navigation. */
+@media (min-width: 720px) {
+  .sidebar { overflow-y: auto; }
+  .sidebar .brand, .sidebar .nav-item { min-width: 0; }
+  .sidebar .brand span, .sidebar .nav-item span { min-width: 0; overflow-wrap: anywhere; }
+}
+@media (min-width: 720px) and (max-width: 980px) {
+  .app-window { grid-template-columns: minmax(184px, min(40vw, 18ch)) minmax(0, 1fr); }
+}
+@media (min-width: 981px) {
+  .app-window { grid-template-columns: minmax(224px, max(18%, min(40vw, 18ch))) minmax(0, 1fr); }
+}

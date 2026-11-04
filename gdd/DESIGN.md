@@ -1275,5 +1275,11 @@ explanation follow the resolved interface language. Save this selection
 independently of other unfinished settings. Update the HTML language and visible
 localized labels in place so focus, selection, edits, open dialogs and ongoing
 operations survive the change. Text content is presented literally, including
-user-supplied values; do not interpret it as markup. The remaining existing
-Danish interface labels are localized in subsequent work.
+user-supplied values; do not interpret it as markup. The main shell, history,
+app rules, settings and onboarding present app-owned labels and accessible names
+in Danish or English. Keep speech and transcription language independent of the
+interface choice. Translate a built-in engine label only while both its identity
+and original default label match; retain user-edited labels verbatim. The
+transcription workspace and native host messages have separate localization work.
+At larger text sizes, navigation wraps and remains keyboard reachable in its own
+scrollable area rather than clipping labels.
