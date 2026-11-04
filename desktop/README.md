@@ -49,9 +49,20 @@ See [implementation status](../IMPLEMENTATION.md) for current limits and
 confirmed macOS global shortcuts, insertion in TextEdit/Codex, OpenAI and local
 Parakeet + Qwen. Windows/Linux native integration remains unfinished.
 
-For browser checks, serve `desktop` on localhost port 18770 and execute
-`desktop/tests/ui.playwright.js` through the Playwright tool's file runner. The
-suite renders the production UI with isolated test-only IPC fixtures.
+For browser checks, use Node.js and an existing Playwright installation with a
+Chromium browser. From the repository root, the standalone runner starts and
+stops its own localhost server on port 18770 and runs both UI suites with
+isolated test-only IPC fixtures:
+
+```sh
+PLAYWRIGHT_MODULE=/absolute/path/to/node_modules/playwright \
+PLAYWRIGHT_CHROMIUM=/absolute/path/to/chromium \
+node desktop/tests/legacy-runner.cjs
+```
+
+Both environment variables are optional when Node can resolve `playwright` and
+its bundled Chromium is installed. The runner writes test artifacts under
+`/tmp/vara-22b-legacy` by default; set `VARA_TEST_OUTPUT_ROOT` to change this.
 
 For a microphone-free native pipeline test, build with the explicit developer
 feature `test-harness`, set `VARA_TEST_WAV` to a local WAV and use an isolated

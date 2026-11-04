@@ -12,6 +12,10 @@
 # graphify knowledge-graph output (auto-rebuilt by post-commit hook)
 graphify-out/
 
+# Python bytecode.
+__pycache__/
+*.py[cod]
+
 # Rust desktop build output.
 /target/
 /desktop/src-tauri/gen/

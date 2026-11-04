@@ -5,6 +5,8 @@ Rust/Tauri workspace. Its bundle identifier is `dk.vara.desktop`.
 
 ## Verify and build
 
+The signed build requires Python 3.11 or newer for the version check.
+
 1. Run the optimized workspace tests from the repository root:
    ```sh
    CARGO_INCREMENTAL=0 CARGO_PROFILE_RELEASE_DEBUG=0 cargo test --release --workspace --locked
@@ -41,14 +43,25 @@ has already been accepted.
 The workspace version in `Cargo.toml` is the source of truth; every workspace
 package, including the desktop manifest, inherits it. Keep the literal version
 in `desktop/src-tauri/tauri.conf.json` and the local packages in `Cargo.lock` in
-sync. Validate without a build using Python 3.11+:
+sync. For an intentional version change:
 
-```sh
-python3 scripts/check-version.py
-python3 -m unittest discover -s scripts/tests -p 'test_version.py'
-# For an explicit release tag:
-python3 scripts/check-version.py --tag vX.Y.Z
-```
+1. Change `[workspace.package].version` in `Cargo.toml` and the literal `version`
+   in `desktop/src-tauri/tauri.conf.json` to the same SemVer value. Package
+   manifests continue to inherit the workspace version.
+2. Refresh `Cargo.lock` without compiling and review its diff:
+   ```sh
+   cargo metadata --format-version 1 > /dev/null
+   git diff -- Cargo.lock
+   ```
+   Cargo may need access to dependencies when resolving metadata.
+3. Update [CHANGELOG.md](CHANGELOG.md) for the change. Validate with Python 3.11+:
+
+   ```sh
+   python3 scripts/check-version.py
+   python3 -m unittest discover -s scripts/tests -p 'test_version.py'
+   # For an explicit release, replace the example with the intended tag:
+   python3 scripts/check-version.py --tag v0.1.0
+   ```
 
 Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html):
 `MAJOR.MINOR.PATCH`. Before 1.0, use patch releases for fixes and minor releases

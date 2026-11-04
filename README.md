@@ -101,6 +101,11 @@ On macOS, agents can use the bundled `vara` command; see the [CLI guide](CLI.md)
 
 The app is signed with Apple Developer ID, but is not yet notarized. File support depends on the format and codec; a separately installed FFmpeg can extend it. See the [current status](IMPLEMENTATION.md) and [release guide](RELEASING.md).
 
+## Contribute
+
+Help improve Vara with documentation, testing, translations or bug fixes. The
+[contributor guide](CONTRIBUTING.md) explains how to get started and open a pull request.
+
 ## Built to grow
 
 Vara has a shared core and engine in **Rust**, a **Tauri** desktop app and clear **GDD contracts** between modules. Speech recognition, text processing and platform features can be developed independently. The core and engine do not depend on the desktop interface.
