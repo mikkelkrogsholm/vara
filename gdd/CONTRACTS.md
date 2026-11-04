@@ -145,7 +145,7 @@ Application processing preference data contract. Handles are opaque; references 
 ### User preferences
 `entity.policy`
 
-User preferences data contract. Handles are opaque; references identify logical records, never embedded secrets or binary audio.
+User preferences data contract. Handles are opaque; references identify logical records, never embedded secrets or binary audio. UI locale is independent of speech language: fresh profiles use system, old profiles missing the field use da, invalid stored values fall back to en. Resolve system against ordered host language tags, first supported da/en, otherwise en; native and web receive the same resolved locale. Change this preference independently without disturbing drafts or active effects.
 
 | Field | Type |
 | --- | --- |
@@ -157,6 +157,7 @@ User preferences data contract. Handles are opaque; references identify logical 
 | `general_text_engine_id` | string? |
 | `strict_local` | boolean |
 | `retention_days` | integer? |
+| `ui_locale` | system  /  da  /  en |
 
 ### Runtime capability report
 `entity.capability_matrix`
@@ -274,7 +275,7 @@ Separate from immutable source ASR and corrections; pinned model provenance and 
 ### Known speaker count provenance
 `entity.known_speakers`
 
-User-provided count, grouping method and model cosine threshold.
+User-provided count, grouping and versioned 60-second cross-check method, and model cosine threshold.
 
 | Field | Type |
 | --- | --- |
@@ -692,9 +693,9 @@ Scenario IDs: `scenario.file_recognize.authorization`, `scenario.file_recognize.
 
 **Output:** diarization ID.
 
-Run pinned adapted Who C ABI with normalized local audio in an isolated registered child. Keep SDK reporting intact and return model/version plus overlapping real speaker intervals. Never upload audio/text or switch providers. An ephemeral validated lane payload supports optional known-count grouping; embeddings are never persisted. Reference lanes must uniquely match their own prototype with the entire current piece omitted.
+Run pinned adapted Who C ABI with normalized local audio in an isolated registered child. Keep SDK reporting intact and return model/version plus overlapping real speaker intervals. Never upload audio/text or switch providers. An ephemeral validated lane payload supports optional known-count grouping; embeddings are never persisted. Reference lanes must uniquely match their own prototype with the entire current piece omitted. Known-count runs a second pass with 60 seconds leading silence, aligns IDs by an unambiguous global assignment of exclusive confident overlap, and retains only exact confident set agreement on primary activity; all other primary activity is uncertain.
 
-**Guarantee:** Run pinned adapted Who C ABI with normalized local audio in an isolated registered child. Keep SDK reporting intact and return model/version plus overlapping real speaker intervals. Never upload audio/text or switch providers. An ephemeral validated lane payload supports optional known-count grouping; embeddings are never persisted. Reference lanes must uniquely match their own prototype with the entire current piece omitted.
+**Guarantee:** Run pinned adapted Who C ABI with normalized local audio in an isolated registered child. Keep SDK reporting intact and return model/version plus overlapping real speaker intervals. Never upload audio/text or switch providers. An ephemeral validated lane payload supports optional known-count grouping; embeddings are never persisted. Reference lanes must uniquely match their own prototype with the entire current piece omitted. Known-count runs a second pass with 60 seconds leading silence, aligns IDs by an unambiguous global assignment of exclusive confident overlap, and retains only exact confident set agreement on primary activity; all other primary activity is uncertain.
 
 **Effects:** Read local normalized audio/model files; explicit model downloads contact supplier/CDN. Official SDK license/usage requests contain installation/app/model/platform metadata, never audio/text. Write independent local annotation state.
 

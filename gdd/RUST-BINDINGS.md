@@ -254,3 +254,30 @@ its dynamic library, and bundles it as an optional runtime. No model weights or
 old Swift application source are bundled. Missing/incompatible runtimes report
 unavailability. Windows/Linux use the same Rust/C ABI but require the official
 platform SDK/LiteRT artifacts and target runtime acceptance before distribution.
+
+## Interface locale boundary
+
+`Settings.ui_locale` stores `system`, `da` or `en`, separately from the speech
+`language`. Fresh settings default to `system`; deserializing an existing JSON
+profile missing the field defaults to `da`, and invalid field values become `en`.
+`resolve_ui_locale` accepts the preference and the ordered host language tags and
+returns `da` or `en`; System selects the first supported base tag and otherwise
+returns English. The platform adapter supplies macOS preferred languages or the
+Windows preferred UI language list; other targets use locale environment values.
+The desktop snapshot exposes `resolved_ui_locale` and a process-local locale
+revision; `set_ui_locale` saves only that preference under the same gate as
+whole-settings writes and returns the resolved locale and new revision. The UI
+ignores stale snapshot locale values. Whole-settings saves retain the latest
+persisted UI preference. Neither command restarts or replays a
+session. Native surfaces may use the same core resolver and host language list.
+
+The small UI catalog in `desktop/ui/i18n.js` owns stable keys and an English
+fallback. `message` returns plain text for DOM text/attributes or existing
+escaping components; `html` returns a fully escaped string for template HTML.
+Named placeholders are text, never markup. Use `number`/`date` and plural forms
+for locale-sensitive presentation. Locale subscribers and `data-i18n`,
+`data-i18n-aria-label`, `data-i18n-placeholder` bindings refresh in place;
+annotate leaf labels only, never an editable container. For a new language add a
+complete catalog and supported resolution, implement required plural categories,
+and run `node desktop/tests/i18n.test.cjs` plus the browser locale check. Keep
+user content and model metadata outside the catalogs.

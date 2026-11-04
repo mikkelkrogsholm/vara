@@ -287,6 +287,53 @@ pub struct AppRule {
     pub prompt: String,
     pub engine_id: String,
 }
+/// The stored UI preference is separate from speech recognition language.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Default)]
+#[serde(rename_all = "snake_case")]
+pub enum UiLocale {
+    #[default]
+    System,
+    Da,
+    En,
+}
+
+fn legacy_ui_locale() -> UiLocale {
+    UiLocale::Da
+}
+fn deserialize_ui_locale<'de, D: serde::Deserializer<'de>>(
+    deserializer: D,
+) -> std::result::Result<UiLocale, D::Error> {
+    let value = serde_json::Value::deserialize(deserializer)?;
+    Ok(match value.as_str() {
+        Some("system") => UiLocale::System,
+        Some("da") => UiLocale::Da,
+        _ => UiLocale::En,
+    })
+}
+
+/// Resolve the first supported language tag, independently of the presentation host.
+pub fn resolve_ui_locale(preference: UiLocale, system_languages: &[String]) -> &'static str {
+    match preference {
+        UiLocale::Da => "da",
+        UiLocale::En => "en",
+        UiLocale::System => system_languages
+            .iter()
+            .find_map(|tag| {
+                match tag
+                    .split(['-', '_'])
+                    .next()
+                    .unwrap_or("")
+                    .to_ascii_lowercase()
+                    .as_str()
+                {
+                    "da" => Some("da"),
+                    "en" => Some("en"),
+                    _ => None,
+                }
+            })
+            .unwrap_or("en"),
+    }
+}
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(default)]
 pub struct Settings {
@@ -300,6 +347,11 @@ pub struct Settings {
     pub strict_local: bool,
     pub retention_days: Option<u32>,
     pub language: Option<String>,
+    #[serde(
+        default = "legacy_ui_locale",
+        deserialize_with = "deserialize_ui_locale"
+    )]
+    pub ui_locale: UiLocale,
     pub onboarding_complete: bool,
     pub engines: Vec<EngineConfig>,
     pub app_rules: BTreeMap<String, AppRule>,
@@ -317,6 +369,7 @@ impl Default for Settings {
             strict_local: false,
             retention_days: None,
             language: None,
+            ui_locale: UiLocale::System,
             onboarding_complete: false,
             engines: default_engines(),
             app_rules: BTreeMap::new(),

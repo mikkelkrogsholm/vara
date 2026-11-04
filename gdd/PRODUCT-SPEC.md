@@ -172,3 +172,15 @@ See the dedicated specification for scope, conditional capabilities and exclusio
 Cancellation of an unfinished file job removes its private working audio; the
 source file remains untouched. Failed recognition can reuse a valid retained
 playback copy on retry even if the external original has moved.
+
+### Interface language
+
+The interface language is independent of speech recognition language, processing
+models, privacy settings and user-authored prompts. A new profile follows the
+ordered system languages, choosing the first supported Danish or English tag;
+English is the fallback. The user may persist System, Dansk or English. Profiles
+saved before this choice existed retain Danish; malformed saved choices safely
+fall back to English. Changing this preference takes effect without restarting,
+saving other pending settings, replacing live edits or repeating work. Translation
+of remaining existing interface text is delivered separately; user content and
+model names are never automatically translated.

@@ -18,6 +18,7 @@ pub struct Permissions {
 }
 #[cfg(target_os = "macos")]
 unsafe extern "C" {
+    fn vara_preferred_languages() -> *mut std::ffi::c_char;
     fn vara_applications() -> *mut std::ffi::c_char;
     fn vara_application_icons(ids: *const std::ffi::c_char) -> *mut std::ffi::c_char;
     fn vara_capture_target() -> *mut std::ffi::c_char;
@@ -41,6 +42,79 @@ unsafe extern "C" {
     );
     fn vara_hide_hud();
     fn vara_free(value: *mut std::ffi::c_char);
+}
+/// Ordered OS language preferences; the core owns supported-language resolution.
+pub fn preferred_languages() -> Vec<String> {
+    #[cfg(target_os = "macos")]
+    unsafe {
+        let raw = vara_preferred_languages();
+        if raw.is_null() {
+            return Vec::new();
+        }
+        let languages = serde_json::from_slice(CStr::from_ptr(raw).to_bytes()).unwrap_or_default();
+        vara_free(raw);
+        languages
+    }
+    #[cfg(target_os = "windows")]
+    unsafe {
+        #[link(name = "kernel32")]
+        unsafe extern "system" {
+            fn GetUserPreferredUILanguages(
+                flags: u32,
+                count: *mut u32,
+                buffer: *mut u16,
+                size: *mut u32,
+            ) -> i32;
+        }
+        const MUI_LANGUAGE_NAME: u32 = 0x8;
+        let (mut count, mut size) = (0, 0);
+        if GetUserPreferredUILanguages(
+            MUI_LANGUAGE_NAME,
+            &mut count,
+            std::ptr::null_mut(),
+            &mut size,
+        ) == 0
+            || size == 0
+        {
+            return Vec::new();
+        }
+        let mut buffer = vec![0u16; size as usize];
+        if GetUserPreferredUILanguages(
+            MUI_LANGUAGE_NAME,
+            &mut count,
+            buffer.as_mut_ptr(),
+            &mut size,
+        ) == 0
+        {
+            return Vec::new();
+        }
+        buffer
+            .split(|c| *c == 0)
+            .filter(|v| !v.is_empty())
+            .map(String::from_utf16_lossy)
+            .collect()
+    }
+    #[cfg(not(any(target_os = "macos", target_os = "windows")))]
+    {
+        let primary = std::env::var("LC_ALL")
+            .ok()
+            .filter(|s| !s.is_empty())
+            .or_else(|| std::env::var("LC_MESSAGES").ok().filter(|s| !s.is_empty()))
+            .or_else(|| std::env::var("LANG").ok())
+            .unwrap_or_default();
+        let languages = if primary == "C" || primary == "POSIX" || primary.starts_with("C.") {
+            primary
+        } else {
+            std::env::var("LANGUAGE")
+                .ok()
+                .filter(|s| !s.is_empty())
+                .unwrap_or(primary)
+        };
+        languages
+            .split(':')
+            .map(|s| s.split('.').next().unwrap_or("").to_string())
+            .collect()
+    }
 }
 pub fn capture_target() -> Result<Destination> {
     #[cfg(target_os = "macos")]

@@ -23,6 +23,7 @@ struct Active {
 struct Inner {
     store: Store,
     settings: Settings,
+    ui_locale_revision: u64,
     next_choice: ProcessingChoice,
     active: Option<Active>,
     unsaved: Option<Dictation>,
@@ -42,6 +43,8 @@ pub struct Service {
 #[derive(Clone, Serialize)]
 pub struct Snapshot {
     settings: Settings,
+    resolved_ui_locale: &'static str,
+    ui_locale_revision: u64,
     next_choice: ProcessingChoice,
     history: Vec<Dictation>,
     recoveries: Vec<Recovery>,
@@ -86,7 +89,7 @@ impl Service {
                 .map_err(|e| e.to_string())?;
             recovered = true;
         }
-        let service=Arc::new(Self{#[cfg(feature="test-harness")] fixture:std::env::var_os("VARA_TEST_WAV").map(PathBuf::from),settings_gate:Mutex::new(()),engines:Arc::new(Engines::new(root.join("models"))?),recorder:platform::Recorder::new(),audio:root.join("audio"),inner:Mutex::new(Inner{store,settings,next_choice:ProcessingChoice::Default,active:None,unsaved:None,message:recovered.then(||"Tekst fra en afbrudt diktering er gendannet i historikken. Indsæt den manuelt.".into()),downloads:BTreeMap::new()}),app});
+        let service=Arc::new(Self{#[cfg(feature="test-harness")] fixture:std::env::var_os("VARA_TEST_WAV").map(PathBuf::from),settings_gate:Mutex::new(()),engines:Arc::new(Engines::new(root.join("models"))?),recorder:platform::Recorder::new(),audio:root.join("audio"),inner:Mutex::new(Inner{store,settings,ui_locale_revision:0,next_choice:ProcessingChoice::Default,active:None,unsaved:None,message:recovered.then(||"Tekst fra en afbrudt diktering er gendannet i historikken. Indsæt den manuelt.".into()),downloads:BTreeMap::new()}),app});
         service.maintenance()?;
         Ok(service)
     }
@@ -97,6 +100,11 @@ impl Service {
         let i = self.inner.lock();
         Ok(Snapshot {
             settings: i.settings.clone(),
+            resolved_ui_locale: resolve_ui_locale(
+                i.settings.ui_locale,
+                &platform::preferred_languages(),
+            ),
+            ui_locale_revision: i.ui_locale_revision,
             next_choice: i.next_choice,
             history: i.store.history(None, None).map_err(|e| e.to_string())?,
             recoveries: i
@@ -592,6 +600,20 @@ impl Service {
             }
         }
         Ok(())
+    }
+    pub fn set_ui_locale(&self, preference: UiLocale) -> Result<(&'static str, u64)> {
+        let mut i = self.inner.lock();
+        let mut settings = i.settings.clone();
+        settings.ui_locale = preference;
+        i.store
+            .save_settings(&settings)
+            .map_err(|e| e.to_string())?;
+        i.settings = settings;
+        i.ui_locale_revision += 1;
+        Ok((
+            resolve_ui_locale(preference, &platform::preferred_languages()),
+            i.ui_locale_revision,
+        ))
     }
     pub fn save_settings(&self, settings: Settings) -> Result<()> {
         settings.validate().map_err(|e| e.to_string())?;

@@ -119,6 +119,7 @@
       (state.detailOpen ? " has-detail" : "");
     $("sidebar").innerHTML = Vara.views.sidebar(state);
     $("workspace").innerHTML = Vara.views[state.page](state);
+    if (pendingLocale !== null && $("ui-locale")) $("ui-locale").disabled = true;
     const node = restoreFocus(focus);
     if (selection && node?.setSelectionRange) {
       try {
@@ -150,7 +151,26 @@
       });
     }
   }
+  // Localize in place: subscribers must not replace live controls, dialogs, or editors.
+  function updateLocalePicker() {
+    const picker = $("locale-picker");
+    if (!picker) return;
+    const t = Vara.i18n.message;
+    picker.querySelector("h2").textContent = t("locale.heading");
+    picker.querySelector("header p").textContent = t("locale.description");
+    picker.querySelector('label[for="ui-locale"]').textContent = t("locale.label");
+    for (const option of picker.querySelectorAll("option")) option.textContent = t("locale." + option.value);
+  }
+  Vara.i18n.subscribe(updateLocalePicker);
+  let localeWrites = Promise.resolve(), pendingLocale = null;
   function apply(data) {
+    if (state.data && (data.ui_locale_revision ?? 0) < (state.data.ui_locale_revision ?? 0)) {
+      data.settings.ui_locale = state.data.settings.ui_locale;
+      data.resolved_ui_locale = state.data.resolved_ui_locale;
+      data.ui_locale_revision = state.data.ui_locale_revision;
+    }
+    if (pendingLocale !== null) data.settings.ui_locale = pendingLocale;
+    else Vara.i18n.setLocale(data.resolved_ui_locale || "da");
     const previous = state.data?.history[0]?.id;
     if (state.data && JSON.stringify(state.data) === JSON.stringify(data))
       return;
@@ -742,6 +762,34 @@
     }
   });
   document.addEventListener("change", (event) => {
+    if (event.target.id === "ui-locale") {
+      if (pendingLocale !== null) { event.target.value = pendingLocale; return; }
+      const preference = event.target.value;
+      event.target.disabled = true;
+      const previous = state.data.settings.ui_locale || "da";
+      pendingLocale = preference;
+      localeWrites = localeWrites.then(async () => {
+        try {
+          const result = await api("set_ui_locale", {preference});
+          state.data.settings.ui_locale = preference;
+          state.data.resolved_ui_locale = result.locale;
+          state.data.ui_locale_revision = result.revision ?? 0;
+          Vara.i18n.setLocale(result.locale);
+        } catch (error) {
+          if (pendingLocale === preference) {
+            pendingLocale = null;
+            state.data.settings.ui_locale = previous;
+            if ($("ui-locale")) $("ui-locale").value = previous;
+          }
+          if ($("ui-locale")) $("ui-locale").disabled = false;
+          report(Error(Vara.i18n.message("locale.error")));
+          return;
+        }
+        if (pendingLocale === preference) pendingLocale = null;
+        if ($("ui-locale")) $("ui-locale").disabled = false;
+      });
+      return;
+    }
     if (event.target.id === "history-app") {
       state.filter = event.target.value;
       render();

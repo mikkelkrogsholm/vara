@@ -1266,3 +1266,14 @@ and uses the same speaker rename and seek buttons. Untimed transcripts show
 intervals without fabricated word assignment. Errors or zero detected speakers
 explain the limitation and keep prior data. No extra global navigation or new
 visual language is introduced.
+
+### Interface language control
+
+Settings provides a separate interface-language selector with System, Dansk and
+English choices. The language names are autonyms; the System label and control
+explanation follow the resolved interface language. Save this selection
+independently of other unfinished settings. Update the HTML language and visible
+localized labels in place so focus, selection, edits, open dialogs and ongoing
+operations survive the change. Text content is presented literally, including
+user-supplied values; do not interpret it as markup. The remaining existing
+Danish interface labels are localized in subsequent work.

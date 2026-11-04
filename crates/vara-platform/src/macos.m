@@ -10,6 +10,9 @@ static char *jsonString(id value) {
     NSData *data=[NSJSONSerialization dataWithJSONObject:value options:0 error:nil];
     return strdup([[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding].UTF8String);
 }
+char *vara_preferred_languages(void) {
+    @autoreleasepool { return jsonString(NSLocale.preferredLanguages); }
+}
 char *vara_capture_target(void) {
     @autoreleasepool {
         NSRunningApplication *app=NSWorkspace.sharedWorkspace.frontmostApplication;

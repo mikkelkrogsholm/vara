@@ -579,7 +579,7 @@
     "entity.policy": {
       "kind": "entity",
       "label": "User preferences",
-      "description": "User preferences data contract. Handles are opaque; references identify logical records, never embedded secrets or binary audio.",
+      "description": "User preferences data contract. Handles are opaque; references identify logical records, never embedded secrets or binary audio. UI locale is independent of speech language: fresh profiles use system, old profiles missing the field use da, invalid stored values fall back to en. Resolve system against ordered host language tags, first supported da/en, otherwise en; native and web receive the same resolved locale. Change this preference independently without disturbing drafts or active effects.",
       "maturity": "specified",
       "source_refs": [
         {
@@ -625,6 +625,14 @@
           "type": "integer",
           "minimum": 1,
           "optional": true
+        },
+        "ui_locale": {
+          "type": "enum",
+          "values": [
+            "system",
+            "da",
+            "en"
+          ]
         }
       }
     },
@@ -10860,7 +10868,7 @@
       "format": "text/markdown",
       "normative": true,
       "revision": {
-        "sha256": "ab758f2b3a388d5f7ad67b5a0cd732d51389be2997193d6bfa1eabfae10cf13c"
+        "sha256": "77fa6bc75ae6c7b9f2367d79fccf4d9df4e5c7b4667bb1de8bc9897a86fa2920"
       }
     },
     "source.design": {
@@ -10870,7 +10878,7 @@
       "format": "text/markdown",
       "normative": true,
       "revision": {
-        "sha256": "c6ea7ef2e95cda50cbe03ce89c3ada4c2df99de2de82e473a91e98af75b18729"
+        "sha256": "62e174b9bd4eba6444b71e3009c4a5a75e440c9bb379aab548350b574ed0c6da"
       }
     },
     "source.design_selection": {
@@ -10910,7 +10918,7 @@
       "format": "text/markdown",
       "normative": false,
       "revision": {
-        "sha256": "3b6100e28c6909e5aad50912c26bc0b76661c23ccc6161d30f2c3fd8ceef31fb"
+        "sha256": "58e5f8bab578e03d0ced3eaf10f1b456ccfcf05ce7499296043fa55b7d5c87a0"
       }
     },
     "source.transcription": {

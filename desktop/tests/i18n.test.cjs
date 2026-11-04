@@ -1,0 +1,34 @@
+const assert = require('node:assert/strict');
+const i18n = require('../ui/i18n.js');
+const {catalogs} = i18n;
+const placeholders = value => [...value.matchAll(/\{([A-Za-z][\w]*)\}/g)].map(m => m[1]).sort().join(',');
+const englishKeys = Object.keys(catalogs.en).sort();
+for (const [locale, catalog] of Object.entries(catalogs)) {
+  assert.deepEqual(Object.keys(catalog).sort(), englishKeys, `${locale} catalog keys`);
+  for (const key of englishKeys) {
+    const reference = catalogs.en[key], translated = catalog[key];
+    assert.equal(typeof translated, typeof reference, `${locale}:${key} type`);
+    if (typeof reference === 'string') assert.equal(placeholders(translated), placeholders(reference), `${locale}:${key} arguments`);
+    else {
+      assert.deepEqual(Object.keys(translated).sort(), new Intl.PluralRules(locale).resolvedOptions().pluralCategories.sort(), `${locale}:${key} plural categories`);
+      for (const form of Object.keys(translated)) assert.equal(placeholders(translated[form]), placeholders(reference.other), `${locale}:${key}:${form} arguments`);
+    }
+  }
+}
+i18n.setLocale('da');
+assert.equal(i18n.message('example.items', {count: 1}), '1 element');
+assert.equal(i18n.message('example.items', {count: 2}), '2 elementer');
+const label = catalogs.da['locale.heading']; delete catalogs.da['locale.heading'];
+assert.equal(i18n.message('locale.heading'), catalogs.en['locale.heading']); catalogs.da['locale.heading'] = label;
+assert.equal(i18n.number(1234.5), new Intl.NumberFormat('da').format(1234.5));
+assert.equal(i18n.number(2, {style:'unit', unit:'minute'}), new Intl.NumberFormat('da',{style:'unit',unit:'minute'}).format(2));
+assert.equal(i18n.date(new Date('2025-03-01T12:00:00Z'), {timeZone:'UTC'}), new Intl.DateTimeFormat('da',{timeZone:'UTC'}).format(new Date('2025-03-01T12:00:00Z')));
+assert.equal(i18n.message('example.items', {count:'<img src=x onerror="x">'}), '<img src=x onerror="x"> elementer');
+assert.equal(i18n.html('example.items', {count:'<img src=x onerror="x">'}), '&lt;img src=x onerror=&quot;x&quot;&gt; elementer');
+i18n.setLocale('unknown');
+assert.equal(i18n.getLocale(), 'en');
+assert.equal(i18n.message('example.items', {count:2}), '2 items');
+let changes = 0; const unsubscribe = i18n.subscribe(() => changes++);
+i18n.setLocale('da'); i18n.setLocale('da'); unsubscribe(); i18n.setLocale('en');
+assert.equal(changes, 1);
+console.log('Catalog parity, placeholders, escaping, plural, Intl formatting and locale hooks passed.');

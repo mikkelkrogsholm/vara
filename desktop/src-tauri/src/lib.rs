@@ -157,10 +157,24 @@ async fn command(
                 CAPTURING.store(false, std::sync::atomic::Ordering::SeqCst);
                 Ok(serde_json::Value::Null)
             }
+        } else if action == "set_ui_locale" {
+            let _settings_gate = service.settings_gate.lock();
+            let preference: vara_core::UiLocale = serde_json::from_value(
+                payload
+                    .unwrap_or_default()
+                    .get("preference")
+                    .cloned()
+                    .unwrap_or_default(),
+            )
+            .map_err(|_| "Invalid UI language preference.")?;
+            let (locale, revision) = service.set_ui_locale(preference)?;
+            Ok(serde_json::json!({"locale": locale, "revision": revision}))
         } else if action == "save_settings" {
             let _settings_gate = service.settings_gate.lock();
-            let settings: vara_core::Settings = serde_json::from_value(payload.unwrap_or_default())
-                .map_err(|_| "Indstillingerne kunne ikke læses.")?;
+            let mut settings: vara_core::Settings =
+                serde_json::from_value(payload.unwrap_or_default())
+                    .map_err(|_| "Indstillingerne kunne ikke læses.")?;
+            settings.ui_locale = service.preferences().ui_locale;
             settings.validate().map_err(|e| e.to_string())?;
             let old = service.shortcut();
             let changed = old != settings.shortcut;
