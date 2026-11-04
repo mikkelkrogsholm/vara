@@ -317,3 +317,64 @@ fn generated_speaker_provenance_is_optional_and_never_changes_exports() {
         assert_eq!(restored.export(format, true).unwrap(), expected, "{format}");
     }
 }
+
+#[test]
+fn legacy_database_migrates_without_replacing_document_and_empty_request_is_rejected() {
+    let dir = tempfile::tempdir().unwrap();
+    let path = dir.path().join("files.sqlite3");
+    let mut old = document();
+    old.edited_text = Some("Edited".into());
+    old.revision = 9;
+    old.speakers
+        .insert("speaker_1".into(), "Custom name".into());
+    let mut json = serde_json::to_value(&old).unwrap();
+    for key in ["auto_speakers", "diarization", "diarization_error"] {
+        json.as_object_mut().unwrap().remove(key);
+    }
+    {
+        let db = rusqlite::Connection::open(&path).unwrap();
+        db.execute_batch("CREATE TABLE documents(id TEXT PRIMARY KEY,created_at INTEGER NOT NULL,value TEXT NOT NULL);").unwrap();
+        db.execute(
+            "INSERT INTO documents VALUES (?1,?2,?3)",
+            rusqlite::params![old.id, old.created_at, json.to_string()],
+        )
+        .unwrap();
+    }
+    let mut store = TranscriptionStore::open(&path).unwrap();
+    assert!(
+        store
+            .save_batch_with_request(&[], Some(("id", "{}")))
+            .is_err()
+    );
+    let restored = store.all().unwrap().remove(0);
+    assert_eq!(restored.revision, 9);
+    assert_eq!(restored.text(), "Edited");
+    assert_eq!(restored.speakers["speaker_1"], "Custom name");
+    assert_eq!(restored.transcript.unwrap().segments[0].words[0].start, 0.1);
+    assert!(store.request("id").unwrap().is_none());
+}
+
+#[test]
+fn request_and_document_commit_and_delete_together() {
+    let dir = tempfile::tempdir().unwrap();
+    let mut store = TranscriptionStore::open(&dir.path().join("files.db")).unwrap();
+    let first = document();
+    store
+        .save_batch_with_request(std::slice::from_ref(&first), Some(("request", "params")))
+        .unwrap();
+    let mut second = first.clone();
+    second.id = "different".into();
+    assert!(
+        store
+            .save_batch_with_request(&[second], Some(("request", "changed")))
+            .is_err()
+    );
+    assert_eq!(store.all().unwrap().len(), 1);
+    assert_eq!(
+        store.request("request").unwrap(),
+        Some(("params".into(), first.id.clone()))
+    );
+    store.delete(&first.id).unwrap();
+    assert!(store.request("request").unwrap().is_none());
+    assert!(store.all().unwrap().is_empty());
+}

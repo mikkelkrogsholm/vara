@@ -1,6 +1,6 @@
 [workspace]
-members = ["crates/vara-core", "crates/vara-engine", "crates/vara-platform", "desktop/src-tauri"]
-default-members = ["crates/vara-core", "crates/vara-engine", "crates/vara-platform"]
+members = ["crates/vara-app", "crates/vara-core", "crates/vara-engine", "crates/vara-platform", "desktop/src-tauri"]
+default-members = ["crates/vara-app", "crates/vara-core", "crates/vara-engine", "crates/vara-platform"]
 resolver = "2"
 
 [workspace.package]

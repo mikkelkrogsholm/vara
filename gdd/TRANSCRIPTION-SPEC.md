@@ -169,3 +169,42 @@ vise Taler 1 eller Speaker 1. Gamle gemte navne fortolkes aldrig heuristisk;
 omdøbning fjerner proveniensen for det pågældende navn. Proveniensen gemmes i
 dokumentet, men indgår ikke i eksport, hvis eksisterende eksportformat skal
 bevares. Usikre passager tælles ikke som en person.
+
+## Fælles filjobgrænse — 2026-11-04
+
+Desktop og en kommende lokal backend skal dele én `vara-app::Files`-ejer pr.
+profil. Ejeren låser profilen, ejer køen, dokumentlisten og publiceringen og
+bruger den eksisterende fil-SQLite og mediemappe. Desktop er adapter for
+filvælger, clipboard, eksportdialog, links, ressourcesti, legitimationsopslag og
+UI-events. Det eksisterende dokumentformat og redigering, AI, Who, afspilning og
+eksport bevares. En separat CLI-database eller konkurrerende kø er ikke tilladt.
+
+Den fælles Rust-grænse tilbyder `submit`, `status`, `result` og `cancel`.
+`submit` modtager én sti, tale-engine-ID, valgfrit talesprog og valgfrit
+request-ID; kvitteringens job-ID er dokument-ID'et. Indstillinger for engine og
+sprog gemmes på dokumentet ved accept uden at ændre globale indstillinger.
+`status` returnerer dokumentets faktiske stage; `result` kræver Ready og giver
+adgang til det fulde dokument og dets eksisterende eksportmetoder. Eksplicit
+annullering bruger den eksisterende cancellation og kan ikke publicere et sent
+resultat. Desktopbatch anvender samme kø og lager, uden request-ID som standard.
+
+Et request-ID er scoped til profilen og det tilhørende dokuments levetid. Det
+skal være 1–200 UTF-8-byte, indeholde mindst ét tegn, der ikke er whitespace,
+og kan kun bruges til ét filjob. Inputidentiteten består af
+absolut, leksikalt normaliseret sti, engine-ID og normaliseret talesprog (tomt
+sprog svarer til automatisk). Den identificerer stien, ikke filens indhold eller
+symlink-mål. Samme ID og identitet giver den oprindelige kvittering, også efter
+at kilden er fjernet; ændrede parametre giver `file.request_conflict`.
+Accept og requestregistrering committes atomisk, før kvittering/publicering.
+Sletning af dokumentet sletter også registreringen; derefter kan ID'et bruges
+på ny. En klient, som indsender en relativ sti over fremtidig IPC, skal gøre den
+absolut i klientens eget arbejdskatalog, inden den sendes til backend.
+
+Ved genstart markeres alle afbrudte ikke-terminale jobs Failed med den
+versionerede `file.interrupted`-årsag; de køres ikke automatisk igen. En
+forbindelse eller ventende klient ejer ikke et accepteret jobs levetid. Den
+fremtidige lokale transport skal give status/ventning og eventopdateringer fra
+samme ejer, lade forbindelsestab afslutte alene ventningen og understøtte
+resultat/eksport med de eksisterende format- og timingbegrænsninger. Denne
+leverance implementerer hverken lokal transport, CLI, agent-JSON eller
+automatisk Who som submit-option; disse dele må ikke fremstilles som leveret.

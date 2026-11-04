@@ -62,3 +62,13 @@ host speaker-provenance tests cover the persisted representation and legacy
 names. These browser fixtures do not establish native Windows/Linux acceptance or
 exercise real inference, cloud providers, downloads or user profiles. Native and
 provider error localization remains separate work.
+
+## Shared file jobs — 2026-11-04
+
+`vara-app` now owns the existing desktop document list, persisted queue and worker.
+The desktop adapter retains platform interactions. A per-profile lock prevents a
+second queue owner; one-file request IDs are stored transactionally with their
+documents and are removed on explicit document deletion. The typed Rust API
+provides submit/status/result/cancel; transport, waiting/events for external
+clients and the CLI are future deliveries. No Who submit option is implemented.
+See TRANSCRIPTION-SPEC.md for path, interruption and idempotency semantics.

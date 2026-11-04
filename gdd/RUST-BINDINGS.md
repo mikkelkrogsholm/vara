@@ -210,7 +210,13 @@ recorder remain on Diktering. No settings-schema or database migration is added.
 
 - `component.transcription`: `crates/vara-core/src/transcription.rs` owns the
   document types, timing validation, export and separate SQLite store;
-  `desktop/src-tauri/src/transcription.rs` owns durable queue/control/publication.
+  `crates/vara-app/src/lib.rs` owns the single profile-locked queue, shared
+  submit/status/result/cancel operations, document state and publication;
+  `desktop/src-tauri/src/transcription.rs` supplies the Tauri adapter (dialogs,
+  clipboard, links, resource/credential callbacks and events). Request identity
+  and document acceptance share a SQLite transaction. The local IPC/backend and
+  CLI remain future work; the host callback retains the existing credential-worker
+  path and does not add a key-read command.
 - Rich recognition/media: `crates/vara-engine/src/{transcription,media}.rs` plus
   Redux/Whisper/cloud adapters. Redux returns actual runtime word times; Whisper
   currently returns segment times; OpenAI's selected speech route may return

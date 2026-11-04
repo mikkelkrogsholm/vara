@@ -957,7 +957,7 @@ Scenario IDs: `scenario.diagnostics.normal`.
 ### Import and control file jobs
 `action.file_import`
 
-**Input:** `paths`: list<string>; `engine`: engine ID.
+**Input:** `paths`: list<string>; `engine`: engine ID; `language`: string?; `request_id`: string?.
 
 **Output:** list<file_document ID>.
 
@@ -971,7 +971,7 @@ Validate an explicit batch and frozen model/language/locality, queue files, deco
 | --- | --- |
 | `Unavailable` | Source file unavailable or unsupported; leave source unchanged and show retry. |
 
-Scenario IDs: `scenario.file_import.authorization`, `scenario.file_import.boundaries`, `scenario.file_import.concurrency`, `scenario.file_import.atomicity`.
+Scenario IDs: `scenario.file_import.authorization`, `scenario.file_import.boundaries`, `scenario.file_import.concurrency`, `scenario.file_import.atomicity`, `scenario.file_import.idempotency`.
 
 ### Read edit export and delete file documents
 `action.file_document`
