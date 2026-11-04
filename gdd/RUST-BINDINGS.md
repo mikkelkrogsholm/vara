@@ -170,7 +170,7 @@ confirmation; the intermediate two-option modal has been removed.
 The connections view asynchronously queries metadata-only `key_status` for the
 listed providers. Stored, missing, loading and unavailable states are distinct.
 Saving/deleting a key refreshes its displayed presence and clears prior checks.
-OpenAI and Groq expose a direct Test nøgle action beside stored credentials,
+OpenAI and Groq expose a direct Test key action beside stored credentials,
 reusing the fixed-provider model-catalogue checks. Key setup also exposes that
 same test action. The native adapter, TLS policy and credential boundary are
 unchanged; no secret is returned to the UI.
@@ -184,7 +184,7 @@ updates preserve settings fields and keyboard focus.
 
 ## Settings v2 implementation (2026-10-24)
 
-`desktop/ui/views.js` implements Diktering, Modeller og nøgler and Privatliv per
+`desktop/ui/views.js` implements Dictation, Models and keys and Privacy per
 the accepted settings-v2 mockups and DESIGN.md §18. `desktopUi.settingsSection`,
 `modelSelect`/`modelLabel`, `processingChoice` and `policyRow` provide shared
 compositions; model feedback is reused by speech, general-text and app-text choices.
@@ -192,8 +192,8 @@ Model downloads, credential setup/test and CLI checks remain the existing native
 commands. Management retains all provider/model/custom-endpoint/CLI operations.
 
 The settings controller reads controls actually present on the current page into
-a clone of saved preferences. Both active model IDs now save on Diktering; strict
-locality and retention save on Privatliv. This preserves unrelated preferences,
+a clone of saved preferences. Both active model IDs now save on Dictation; strict
+locality and retention save on Privacy. This preserves unrelated preferences,
 custom engines and per-app rules. Conditional AI fields retain values in the DOM,
 while radios control only the saved enable flag. Missing-key setup can open over
 an unsaved model draft. Download/status events patch feedback without replacing
@@ -204,7 +204,7 @@ secret storage, history and delivery contracts are unchanged. Strict-local model
 choices visibly disable remote options and conflict explanations do not silently
 substitute models or weaken validation. First-use cloud preference now reaches
 the speech selector directly. Native permissions and the arbitrary-shortcut
-recorder remain on Diktering. No settings-schema or database migration is added.
+recorder remain on Dictation. No settings-schema or database migration is added.
 
 ## File transcription extension — 2026-10-25
 

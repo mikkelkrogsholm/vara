@@ -1,68 +1,68 @@
-# Groq — opdateret integration, 23. oktober 2026
+# Groq — integration update, October 23, 2026
 
-Groq var allerede til stede i grundkoden. Denne ændring færdiggør de relevante
-modelvalg, opdaterer tekstmodellens standard, tilføjer en nøgle/katalogkontrol og
-verificerer de rigtige HTTP-forespørgsler med en lokal server.
+Groq was already present in the codebase. This change completes the relevant model
+choices, updates the default text model, adds a key/catalog check and verifies the
+actual HTTP requests with a local server.
 
-## Brug i appen
+## Using it in the app
 
-1. Genstart den opdaterede app. Åbn **Indstillinger → Forbindelser → Groq →
-   Administrer nøgle**. Indtast din egen Groq-nøgle og vælg **Gem nøgle**.
-2. Åbn nøgle-dialogen igen og vælg **Kontrollér adgang**, hvis du vil kontrollere
-   nøglens accept og om de konfigurerede modeller findes i modelkataloget.
-3. Vælg **Groq · Whisper Turbo** eller **Groq · Whisper Large-v3** under
-   **Behandling af lyd**, og gem indstillingerne for at bruge Groq til tale.
-4. Til valgfri AI-bearbejdning vælges **Groq · GPT-OSS 120B** i generelle
-   AI-indstillinger eller i en appregel. At gemme en nøgle slår ikke cloud eller AI til.
+1. Restart the updated app. Open **Settings → Connections → Groq → Manage key**.
+   Enter your own Groq key and choose **Save key**.
+2. Open the key dialog again and choose **Check access** to check whether the key
+   is accepted and the configured models exist in the model catalog.
+3. Select **Groq · Whisper Turbo** or **Groq · Whisper Large-v3** under audio
+   processing and save settings to use Groq for speech.
+4. For optional AI processing select **Groq · GPT-OSS 120B** in general AI
+   settings or an app rule. Saving a key does not enable cloud or AI.
 
-Redux er fortsat standard for nye profiler. Cloudvalget fremgår af sidebjælken.
-Streng lokal tilstand afviser også Groq. Direkte transskription og historikregler
-ændres ikke. API-nøglen gemmes i OS-nøglelageret, aldrig i historik eller UI-snapshot.
+Redux remains the default for new profiles. The cloud choice appears in the sidebar.
+Strict local mode also rejects Groq. Direct transcription and history rules do not
+change. The API key is stored in the OS key store, never in history or a UI snapshot.
 
-Gemte modelnavne bevares. Hvis en ældre profil stadig har en udgået Groq-tekstmodel,
-kan den ændres under **Modeller og egne endpoints**; adgangskontrollen viser, hvis
-modelnavnet mangler i kataloget.
+Saved model names are preserved. If an older profile still has a discontinued Groq
+text model, it can be changed under **Models and custom endpoints**; the access check
+shows if the model name is missing from the catalog.
 
-## Modeller og API
+## Models and API
 
-- Tale: `whisper-large-v3-turbo` og `whisper-large-v3` på Groqs faste
-  `/openai/v1/audio/transcriptions`-endpoint, multipart WAV, Bearer-auth, valgfrit
-  sprog, JSON-svar og temperatur 0.
-- Tekst: ny standard `openai/gpt-oss-120b` på `/openai/v1/chat/completions`.
-  Systemprompt og transskription sendes som adskilte beskeder. Reasoning holdes ude
-  af svaret; lav reasoning effort og en udtrykkelig token-grænse anvendes.
-- Adgangskontrol: kun `GET /openai/v1/models` med den gemte nøgle. Ingen lyd eller
-  transskription sendes. Katalogtilstedeværelse er ikke en faktisk
-  transskriptionstest eller garanti for modeltilladelser, kvote og betaling.
+- Speech: `whisper-large-v3-turbo` and `whisper-large-v3` on Groq's fixed
+  `/openai/v1/audio/transcriptions` endpoint, multipart WAV, Bearer auth, optional
+  language, JSON response and temperature 0.
+- Text: new default `openai/gpt-oss-120b` on `/openai/v1/chat/completions`.
+  System prompt and transcript are sent as separate messages. Reasoning is kept
+  out of the response; low reasoning effort and an explicit token limit are used.
+- Access check: only `GET /openai/v1/models` with the saved key. No audio or
+  transcript is sent. Catalog presence is not a real transcription test or a
+  guarantee of model permissions, quota or billing.
 
-Den tidligere standard `llama-3.3-70b-versatile` er ifølge Groq udgået for almindelige
-konti. Kilder kontrolleret den 23. oktober 2026:
+According to Groq, the previous default `llama-3.3-70b-versatile` is discontinued
+for ordinary accounts. Sources checked October 23, 2026:
 [Speech to Text](https://console.groq.com/docs/speech-to-text),
 [deprecations](https://console.groq.com/docs/deprecations),
 [GPT-OSS 120B](https://console.groq.com/docs/model/openai/gpt-oss-120b),
-[reasoning-format](https://console.groq.com/docs/reasoning).
+[reasoning format](https://console.groq.com/docs/reasoning).
 
-## Verifikation
+## Verification
 
-**24 Rust-tests består**: 11 domæne-/lagringstests, 7 model-/integritetstests og 6
-nye lokale HTTP-kontrakttests. Sidstnævnte kontrollerer:
+**24 Rust tests pass**: 11 domain/storage tests, 7 model/integrity tests and 6 new
+local HTTP contract tests. The latter check:
 
-- Rigtig multipart-lydforespørgsel, model, sprog, fil og Authorization-header.
-- Rigtig tekst-JSON med systemprompt og kun den færdige tekst som resultat.
-- Ufuldstændigt AI-svar bliver en fejl, så originalteksten kan bruges.
-- 401/429-fejl giver brugbare beskeder uden at gengive upstream-fejl eller nøgler.
-- Katalogkontrollen sender en GET uden lyd-/tekst-body.
-- Accepteret annullering afbryder en afventende cloud-forespørgsel.
+- Correct multipart audio request, model, language, file and Authorization header.
+- Correct text JSON with system prompt and only the finished text as result.
+- An incomplete AI response becomes an error so the original text can be used.
+- 401/429 errors produce useful messages without reproducing upstream errors or keys.
+- The catalog check sends a GET without an audio/text body.
+- Accepted cancellation interrupts a pending cloud request.
 
-**12 UI-testgrupper består**, inklusive Groq-nøgle, adgangssvar/adgangsfejl,
-hemmelig inputryddelse, begge talemodelvalg og eksplicit cloudvalg. Testnøglen er
-fiktiv og bruges kun mod en lokal server/IPC-fixture. Release-bundle er bygget til
-Mac uden test-harness. GDD-model og grafvalidering består.
+**12 UI test groups pass**, including Groq key, access response/error, secret input
+clearing, both speech model choices and explicit cloud selection. The test key is
+fictional and used only against a local server/IPC fixture. A release bundle was
+built for Mac without the test harness. GDD model and graph validation pass.
 
-## Begrænsninger
+## Limitations
 
-Ingen rigtig Groq-nøgle er læst eller brugt, og ingen lyd er sendt til Groq under
-arbejdet. Live-konto, latency/kvalitet og den nye native UI er derfor ikke
-slutverificeret. Brugerens tidligere ønske om at fortsætte uden native UI-kontrol
-er respekteret. Den ekstra real-weight Redux-test var allerede bestået ved den
-foregående integration; den er ikke gentaget for denne cloudændring.
+No real Groq key was read or used and no audio was sent to Groq during this work.
+Live account, latency/quality and the new native UI therefore lack final verification.
+The user's earlier request to continue without native UI checks was respected. The
+extra real-weight Redux test had already passed during the previous integration; it
+was not repeated for this cloud change.

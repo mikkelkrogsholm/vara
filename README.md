@@ -1,153 +1,153 @@
 <div align="center">
 
-<img src="desktop/src-tauri/icons/icon.png" width="88" height="88" alt="Vara — lys lydbølge på olivengrøn baggrund">
+<img src="desktop/src-tauri/icons/icon.png" width="88" height="88" alt="Vara — a light sound wave on an olive green background">
 
 # Vara
 
-### Fra tanke til tekst. Bare tal.
+### From thought to text. Just speak.
 
-Diktér dér, hvor du arbejder. Gør optagelser til tekst, du kan bruge.Med lokal behandling som udgangspunkt og AI, når du ønsker det.
+Dictate wherever you work. Turn recordings into text you can use. Local processing by default, with AI whenever you want it.
 
-**Din stemme · Din arbejdsgang · Dit valg**
+**Your voice · Your workflow · Your choice**
 
-[Kom i gang](#kom-i-gang) · [Se funktionerne](#plads-til-det-du-vil-sige) · [For udviklere](#bygget-til-at-vokse)
+[Get started](#get-started) · [Explore the features](#room-for-what-you-want-to-say) · [For developers](#built-to-grow)
 
 </div>
 
 <br>
 
-![Varas transskriberingsfane med talernavne, ordmarkering og afspilning](gdd/reports/transcription/editor.png)
+![Vara's transcription tab with speaker names, word highlighting and playback](gdd/reports/transcription/editor.png)
 
-<div align="center"><sub>Et roligt arbejdsrum til din stemme. Her vist med eksempeldata fra appens UI-test.</sub></div>
+<div align="center"><sub>A calm workspace for your voice. Shown here with sample data from the app's UI tests.</sub></div>
 
 <br>
 
-## Plads til det, du vil sige
+## Room for what you want to say
 
-En mail, der skal af sted. En idé, du ikke vil miste. Et interview, du skal arbejde videre med. Vara hjælper dig fra tale til tekst uden at gøre værktøjet til hovedpersonen.
+An email to send. An idea you don't want to lose. An interview to work through. Vara helps you move from speech to text without letting the tool take centre stage.
 
-### Hold. Tal. Slip.
+### Hold. Speak. Release.
 
-Hold din valgte genvej nede, sig det, du vil skrive, og slip. Vara transskriberer og indsætter teksten i det aktive tekstfelt, så du kan blive i din arbejdsgang.
+Hold down your chosen shortcut, say what you want to write, and release it. Vara transcribes and inserts the text into the active text field, so you can stay in your flow.
 
-Du vælger selv genvejen — også enkelte taster eller kombinationer af modifikationstaster. Foretrækker du at slå optagelse til og fra, kan du vælge det i stedet.
+You choose the shortcut — including individual keys or combinations of modifier keys. If you prefer to toggle recording on and off, you can choose that instead.
 
-- **Skriv i dine apps.** Brug stemmen til mails, noter, beskeder og andre tekstfelter.
-- **Bevar kontrollen.** Skifter fokus undervejs, ligger teksten klar til manuel indsættelse.
-- **Find det igen.** Dikteringer gemmes og grupperes efter den app, du brugte.
-- **Behold din udklipsholder.** Automatisk indsættelse bevarer det, du allerede havde kopieret.
+- **Write in your apps.** Use your voice for emails, notes, messages and other text fields.
+- **Stay in control.** If focus changes along the way, your text is ready to insert manually.
+- **Find it again.** Dictations are saved and grouped by the app you used.
+- **Keep your clipboard.** Automatic insertion preserves what you had already copied.
 
-### Fra optagelse til overblik
+### From recording to clarity
 
-Tilføj lyd- eller videofiler i **Transskribering**, vælg model, og lad Vara tage dem i kø. Lyt, læs og ret i samme arbejdsrum.
+Add audio or video files in **Transcription**, choose a model, and let Vara queue them up. Listen, read and edit in the same workspace.
 
-| Det vil du gøre | Det hjælper Vara med |
+| What you want to do | How Vara helps |
 | --- | --- |
-| Finde et bestemt øjeblik | Klik på ord eller tidskoder for at lytte dér, når modellen leverer tidskoder. |
-| Høre en passage igen | Markér en passage, og afspil den. |
-| Se, hvem der taler | Brug valgfri lokal taleropdeling med **Who**, og giv talerne navne. |
-| Rette teksten | Redigér med automatisk lagring, mens originalen bevares. |
-| Arbejde videre et andet sted | Eksportér som TXT, Markdown, JSON eller undertekster i SRT, når tidskoder findes. |
+| Find a particular moment | Click words or timestamps to listen from that point when the model provides timestamps. |
+| Hear a passage again | Select a passage and play it back. |
+| See who's speaking | Use optional local speaker diarization with **Who**, and give speakers names. |
+| Correct the text | Edit with automatic saving while the original is preserved. |
+| Continue working elsewhere | Export as TXT, Markdown, JSON or SRT subtitles when timestamps are available. |
 
-Who finder stemmer i optagelsen; du sætter selv navn på personerne. Korte optagelser og vanskelig lyd kan give manglende eller usikker taleropdeling.
+Who identifies voices in a recording; you name the people yourself. Short recordings and difficult audio can result in missing or uncertain speaker diarization.
 
-### Din tekst. Med eller uden AI.
+### Your text. With or without AI.
 
-Direkte transskription er standard. Nogle gange er det præcis dét, du har brug for. Andre gange skal talen blive til en kort mail, et mere læsbart notat eller en tekst med en bestemt tone.
+Direct transcription is the default. Sometimes that's exactly what you need. At other times, you want to turn speech into a short email, a more readable note or text with a particular tone.
 
-Slå AI-bearbejdning til, når du ønsker det, eller knyt en fast systemprompt til en bestemt app. Vara viser den færdige tekst først og gemmer også originalen, så du kan se, hvad der er ændret.
+Turn on AI processing whenever you want, or assign a fixed system prompt to a specific app. Vara shows the finished text first and also saves the original, so you can see what changed.
 
-Brug eksempelvis **Qwen gennem Ollama** lokalt, eller forbind en cloududbyder med din egen API-nøgle. Talegenkendelse og tekstbearbejdning vælges hver for sig.
+For example, use **Qwen through Ollama** locally, or connect a cloud provider with your own API key. Speech recognition and text processing are selected separately.
 
-## Lokalt som udgangspunkt
+## Local by default
 
-Vara starter med lokal talegenkendelse. Du henter modellen én gang, og derefter behandles lyden på din computer. **Parakeet Redux** er standard; **Whisper Base** er et lokalt alternativ.
+Vara starts with local speech recognition. Download the model once, and your audio is then processed on your computer. **Parakeet Redux** is the default; **Whisper Base** is a local alternative.
 
-Vil du bruge cloud, kan du vælge blandt andet **OpenAI**, **Groq** eller dit eget endpoint. Du bruger dine egne nøgler og din egen udbyderkonto. Der er ingen Vara-konto eller Vara-abonnement at oprette.
+If you want to use the cloud, you can choose **OpenAI**, **Groq** or your own endpoint, among others. You use your own keys and provider account. There is no Vara account or subscription to set up.
 
-- **Nøgler i systemets nøglelager.** Appen viser, om en nøgle er gemt, og lader dig teste forbindelsen.
-- **Historik på din computer.** Behold dikteringer, indtil du sletter dem, eller vælg automatisk oprydning.
-- **Kort levetid for dikteringslyd.** Lyd slettes efter vellykket transskription. Ved fejl beholdes den til genprøvning i højst 24 timer.
-- **Afspilning af importerede filer.** Vara beholder en privat lydkopi, indtil du sletter dokumentet. Dine kildefiler ændres ikke.
+- **Keys in the system keychain.** The app shows whether a key is saved and lets you test the connection.
+- **History on your computer.** Keep dictations until you delete them, or choose automatic cleanup.
+- **Short-lived dictation audio.** Audio is deleted after successful transcription. If transcription fails, it is kept for retry for up to 24 hours.
+- **Playback of imported files.** Vara keeps a private audio copy until you delete the document. Your source files are not changed.
 
 <details>
-<summary><strong>Hvad forlader computeren?</strong></summary>
+<summary><strong>What leaves your computer?</strong></summary>
 
-Ved lokal talegenkendelse sendes lyden ikke til en transskriptionstjeneste. Vælger du cloud til tale eller tekst, sendes det relevante indhold til den valgte udbyder.
+With local speech recognition, audio is not sent to a transcription service. If you choose the cloud for speech or text, the relevant content is sent to your chosen provider.
 
-Who kører også lokalt. Varas tilpassede udgave af leverandørens SDK sender dog et installations-id samt app-, model- og platformoplysninger til sin licenstjeneste. Det sender ikke lyd eller transskriptionstekst. Det oplyses i appen før download og brug. Who har sin egen leverandørlicens.
+Who also runs locally. However, Vara's adapted version of the vendor's SDK sends an installation ID and app, model and platform information to its licensing service. It does not send audio or transcription text. This is disclosed in the app before download and use. Who has its own vendor licence.
 
 </details>
 
-## Kom i gang
+## Get started
 
-**Vara er i aktiv udvikling. Den nuværende app er bygget og afprøvet på macOS.** En offentlig downloadpakke og automatiske opdateringer er endnu ikke klar.
+**Vara is in active development. The current app is built and tested on macOS.** A public download package and automatic updates are not ready yet.
 
-Har du allerede appen installeret:
+If you already have the app installed:
 
-1. **Åbn Vara.** Vælg lokal talegenkendelse og hent modellen, eller forbind en cloududbyder.
-2. **Vælg din genvej.** Giv macOS de nødvendige tilladelser til mikrofon, globale genveje og indsættelse.
-3. **Prøv din første diktering.** Åbn et tekstfelt i en app, hold genvejen nede, tal og slip.
+1. **Open Vara.** Choose local speech recognition and download the model, or connect a cloud provider.
+2. **Choose your shortcut.** Grant macOS the necessary permissions for the microphone, global shortcuts and insertion.
+3. **Try your first dictation.** Open a text field in an app, hold down the shortcut, speak and release.
 
-Til længere optagelser: Åbn **Transskribering**, tilføj dine filer, og start transskriptionen.
+For longer recordings: Open **Transcription**, add your files and start transcription.
 
 | Platform | Status |
 | --- | --- |
-| **macOS** | Den aktive og afprøvede desktopversion. macOS 13+; Who kræver macOS 15+. |
-| **Windows og Linux** | Planlagte desktopmål. Native integration, pakning og sluttest mangler. |
-| **iOS og Android** | Mulig senere udvidelse med den fælles Rust-motor. Ingen mobilapp endnu. |
+| **macOS** | The active and tested desktop version. macOS 13+; Who requires macOS 15+. |
+| **Windows and Linux** | Planned desktop targets. Native integration, packaging and final testing are still needed. |
+| **iOS and Android** | Possible future expansion using the shared Rust engine. No mobile app yet. |
 
-På macOS kan agenter bruge den pakkede `vara`-kommando; se [CLI-vejledningen](CLI.md) for installation og eksempler.
+On macOS, agents can use the bundled `vara` command; see the [CLI guide](CLI.md) for installation and examples.
 
-Appen signeres med Apple Developer ID, men er endnu ikke notariseret. Filunderstøttelsen afhænger af format og codec; en separat installeret FFmpeg kan udvide den. Se [aktuel status](IMPLEMENTATION.md) og [udgivelsesvejledningen](RELEASING.md).
+The app is signed with Apple Developer ID, but is not yet notarized. File support depends on the format and codec; a separately installed FFmpeg can extend it. See the [current status](IMPLEMENTATION.md) and [release guide](RELEASING.md).
 
-## Bygget til at vokse
+## Built to grow
 
-Vara har en fælles kerne og motor i **Rust**, en **Tauri**-desktopapp og klare **GDD-kontrakter** mellem modulerne. Talegenkendelse, tekstbearbejdning og platformfunktioner kan udvikles hver for sig. Kernen og motoren afhænger ikke af desktopgrænsefladen.
+Vara has a shared core and engine in **Rust**, a **Tauri** desktop app and clear **GDD contracts** between modules. Speech recognition, text processing and platform features can be developed independently. The core and engine do not depend on the desktop interface.
 
 <details>
-<summary><strong>Byg og kør selv</strong></summary>
+<summary><strong>Build and run it yourself</strong></summary>
 
-Installér projektets fastlåste Rust-toolchain, CMake, en native C/C++-toolchain og Tauri 2's platformforudsætninger. På Mac kræves Xcode-kommandolinjeværktøjerne; Who-runtime kræver Swift 6.2+. Den signerede Mac-pakke kræver et installeret Developer ID-certifikat.
+Install the project's pinned Rust toolchain, CMake, a native C/C++ toolchain and the Tauri 2 platform prerequisites. On Mac, Xcode command-line tools are required; the Who runtime requires Swift 6.2+. The signed Mac package requires an installed Developer ID certificate.
 
 ```sh
 cargo install tauri-cli --locked
 cargo tauri dev
 ```
 
-Kør tests og byg den signerede macOS-app:
+Run tests and build the signed macOS app:
 
 ```sh
 CARGO_INCREMENTAL=0 CARGO_PROFILE_RELEASE_DEBUG=0 cargo test --release --workspace --locked
 sh scripts/build-desktop-macos.sh
 ```
 
-Appen bygges i `target/release/bundle/macos/Vara.app`. Følg [desktopvejledningen](desktop/README.md) for opsætning, modeller og tilladelser.
+The app is built at `target/release/bundle/macos/Vara.app`. Follow the [desktop guide](desktop/README.md) for setup, models and permissions.
 
 </details>
 
 <details>
-<summary><strong>Find rundt i projektet</strong></summary>
+<summary><strong>Explore the project</strong></summary>
 
-| Mappe | Ansvar |
+| Directory | Responsibility |
 | --- | --- |
-| `crates/vara-core` | Domæne, indstillinger og lagring |
-| `crates/vara-engine` | Lokale modeller, transskription og udbydere |
-| `crates/vara-platform` | Lyd, nøgler, genveje og indsættelse |
-| `desktop` | Desktopapp, brugerflade og pakning |
-| `gdd` | Produktspecifikation, kontrakter, design og testresultater |
-| `scripts` | Build, designsynkronisering og modelmålinger |
+| `crates/vara-core` | Domain, settings and storage |
+| `crates/vara-engine` | Local models, transcription and providers |
+| `crates/vara-platform` | Audio, keys, shortcuts and insertion |
+| `desktop` | Desktop app, interface and packaging |
+| `gdd` | Product specification, contracts, design and test results |
+| `scripts` | Build, design synchronization and model measurements |
 
-Designets kilder ligger i `gdd/design`. Den tidligere Swift-app findes kun i Git-historikken; Rust/Tauri-versionen er den aktive app.
+Design sources are in `gdd/design`. The earlier Swift app exists only in Git history; the Rust/Tauri version is the active app.
 
 </details>
 
-[Produktspecifikation](gdd/PRODUCT-SPEC.md) · [Design](gdd/DESIGN.md) · [Kontrakter](gdd/CONTRACTS.md) · [Test af transskription](gdd/reports/transcription/README.md) · [Test af Who](gdd/reports/who/README.md)
+[Product specification](gdd/PRODUCT-SPEC.md) · [Design](gdd/DESIGN.md) · [Contracts](gdd/CONTRACTS.md) · [Transcription tests](gdd/reports/transcription/README.md) · [Who tests](gdd/reports/who/README.md)
 
 ---
 
 <div align="center">
 
-**Mindre afstand mellem det, du tænker, og det, du skriver.**
+**Less distance between what you think and what you write.**
 
 </div>

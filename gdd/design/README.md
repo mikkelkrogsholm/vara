@@ -7,7 +7,7 @@ ES-module imports are intentionally avoided so `file://` remains supported.
 The reference is [the selected first mockup](mockups/01-warm-precision.png).
 [DESIGN.md](../DESIGN.md) owns the design system. This is a clickable simulation:
 no real microphone, global shortcut, provider, persistent history or clipboard
-integration. Fixture data resets on reload. Use **Afprøv forløb** in the unobtrusive
+integration. Fixture data resets on reload. Use **Try flows** in the unobtrusive
 prototype footer for simulated dictation, first use, empty history and long content.
 
 ## Ownership and component structure
@@ -70,8 +70,8 @@ real controls and layout, not a screenshot background.
 
 The default original disclosure is collapsed according to DESIGN.md. The comparison
 screenshot opens it and starts a simulated listening session to match the reference
-state. Initial HUD says “Klar · Eksempel”; it never claims an actual microphone is
-listening. Counts say “dikteringer”, not stored recordings. Dates and outcomes are
+state. The initial HUD indicates a ready example; it never claims an actual microphone is
+listening. Counts refer to dictations rather than stored recordings. Dates and outcomes are
 fixtures. Modern native Mail/Notes artwork differs slightly from the generated
 reference; code-app artwork is a small illustrative vector. Mail/Notes PNGs were
 materialized from the local installed app resources for this prototype.
