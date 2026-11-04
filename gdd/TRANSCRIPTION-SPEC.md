@@ -172,11 +172,11 @@ bevares. Usikre passager tælles ikke som en person.
 
 ## Fælles filjobgrænse — 2026-11-04
 
-Desktop og en kommende lokal backend skal dele én `vara-app::Files`-ejer pr.
+På macOS deler desktop og den lokale backend én `vara-app::Files`-ejer pr.
 profil. Ejeren låser profilen, ejer køen, dokumentlisten og publiceringen og
-bruger den eksisterende fil-SQLite og mediemappe. Desktop er adapter for
-filvælger, clipboard, eksportdialog, links, ressourcesti, legitimationsopslag og
-UI-events. Det eksisterende dokumentformat og redigering, AI, Who, afspilning og
+bruger den eksisterende fil-SQLite og mediemappe. Desktop er adapter for filvælger, clipboard, eksportdialog, links og UI-events;
+backend ejer ressourcesti og legitimationsopslag. Windows og øvrige platforme
+beholder den eksisterende in-process adapter; deres lokale transport er ikke leveret. Det eksisterende dokumentformat og redigering, AI, Who, afspilning og
 eksport bevares. En separat CLI-database eller konkurrerende kø er ikke tilladt.
 
 Den fælles Rust-grænse tilbyder `submit`, `status`, `result` og `cancel`.
@@ -197,14 +197,20 @@ symlink-mål. Samme ID og identitet giver den oprindelige kvittering, også efte
 at kilden er fjernet; ændrede parametre giver `file.request_conflict`.
 Accept og requestregistrering committes atomisk, før kvittering/publicering.
 Sletning af dokumentet sletter også registreringen; derefter kan ID'et bruges
-på ny. En klient, som indsender en relativ sti over fremtidig IPC, skal gøre den
+på ny. En klient, som indsender en relativ sti over IPC, skal gøre den
 absolut i klientens eget arbejdskatalog, inden den sendes til backend.
 
 Ved genstart markeres alle afbrudte ikke-terminale jobs Failed med den
 versionerede `file.interrupted`-årsag; de køres ikke automatisk igen. En
-forbindelse eller ventende klient ejer ikke et accepteret jobs levetid. Den
-fremtidige lokale transport skal give status/ventning og eventopdateringer fra
-samme ejer, lade forbindelsestab afslutte alene ventningen og understøtte
-resultat/eksport med de eksisterende format- og timingbegrænsninger. Denne
-leverance implementerer hverken lokal transport, CLI, agent-JSON eller
-automatisk Who som submit-option; disse dele må ikke fremstilles som leveret.
+forbindelse eller ventende klient ejer ikke et accepteret jobs levetid. Mac-
+transporten er en versioneret Unix-domain-socket begrænset til samme OS-bruger,
+med én låst backend pr. profil og automatisk opstart i en separat procesgruppe,
+så klientens Ctrl-C ikke afbryder backend. Desktop følger instans og
+revision og genindlæser ved ændringer; seneste fejlmeddelelse vises højst én
+gang pr. instans og revision. Aktiv AI og Who samt Who-download kan ses og
+annulleres efter GUI-genforbindelse. Lukkes GUI'en, fortsætter accepteret arbejde;
+backend stopper normalt efter 60 sekunders inaktivitet uden klienter eller jobs.
+Framing er tidsbegrænset, men ventetid på AI/Who er ikke en jobdeadline.
+Backend læser profilens gemte indstillinger og holder nøgler hos den betroede
+worker; den eksponerer ikke en generel invoke- eller secret-grænse. CLI,
+agent-JSON og automatisk Who som submit-option er endnu ikke leveret.

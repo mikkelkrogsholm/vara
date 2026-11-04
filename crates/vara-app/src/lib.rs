@@ -265,7 +265,7 @@ impl Files {
             "file_list" => {
                 let i = self.inner.lock();
                 return Ok(
-                    json!({"documents":i.documents.iter().map(|d| { let mut value=serde_json::to_value(d).unwrap(); value["speaker_transcript"]=i.speaker_transcripts.get(&d.id).map(|t|serde_json::to_value(t).unwrap()).unwrap_or(Value::Null); value["who_busy"]=json!(i.cancel.contains_key(&format!("who:{}",d.id))); value }).collect::<Vec<_>>(),"media":i.documents.iter().filter(|d|self.path(&d.id).is_file()).map(|d|(d.id.clone(),self.path(&d.id).to_string_lossy().to_string())).collect::<BTreeMap<_,_>>()}),
+                    json!({"documents":i.documents.iter().map(|d| { let mut value=serde_json::to_value(d).unwrap(); value["speaker_transcript"]=i.speaker_transcripts.get(&d.id).map(|t|serde_json::to_value(t).unwrap()).unwrap_or(Value::Null); value["who_busy"]=json!(i.cancel.contains_key(&format!("who:{}",d.id))); value["ai_busy"]=json!(i.cancel.contains_key(&format!("ai:{}",d.id))); value }).collect::<Vec<_>>(),"who_download_busy":i.cancel.contains_key("who:download"),"media":i.documents.iter().filter(|d|self.path(&d.id).is_file()).map(|d|(d.id.clone(),self.path(&d.id).to_string_lossy().to_string())).collect::<BTreeMap<_,_>>()}),
                 );
             }
             "file_who_status" => {
@@ -685,6 +685,7 @@ impl Files {
                     }
                     i.cancel.insert(tag.clone(), c.clone());
                 }
+                self.emit();
                 let work = (|| {
                     let key = (self.host.secret)(&engine)?;
                     let plan = TextPlan {

@@ -77,7 +77,10 @@ writes may have completed and must be checked before repeating. See the
 
 `vara-core::transcription` defines file documents, timing validation, export and a
 separate document store. `vara-engine::{media,transcription}` decode and recognize
-files. The host queue lives in `src-tauri/src/transcription.rs`; its UI composition
+files. The profile-locked queue lives in `vara-app`; on Mac the local backend owns it
+and the Tauri file adapter connects through a same-user Unix socket. Other
+platforms retain the in-process adapter. The backend exits after 60 seconds idle
+without clients or jobs; closing the GUI does not cancel accepted jobs. Its UI composition
 and controller are in `ui/transcription.js` using existing shared primitives and
 model readiness components. Transcription media is exposed only through a scoped
 native asset protocol; unrelated files are outside that playback scope.

@@ -14,5 +14,9 @@ fn main() {
     if vara_desktop::local_backend::worker_entry() {
         return;
     }
+    #[cfg(all(feature = "test-harness", target_os = "macos"))]
+    if vara_desktop::run_native_file_fixture() {
+        return;
+    }
     vara_desktop::run()
 }

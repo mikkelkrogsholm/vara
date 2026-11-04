@@ -68,6 +68,7 @@ pub enum Operation {
     },
     WhoCancel {
         id: Option<String>,
+        #[serde(default)]
         download: bool,
     },
 }
@@ -129,7 +130,7 @@ mod mac {
         },
         time::{Duration, Instant},
     };
-    const MAX_REQUEST: usize = 8 * 1024 * 1024;
+    const MAX_REQUEST: usize = 32 * 1024 * 1024;
     const MAX_RESPONSE: usize = 128 * 1024 * 1024;
     const TIMEOUT: Duration = Duration::from_secs(30);
     const IDLE: Duration = Duration::from_secs(60);
@@ -280,8 +281,35 @@ mod mac {
         Ok(())
     }
     fn read_frame(s: &mut UnixStream, limit: usize) -> Result<Vec<u8>, String> {
-        let deadline = Instant::now() + TIMEOUT;
+        read_frame_wait(s, limit, false)
+    }
+    // Long operations may run for minutes; the frame deadline starts only once
+    // the first response byte arrives. Cancellation uses a separate connection.
+    fn read_frame_wait(
+        s: &mut UnixStream,
+        limit: usize,
+        wait_for_work: bool,
+    ) -> Result<Vec<u8>, String> {
         let mut header = [0; 4];
+        if wait_for_work {
+            loop {
+                let mut fd = libc::pollfd {
+                    fd: s.as_raw_fd(),
+                    events: libc::POLLIN,
+                    revents: 0,
+                };
+                let n = unsafe { libc::poll(&mut fd, 1, -1) };
+                if n > 0 {
+                    break;
+                }
+                if n < 0
+                    && std::io::Error::last_os_error().kind() != std::io::ErrorKind::Interrupted
+                {
+                    return Err(err("backend.transport"));
+                }
+            }
+        }
+        let deadline = Instant::now() + TIMEOUT;
         read_exact_until(s, &mut header, deadline)?;
         let len = u32::from_be_bytes(header) as usize;
         if len == 0 || len > limit {
@@ -555,6 +583,16 @@ mod mac {
                 secret: Box::new(|engine| {
                     #[cfg(feature = "test-harness")]
                     if std::env::var_os("VARA_TEST_BACKEND_NO_SECRET").is_some() {
+                        let delay = if engine.kind == vara_core::EngineKind::Text {
+                            "VARA_TEST_BACKEND_DELAY_TEXT_MS"
+                        } else {
+                            "VARA_TEST_BACKEND_DELAY_SECRET_MS"
+                        };
+                        if let Ok(ms) = std::env::var(delay) {
+                            if let Ok(ms) = ms.parse::<u64>() {
+                                std::thread::sleep(Duration::from_millis(ms.min(45_000)));
+                            }
+                        }
                         return Ok(None);
                     }
                     crate::service::engine_secret(engine)
@@ -629,7 +667,9 @@ mod mac {
         let mut stream = match connect(&socket) {
             Ok(s) => s,
             Err(e) if e == "backend.unavailable" => {
+                use std::os::unix::process::CommandExt;
                 let mut child = std::process::Command::new(executable)
+                    .process_group(0)
                     .arg("--vara-internal-file-worker")
                     .arg(&root)
                     .stdin(std::process::Stdio::null())
@@ -655,13 +695,17 @@ mod mac {
             }
             Err(e) => return Err(e),
         };
+        let wait_for_work = matches!(
+            &operation,
+            Operation::Ai { .. } | Operation::Who { .. } | Operation::WhoDownload { .. }
+        );
         let data = serde_json::to_vec(&Request {
             version: VERSION,
             operation,
         })
         .map_err(|_| err("backend.malformed"))?;
         write_frame(&mut stream, &data, MAX_REQUEST)?;
-        let bytes = read_frame(&mut stream, MAX_RESPONSE)?;
+        let bytes = read_frame_wait(&mut stream, MAX_RESPONSE, wait_for_work)?;
         let response: Response =
             serde_json::from_slice(&bytes).map_err(|_| err("backend.response_invalid"))?;
         if response.version != VERSION {
@@ -739,6 +783,97 @@ mod mac {
             w.extend_from_slice(&(samples.len() as u32).to_le_bytes());
             w.extend_from_slice(&samples);
             fs::write(path, w).unwrap();
+        }
+        #[test]
+        fn signal_client_process() {
+            let Some(root) = std::env::var_os("VARA_TEST_SIGNAL_PROFILE") else {
+                return;
+            };
+            let response = invoke(
+                Path::new(&root),
+                Operation::Submit {
+                    request: vara_app::SubmitRequest {
+                        source: PathBuf::from(std::env::var_os("VARA_TEST_SIGNAL_SOURCE").unwrap()),
+                        engine_id: "openai.speech".into(),
+                        language: None,
+                        request_id: Some("signal-test".into()),
+                    },
+                },
+            );
+            assert!(response.error.is_none());
+            fs::write(
+                std::env::var_os("VARA_TEST_SIGNAL_OUTPUT").unwrap(),
+                serde_json::to_vec(&response).unwrap(),
+            )
+            .unwrap();
+            loop {
+                std::thread::park();
+            }
+        }
+        #[test]
+        fn client_group_sigint_does_not_interrupt_backend_job() {
+            use std::os::unix::process::{CommandExt, ExitStatusExt};
+            let temp = tempfile::tempdir().unwrap();
+            let root = temp.path().join("profile");
+            fs::create_dir(&root).unwrap();
+            let source = temp.path().join("signal.wav");
+            wav(&source);
+            let receipt = temp.path().join("receipt.json");
+            let mut command = std::process::Command::new(std::env::current_exe().unwrap());
+            command
+                .process_group(0)
+                .args([
+                    "--exact",
+                    "local_backend::mac::tests::signal_client_process",
+                    "--nocapture",
+                ])
+                .env("VARA_TEST_SIGNAL_PROFILE", &root)
+                .env("VARA_TEST_SIGNAL_SOURCE", &source)
+                .env("VARA_TEST_SIGNAL_OUTPUT", &receipt)
+                .env("VARA_TEST_BACKEND_DELAY_SECRET_MS", "6000")
+                .stdin(std::process::Stdio::null())
+                .stdout(std::process::Stdio::null())
+                .stderr(std::process::Stdio::null());
+            configure(&mut command);
+            let mut client = command.spawn().unwrap();
+            let deadline = Instant::now() + Duration::from_secs(15);
+            while !receipt.exists() {
+                assert!(
+                    client.try_wait().unwrap().is_none(),
+                    "fixture client exited early"
+                );
+                assert!(Instant::now() < deadline);
+                std::thread::sleep(Duration::from_millis(25));
+            }
+            let response: Response = serde_json::from_slice(&fs::read(&receipt).unwrap()).unwrap();
+            let instance = response.instance;
+            let id = response.result.unwrap()["job_id"]
+                .as_str()
+                .unwrap()
+                .to_owned();
+            assert_eq!(
+                unsafe { libc::kill(-(client.id() as i32), libc::SIGINT) },
+                0
+            );
+            assert_eq!(client.wait().unwrap().signal(), Some(libc::SIGINT));
+            loop {
+                let status = invoke(&root, Operation::Status { id: id.clone() });
+                assert_eq!(status.instance, instance, "backend died with client group");
+                let doc = status.result.unwrap();
+                if doc["stage"] == "failed" {
+                    assert_eq!(
+                        vara_core::UserMessage::decode(doc["error"].as_str().unwrap())
+                            .unwrap()
+                            .code,
+                        "provider.missing_key"
+                    );
+                    break;
+                }
+                assert_ne!(doc["stage"], "cancelled");
+                assert!(Instant::now() < deadline);
+                std::thread::sleep(Duration::from_millis(50));
+            }
+            wait_stopped(&root);
         }
         #[test]
         fn processes_socket_lifecycle_and_isolation() {
@@ -911,7 +1046,7 @@ mod mac {
             d.stage = vara_core::FileStage::Transcribing;
             d.diarization_error = Some("secret-private-response".into());
             d.engine.endpoint = Some("https://example.invalid/?key=secret-endpoint".into());
-            let words = (0..150_000)
+            let words = (0..450_000)
                 .map(|i| vara_core::TimedWord {
                     id: i.to_string(),
                     text: "synthetic".into(),
@@ -966,7 +1101,7 @@ mod mac {
                     .as_array()
                     .unwrap()
                     .len(),
-                150_000
+                450_000
             );
             assert!(serde_json::to_vec(&body).unwrap().len() > MAX_REQUEST);
             wait_stopped(&root);

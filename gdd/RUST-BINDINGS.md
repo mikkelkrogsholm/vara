@@ -213,10 +213,15 @@ recorder remain on Diktering. No settings-schema or database migration is added.
   `crates/vara-app/src/lib.rs` owns the single profile-locked queue, shared
   submit/status/result/cancel operations, document state and publication;
   `desktop/src-tauri/src/transcription.rs` supplies the Tauri adapter (dialogs,
-  clipboard, links, resource/credential callbacks and events). Request identity
-  and document acceptance share a SQLite transaction. The local IPC/backend and
-  CLI remain future work; the host callback retains the existing credential-worker
-  path and does not add a key-read command.
+  clipboard, links and events). On macOS `local_backend.rs` owns the shared Files
+  instance in a per-profile local worker with same-user Unix socket, typed v1
+  operations, a separate process group from its starter, revision polling and an
+  idle exit after 60 seconds without clients
+  or work. GUI exit does not cancel accepted file jobs. The worker reads persisted
+  preferences and retains the existing credential-worker path without exposing a
+  key-read command. Request identity and document acceptance share a SQLite
+  transaction. Other platforms retain the in-process adapter; their transport is
+  not implemented or verified. The public CLI remains future work.
 - Rich recognition/media: `crates/vara-engine/src/{transcription,media}.rs` plus
   Redux/Whisper/cloud adapters. Redux returns actual runtime word times; Whisper
   currently returns segment times; OpenAI's selected speech route may return

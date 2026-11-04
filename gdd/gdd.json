@@ -10962,7 +10962,7 @@
       "format": "text/markdown",
       "normative": false,
       "revision": {
-        "sha256": "f5eb630865debfbce2413e139fd8d5be59ab4006b029171517ec465272eccec5"
+        "sha256": "05493babac8887c86fd575aaf4eb44e114ae93171099436d81686d21616cc14b"
       }
     },
     "source.transcription": {
@@ -10972,7 +10972,7 @@
       "format": "text/markdown",
       "normative": true,
       "revision": {
-        "sha256": "cf141df0d4caf1935ea3825162da78c008478d56afdd6da0e025acf91044f851"
+        "sha256": "aa1b9e6788e1d589ca517be300b3f316e2f4446e1f0d30884a456301851b850d"
       }
     }
   },

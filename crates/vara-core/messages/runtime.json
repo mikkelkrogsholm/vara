@@ -1778,5 +1778,25 @@
   "file.runtime_unavailable": {
     "da": "Filkøens motor kunne ikke startes. Genprøv filen.",
     "en": "The file queue runtime could not start. Retry the file."
+  },
+  "backend.access_failed": {
+    "da": "Adgang til den lokale filtjeneste blev afvist. Kontrollér adgangsrettighederne til Vara-profilen.",
+    "en": "Access to the local file service was denied. Check permissions on the Vara profile."
+  },
+  "backend.request_too_large": {
+    "da": "Anmodningen til filtjenesten er for stor.",
+    "en": "The request to the file service is too large."
+  },
+  "backend.incompatible": {
+    "da": "Den lokale filtjeneste har en inkompatibel version. Genstart Vara.",
+    "en": "The local file service has an incompatible version. Restart Vara."
+  },
+  "backend.operation_failed": {
+    "da": "Filtjenesten kunne ikke fuldføre handlingen.",
+    "en": "The file service could not complete the operation."
+  },
+  "backend.connection_failed": {
+    "da": "Kunne ikke oprette forbindelse til den lokale filtjeneste. Prøv igen.",
+    "en": "Could not connect to the local file service. Try again."
   }
 }
