@@ -5,26 +5,26 @@
 <rect x="415.1875" y="55" width="26" height="26" rx="50" fill="rgb(47, 53, 39)"/>
 <rect x="415.6875" y="55.5" width="25" height="25" rx="50" fill="none" stroke="rgb(47, 53, 39)" stroke-width="1"/>
 <text  x="425.203125" y="71.7" fill="rgb(246, 244, 235)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="12px" font-weight="bold">1</text>
-<text  x="449.1875" y="71.8" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="bold">Gør Vara klar</text>
+<text  x="449.1875" y="71.8" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="bold">Prepare Vara</text>
 <rect x="650.34375" y="55.5" width="25" height="25" rx="50" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
 <text  x="659.21875" y="71.7" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="12px" font-weight="normal">2</text>
-<text  x="683.84375" y="71.8" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Giv adgang</text>
+<text  x="683.84375" y="71.8" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Grant access</text>
 <rect x="885.015625" y="55.5" width="25" height="25" rx="50" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
 <text  x="893.75" y="71.7" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="12px" font-weight="normal">3</text>
-<text  x="918.515625" y="71.8" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Prøv din genvej</text>
-<text  x="415.1875" y="164.3" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="28px" font-weight="bold">Dine ord, dér hvor du arbejder.</text>
-<text  x="415.1875" y="204.25" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Hold en tast, tal og slip. Vi begynder med lokal transskription, så din lyd</text>
-<text  x="415.1875" y="226.75" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">bliver på enheden.</text>
+<text  x="918.515625" y="71.8" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Try your shortcut</text>
+<text  x="415.1875" y="164.3" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="28px" font-weight="bold">Your words, where you work.</text>
+<text  x="415.1875" y="204.25" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Hold a key, speak and release. We start with local transcription so your</text>
+<text  x="415.1875" y="226.75" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">audio stays on your device.</text>
 <line x1="415.1875" y1="359.34375" x2="1095.1875" y2="359.34375" stroke="rgb(220, 214, 202)" stroke-width="1"/>
-<text  x="415.1875" y="305.25" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="bold">Parakeet Redux · tale</text>
-<text  x="415.1875" y="329.05" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Flersproget · 179 MB</text>
-<text  x="767.015625" y="317.8" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Installeret på enheden</text>
-<rect x="921.46875" y="290.671875" width="173.71875" height="42" rx="10" fill="rgb(255, 252, 247)"/>
-<rect x="921.96875" y="291.171875" width="172.71875" height="41" rx="10" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
-<svg x="938.46875" y="301.671875" width="20" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(37, 37, 31)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M4 17v4h16v-4"></path></svg>
-<text  x="966.46875" y="316.275" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Kontrollér model</text>
-<text  x="415.1875" y="391.59375" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Modellen hentes én gang. Ingen konto eller ekstra installation.</text>
-<text  x="531.5" y="455.24375" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Jeg foretrækker cloud</text>
+<text  x="415.1875" y="305.25" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="bold">Parakeet Redux · speech</text>
+<text  x="415.1875" y="329.05" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Multilingual · 179 MB</text>
+<text  x="812.171875" y="317.8" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Installed on device</text>
+<rect x="945.25" y="290.671875" width="149.9375" height="42" rx="10" fill="rgb(255, 252, 247)"/>
+<rect x="945.75" y="291.171875" width="148.9375" height="41" rx="10" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
+<svg x="962.25" y="301.671875" width="20" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(37, 37, 31)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M4 17v4h16v-4"></path></svg>
+<text  x="990.25" y="316.275" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Check model</text>
+<text  x="415.1875" y="391.59375" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">The model is downloaded once. No account or extra installation.</text>
+<text  x="539.171875" y="455.24375" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">I prefer cloud</text>
 <line x1="415.1875" y1="519.4375" x2="1095.1875" y2="519.4375" stroke="rgb(220, 214, 202)" stroke-width="1"/>
-<text  x="416.1875" y="561.8375" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Fortsæt senere</text>
+<text  x="416.1875" y="561.8375" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Continue later</text>
 </svg>

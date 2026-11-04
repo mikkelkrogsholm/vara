@@ -170,7 +170,7 @@ confirmation; the intermediate two-option modal has been removed.
 The connections view asynchronously queries metadata-only `key_status` for the
 listed providers. Stored, missing, loading and unavailable states are distinct.
 Saving/deleting a key refreshes its displayed presence and clears prior checks.
-OpenAI and Groq expose a direct Test nøgle action beside stored credentials,
+OpenAI and Groq expose a direct Test key action beside stored credentials,
 reusing the fixed-provider model-catalogue checks. Key setup also exposes that
 same test action. The native adapter, TLS policy and credential boundary are
 unchanged; no secret is returned to the UI.
@@ -184,7 +184,7 @@ updates preserve settings fields and keyboard focus.
 
 ## Settings v2 implementation (2026-10-24)
 
-`desktop/ui/views.js` implements Diktering, Modeller og nøgler and Privatliv per
+`desktop/ui/views.js` implements Dictation, Models and keys and Privacy per
 the accepted settings-v2 mockups and DESIGN.md §18. `desktopUi.settingsSection`,
 `modelSelect`/`modelLabel`, `processingChoice` and `policyRow` provide shared
 compositions; model feedback is reused by speech, general-text and app-text choices.
@@ -192,8 +192,8 @@ Model downloads, credential setup/test and CLI checks remain the existing native
 commands. Management retains all provider/model/custom-endpoint/CLI operations.
 
 The settings controller reads controls actually present on the current page into
-a clone of saved preferences. Both active model IDs now save on Diktering; strict
-locality and retention save on Privatliv. This preserves unrelated preferences,
+a clone of saved preferences. Both active model IDs now save on Dictation; strict
+locality and retention save on Privacy. This preserves unrelated preferences,
 custom engines and per-app rules. Conditional AI fields retain values in the DOM,
 while radios control only the saved enable flag. Missing-key setup can open over
 an unsaved model draft. Download/status events patch feedback without replacing
@@ -204,13 +204,29 @@ secret storage, history and delivery contracts are unchanged. Strict-local model
 choices visibly disable remote options and conflict explanations do not silently
 substitute models or weaken validation. First-use cloud preference now reaches
 the speech selector directly. Native permissions and the arbitrary-shortcut
-recorder remain on Diktering. No settings-schema or database migration is added.
+recorder remain on Dictation. No settings-schema or database migration is added.
 
 ## File transcription extension — 2026-10-25
 
 - `component.transcription`: `crates/vara-core/src/transcription.rs` owns the
   document types, timing validation, export and separate SQLite store;
-  `desktop/src-tauri/src/transcription.rs` owns durable queue/control/publication.
+  `crates/vara-app/src/lib.rs` owns the single profile-locked queue, shared
+  submit/status/result/cancel operations, document state and publication;
+  `desktop/src-tauri/src/transcription.rs` supplies the Tauri adapter (dialogs,
+  clipboard, links and events). On macOS `local_backend.rs` owns the shared Files
+  instance in a per-profile local worker with same-user Unix socket, typed v2
+  operations, a separate process group from its starter, revision polling and an
+  idle exit after 60 seconds without clients
+  or work. GUI exit does not cancel accepted file jobs. The worker reads persisted
+  preferences and retains the existing credential-worker path without exposing a
+  key-read command. Request identity and document acceptance share a SQLite
+  transaction. Other platforms retain the in-process adapter; their transport is
+  not implemented or verified. `desktop/src-tauri/src/agent_cli.rs` exposes the
+  versioned CLI through this same backend before Tauri startup; the packaged
+  `vara` launcher forwards to the signed app binary in `/Applications` (see `CLI.md`). RPC v2 rejects mixed older owners instead of silently dropping requested Who options; it does not stop an old owner or its active jobs. The owner validates all known source paths and
+  writes protected exports atomically; the CLI does not access credentials directly.
+  `vara-app` owns the shared catalog-filtered response projection for both RPC
+  documents and exported JSON, including legacy endpoint and raw error removal.
 - Rich recognition/media: `crates/vara-engine/src/{transcription,media}.rs` plus
   Redux/Whisper/cloud adapters. Redux returns actual runtime word times; Whisper
   currently returns segment times; OpenAI's selected speech route may return
@@ -241,6 +257,15 @@ is retained and flushed; audio/text do not enter the reporting payload.
 `Files` owns explicit status/download/run/cancel commands and atomic publication;
 its derived speaker transcript cache is rebuilt from persisted turns at startup.
 Original ASR and corrections remain separate from `Diarization`/`SpeakerTurn`.
+The optional durable `WhoPlan` records requested count and phase on the same
+document. The queue registers cancellation atomically with the ASR-to-Who
+transition; ASR stays Ready while CLI completion waits for Who. Interrupted Who
+is failed on restart without replay. Explicit ASR and Who retries update the
+same plan; a failed phase-state save reports `file.result_unsaved` in memory and
+notifies the host instead of leaving an ownerless running phase. JSON exports derive `speaker_transcript`
+through the same core annotation as the UI and retain original ASR separately.
+The `test-harness` feature can inject explicit synthetic ASR/Who fixtures and
+delays only for isolated process tests; it is excluded from production builds.
 
 Known-count mode runs two sequential cancellable children, with a private streamed
 60-second padded PCM copy for the second pass. It requires an unambiguous global

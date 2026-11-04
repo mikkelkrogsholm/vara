@@ -1,22 +1,24 @@
-# Transskriberingsmockups — 2026-10-25
+# Transcription mockups — 2026-10-25
 
-Genereret med den indbyggede imagegen ud fra `gdd/DESIGN.md`, den valgte
-Warm precision-reference og `gdd/TRANSCRIPTION-SPEC.md`, med keep-ui-simple.
-Designforslag, ikke implementeret eller brugeraccepteret funktionalitet.
+Generated with the built-in imagegen using `gdd/DESIGN.md`, the selected
+Warm precision reference and `gdd/TRANSCRIPTION-SPEC.md`, with keep-ui-simple.
+These are design proposals, not implemented or user-accepted functionality.
 
-- `01-editor.png`: bibliotek/kø, transskription, talere, ordmarkering, original,
-  AI-fane, kopiering/sletning, eksport og afspiller.
-- `02-import.png`: filvalg/drop, flere valgte filer, model/lokalitet, sprog,
-  eksplicit start og seneste resultater.
+- `01-editor.png`: library/queue, transcription, speakers, word highlighting, original,
+  AI tab, copy/delete, export and player.
+- `02-import.png`: file selection/drop, multiple selected files, model/locality, language,
+  explicit start and recent results.
 
-Orddata, talere og undertekster er betinget af verificeret modelunderstøttelse.
-Eksportmenuen skal rumme TXT, Markdown og JSON samt SRT/VTT, hvor tidsdata findes.
-AI-output holdes adskilt fra den tidskodede tekst. Fejl/genprøvning, manglende kilde
-og redigering med behov for nyt alignment er ikke afbildet i disse to hovedskærme.
+Word data, speakers and subtitles depend on verified model support. The export menu
+must include TXT, Markdown and JSON, plus SRT/VTT when timing data is available.
+AI output is kept separate from the timed text. Errors/retry, missing sources and
+edits requiring new alignment are not depicted in these two main screens.
 
-Ved implementering bruges DESIGN.md's systemskrift til UI-overskrifter og de
-fælles eksisterende navigationselementer/logo. Billederne har mindre variationer
-i logo, overskrifttypografi og ikoner, som ikke er ændringer til designsystemet.
+Implementation uses DESIGN.md's system font for UI headings and the existing shared
+navigation elements/logo. The images have minor variations in logo, heading typography
+and icons that do not change the design system.
+
+The following prompts are the original generation inputs; their Danish UI copy describes the images.
 
 ## Prompt — editor
 

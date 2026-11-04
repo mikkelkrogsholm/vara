@@ -161,6 +161,7 @@
       "engine.claude.cli": "Claude Code · own login",
       "engine.codex.cli": "Codex · own login",
       "engine.gemini.cli": "Gemini CLI · own login",
+      "engine.ollama": "Ollama · local service",
 
       "startup.failed": "Vara could not open",
       "startup.retry": "Try again",
@@ -647,6 +648,7 @@
       "engine.claude.cli": "Claude Code · eget login",
       "engine.codex.cli": "Codex · eget login",
       "engine.gemini.cli": "Gemini CLI · eget login",
+      "engine.ollama": "Ollama · lokal tjeneste",
 
       "startup.failed": "Vara kunne ikke åbne",
       "startup.retry": "Prøv igen",

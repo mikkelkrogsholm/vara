@@ -1,4 +1,5 @@
 {
+  "file.language_unsupported": {"da": "Denne model vælger selv talesprog. Fjern sprogvalget.", "en": "This model detects speech language automatically. Remove the language option."},
   "runtime.unknown": {
     "da": "Der opstod en ukendt fejl.",
     "en": "An unknown error occurred."
@@ -1762,5 +1763,41 @@
   "native.file.transcription": {
     "da": "Transskription",
     "en": "Transcription"
+  },
+  "file.request_invalid": {
+    "da": "Anmodnings-id skal indeholde tekst, højst fylde 200 UTF-8-byte og bruges til én fil.",
+    "en": "The request ID must contain text, use at most 200 UTF-8 bytes, and apply to one file."
+  },
+  "file.request_conflict": {
+    "da": "Anmodnings-id er allerede brugt med andre valg eller en anden fil.",
+    "en": "The request ID was already used with different options or a different file."
+  },
+  "file.profile_busy": {
+    "da": "En anden Vara-proces bruger allerede filkøen for denne profil.",
+    "en": "Another Vara process already owns the file queue for this profile."
+  },
+  "file.runtime_unavailable": {
+    "da": "Filkøens motor kunne ikke startes. Genprøv filen.",
+    "en": "The file queue runtime could not start. Retry the file."
+  },
+  "backend.access_failed": {
+    "da": "Adgang til den lokale filtjeneste blev afvist. Kontrollér adgangsrettighederne til Vara-profilen.",
+    "en": "Access to the local file service was denied. Check permissions on the Vara profile."
+  },
+  "backend.request_too_large": {
+    "da": "Anmodningen til filtjenesten er for stor.",
+    "en": "The request to the file service is too large."
+  },
+  "backend.incompatible": {
+    "da": "Den lokale filtjeneste har en inkompatibel version. Genstart Vara.",
+    "en": "The local file service has an incompatible version. Restart Vara."
+  },
+  "backend.operation_failed": {
+    "da": "Filtjenesten kunne ikke fuldføre handlingen.",
+    "en": "The file service could not complete the operation."
+  },
+  "backend.connection_failed": {
+    "da": "Kunne ikke oprette forbindelse til den lokale filtjeneste. Prøv igen.",
+    "en": "Could not connect to the local file service. Try again."
   }
 }

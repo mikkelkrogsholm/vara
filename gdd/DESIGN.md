@@ -366,8 +366,8 @@ for reusable visual decisions; the GDD graph owns domain behavior.
 
 One warm light workspace with dark olive navigation, for macOS, Windows and Linux.
 This is not a dark-mode specification; do not invert it automatically. Platform
-window chrome, permission dialogs and secret storage remain native. UI copy is
-Danish with an English localization boundary. No new accounts, billing, charts,
+window chrome, permission dialogs and secret storage remain native. The reference prototype uses English copy; the production app supports Danish and
+English localization. No new accounts, billing, charts,
 file transcription, wake word, standalone chat or editor are introduced.
 
 ## Colors
@@ -424,7 +424,7 @@ icons can retain their own colors; they are identity content, not theme accents.
 | Role | Application |
 | --- | --- |
 | `brand` | Lowercase “vara” wordmark only |
-| `heading-lg` | Main view title, for example “Historik” |
+| `heading-lg` | Main view title, for example “History” |
 | `heading-md` | Settings group or dialog heading |
 | `body` | History previews, forms, prompt editing and general UI copy |
 | `label` | Buttons, app group names, important field labels and status titles |
@@ -527,7 +527,7 @@ remaining in their own regions. Avoid scroll traps: focused items must scroll in
 view, and ordinary reading never requires dragging a tiny custom scrollbar. At
 narrow sizes use one main vertical scrolling surface. No fixed-height text containers.
 
-A narrow detail view has “Tilbage til historik” and preserves list position, app
+A narrow detail view has “Back to history” and preserves list position, app
 expansion, query and selected result. Selecting another result does not reset the
 whole window. Do not steal keyboard focus merely because new dictation was saved.
 Keep the HUD outside the main window's clipping region, within the current display's
@@ -641,7 +641,7 @@ the old target is still active. Resizing follows Layout; panes must not clip con
 
 **Anatomy:** brand block, three labeled destinations with leading icons, flexible
 space, a fine separator, local/provider readiness and actual shortcut keycap.
-Destinations are “Historik”, “AI pr. app”, “Indstillinger”. No extra destination for
+Destinations are “History”, “AI per app”, “Settings”. No extra destination for
 provider catalogs, diagnostics, statistics or upgrade offers.
 
 **Visuals:** sidebar-item tokens; row gap sm. Selected page uses sidebar-selected,
@@ -653,9 +653,9 @@ Do not apply tablist arrow-key rules to the entire app navigation. Each destinat
 is keyboard reachable and exposes its current-page state. Narrow layout keeps
 visible labels or an explicitly named navigation menu.
 
-**Footer:** show “På enheden” only when the relevant actual engine location is
+**Footer:** show “On-device” only when the relevant actual engine location is
 on-device. If audio and selected text destinations differ, say so explicitly, for
-example “Lyd: på enheden · Tekst: cloud”. Optional remote configuration alone does
+example “Audio: on-device · Text: cloud”. Optional remote configuration alone does
 not mean this session used cloud. Show actionable not-ready/permission state when
 needed. The footer keycap is the real binding; “⌥ Space” in the mockup is illustrative.
 
@@ -666,7 +666,7 @@ optional contextual status. No greeting, hero paragraph or large recording CTA.
 Search is the small convenience already proposed for history, not a new release
 dependency. Its empty/filter/error states must be defined if implemented.
 
-**Behavior:** an icon-only search action is labeled “Søg i historikken” and opens/
+**Behavior:** an icon-only search action is labeled “Search history” and opens/
 focuses the field. The field has a persistent accessible label, clear-query control
 and nonintrusive result count. Search looks through original and processed text.
 “No matches” differs from “no history”. Clearing restores the prior app grouping.
@@ -705,13 +705,13 @@ exists; direct/fallback shows original. Do not rewrite previews for style.
 **Visuals:** history-row states, natural 72px minimum rhythm. Selected fill is
 selected with no shadow. Quiet 1px separators between ordinary rows; selection
 rounding must not shift text alignment. On error/manual-ready, include a small
-icon and explicit status such as “Klar til indsættelse”. Successfully inserted
+icon and explicit status such as “Ready to insert”. Successfully inserted
 results can use quieter status; absence of a warning is not confirmation.
 
 **Behavior:** selecting opens detail immediately; Tab/Enter/Space work through
 native semantics. Structure a semantic list item with a primary open/select
 button and a sibling shared action group containing copy and trash icons. Give
-each action an accessible Danish label and tooltip, and a 36px target. Copy acts
+each action an accessible localized label and tooltip, and a 36px target. Copy acts
 on the clicked row immediately, preserving selection and without opening a dialog.
 Delete opens the existing destructive confirmation directly. Do not use an extra
 two-option overflow modal or nest buttons inside the selection button. Use the
@@ -736,29 +736,28 @@ add a title unless explicitly stored. Direct mode has one representation and no
 empty “original” comparison. Successful AI shows both stored versions; AI failure
 labels the original fallback. Do not infer processing from different punctuation.
 
-**States:** no selection gives a small “Vælg en diktering” instruction. Loading
+**States:** no selection gives a small “Select a dictation” instruction. Loading
 keeps the layout stable and announces loading; storage failure has an inline
 retry and must not masquerade as an empty database. Unknown/failed delivery keeps
 text fully available and uses a persistent notice with manual copy.
 
-**Copy:** “Kopiér” explicitly copies the finished text and may replace the clipboard,
-as deliberately requested. “Kopieret” feedback is truthful and announced only after
-success. Failure leaves a visible “Kunne ikke kopiere” and a retry path. Automatic
+**Copy:** “Copy” explicitly copies the finished text and may replace the clipboard,
+as deliberately requested. “Copied” feedback is truthful and announced only after
+success. Failure leaves a visible “Could not copy” and a retry path. Automatic
 insertion has different clipboard-preservation rules and is never simulated by
 pressing Copy in the UI. Do not add mandatory approval before automatic AI delivery.
 
 ### 7. Original-text disclosure
 
-**Anatomy:** chevron, “Vis original”, expanded inset text region. Default collapsed;
-expanded label can be “Skjul original”. Expanded state is exposed semantically.
+**Anatomy:** chevron, “Show original”, expanded inset text region. Default collapsed;
+expanded label can be “Hide original”. Expanded state is exposed semantically.
 Use original-panel tokens, sans-serif body, generous line height and readable muted
 text. No diff engine, side-by-side editor or audio player is required.
 
 **Behavior:** Enter/Space toggles with focus preserved. Expanded content is
 selectable. Preserve open state while inspecting that result; opening a different
 result starts collapsed. Large originals expand naturally in the pane scroll area.
-If explicit original-copy is provided inside the disclosure, label it “Kopiér
-original” so it cannot be mistaken for copying the finished text.
+If explicit original-copy is provided inside the disclosure, label it “Copy original” so it cannot be mistaken for copying the finished text.
 
 ### 8. Buttons, links and icon actions
 
@@ -805,9 +804,9 @@ persistent label. Options include meaningful location/readiness information;
 provider/model names are values, not additional visual accents. Missing/unavailable
 options remain identifiable with a reason and configuration path.
 
-A switch is for a boolean such as “AI-bearbejdning for Mail”. Track: 36 × 22px;
+A switch is for a boolean such as “AI processing for Mail”. Track: 36 × 22px;
 thumb: 18px, with 2px inset. On uses primary, off uses control-border; thumb is
-white. Text states “Til”/“Fra” or a clear associated description complement color.
+white. Text states “On”/“Off” or a clear associated description complement color.
 The entire label is clickable; keyboard Space toggles. In forms the switch changes
 the draft and the explicit Save commits it; it does not secretly save one field.
 
@@ -835,22 +834,21 @@ outside the recorder. Provide an in-app start/stop route when global binding is 
 ### 12. Locality, readiness and status chip
 
 Use small icon + text, optionally a soft semantic background; no all-caps capsule
-for every metadata field. “På enheden”, “Cloud” and “Ikke klar” describe different
+for every metadata field. “On-device”, “Cloud” and “Not ready” describe different
 facts. Connection configured, authenticated, model installed and runtime ready
 are separate states; never display green ready based only on a filled key field.
-Unknown actual processing location remains “Ukendt”, not assumed local.
+Unknown actual processing location remains “Unknown”, not assumed local.
 
 Expose audio and text destinations independently when they differ. An installed
 CLI can use a remote model; LAN/custom endpoints are not on-device inference just
 because a process runs locally. In strict on-device mode, incompatible options
 show a specific conflict and preserve current settings. Do not invite a silent cloud
-fallback with a generic “Fortsæt” button.
+fallback with a generic “Continue” button.
 
 ### 13. Inline notice, toast and tooltip
 
 Notices use the appropriate notice tokens, a semantic icon, concrete message and
-optional named action. Examples: “Fokus ændrede sig. Teksten er klar til manuel
-indsættelse.” and “AI-bearbejdningen fejlede. Originalen er bevaret.” Keep these
+optional named action. Examples: “Focus changed. The text is ready to insert manually.” and “AI processing failed. The original is preserved.” Keep these
 inside the affected result/settings region until resolved; critical failures do
 not disappear after a timer. Explain pending audio cleanup without claiming deletion.
 
@@ -870,11 +868,11 @@ layouts, required information remains inline. No tooltip over the active text ca
 A recovery task is distinct from completed history. Show it above the affected
 history list or in a clearly labeled recovery region, not as an audio attachment
 in a completed row. Anatomy: origin app, failed stage, exact remaining expiry when
-known, “Prøv igen” and “Slet optagelse”. No audio playback.
+known, “Try again” and “Delete recording”. No audio playback.
 
 States: retryable, retrying, expired/deleting, cleanup pending and resolved. Retry
 has one owner; cancel/expiry invalidates late work. Display expiry from the original
-capture deadline, never a fresh “24 timer” on each retry. Expired audio is removed
+capture deadline, never a fresh “24 hours” on each retry. Expired audio is removed
 from offered recovery even if physical deletion is pending; the pending cleanup
 status remains truthful. Successful retry deletes audio and uses ordinary delivery
 checks, never assumes old focus is still current.
@@ -898,14 +896,14 @@ No endless decorative pulse presented as proof of microphone activity.
 
 | Domain stage | Copy example | Available action / guarantee |
 | --- | --- | --- |
-| Listening | “Lytter · Mail” | Release hold binding or explicit “Afslut”; “Annuller” cancels |
-| Speech recognition | “Finder dine ord” | Cancel; selected audio destination remains visible |
-| Text processing | “Tilpasser teksten” | Cancel; general/app-prompt and actual text locality remain inspectable |
-| Delivery complete | “Indsat i Mail” | Brief passive confirmation only after confirmed handoff |
-| Changed/unknown focus | “Klar til indsættelse” | Saved text, deliberate manual use; no automatic retry |
-| ASR failure | “Kunne ikke transskribere” | Explicit recovery while unexpired |
-| AI failure | “Originalen er brugt” | Normal delivery rules; inspect result/fallback status |
-| Cancellation | “Annulleret” | No late publication; AlreadyCommitted is reported honestly |
+| Listening | “Listening · Mail” | Release hold binding or explicit “Finish”; “Cancel” cancels |
+| Speech recognition | “Finding your words” | Cancel; selected audio destination remains visible |
+| Text processing | “Processing text” | Cancel; general/app-prompt and actual text locality remain inspectable |
+| Delivery complete | “Inserted in Mail” | Brief passive confirmation only after confirmed handoff |
+| Changed/unknown focus | “Ready to insert” | Saved text, deliberate manual use; no automatic retry |
+| ASR failure | “Could not transcribe” | Explicit recovery while unexpired |
+| AI failure | “Original used” | Normal delivery rules; inspect result/fallback status |
+| Cancellation | “Cancelled” | No late publication; AlreadyCommitted is reported honestly |
 
 A decorative arrow next to “Mail” in the reference must not become an app picker
 that retargets an active session. Origin is snapshotted. The HUD is nonactivating
@@ -935,7 +933,7 @@ Native modal semantics manage focus, dismissal and background inertness.
 
 Confirmation is for an actually destructive consequential action, not successful
 transcription/AI output or every preference edit. Individual result deletion can
-use a small confirmation naming that result, with “Slet diktering” / “Behold”. Do
+use a small confirmation naming that result, with “Delete dictation” / “Keep”. Do
 not add a second confirmation. Deleting must remove original and processed text
 together; never claim physical deletion before the domain confirms it.
 
@@ -944,8 +942,8 @@ together; never claim physical deletion before the domain confirms it.
 | State | What remains visible | Next step |
 | --- | --- | --- |
 | Empty fresh profile | Calm explanation and actual shortcut; no fabricated rows | Guided setup or a real trial if already ready |
-| No search matches | Query, app/filter context and “Ingen match” | Clear/change query |
-| Loading history | Existing results if available, stable header, “Henter historik…” | Wait; no fake success/data |
+| No search matches | Query, app/filter context and “No matches” | Clear/change query |
+| Loading history | Existing results if available, stable header, “Loading history…” | Wait; no fake success/data |
 | Storage unavailable | Available in-memory text and clear unsaved state | Deliberate copy/retry; no automatic delivery claim |
 | Local model missing | Selected local choice and requirements | Download/retry local setup |
 | Offline with local engine ready | Actual local readiness | Keep local dictation available |
@@ -970,12 +968,12 @@ and retention periods must never overwrite a user's saved configuration.
 
 | Destination | Purpose and content |
 | --- | --- |
-| Diktering | Complete invocation flow: recording controls, speech model, optional text AI, instructions and OS permissions |
-| Modeller og nøgler | Local model downloads, stored-key status/tests, editing model names/custom endpoints, and optional installed CLI connections |
-| Privatliv | Strict on-device rule, actual default processing destinations, text-history retention, and fixed audio deletion/recovery policies |
+| Dictation | Complete invocation flow: recording controls, speech model, optional text AI, instructions and OS permissions |
+| Models and keys | Local model downloads, stored-key status/tests, editing model names/custom endpoints, and optional installed CLI connections |
+| Privacy | Strict on-device rule, actual default processing destinations, text-history retention, and fixed audio deletion/recovery policies |
 
-Choose both active models on Diktering, never on the model-management page. First-use
-cloud preference leads directly to the speech selector on Diktering. Local defaults,
+Choose both active models on Dictation, never on the model-management page. First-use
+cloud preference leads directly to the speech selector on Dictation. Local defaults,
 all provider choices, custom endpoints, CLI adapters, one-shot processing and app
 rules remain available. No provider is silently selected, enabled or removed.
 
@@ -997,55 +995,53 @@ intentional display-heading exception for settings, matching the accepted mockup
 field labels, control contents, status text and navigation retain the sans-serif
 roles. Preserve the existing olive/paper/orange tokens and focus treatments.
 
-**Diktering, in order:**
+**Dictation, in order:**
 
-1. Optagelse: activation style, configurable shortcut, microphone and language.
+1. Recording: activation style, configurable shortcut, microphone and language.
    Preserve side-specific shortcuts and all existing key combinations. Parakeet
    uses automatic language; switching back to a model with language choice restores
    the pending language selection. Native permission controls remain reachable
-   in a clearly named Tilladelser section on this page.
-2. Tale til tekst: shared model selector labeled Transskriptionsmodel, followed by
+   in a clearly named Permissions section on this page.
+2. Speech to text: shared model selector labeled Transcription model, followed by
    true locality/readiness and a contextual action when setup is missing.
-3. Efter transskription: native radio group with Behold transskriptionen and
-   Bearbejd med AI. The latter reveals Tekstmodel and Instruktioner til AI. Hidden
+3. After transcription: native radio group with Keep transcript and
+   Process with AI. The latter reveals Text model and Instructions for AI. Hidden
    fields retain their values; switching mode never enables AI merely because a
-   prompt exists. A visible note explains app overrides and offers Administrer apps.
+   prompt exists. A visible note explains app overrides and offers Manage apps.
 
 **Shared model picker and feedback:** speech, general text and app text selectors
 use the same model control. Show configured model identifiers for remote/custom
 engines alongside their labels. Display Cloud, on-device, LAN or unknown locality
 explicitly. Ready/missing/download progress and credential status are distinct.
-Offer Hent model/Annuller, Tilføj nøgle/Administrer nøgle, Test nøgle, or Kontrollér
+Offer Download model/Cancel, Add key/Manage key, Test key, or Check
 CLI only where applicable. Key setup and downloads must work in context while
 preserving an unsaved form. Only required dependent controls update on a change;
 do not rebuild a hint button when a textarea loses focus. The strict-local rule
 disables remote choices but never silently substitutes a different model.
 
-**Modeller og nøgler:** align each local-model row into identity/size, actual
+**Models and keys:** align each local-model row into identity/size, actual
 installation/progress state, and its action. Provider rows similarly align name
 and capability, metadata-only key status, and key-management/test actions. Stored
-and API-tested are separate states. Keep named disclosures for Egne endpoints og
-modelnavne and Installerede CLI-værktøjer. Custom endpoint locality, optional keys,
+and API-tested are separate states. Keep named disclosures for Custom endpoints and model names and Installed CLI tools. Custom endpoint locality, optional keys,
 model-name editing and CLI checks retain their existing behavior.
 
-**Privatliv:** Behandling contains Kun behandling på denne enhed and a truthful
+**Privacy:** Processing contains Only process on this device and a truthful
 summary of default speech/text locations, including an app-override explanation
 when relevant. Warn if a pending strict-local rule conflicts with selected engines
-or enabled app rules; saving remains subject to domain validation. Historik uses
-an explicitly labeled retention dropdown defaulting to Indtil jeg selv sletter,
+or enabled app rules; saving remains subject to domain validation. History uses
+an explicitly labeled retention dropdown defaulting to Until I delete it,
 preserving custom positive periods as well as standard options. Deletion removes
-both original and processed text. Lyd contains shared explanatory policy rows,
+both original and processed text. Audio contains shared explanatory policy rows,
 not toggles: delete after successful transcription; retain failed audio for no
 more than 24 hours; delete earlier on successful retry or user deletion.
 
-**AI pr. app:** remains in primary navigation. The explicit Brug egne AI-indstillinger
+**AI per app:** remains in primary navigation. The explicit Use custom AI settings
 switch enables that app's own instructions and text model; off means follow the
 global standard, not force direct transcription. Conditional fields retain their
 values. Reuse the same text-model picker and locality/setup feedback. Preserve
 per-app model/prompt overrides, default inheritance and existing session precedence.
 
-**Save and recovery:** use a quiet Fortryd ændringer followed by primary Gem
-indstillinger in a sticky footer, right-aligned on wide screens. Show pending edits
+**Save and recovery:** use a quiet Discard changes followed by primary Save settings in a sticky footer, right-aligned on wide screens. Show pending edits
 in text; wrap the footer at narrow widths and keep focus scroll margins above it.
 Provider keys and downloads keep their explicit immediate actions; the footer does
 not pretend to save these operations later. Navigation with unsaved edits retains
@@ -1058,8 +1054,8 @@ future invocations, never an already frozen dictation plan.
 
 Engine row anatomy: speech/text capability, provider/model name, actual locality,
 readiness label, one relevant action. Default local setup is prominent in its
-context. Cloud models are selectable alongside local models on Diktering, with explicit
-locality. Setup operations belong to Modeller og nøgler and contextual model
+context. Cloud models are selectable alongside local models on Dictation, with explicit
+locality. Setup operations belong to Models and keys and contextual model
 feedback; custom endpoints and installed CLIs use their named disclosures. Do not
 turn these controls into a first-use comparison marketplace.
 
@@ -1148,8 +1144,7 @@ many app groups, unknown provider location and failed clipboard/storage operatio
 All required information remains readable with 200% text sizing, narrow reflow,
 reduced motion and high-contrast settings. Never fix overflow by reducing font size.
 
-Use direct Danish copy: “Kopiér”, “Gemt”, “Prøv igen”, “Slet diktering”, “Originalen
-er bevaret”. Say what happened and what the user can do. Avoid “Noget gik galt”
+Use direct, localized copy, for example: “Copy”, “Saved”, “Try again”, “Delete dictation”, “Original preserved”. Say what happened and what the user can do. Avoid “Something went wrong”
 without a useful next step, unexplained error codes, jargon about adapters/generations
 and human blame for missing permissions. Do not leak transcript/prompt/key content
 into technical diagnostic notices.
@@ -1161,7 +1156,7 @@ into technical diagnostic notices.
 | History | Shell → grouped history → reading pane → original disclosure | Filter/select an app; inspect processed/original; direct result has one representation; copy and delete have truthful outcomes |
 | App AI | Shell → app selector → explicit enablement → prompt/engine/locality → Save | Enable for one app, save, revisit, reject invalid draft without losing saved preference |
 | Dictation settings | Shell → activation/input → binding recorder → general prompt | Choose hold/toggle, conflict-test a new binding, preserve prior binding on failure |
-| Settings | Diktering → both model choices and optional text processing; Modeller og nøgler → setup; Privatliv → locality and retention | Conditional drafts, app overrides, contextual recovery, key stored versus tested and all existing providers remain available |
+| Settings | Dictation → both model choices and optional text processing; Models and keys → setup; Privacy → locality and retention | Conditional drafts, app overrides, contextual recovery, key stored versus tested and all existing providers remain available |
 | Privacy | Shell → text retention opt-in → separate failed-audio policy | Indefinite by default; period has units; failed-audio deadline stays fixed |
 | First use | Compact guided setup using shared primitives | Local path needs no terminal/key; real permissions, shortcut and successful trial gate completion |
 | HUD/recovery | Native nonactivating status + persistent recoverable outcome | Direct/app/general AI, changed focus, ASR retry, AI fallback, cancellation and late completion follow domain rules |
@@ -1253,7 +1248,7 @@ library deletion. Missing playback media is a recoverable state with readable te
 
 ### Optional local speaker labeling — Who
 
-Add “Find talere” as a quiet action in the transcription editor. Reuse the
+Add “Find speakers” as a quiet action in the transcription editor. Reuse the
 existing dialog, status/notice, buttons and editable speaker/time margin. The
 Who dialog shows explicit local processing, supplier/model/version, attribution,
 license link and SDK usage metadata before download/use. Download/preparation
@@ -1261,7 +1256,7 @@ and inference are indeterminate stages with a direct cancellation action. The di
 
 Keep the existing transcript and corrections readable throughout. Successful
 labeling opens the annotated original; corrections are retained. A native
-`details` disclosure “Talerintervaller · Who” exposes actual overlapping intervals
+`details` disclosure “Speaker intervals · Who” exposes actual overlapping intervals
 and uses the same speaker rename and seek buttons. Untimed transcripts show
 intervals without fabricated word assignment. Errors or zero detected speakers
 explain the limitation and keep prior data. No extra global navigation or new

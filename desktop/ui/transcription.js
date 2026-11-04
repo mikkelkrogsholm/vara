@@ -28,9 +28,10 @@
     aiBusy: new Set(),
     whoBusy: new Set(),
     whoDownload: false,
+    whoDownloadBusy: false,
     whoStatus: null,
   };
-  let host, main, saveTimer, refreshTimer;
+  let host, main, saveTimer, refreshTimer, reloadSerial = 0;
   const audio = new Audio();
   audio.preload = "metadata";
   const uiError = (key) => Object.assign(new Error(msg(key)), { uiKey: key, uiMessage: tr(key) });
@@ -112,7 +113,7 @@
     if (!d) return;
     host.modal(
       tr("tx.speaker-identification-with-who"),
-      `<p>${tr("tx.who.introduction")}</p><p class="muted">Who by <a href="https://desertant.com" data-action="tx-who-link" data-id="vendor">Desert Ant Labs</a> · ${tr("tx.who-model")}</p><p class="muted">${tr("tx.who-telemetry")} <a href="https://license.desertant.com/1.0" data-action="tx-who-link" data-id="license">${tr("tx.who-license")}</a>.</p>${status?.error ? notice(Vara.i18n.bindRuntime(status.error), "error") : ""}${tx.whoDownload ? `<p role="status">${tr("tx.downloading-and-preparing-who")}</p>${b(tr("tx.cancel-download"), "tx-who-download-cancel")}` : running ? `<p role="status">${tr("tx.who.running")}</p>${b(tr("tx.cancel"), "tx-who-cancel")}` : status?.ready ? `<div class="tx-who-count"><label for="tx-who-count">${tr("tx.number-of-speakers")}</label><select id="tx-who-count"><option value="">${tr("tx.automatic")}</option>${Array.from({length: 16}, (_, i) => `<option value="${i + 1}" ${d.diarization?.known_speakers?.count === i + 1 ? "selected" : ""}>${i + 1}</option>`).join("")}</select></div><p class="muted">${tr("tx.who.count-help")}</p>${b(d.diarization ? tr("tx.find-speakers-again") : tr("tx.find-speakers"), "tx-who-run", { variant: "primary" })}` : status?.available ? `<p>${tr("tx.who.download-help")}</p>${b(tr("tx.download-who"), "tx-who-download", { variant: "primary" })}` : ""}`,
+      `<p>${tr("tx.who.introduction")}</p><p class="muted">Who by <a href="https://desertant.com" data-action="tx-who-link" data-id="vendor">Desert Ant Labs</a> · ${tr("tx.who-model")}</p><p class="muted">${tr("tx.who-telemetry")} <a href="https://license.desertant.com/1.0" data-action="tx-who-link" data-id="license">${tr("tx.who-license")}</a>.</p>${status?.error ? notice(Vara.i18n.bindRuntime(status.error), "error") : ""}${(tx.whoDownload || tx.whoDownloadBusy) ? `<p role="status">${tr("tx.downloading-and-preparing-who")}</p>${b(tr("tx.cancel-download"), "tx-who-download-cancel")}` : running ? `<p role="status">${tr("tx.who.running")}</p>${b(tr("tx.cancel"), "tx-who-cancel")}` : status?.ready ? `<div class="tx-who-count"><label for="tx-who-count">${tr("tx.number-of-speakers")}</label><select id="tx-who-count"><option value="">${tr("tx.automatic")}</option>${Array.from({length: 16}, (_, i) => `<option value="${i + 1}" ${d.diarization?.known_speakers?.count === i + 1 ? "selected" : ""}>${i + 1}</option>`).join("")}</select></div><p class="muted">${tr("tx.who.count-help")}</p>${b(d.diarization ? tr("tx.find-speakers-again") : tr("tx.find-speakers"), "tx-who-run", { variant: "primary" })}` : status?.available ? `<p>${tr("tx.who.download-help")}</p>${b(tr("tx.download-who"), "tx-who-download", { variant: "primary" })}` : ""}`,
     );
   }
   function transcriptText(d) {
@@ -146,7 +147,8 @@
     return `<section class="tx-library"><header class="pane-toolbar"><h1 id="view-title" tabindex="-1">${tr("tx.transcription")}</h1></header><div class="tx-library-controls">${b(tr("tx.add-files"), "tx-import", { glyph: "plus" })}${f({ id: "tx-query", label: tr("tx.search-transcriptions"), type: "search", value: tx.query })}</div><ul class="tx-library-list">${filtered().map(fileRow).join("") || `<li class="muted">${tr("tx.no-matches")}</li>`}</ul><p class="tx-library-note">${tr("tx.audio-and-video-local-playback-copies")}</p></section><section class="tx-detail" aria-label="${tr("tx.selected-transcription")}"><header class="tx-detail-header"><div><button class="tx-title" data-action="tx-rename" aria-label="${tr("tx.rename-title", { title: d.title })}"><h2>${e(d.title)}</h2>${icon("edit")}</button><p class="muted">${e(d.source_name)} · ${e(d.language || tr("tx.automatic"))} ${d.duration ? " · " + stamp(d.duration) : ""}</p></div><div class="actions"><span id="tx-save-status" class="muted" role="status">${tx.saving.has(d.id) ? tr("tx.saving") : draft || (d.transcript && d.stage === "failed") ? tr("tx.not-saved") : tr("tx.saved")}</span>${d.transcript ? ib("copy", tr("tx.copy-transcription"), "tx-copy") : ""}${ib("trash", tr("tx.delete-transcription"), "tx-delete", `data-id="${e(d.id)}"`)}${b(tr("tx.export"), "tx-export", { variant: "primary", attrs: d.transcript ? "" : "disabled" })}</div></header><nav class="tx-tabs" aria-label="${tr("tx.document-view")}"><button data-action="tx-tab" data-id="transcript" class="${tx.tab === "transcript" ? "is-current" : ""}" aria-pressed="${tx.tab === "transcript"}">${tr("tx.transcript")}</button><button data-action="tx-tab" data-id="ai" class="${tx.tab === "ai" ? "is-current" : ""}" aria-pressed="${tx.tab === "ai"}">${tr("tx.ai-processing")}</button>${d.transcript ? b(tx.original ? tr("tx.show-edited-text") : tr("tx.show-original"), "tx-original", { variant: "quiet" }) : ""}</nav><div class="tx-reading"><div id="tx-errors">${error()}</div>${d.error && d.transcript ? notice(Vara.i18n.bindRuntime(d.error), "error", b(tr("tx.save-result-again"), "tx-persist")) : ""}<p class="tx-provenance"><span class="status-dot"></span>${e(d.engine.locality === "on_device" ? tr("tx.on-device") : Vara.desktopUi.displayEngineName(d.engine))} · ${timed === "word" ? tr("tx.word-timestamps") : timed === "segment" ? tr("tx.segment-timestamps") : tr("tx.no-timestamps")}</p>${d.engine.provider === "eleven_labs" ? `<p class="muted tx-format-note">${tr("tx.editor.provider-speaker-note")}</p>` : ""}${d.transcript && tx.tab === "transcript" ? `<div id="tx-who-tools" class="tx-text-tools">${whoControls(d)}</div>${whoTurns(d)}<div class="tx-text-tools">${b(draft || d.edited_text !== null ? tr("tx.save-again") : tr("tx.edit-text"), draft || d.edited_text !== null ? "tx-save" : "tx-edit", { variant: "quiet" })}${draft || d.edited_text !== null ? b(tr("tx.restore-original"), "tx-reset", { variant: "quiet" }) : ""}${timed !== "none" ? b(tr("tx.play-selection"), "tx-selection", { variant: "quiet" }) : ""}</div>` : ""}${tx.tab === "ai" ? aiView(d) : transcriptText(d)}${d.transcript && tx.tab === "transcript" ? `<p class="tx-reading-help muted">${tr("tx.editor.playback-help")}</p>` : ""}</div><footer class="tx-player"><div class="tx-player-actions">${b("−10 s", "tx-rewind", { variant: "quiet", attrs: hasMedia ? "" : "disabled" })}${b(audio.paused ? tr("tx.play") : tr("tx.pause"), "tx-play", { variant: "primary", attrs: hasMedia ? "" : "disabled" })}${b("+10 s", "tx-forward", { variant: "quiet", attrs: hasMedia ? "" : "disabled" })}</div><span id="tx-time" class="tx-time">${stamp(audio.currentTime)} / ${stamp(d.duration)}</span><div class="tx-seek-track"><div class="tx-waveform" aria-hidden="true">${(d.waveform || []).map((v) => `<i style="height:${Math.max(2, Math.min(1, v) * 30)}px"></i>`).join("")}</div><input id="tx-position" type="range" min="0" max="${d.duration || 1}" step="0.1" value="${audio.currentTime || 0}" aria-label="${tr("tx.playback-position")}" ${hasMedia ? "" : "disabled"}></div><label class="sr-only" for="tx-speed">${tr("tx.playback-speed")}</label><select id="tx-speed">${[0.75, 1, 1.25, 1.5, 2].map((n) => `<option ${audio.playbackRate === n ? "selected" : ""} value="${n}">${bindNumber(n)}×</option>`).join("")}</select>${!hasMedia ? `<p class="tx-missing">${tr("tx.player.missing-copy-detail")}</p>` : ""}</footer></section>`;
   }
   function aiView(d) {
-    return `<div class="tx-ai"><h3>${tr("tx.process-the-text")}</h3><p class="muted">${tr("tx.ai.description")}</p>${Vara.views.modelPicker(main, "tx-ai-engine", tr("tx.text-model"), "text", tx.aiEngine || d.ai_engine?.id || main.data.settings.general_engine)}${f({ id: "tx-ai-prompt", label: tr("tx.instructions-for-ai"), rows: true, value: tx.aiPrompt ?? msg("tx.ai-default-prompt") })}<p class="muted" id="tx-ai-destination">${aiDestination()}</p>${b(tx.aiBusy.has(d.id) ? tr("tx.processing") : tr("tx.process-text"), "tx-ai", { variant: "primary", attrs: !d.transcript || tx.aiBusy.has(d.id) ? "disabled" : "" })}${tx.aiBusy.has(d.id) ? b(tr("tx.cancel"), "tx-ai-cancel") : ""}${d.ai_text ? `<article class="tx-ai-result"><h3>${tr("tx.ai-result")}</h3><p dir="auto">${e(d.ai_text)}</p>${b(tr("tx.copy-ai-text"), "tx-copy-ai", { glyph: "copy" })}</article>` : ""}</div>`;
+    const running = d.ai_busy || tx.aiBusy.has(d.id);
+    return `<div class="tx-ai"><h3>${tr("tx.process-the-text")}</h3><p class="muted">${tr("tx.ai.description")}</p>${Vara.views.modelPicker(main, "tx-ai-engine", tr("tx.text-model"), "text", tx.aiEngine || d.ai_engine?.id || main.data.settings.general_engine)}${f({ id: "tx-ai-prompt", label: tr("tx.instructions-for-ai"), rows: true, value: tx.aiPrompt ?? msg("tx.ai-default-prompt") })}<p class="muted" id="tx-ai-destination">${aiDestination()}</p>${b(running ? tr("tx.processing") : tr("tx.process-text"), "tx-ai", { variant: "primary", attrs: !d.transcript || running ? "disabled" : "" })}${running ? b(tr("tx.cancel"), "tx-ai-cancel") : ""}${d.ai_text ? `<article class="tx-ai-result"><h3>${tr("tx.ai-result")}</h3><p dir="auto">${e(d.ai_text)}</p>${b(tr("tx.copy-ai-text"), "tx-copy-ai", { glyph: "copy" })}</article>` : ""}</div>`;
   }
   function aiDestination() {
     const id =
@@ -160,9 +162,25 @@
       : tr("tx.remote-text", { provider: engine ? Vara.desktopUi.displayEngineName(engine) : tr("tx.selected-connection") });
   }
   async function reload() {
-    const data = await host.api("file_list");
+    const serial = ++reloadSerial;
+    let data;
+    try {
+      data = await host.api("file_list");
+    } catch (error) {
+      if (serial !== reloadSerial) return;
+      throw error;
+    }
+    if (serial !== reloadSerial) return;
+    const downloadFinished = tx.whoDownloadBusy && !data.who_download_busy;
     tx.documents = data.documents;
     tx.media = data.media;
+    tx.whoDownloadBusy = !!data.who_download_busy;
+    if (downloadFinished && !tx.whoDownload && document.querySelector('#modal[open] [data-action="tx-who-download-cancel"]')) {
+      const status = await host.api("file_who_status");
+      if (serial !== reloadSerial) return;
+      tx.whoStatus = status;
+      whoDialog();
+    }
     if (tx.selected && !doc()) {
       tx.selected = null;
       tx.importing = true;

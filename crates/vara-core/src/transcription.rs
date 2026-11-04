@@ -260,6 +260,24 @@ impl FileStage {
         matches!(self, Self::Queued | Self::Decoding | Self::Transcribing)
     }
 }
+/// Durable optional post-ASR work requested by a client.
+#[derive(Clone, Copy, Debug, Serialize, Deserialize, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum WhoStage {
+    Pending,
+    Running,
+    Ready,
+    Failed,
+    Cancelled,
+    Skipped,
+}
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct WhoPlan {
+    pub known_speaker_count: Option<u32>,
+    pub stage: WhoStage,
+    pub error: Option<String>,
+}
+
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct TranscriptionDocument {
     pub id: String,
@@ -288,6 +306,8 @@ pub struct TranscriptionDocument {
     pub diarization: Option<Diarization>,
     #[serde(default)]
     pub diarization_error: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub who_plan: Option<WhoPlan>,
 }
 impl TranscriptionDocument {
     pub fn text(&self) -> &str {
@@ -314,7 +334,16 @@ impl TranscriptionDocument {
                 // Keep the established export shape independent of UI metadata.
                 let mut exported = self.clone();
                 exported.auto_speakers.clear();
-                Ok(serde_json::to_string_pretty(&exported)?)
+                let mut value = serde_json::to_value(&exported)?;
+                value["selected_text"] = serde_json::json!(text);
+                value["original_selected"] = serde_json::json!(original);
+                value["speaker_transcript"] = self
+                    .diarization
+                    .as_ref()
+                    .map(|who| serde_json::to_value(who.annotate(t)))
+                    .transpose()?
+                    .unwrap_or(serde_json::Value::Null);
+                Ok(serde_json::to_string_pretty(&value)?)
             }
             "srt" | "vtt" => {
                 if (!original && self.edited_text.is_some()) || t.timing == Timing::None {
@@ -408,7 +437,7 @@ pub struct TranscriptionStore {
 impl TranscriptionStore {
     pub fn open(path: &std::path::Path) -> Result<Self> {
         let db = rusqlite::Connection::open(path).map_err(Error::FileStorage)?;
-        db.execute_batch("PRAGMA journal_mode=WAL; PRAGMA secure_delete=ON; CREATE TABLE IF NOT EXISTS documents(id TEXT PRIMARY KEY,created_at INTEGER NOT NULL,value TEXT NOT NULL);").map_err(Error::FileStorage)?;
+        db.execute_batch("PRAGMA journal_mode=WAL; PRAGMA secure_delete=ON; CREATE TABLE IF NOT EXISTS documents(id TEXT PRIMARY KEY,created_at INTEGER NOT NULL,value TEXT NOT NULL); CREATE TABLE IF NOT EXISTS file_requests(request_id TEXT PRIMARY KEY,parameters TEXT NOT NULL,document_id TEXT NOT NULL UNIQUE);").map_err(Error::FileStorage)?;
         Ok(Self { db })
     }
     pub fn all(&self) -> Result<Vec<TranscriptionDocument>> {
@@ -427,6 +456,19 @@ impl TranscriptionStore {
         Ok(())
     }
     pub fn save_batch(&mut self, documents: &[TranscriptionDocument]) -> Result<()> {
+        self.save_batch_with_request(documents, None)
+    }
+    /// Request and document are committed together. The request lives until explicit deletion.
+    pub fn save_batch_with_request(
+        &mut self,
+        documents: &[TranscriptionDocument],
+        request: Option<(&str, &str)>,
+    ) -> Result<()> {
+        if request.is_some() && documents.len() != 1 {
+            return Err(Error::InvalidMessage(crate::UserMessage::new(
+                "file.request_invalid",
+            )));
+        }
         let tx = self.db.transaction().map_err(Error::FileStorage)?;
         for d in documents {
             tx.execute(
@@ -435,12 +477,35 @@ impl TranscriptionStore {
             )
             .map_err(Error::FileStorage)?;
         }
+        if let Some((id, parameters)) = request {
+            tx.execute(
+                "INSERT INTO file_requests(request_id,parameters,document_id) VALUES(?1,?2,?3)",
+                rusqlite::params![id, parameters, documents[0].id],
+            )
+            .map_err(Error::FileStorage)?;
+        }
         tx.commit().map_err(Error::FileStorage)
     }
-    pub fn delete(&self, id: &str) -> Result<()> {
+    pub fn request(&self, id: &str) -> Result<Option<(String, String)>> {
+        use rusqlite::OptionalExtension;
         self.db
-            .execute("DELETE FROM documents WHERE id=?1", [id])
+            .query_row(
+                "SELECT parameters,document_id FROM file_requests WHERE request_id=?1",
+                [id],
+                |r| Ok((r.get(0)?, r.get(1)?)),
+            )
+            .optional()
+            .map_err(Error::FileStorage)
+    }
+    pub fn delete(&self, id: &str) -> Result<()> {
+        let tx = self
+            .db
+            .unchecked_transaction()
             .map_err(Error::FileStorage)?;
-        Ok(())
+        tx.execute("DELETE FROM file_requests WHERE document_id=?1", [id])
+            .map_err(Error::FileStorage)?;
+        tx.execute("DELETE FROM documents WHERE id=?1", [id])
+            .map_err(Error::FileStorage)?;
+        tx.commit().map_err(Error::FileStorage)
     }
 }

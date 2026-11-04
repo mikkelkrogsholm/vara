@@ -36,7 +36,7 @@
     "targets": [
       "app"
     ],
-    "shortDescription": "Lokal diktering med app-grupperet historik",
+    "shortDescription": "Local dictation with app-grouped history",
     "category": "Productivity",
     "macOS": {
       "minimumSystemVersion": "13.0",
@@ -44,7 +44,10 @@
       "entitlements": "Entitlements.plist",
       "files": {
         "Resources/da.lproj/InfoPlist.strings": "localizations/da.lproj/InfoPlist.strings",
-        "Resources/en.lproj/InfoPlist.strings": "localizations/en.lproj/InfoPlist.strings"
+        "Resources/en.lproj/InfoPlist.strings": "localizations/en.lproj/InfoPlist.strings",
+        "Resources/vara": "../../scripts/vara",
+        "Resources/CLI.md": "../../CLI.md",
+        "Resources/vara-cli-v1": "../../scripts/vara-cli-v1"
       }
     },
     "icon": [

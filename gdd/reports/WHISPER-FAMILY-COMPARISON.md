@@ -1,15 +1,15 @@
-# Hele Whisper-serien — 23. oktober 2026
+# Whisper family — October 23, 2026
 
-Alle seks aktuelle flersprogede størrelser er prøvet lokalt med samme danske
-lydfil på **10,312 sekunder**. Apple M3 Max, 128 GiB RAM. Ingen lyd er uploadet.
-Appens modeller og GPU-opsætning er ikke ændret.
+All six current multilingual sizes were tested locally on the same **10.312-second**
+Danish audio file. Apple M3 Max, 128 GiB RAM. No audio was uploaded. The app's models
+and GPU configuration were not changed.
 
-## Hastighed
+## Speed
 
-Median af fem gentagelser efter første gennemløb. Modellen holdes indlæst;
-hver transskription får en frisk Whisper-state som i den aktuelle app.
+Median of five repetitions after the first run. The model remains loaded; each
+transcription gets a fresh Whisper state as in the current app.
 
-| Model | CPU | Metal GPU | Model-filstørrelse |
+| Model | CPU | Metal GPU | Model file size |
 | --- | ---: | ---: | ---: |
 | tiny | 499 ms | 601 ms | 78 MB |
 | base | 313 ms | 140 ms | 148 MB |
@@ -18,14 +18,16 @@ hver transskription får en frisk Whisper-state som i den aktuelle app.
 | large-v3 | 4201 ms | 1454 ms | 3095 MB |
 | large-v3-turbo | 2691 ms | 662 ms | 1625 MB |
 
-Dette er de konkrete testkonfigurationer på ét klip, ikke garantier om alle
-optagelser. Hastighed påvirkes også af den tekst og de tokens, modellen genererer.
-Tiny er således langsommere end Base på netop denne prøve.
+These are specific test configurations on one clip, not guarantees for all recordings.
+Speed is also affected by the text and tokens the model generates. Tiny is therefore
+slower than Base on this particular sample.
 
-Base/Small-tiderne fra tidligere rapporter er historiske målinger; tabellen her
-viser en samlet ny kørsel med samme build og testopsætning for alle seks modeller.
+Base/Small times from earlier reports are historical measurements; this table shows
+a new combined run with the same build and test setup for all six models.
 
-## Faktiske GPU-transskriptioner
+## Actual GPU transcripts
+
+The measured Danish output is preserved verbatim:
 
 ### tiny
 
@@ -51,44 +53,44 @@ viser en samlet ny kørsel med samme build og testopsætning for alle seks model
 
 > Hej med dig. Dette er en lille test af eddiktøjens hverdøj, som jeg er ved at bygge. Det hedder LSTNR og bruger L.E.N. Lad skrive til at omdanne tale til tekst.
 
-## Vurdering
+## Assessment
 
-Ingen af modellerne løser alle de svære termer/navne i denne prøve. Large-v3 og
-Turbo viser derfor ikke en klar kvalitetsgevinst, som retfærdiggør deres størrelse
-ud fra denne prøve alene. Vi har ingen uafhængigt gennemgået referencetekst og
-beregner ikke WER. En generel kvalitetsrangering kræver flere danske optagelser.
+None of the models resolves all the difficult terms/names in this sample. Large-v3
+and Turbo therefore show no clear quality gain that justifies their size based on
+this sample alone. There is no independently reviewed reference text and no WER is
+calculated. A general quality ranking requires more Danish recordings.
 
-Metal gør en væsentlig forskel for Base, Small, Medium og Large-modellerne her.
-Large-v3 Turbo er hurtigere end både Medium og Large-v3 på GPU i denne test.
-Det betyder, at CPU-målingerne alene ikke bør bestemme modelvalg til en Mac.
+Metal makes a substantial difference for Base, Small, Medium and Large here.
+Large-v3 Turbo is faster than both Medium and Large-v3 on GPU in this test. CPU
+measurements alone should therefore not determine model choice for a Mac.
 
-## Indlæsning og metode
+## Loading and method
 
-Indlæsning er separat fra transskriptionstiden. Tallene i JSON-rapporten er
-enkeltmålinger med fil- og shadercache efter tidligere testkørsler. Første Metal-
-smoketest tog cirka 9,16 s at initialisere. Det er ikke inkluderet i tabellens
-varme tider og må ikke præsenteres som en garanteret hurtig frisk installation.
+Loading is separate from transcription time. The JSON report numbers are single
+measurements with file and shader caches after earlier test runs. The first Metal
+smoke test took about 9.16 s to initialize. That is not included in the table's warm
+times and must not be presented as a guaranteed fast fresh installation.
 
-Rust-proben bruger whisper-rs 0.16.0 / whisper-rs-sys 0.15.0, greedy best_of=1,
-otte tråde, dansk, no_context og de fulde flersprogede modeller uden kvantisering.
-WAV-dekodning ligger uden for transskriptionstimeren. Metal er bekræftet i native
-backendlogs for samtlige GPU-kørsler; der er ikke blot sat et GPU-flag.
+The Rust probe uses whisper-rs 0.16.0 / whisper-rs-sys 0.15.0, greedy best_of=1,
+eight threads, Danish, no_context and full multilingual models without quantization.
+WAV decoding is outside the transcription timer. Metal was confirmed in native
+backend logs for all GPU runs; a GPU flag was not the only evidence.
 
-Alle model-filer er hentet fra [whisper.cpp-modelrepositoriet](https://huggingface.co/ggerganov/whisper.cpp)
-på revision `5359861c739e955e79d9a303bcbc70fb988958b1` og SHA-256-verificeret.
-De engelske `.en`-varianter og ældre Large-v1/v2 er ikke med i denne danske test.
+All model files were obtained from the [whisper.cpp model repository](https://huggingface.co/ggerganov/whisper.cpp)
+at revision `5359861c739e955e79d9a303bcbc70fb988958b1` and SHA-256 verified.
+English `.en` variants and older Large-v1/v2 are not included in this Danish test.
 
-[Rå data, tekster, indlæsningstider og kontrolsummer](whisper-family-comparison-2026-10-23.json).
+[Raw data, transcripts, loading times and checksums](whisper-family-comparison-2026-10-23.json).
 
-## Gentag testen
+## Repeat the test
 
-Med de allerede verificerede model-filer under `target/experiments/`:
+With the already verified model files under `target/experiments/`:
 
 ```sh
 cargo build --release -p vara-engine --example whisper_bench --features whisper-rs/metal
 python3 scripts/compare-whisper.py
 ```
 
-Brug `--cpu-only` til kun CPU. Scriptet kræver alle lokale model-filer og afslår
-at rapportere en GPU-kørsel, hvis native logs ikke bekræfter Metal-backend.
-Denne udviklerprobe ændrer ikke appens modelvalg eller aktiverer Metal i appen.
+Use `--cpu-only` for CPU only. The script requires all local model files and refuses
+to report a GPU run unless native logs confirm the Metal backend. This developer
+probe does not change the app's model choice or enable Metal in the app.

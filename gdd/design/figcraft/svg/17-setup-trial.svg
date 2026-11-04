@@ -4,25 +4,25 @@
 <rect x="230.390625" y="-1" width="1049.609375" height="820" rx="0" fill="rgb(247, 244, 238)"/>
 <rect x="415.6875" y="55.5" width="25" height="25" rx="50" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
 <svg x="420.6875" y="60.5" width="15" height="15" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(99, 100, 89)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"></path></svg>
-<text  x="449.1875" y="71.8" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Gør Vara klar</text>
+<text  x="449.1875" y="71.8" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Prepare Vara</text>
 <rect x="650.34375" y="55.5" width="25" height="25" rx="50" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
 <svg x="655.34375" y="60.5" width="15" height="15" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(99, 100, 89)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"></path></svg>
-<text  x="683.84375" y="71.8" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Giv adgang</text>
+<text  x="683.84375" y="71.8" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Grant access</text>
 <rect x="884.515625" y="55" width="26" height="26" rx="50" fill="rgb(47, 53, 39)"/>
 <rect x="885.015625" y="55.5" width="25" height="25" rx="50" fill="none" stroke="rgb(47, 53, 39)" stroke-width="1"/>
 <text  x="893.578125" y="71.7" fill="rgb(246, 244, 235)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="12px" font-weight="bold">3</text>
-<text  x="918.515625" y="71.8" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="bold">Prøv din genvej</text>
-<text  x="415.1875" y="164.3" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="28px" font-weight="bold">Sig din første sætning.</text>
-<text  x="415.1875" y="204.25" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Åbn et tekstfelt i en anden app. Hold din genvej, tal og slip. Resultatet</text>
-<text  x="415.1875" y="226.75" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">samles i din historik.</text>
+<text  x="918.515625" y="71.8" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="bold">Try your shortcut</text>
+<text  x="415.1875" y="164.3" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="28px" font-weight="bold">Say your first sentence.</text>
+<text  x="415.1875" y="204.25" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Open a text field in another app. Hold your shortcut, speak and release. The</text>
+<text  x="415.1875" y="226.75" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">result appears in your history.</text>
 <line x1="415.1875" y1="265" x2="1095.1875" y2="265" stroke="rgb(220, 214, 202)" stroke-width="1"/>
 <line x1="415.1875" y1="367" x2="1095.1875" y2="367" stroke="rgb(220, 214, 202)" stroke-width="1"/>
 <rect x="415.1875" y="290" width="110.1875" height="52" rx="8" fill="rgb(240, 235, 227)"/>
 <rect x="415.6875" y="290.5" width="109.1875" height="51" rx="8" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
 <text  x="430.1875" y="322.5" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="20px" font-weight="bold">⌥ Space</text>
-<text  x="549.375" y="321" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Hold → tal → slip</text>
-<text  x="415.1875" y="407.25" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Du kan også starte her. Så bliver teksten klar til manuel indsættelse.</text>
-<text  x="432.1875" y="471.103125" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Tilbage</text>
+<text  x="549.375" y="321" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Hold → speak → release</text>
+<text  x="415.1875" y="407.25" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">You can also start here. The text will be ready to insert manually.</text>
+<text  x="432.1875" y="471.103125" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Back</text>
 <line x1="415.1875" y1="535.5" x2="1095.1875" y2="535.5" stroke="rgb(220, 214, 202)" stroke-width="1"/>
-<text  x="416.1875" y="577.9" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Fortsæt senere</text>
+<text  x="416.1875" y="577.9" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Continue later</text>
 </svg>

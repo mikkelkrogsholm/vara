@@ -49,9 +49,20 @@ See [implementation status](../IMPLEMENTATION.md) for current limits and
 confirmed macOS global shortcuts, insertion in TextEdit/Codex, OpenAI and local
 Parakeet + Qwen. Windows/Linux native integration remains unfinished.
 
-For browser checks, serve `desktop` on localhost port 18770 and execute
-`desktop/tests/ui.playwright.js` through the Playwright tool's file runner. The
-suite renders the production UI with isolated test-only IPC fixtures.
+For browser checks, use Node.js and an existing Playwright installation with a
+Chromium browser. From the repository root, the standalone runner starts and
+stops its own localhost server on port 18770 and runs both UI suites with
+isolated test-only IPC fixtures:
+
+```sh
+PLAYWRIGHT_MODULE=/absolute/path/to/node_modules/playwright \
+PLAYWRIGHT_CHROMIUM=/absolute/path/to/chromium \
+node desktop/tests/legacy-runner.cjs
+```
+
+Both environment variables are optional when Node can resolve `playwright` and
+its bundled Chromium is installed. The runner writes test artifacts under
+`/tmp/vara-22b-legacy` by default; set `VARA_TEST_OUTPUT_ROOT` to change this.
 
 For a microphone-free native pipeline test, build with the explicit developer
 feature `test-harness`, set `VARA_TEST_WAV` to a local WAV and use an isolated
@@ -77,7 +88,10 @@ writes may have completed and must be checked before repeating. See the
 
 `vara-core::transcription` defines file documents, timing validation, export and a
 separate document store. `vara-engine::{media,transcription}` decode and recognize
-files. The host queue lives in `src-tauri/src/transcription.rs`; its UI composition
+files. The profile-locked queue lives in `vara-app`; on Mac the local backend owns it
+and the Tauri file adapter connects through a same-user Unix socket. Other
+platforms retain the in-process adapter. The backend exits after 60 seconds idle
+without clients or jobs; closing the GUI does not cancel accepted jobs. Its UI composition
 and controller are in `ui/transcription.js` using existing shared primitives and
 model readiness components. Transcription media is exposed only through a scoped
 native asset protocol; unrelated files are outside that playback scope.
@@ -96,7 +110,7 @@ See the feature report for evidence, limits and native acceptance status.
 
 ## Who local speaker labeling
 
-Open a completed file document and choose **Find talere**. Download Who once via
+Open a completed file document and choose **Find speakers**. Download Who once via
 the explicit supplier/license/usage disclosure; then run it on the private audio
 copy. Speaker names and original word times remain inspectable; ambiguous words
 are not assigned a single speaker. The dialog optionally accepts a known speaker count; recurring SDK groups become references, checked against prototypes that omit the lane’s entire piece; lanes without exactly one matching reference remain uncertain. The raw SDK result and derived intervals are retained separately; temporary embeddings are not saved. Empty/failed results retain prior annotations.

@@ -1,6 +1,6 @@
 # Who integration — verification, 2026-10-26
 
-Optional local speaker labeling is available through **Find talere** in the file
+Optional local speaker labeling is available through **Find speakers** in the file
 transcription editor. The original ASR, source file, corrections and ordinary
 dictation are preserved. No Who call runs merely from opening Vara.
 

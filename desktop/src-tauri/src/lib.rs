@@ -1,3 +1,5 @@
+pub mod agent_cli;
+pub mod local_backend;
 fn host_message(code: &str) -> String {
     vara_core::UserMessage::new(code).wire()
 }
@@ -321,8 +323,7 @@ pub fn run() {
             };
             let service =
                 Service::new(app.handle().clone(), root.clone()).map_err(std::io::Error::other)?;
-            app.asset_protocol_scope()
-                .allow_directory(root.join("transcriptions"), false)?;
+            transcription::allow_media(app.handle(), &root)?;
             let files = transcription::Files::new(app.handle().clone(), root)
                 .map_err(std::io::Error::other)?;
             app.manage(files.clone());
@@ -420,6 +421,12 @@ pub fn run() {
             }
             _ => {}
         });
+}
+
+/// Isolated native file adapter verification; excluded from normal builds.
+#[cfg(all(feature = "test-harness", target_os = "macos"))]
+pub fn run_native_file_fixture() -> bool {
+    transcription::test_fixture_entry()
 }
 
 /// Isolated native verification entry; never included in the release feature set.

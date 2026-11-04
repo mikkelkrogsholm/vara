@@ -2,20 +2,20 @@
 (() => {
   const appNames = {
     mail: "Mail",
-    notes: "Noter",
+    notes: "Notes",
     code: "Visual Studio Code",
     browser: "Browser",
   };
   const defaultPrompt =
-    "Ret tegnsætning og fjern fyldord. Bevar betydningen, navne, tal og min tone. Returnér kun den færdige tekst.";
+    "Fix punctuation and remove filler words. Preserve the meaning, names, numbers, and my tone. Return only the finished text.";
   const results = [
     {
       id: 1,
       app: "mail",
-      date: "I dag kl. 09.24",
+      date: "Today at 9:24 AM",
       duration: 12,
-      raw: "hej anna tak for din mail jeg kan godt torsdag klokken ti send gerne en invitation",
-      text: "Hej Anna. Tak for din mail. Jeg kan godt torsdag kl. 10. Send gerne en invitation.",
+      raw: "hi anna thanks for your email thursday at ten works for me please send an invitation",
+      text: "Hi Anna. Thanks for your email. Thursday at 10 works for me. Please send an invitation.",
       processed: true,
       status: "inserted",
       local: true,
@@ -23,9 +23,9 @@
     {
       id: 2,
       app: "mail",
-      date: "I går kl. 16.03",
+      date: "Yesterday at 4:03 PM",
       duration: 8,
-      raw: "Sender udkast til review i eftermiddag.",
+      raw: "I’ll send the draft for review this afternoon.",
       processed: false,
       status: "inserted",
       local: true,
@@ -33,9 +33,9 @@
     {
       id: 3,
       app: "mail",
-      date: "21. okt. 2026 · 11.15",
+      date: "Oct 21, 2026 · 11:15 AM",
       duration: 11,
-      raw: "Lad os tage en kort status på mandag.",
+      raw: "Let’s have a quick update on Monday.",
       processed: false,
       status: "inserted",
       local: true,
@@ -43,9 +43,9 @@
     {
       id: 4,
       app: "notes",
-      date: "I går kl. 14.21",
+      date: "Yesterday at 2:21 PM",
       duration: 6,
-      raw: "Vi starter med den enkle løsning.",
+      raw: "We’ll start with the simple solution.",
       processed: false,
       status: "inserted",
       local: true,
@@ -53,9 +53,9 @@
     {
       id: 5,
       app: "notes",
-      date: "20. okt. 2026 · 10.42",
+      date: "Oct 20, 2026 · 10:42 AM",
       duration: 9,
-      raw: "Tilføj en tydelig fejlbesked, hvis transskriptionen fejler.",
+      raw: "Add a clear error message if transcription fails.",
       processed: false,
       status: "manual",
       local: true,
@@ -63,9 +63,9 @@
     {
       id: 6,
       app: "code",
-      date: "19. okt. 2026 · 10.05",
+      date: "Oct 19, 2026 · 10:05 AM",
       duration: 14,
-      raw: "Refaktorér funktionen og tilføj tests.",
+      raw: "Refactor the function and add tests.",
       processed: false,
       status: "inserted",
       local: true,
@@ -94,7 +94,7 @@
           enabled: app === "mail",
           prompt:
             app === "mail"
-              ? "Gør min diktering til en klar og venlig mail. Bevar mit budskab, min tone og alle faktuelle detaljer. Returnér kun mailteksten."
+              ? "Turn my dictation into a clear, friendly email. Preserve my message, tone, and all factual details. Return only the email text."
               : defaultPrompt,
           engine: "local",
         },

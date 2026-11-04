@@ -1,38 +1,38 @@
-# Vara i FigCraft
+# Vara in FigCraft
 
-Åbn `Vara.figcraft` i FigCraft. Filen dokumenterer desktop-UI'et fra revision `891335492bc47738bb6fbebc615b687dad8d2bac` ved 1280 × 820. Den er et redigerbart udgangspunkt, ikke en interaktiv prototype. Tekst er tekstlag, ikoner og former er vektorer, og den eneste bitmap er den faktiske Mail-appillustration. Indholdet er fiktive testdata.
+Open `Vara.figcraft` in FigCraft. The file documents the desktop UI from revision `26f61b5` at 1280 × 820. It is an editable starting point, not an interactive prototype. Text uses text layers, icons and shapes are vectors, and the only bitmap is the actual Mail app illustration. The content is fictional test data.
 
-- **01 · Primære skærme:** historik og original, AI pr. app, alle tre indstillingsfaner, transskriptionsimport og dokumentvisning, AI-fanen samt fortsættelser af indstillingerne ved scroll.
-- **02 · Dialoger og tilstande:** behandlingsvalg, sletning, Who-download, kendt antal og usikkerhed, tre opsætningstrin, genvej, nøgle, appvælger, eksport, endpoint og model samt tre HUD-tilstande.
-- **03 · Komponenter:** dele udtrukket fra de faktiske renderede elementer. Sidepaneler med navigation, primære knapper, felter og gemmelinjer bruges som instanser i skærmene. Varianter med forskellig tekst, position eller tilstand har hvert sit hovedkomponent.
+- **01 · Primary screens:** history and original, AI per app, all three settings tabs, transcription import and document view, the AI tab, and scrolled continuations of settings.
+- **02 · Dialogs and states:** processing choices, deletion, Who download, known count and uncertainty, three setup steps, shortcut, key, app picker, export, endpoint and model, and three HUD states.
+- **03 · Components:** parts extracted from the actual rendered elements. Sidebars with navigation, primary buttons, fields and save bars are used as instances in the screens. Variants with different text, positions or states each have their own main component.
 
-Filen har 31 skærm-/tilstandsframes, 31 hovedkomponenter og 51 instanser. CLI'ens `info` rapporterer 3.831 lag; den native JSON indeholder 1.397 tekstlag. Teksten er opdelt efter synlige linjer og kan redigeres, men skærmene har ikke responsivt autolayout eller fungerende handlinger. Komponenterne indeholder også redigerbar tekst og vektorer. Dialogskærme er selvstændige snapshots for at bevare lagrækkefølgen under backdrop.
+The file has 31 screen/state frames, 33 main components and 54 instances. The CLI's `info` reports 3,834 nodes; the native JSON contains 1,375 text layers. Text is split by visible line and can be edited, but the screens have no responsive auto layout or working actions. The components also contain editable text and vectors. Dialog screens are separate snapshots to preserve layer order under the backdrop.
 
-## Visuel kontrol og begrænsninger
+## Visual checks and limitations
 
-`references/` indeholder browseroptagelser af det aktuelle UI med en mock af Tauri og de sanitiserede fixtures fra `desktop/tests`. `exports/` indeholder udvalgte eksporter fra den endelige native fil. `comparisons/` viser de samme par side om side, browser til venstre og FigCraft til højre. Sammenligningerne dækker historik, appregel, diktering, transskriptionseditor, Who og de scrollede indstillinger. De viser, at placeringer og farver ligger tæt på referencen, men ikke er pixelidentiske: tekstvægt, skriftrendering, enkelte tekstmellemrum/ellipsis, fokusmarkeringer, skygger og native kontroller kan afvige. FigCraft mangler ingen fonte ifølge `info`; browser og FigCraft kan alligevel tegne systemfonte forskelligt. Browserreferencen er Chromium, ikke en måling af den kørende macOS WebView.
+`references/` contains browser captures of the current UI with a Tauri mock and fictional fixtures adapted from `desktop/tests`. `exports/` contains selected exports from the final native file. `comparisons/` shows the same pairs side by side, browser on the left and FigCraft on the right. Comparisons cover history, app rule, dictation, transcription editor, Who and scrolled settings. They show that positions and colors are close to the reference but not pixel-identical: text weight, font rendering, some spacing/ellipsis, focus indicators, shadows and native controls can differ. FigCraft reports no missing fonts in `info`; browsers and FigCraft can still render system fonts differently. The browser reference is Chromium, not a measurement of the running macOS WebView.
 
-HUD-frame 18–20 er rekonstrueret ud fra `crates/vara-platform/src/macos_hud.m`, tokenfarverne og `desktop/src-tauri/src/service.rs`: 520 × 76, de faktiske etiketter, kontroller og et illustrativt lydniveau. Den er **ikke** optaget fra en kørende macOS-HUD og har ingen pixelreference. Den reelle app bestemmer appikon og lydmåler dynamisk.
+HUD frames 18–20 are reconstructed from `crates/vara-platform/src/macos_hud.m`, the token colors and `desktop/src-tauri/src/service.rs`: 520 × 76, actual labels and controls, and an illustrative audio level. They were **not** captured from a running macOS HUD and have no pixel reference. The actual app determines the app icon and audio meter dynamically.
 
-## Genskab
+## Rebuild
 
-FigCraft CLI 0.12.1 kan samle den native fil fra de medfølgende SVG- og fragmentdata uden at køre appen:
+FigCraft CLI 0.15.0 can assemble the native file from the included SVG and fragment data without running the app:
 
 ```sh
 python3 gdd/design/figcraft/build.py
-'/Applications/FigCraft Tools/figcraft-cli-0.12.1-macos-universal/figcraft-cli' info gdd/design/figcraft/Vara.figcraft --json
-'/Applications/FigCraft Tools/figcraft-cli-0.12.1-macos-universal/figcraft-cli' export gdd/design/figcraft/Vara.figcraft -o /tmp/vara-history.png --node 01-history
+'/Applications/FigCraft Tools/current/figcraft-cli' info gdd/design/figcraft/Vara.figcraft --json
+'/Applications/FigCraft Tools/current/figcraft-cli' export gdd/design/figcraft/Vara.figcraft -o /tmp/vara-history.png --node 01-history
 ```
 
-Sæt `FIGCRAFT_CLI` til den lokale CLI-sti, hvis den er installeret et andet sted. `build.py` opretter komponenter fra de udtrukne dele, importerer skærmene og placerer instanserne med CLI; ingen screenshots indlæses i dokumentet.
+Set `FIGCRAFT_CLI` to the local CLI path if installed elsewhere. `build.py` creates components from the extracted parts, imports the screens and places instances using the CLI; no screenshots are loaded into the document.
 
-For at tage browserreferencerne igen kræves Node, en lokal Playwright-installation og en kompatibel Chromium. Start `python3 gdd/design/figcraft/serve.py` i en terminal, og kør derefter:
+Recapturing browser references requires Node, a local Playwright installation and a compatible Chromium. Start `python3 gdd/design/figcraft/serve.py` in a terminal, then run:
 
 ```sh
-PLAYWRIGHT_MODULE=/absolut/sti/til/node_modules/playwright \
-PLAYWRIGHT_CHROMIUM=/absolut/sti/til/chrome-headless-shell \
+PLAYWRIGHT_MODULE=/absolute/path/to/node_modules/playwright \
+PLAYWRIGHT_CHROMIUM=/absolute/path/to/chrome-headless-shell \
 node gdd/design/figcraft/capture-runner.cjs
 python3 gdd/design/figcraft/build.py
 ```
 
-Stop serveren efterfølgende. Hvis Playwright og dens browser findes i standardplaceringerne, kan de to miljøvariabler udelades. Capture-scriptene indeholder en fastfrosset kopi af de fiktive fixtures og Tauri-mocks fra nævnte revision; de læser UI-koden og CSS fra checkoutet. Ved ændringer i fixtures eller mockkontrakter skal capture-scriptene opdateres, før optagelserne betragtes som en ny reference. Ingen rigtige nøgler, optagelser eller transskriptioner bruges.
+Stop the server afterwards. If Playwright and its browser are in their standard locations, the two environment variables can be omitted. The capture scripts contain a frozen English adaptation of fictional fixtures and Tauri mocks for the specified revision; they read UI code and CSS from the checkout. If fixtures or mock contracts change, update the capture scripts before treating the captures as a new reference. No real keys, recordings or transcripts are used.

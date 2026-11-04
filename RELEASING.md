@@ -5,6 +5,8 @@ Rust/Tauri workspace. Its bundle identifier is `dk.vara.desktop`.
 
 ## Verify and build
 
+The signed build requires Python 3.11 or newer for the version check.
+
 1. Run the optimized workspace tests from the repository root:
    ```sh
    CARGO_INCREMENTAL=0 CARGO_PROFILE_RELEASE_DEBUG=0 cargo test --release --workspace --locked
@@ -22,10 +24,52 @@ Rust/Tauri workspace. Its bundle identifier is `dk.vara.desktop`.
    user data and OS credential-store entries; installation is not a profile reset.
 4. Verify microphone, the chosen global shortcut and insertion into another app.
    Input Monitoring, Accessibility and microphone access are separate permissions.
+5. Install and verify the bundled CLI launcher using [CLI.md](CLI.md). The guide
+   is also included as `Contents/Resources/CLI.md`; it invokes the installed app,
+   and no test harness or model weights belong in the release.
 
-For a version change, keep the workspace version in `Cargo.toml`, the package
-version in `desktop/src-tauri/Cargo.toml` and `desktop/src-tauri/tauri.conf.json`
-consistent, and update `Cargo.lock` as necessary.
+For an opt-in, isolated local ASR and Who smoke test with repeated tracked `Samples/da_test.wav`, synthetic video, and a short synthetic Sara voice, run `python3 scripts/tests/real_local_cli.py APP MODELS NEW_OUTPUT_DIR [LAUNCHER]`.
+Point `APP` at the signed app and `MODELS` at an existing model directory; the
+new output directory retains the profile, inputs and JSON/stderr for
+review. Supply the installed launcher as the optional fourth argument to test
+the public entrypoint of `/Applications/Vara.app`; otherwise it uses the internal
+developer entrypoint against the supplied app. It does not verify native UI. The known-count audio repeats the 10.312-second sample 31 times to span a
+300-second SDK window; this is a smoke test, not an accuracy score. No models are
+downloaded and no cloud engine is selected. Run only with models whose license
+has already been accepted.
+
+## Versions
+
+The workspace version in `Cargo.toml` is the source of truth; every workspace
+package, including the desktop manifest, inherits it. Keep the literal version
+in `desktop/src-tauri/tauri.conf.json` and the local packages in `Cargo.lock` in
+sync. For an intentional version change:
+
+1. Change `[workspace.package].version` in `Cargo.toml` and the literal `version`
+   in `desktop/src-tauri/tauri.conf.json` to the same SemVer value. Package
+   manifests continue to inherit the workspace version.
+2. Refresh `Cargo.lock` without compiling and review its diff:
+   ```sh
+   cargo metadata --format-version 1 > /dev/null
+   git diff -- Cargo.lock
+   ```
+   Cargo may need access to dependencies when resolving metadata.
+3. Update [CHANGELOG.md](CHANGELOG.md) for the change. Validate with Python 3.11+:
+
+   ```sh
+   python3 scripts/check-version.py
+   python3 -m unittest discover -s scripts/tests -p 'test_version.py'
+   # For an explicit release, replace the example with the intended tag:
+   python3 scripts/check-version.py --tag v0.1.0
+   ```
+
+Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html):
+`MAJOR.MINOR.PATCH`. Before 1.0, use patch releases for fixes and minor releases
+for features and intentional breaking changes. Public compatibility contracts,
+including CLI schemas and RPC, can be versioned independently as needed. A
+maintainer creates a `vX.Y.Z` tag only for an explicit release; these checks do
+not create tags or publish anything. The changelog records unreleased changes
+until an actual release is made.
 
 ## Distribution status
 

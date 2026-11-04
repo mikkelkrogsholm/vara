@@ -34,6 +34,53 @@ fn defaults_are_local_direct_empty() {
     assert_eq!(s.retention_days, None);
 }
 #[test]
+fn english_defaults_preserve_saved_preferences() {
+    let defaults = Settings::default();
+    assert!(
+        defaults
+            .general_prompt
+            .contains("Preserve the input language")
+    );
+    for (id, label) in [
+        ("local.parakeet", "Parakeet Redux · on device"),
+        ("local.whisper", "Whisper · on device"),
+        ("local.text", "Qwen · on device"),
+        ("openai.speech", "OpenAI · speech"),
+        ("elevenlabs.speech", "ElevenLabs · speech"),
+        ("openai.text", "OpenAI · text"),
+        ("anthropic.text", "Anthropic · text"),
+        ("gemini.text", "Gemini · text"),
+        ("claude.cli", "Claude Code · own login"),
+        ("codex.cli", "Codex · own login"),
+        ("gemini.cli", "Gemini CLI · own login"),
+        ("ollama.text", "Ollama · local service"),
+    ] {
+        assert_eq!(
+            defaults.engines.iter().find(|e| e.id == id).unwrap().label,
+            label
+        );
+    }
+    let db = Store::open(std::path::Path::new(":memory:")).unwrap();
+    let mut saved = defaults;
+    saved.general_prompt = "Min egen danske instruktion".into();
+    saved
+        .engines
+        .iter_mut()
+        .find(|e| e.id == "local.parakeet")
+        .unwrap()
+        .label = "Parakeet Redux · på enheden".into();
+    saved
+        .engines
+        .iter_mut()
+        .find(|e| e.id == "ollama.text")
+        .unwrap()
+        .label = "My custom engine".into();
+    db.save_settings(&saved).unwrap();
+    let restored = db.settings().unwrap();
+    assert_eq!(restored.general_prompt, saved.general_prompt);
+    assert_eq!(restored.engines, saved.engines);
+}
+#[test]
 fn app_rule_and_model_are_frozen_at_start() {
     let mut s = Settings::default();
     s.app_rules.insert(

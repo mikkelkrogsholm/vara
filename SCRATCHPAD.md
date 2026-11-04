@@ -14,10 +14,10 @@ and reports describe their original revision; they are not current build inputs.
 Do not resume the cancelled dictionary/regex investigation without a new request.
 Keep the next work bounded to the user's chosen feature or concrete defect.
 
-## Transskriberingsfane
+## Transcription tab
 
-Featureliste, første leverance, ordniveau-tidsstempler, redigering/alignment,
-kildehåndtering og åbne tekniske afklaringer er samlet i
-[gdd/TRANSCRIPTION-SPEC.md](gdd/TRANSCRIPTION-SPEC.md). Implementeret på
-`codex/file-transcription`; native macOS-sluttest bestået 2026-10-26. Evidens og
-begrænsninger: [rapport](gdd/reports/transcription/README.md).
+The feature list, first delivery, word-level timestamps, editing/alignment,
+source handling and open technical questions are collected in
+[gdd/TRANSCRIPTION-SPEC.md](gdd/TRANSCRIPTION-SPEC.md). Implemented on
+`codex/file-transcription`; final native macOS test passed 2026-10-26. Evidence and
+limitations: [report](gdd/reports/transcription/README.md).

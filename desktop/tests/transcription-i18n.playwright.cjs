@@ -29,12 +29,14 @@ const server = http.createServer((req,res) => {
           case 'snapshot': return structuredClone(data);
           case 'devices': return [];
           case 'application_icons': return {};
-          case 'file_list': return {documents:structuredClone(docs),media:{doc:'/player.wav'}};
+          case 'file_list': { const snapshot={documents:structuredClone(docs),media:{doc:'/player.wav'},who_download_busy:!!window.whoDownloadBusy}; const delay=window.nextListDelay||0, fail=window.nextListFailure; window.nextListDelay=0; window.nextListFailure=false; if(delay) await new Promise(resolve=>setTimeout(resolve,delay)); if(fail) throw Error('stale failure sentinel'); return snapshot; }
           case 'file_pick': return [{path:'/f1.wav',name:'f1.wav',bytes:1500000},{path:'/f2.wav',name:'f2.wav',bytes:2000000}];
           case 'file_add': docs.push({...structuredClone(docs[0]),id:'queued',title:'queued',stage:'transcribing',completed_seconds:2,transcript:null}); emit();return ['queued'];
           case 'file_cancel': d.stage='cancelled';emit();return;
           case 'file_retry': d.stage='queued';emit();return;
           case 'file_save': d.edited_text=payload.text;d.revision++;emit();return {revision:d.revision};
+          case 'file_ai_cancel': d.ai_busy=false;emit();return;
+          case 'file_who_cancel': window.whoDownloadBusy=false;emit();return;
           case 'file_ai': await new Promise(resolve=>window.finishAI=resolve);d.ai_text='AI result Æ';emit();return;
           case 'file_who_status': return {available:true,ready:!!window.whoReady};
           case 'file_who_download': await new Promise(resolve=>window.finishDownload=resolve);window.whoReady=true;return;
@@ -82,11 +84,35 @@ const server = http.createServer((req,res) => {
       assert.equal(sent.format,format); assert.equal(sent.original,true); assert.equal(sent.draft,undefined);
     }
     await action('tx-tab').click(); // transcript tab stays selected; select AI explicitly below
-    await page.locator('[data-action="tx-tab"][data-id="ai"]').click(); await page.locator('#tx-ai-prompt').fill('User prompt Æ'); await action('tx-ai').click({timeout:2000});
+    await page.locator('[data-action="tx-tab"][data-id="ai"]').click();
+    // A new UI has no local pending promise but must display and cancel backend work.
+    await page.evaluate(()=>{docs[0].ai_busy=true;events['vara:files']({payload:null});});
+    await action('tx-ai-cancel').waitFor(); assert.equal(await action('tx-ai').isDisabled(),true);
+    await action('tx-ai-cancel').click(); await page.waitForFunction(()=>!docs[0].ai_busy);
+    await page.waitForFunction(()=>!document.querySelector('[data-action="tx-ai-cancel"]'));
+    await page.locator('#tx-ai-prompt').fill('User prompt Æ'); await action('tx-ai').click({timeout:2000});
     await page.waitForFunction(()=>!!window.finishAI); const beforeAI=await page.evaluate(()=>calls.length); await locale('en'); assert.match(await page.locator('.tx-ai').innerText(),/Processing/); assert.equal(await page.evaluate(()=>calls.length),beforeAI); await page.evaluate(()=>finishAI()); await page.waitForSelector('.tx-ai-result'); assert.match(await page.locator('.tx-ai-result').innerText(),/AI result Æ/);
-    await page.locator('[data-action="tx-tab"][data-id="transcript"]').click(); await action('tx-who-open').click(); await action('tx-who-download').click(); await page.waitForFunction(()=>!!window.finishDownload); const beforeDownload=await page.evaluate(()=>calls.length); await locale('da'); assert.match(await page.locator('dialog').innerText(),/Henter og klargør Who/); assert.equal(await page.evaluate(()=>calls.length),beforeDownload); await page.evaluate(()=>finishDownload()); await page.locator('#tx-who-count').waitFor(); await page.locator('#tx-who-count').selectOption('1'); await locale('en'); await locale('da'); assert.equal(await page.locator('#tx-who-count').inputValue(),'1'); assert.match(await page.locator('dialog').innerText(),/Taleropdeling med Who/); await action('tx-who-run').click(); await page.waitForFunction(()=>!!window.finishWho); const beforeWho=await page.evaluate(()=>calls.length); await locale('en'); assert.match(await page.locator('#tx-who-tools').innerText(),/Finding speakers/); assert.equal(await page.evaluate(()=>calls.length),beforeWho); await page.evaluate(()=>finishWho()); await page.waitForSelector('.tx-who-turns'); await page.locator('.tx-who-turns summary').click(); assert.match(await page.locator('#tx-who-tools').innerText(),/1 speaker · 2 seconds with uncertain speaker/); assert.match(await page.locator('.tx-who-turns').innerText(),/Speaker 1/); await locale('da'); assert.match(await page.locator('.tx-who-turns').innerText(),/Taler 1/);
+    await page.locator('[data-action="tx-tab"][data-id="transcript"]').click();
+    await page.evaluate(()=>{window.whoDownloadBusy=true;events['vara:files']({payload:null});});
+    await page.waitForTimeout(400); await action('tx-who-open').click();
+    await action('tx-who-download-cancel').waitFor(); await action('tx-who-download-cancel').click();
+    await page.waitForSelector('[data-action="tx-who-download"]');
+    await action('tx-who-download').click(); await page.waitForFunction(()=>!!window.finishDownload); const beforeDownload=await page.evaluate(()=>calls.length); await locale('da'); assert.match(await page.locator('dialog').innerText(),/Henter og klargør Who/); assert.equal(await page.evaluate(()=>calls.length),beforeDownload); await page.evaluate(()=>finishDownload()); await page.locator('#tx-who-count').waitFor(); await page.locator('#tx-who-count').selectOption('1'); await locale('en'); await locale('da'); assert.equal(await page.locator('#tx-who-count').inputValue(),'1'); assert.match(await page.locator('dialog').innerText(),/Taleropdeling med Who/); await action('tx-who-run').click(); await page.waitForFunction(()=>!!window.finishWho); const beforeWho=await page.evaluate(()=>calls.length); await locale('en'); assert.match(await page.locator('#tx-who-tools').innerText(),/Finding speakers/); assert.equal(await page.evaluate(()=>calls.length),beforeWho); await page.evaluate(()=>finishWho()); await page.waitForSelector('.tx-who-turns'); await page.locator('.tx-who-turns summary').click(); assert.match(await page.locator('#tx-who-tools').innerText(),/1 speaker · 2 seconds with uncertain speaker/); assert.match(await page.locator('.tx-who-turns').innerText(),/Speaker 1/); await locale('da'); assert.match(await page.locator('.tx-who-turns').innerText(),/Taler 1/);
     await page.locator('.tx-who-turns [data-action="tx-speaker"]').click(); await page.locator('#tx-speaker-input').fill('Person Æ'); await locale('en'); assert.equal(await page.locator('#tx-speaker-input').inputValue(),'Person Æ'); await action('tx-speaker-save').click(); assert.match(await page.locator('.tx-who-turns').textContent(),/Person Æ/);
     const after=await page.evaluate(()=>docs[0]); const original=JSON.parse(sourceBefore); assert.deepEqual(after.transcript,original.transcript); assert.equal(after.source_path,original.source_path); assert.equal(after.revision,original.revision+1); assert.equal(after.edited_text,'Draft Æ unchanged'); assert.equal(after.speakers.legacy,'Taler 1'); assert.equal(after.speakers['who-0'],'Person Æ'); assert.equal(after.ai_text,'AI result Æ');
+    // A slower pre-restart snapshot must not overwrite a newer reload.
+    await page.evaluate(()=>{docs[0].title='Old snapshot';window.nextListDelay=900;events['vara:files']({payload:null});});
+    await page.waitForTimeout(350);
+    await page.evaluate(()=>{docs[0].title='New snapshot';events['vara:files']({payload:null});});
+    await page.waitForTimeout(1200);
+    assert.match(await page.locator('.tx-title').innerText(),/New snapshot/);
+    await page.evaluate(()=>{window.nextListDelay=900;window.nextListFailure=true;events['vara:files']({payload:null});});
+    await page.waitForTimeout(350);
+    await page.evaluate(()=>events['vara:files']({payload:null}));
+    await page.waitForTimeout(1200);
+    assert.doesNotMatch(await page.locator('body').innerText(),/stale failure sentinel/);
+    await page.evaluate(()=>{docs[0].title='Interview <A>';events['vara:files']({payload:null});});
+    await page.waitForTimeout(400);
     await page.evaluate(() => {
       window.restoreText = () => { for (const [el,size] of window.scaledText || []) if (el.isConnected) el.style.fontSize=size; window.scaledText=[]; };
       window.doubleText = () => { window.restoreText(); const els=[...document.querySelectorAll('body *')]; const sizes=els.map(el=>parseFloat(getComputedStyle(el).fontSize)); window.scaledText=els.map(el=>[el,el.style.fontSize]); els.forEach((el,i)=>{el.style.fontSize=`${sizes[i]*2}px`}); };

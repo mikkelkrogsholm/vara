@@ -1,0 +1,34 @@
+name: Bug report
+description: Report a reproducible problem
+title: "Bug: "
+body:
+  - type: markdown
+    attributes:
+      value: Please use synthetic or public examples. Do not include private audio, transcripts, API keys or other sensitive data.
+  - type: input
+    id: version
+    attributes:
+      label: Vara version and operating system
+      placeholder: Version, OS and OS version
+    validations:
+      required: true
+  - type: input
+    id: model
+    attributes:
+      label: Model or provider, if relevant
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+    validations:
+      required: true
+  - type: textarea
+    id: results
+    attributes:
+      label: Expected and actual results
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Sanitized logs, screenshots or other context

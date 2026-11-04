@@ -17,6 +17,19 @@ fi
 if git -C target/who-sdk apply --reverse --check "$patch" 2>/dev/null; then
   : # Already patched.
 else
+  # Migrate the previous lane patch without discarding SDK checkout changes.
+  # Its diagnostic hunk is retained verbatim as the second hunk of this patch.
+  legacy=$(mktemp "${TMPDIR:-/tmp}/vara-who-legacy.XXXXXX")
+  trap 'rm -f "$legacy"' EXIT HUP INT TERM
+  awk 'NR <= 2 {print; next} /^@@/ {n++} n >= 2 {print}' "$patch" > "$legacy"
+  if git -C target/who-sdk apply --reverse --check "$legacy" 2>/dev/null; then
+    git -C target/who-sdk apply --reverse "$legacy"
+    if ! git -C target/who-sdk apply --check "$patch"; then
+      git -C target/who-sdk apply "$legacy"
+      echo 'Who SDK checkout differs from the supported patches; preserved it.' >&2
+      exit 1
+    fi
+  fi
   git -C target/who-sdk apply --check "$patch"
   git -C target/who-sdk apply "$patch"
 fi

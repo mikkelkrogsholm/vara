@@ -6152,6 +6152,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "vara-app"
+version = "0.1.0"
+dependencies = [
+ "parking_lot",
+ "serde",
+ "serde_json",
+ "tempfile",
+ "tokio",
+ "uuid",
+ "vara-core",
+ "vara-engine",
+]
+
+[[package]]
 name = "vara-core"
 version = "0.1.0"
 dependencies = [
@@ -6169,17 +6183,22 @@ name = "vara-desktop"
 version = "0.1.0"
 dependencies = [
  "cc",
+ "dirs",
+ "libc",
  "parking_lot",
  "rfd",
  "same-file",
  "serde",
  "serde_json",
+ "sha2",
  "tauri",
  "tauri-build",
  "tauri-plugin-global-shortcut",
+ "tempfile",
  "thiserror 2.0.21",
  "tokio",
  "uuid",
+ "vara-app",
  "vara-core",
  "vara-engine",
  "vara-platform",

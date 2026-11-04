@@ -1,0 +1,78 @@
+{
+  "format": "gdd-report/0.2",
+  "tool": {
+    "name": "gdd-validator",
+    "version": "0.8.0"
+  },
+  "spec_revision": "sha256:69ca6407d21d67eb8edbee5ba784d24236b8219e61aeef8e89963be9fff5a4ff",
+  "profiles": [
+    "visualization"
+  ],
+  "scope": [],
+  "checks": [
+    {
+      "check_id": "representation.schema",
+      "dimension": "model",
+      "result": "PASS",
+      "scope": [],
+      "reason": "Local JSON Schema validation.",
+      "diagnostics": []
+    },
+    {
+      "check_id": "representation.schema",
+      "dimension": "model",
+      "result": "PASS",
+      "scope": [],
+      "reason": "Local JSON Schema validation.",
+      "diagnostics": []
+    },
+    {
+      "check_id": "model.semantics",
+      "dimension": "model",
+      "result": "PASS",
+      "scope": [],
+      "reason": "Core references, endpoints, identity, refinement, machines, types and declared extension data checked.",
+      "diagnostics": []
+    },
+    {
+      "check_id": "check.revision_unresolved",
+      "dimension": "model",
+      "result": "UNKNOWN",
+      "scope": [],
+      "reason": "Historical snapshot unavailable for decision.who.2026-10-26; targets not rebound to current model.",
+      "diagnostics": [
+        {
+          "code": "REVISION_UNRESOLVED",
+          "severity": "warning",
+          "message": "Historical snapshot unavailable for decision.who.2026-10-26; targets not rebound to current model.",
+          "location": {
+            "file": null,
+            "pointer": ""
+          },
+          "related_ids": [
+            "decision.who.2026-10-26"
+          ]
+        }
+      ]
+    },
+    {
+      "check_id": "integration.visualization",
+      "dimension": "integration",
+      "result": "UNKNOWN",
+      "scope": [],
+      "reason": "A valid supported GDD model is required for artifact verification.",
+      "diagnostics": [
+        {
+          "code": "REVISION_UNRESOLVED",
+          "severity": "warning",
+          "message": "Model unavailable.",
+          "location": {
+            "file": null,
+            "pointer": ""
+          },
+          "related_ids": []
+        }
+      ]
+    }
+  ]
+}

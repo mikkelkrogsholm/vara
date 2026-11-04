@@ -80,6 +80,15 @@ pub fn run_known(
                 .wire()
         })?;
         cancel.check()?;
+        // No SDK turns means there is nothing to group or compare. Preserve the
+        // empty outcome so the caller reports its existing file.who_unclear.
+        if primary.turns.is_empty() {
+            return serde_json::to_value(primary).map_err(|e| {
+                vara_core::UserMessage::new("who.invalid_result")
+                    .caused_by(crate::backend_error::json(&e))
+                    .wire()
+            });
+        }
         let temp = tempfile::tempdir().map_err(|e| {
             vara_core::UserMessage::new("who.temp_dir")
                 .caused_by(vara_core::UserMessage::io_cause(&e))
@@ -421,7 +430,7 @@ unsafe fn native(
         };
         unsafe { free(ptr) };
         let mut diarization = result?;
-        if !count_arg.is_empty() {
+        if !count_arg.is_empty() && !diarization.turns.is_empty() {
             let known_count: u32 = count_arg
                 .parse()
                 .map_err(|_| vara_core::UserMessage::new("who.invalid_count").wire())?;

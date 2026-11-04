@@ -12,7 +12,7 @@ Start here:
   everyday journeys, exclusions and acceptance.
 - [Module contracts](CONTRACTS.md): six responsibilities, data types, public
   interfaces, errors and effects, derived from the canonical graph.
-- [Clickable first design](design/index.html): Danish UI for history, app AI,
+- [Clickable first design](design/index.html): English reference UI for history, app AI,
   settings, onboarding and simulated session/error flows. It now implements Warm
   precision using shared components and generated tokens; open it directly offline.
   See [prototype maintenance](design/README.md).

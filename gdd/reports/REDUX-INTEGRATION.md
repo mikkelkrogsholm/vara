@@ -1,61 +1,60 @@
-# Parakeet Redux integreret — 23. oktober 2026
+# Parakeet Redux integrated — October 23, 2026
 
-Brugeren godkendte Redux som standard. Nye profiler bruger nu `local.parakeet`;
-Whisper Base er et valgfrit alternativ. Eksisterende gemte valg bevares, mens
-Redux tilføjes som en tilgængelig indbygget motor.
+The user approved Redux as the default. New profiles now use `local.parakeet`;
+Whisper Base is an optional alternative. Existing saved choices are preserved while
+Redux is added as an available built-in engine.
 
-## Ændringen
+## Change
 
-- Fælles Rust-adapter via voxrt, låst til commit
+- Shared Rust adapter via voxrt, pinned to commit
   `4fab626c00708d9bc97f837d309e0d362094282b` (0.2.1).
-- Metal på understøttede Apple-builds og CPU-fallback. Otte arbejdstråde, cached
-  model og selvstændig decoder/VAD-session pr. diktering.
-- Automatisk sproggenkendelse. UI forklarer det og deaktiverer det manuelle
-  sprogvalg, når Redux er valgt.
-- Fire filer, **179.005.408 bytes**, pinned revision og SHA-256-kontrol. Egen mappe
-  `models/parakeet-redux/`, så Qwen-tokenizeren ikke overskrives.
-- Onboarding, modeloversigt og klarstatus følger den valgte talemodel. Installeret
-  Whisper skjuler ikke en manglende Redux-model eller omvendt.
-- Lokal tale/tekst og CLI-auth læser ikke OS-lageret for API-nøgler.
-- Kooperativ annullering før/efter indlæsning, mellem inputblokke og før/efter
-  afslutning. Igangværende kernels afsluttes før backend træder ud. Hostens
-  generationstjek/tombstone afviser sene resultater efter accepteret annullering.
-- Backend-panik bliver en almindelig genkendelsesfejl med mulighed for genprøvning.
-- Model- og runtime-attribution er inkluderet i appens `Resources/notices/`.
+- Metal on supported Apple builds and CPU fallback. Eight worker threads, cached
+  model and an independent decoder/VAD session per dictation.
+- Automatic language detection. The UI explains this and disables manual language
+  selection when Redux is selected.
+- Four files, **179,005,408 bytes**, pinned revision and SHA-256 checks. Separate
+  `models/parakeet-redux/` directory so the Qwen tokenizer is not overwritten.
+- Onboarding, model overview and readiness follow the selected speech model. An
+  installed Whisper model does not hide a missing Redux model or vice versa.
+- Local speech/text and CLI auth do not read the OS API key store.
+- Cooperative cancellation before/after loading, between input blocks and before/after
+  finalization. In-flight kernels finish before the backend exits. The host generation
+  check/tombstone rejects late results after accepted cancellation.
+- Backend panic becomes a normal recognition error with retry available.
+- Model and runtime attribution is included in the app's `Resources/notices/`.
 
-De eksisterende regler for historik, AI, fokus, udklipsholder og lydenes 24-timers
-fejlfrist anvendes også til Redux. Ingen automatisk overgang til en cloud-motor.
+Existing history, AI, focus, clipboard and 24-hour failed-audio deadline rules also
+apply to Redux. There is no automatic switch to a cloud engine.
 
-## Faktisk verificeret
+## Actually verified
 
-1. **Rigtig installering:** `local_probe` hentede og verificerede alle fire filer
-   i en isoleret testprofil gennem appens egen installer. Derefter genkendte den
-   `Samples/da_test.wav` gennem den nye produktionsadapter. Kold modelindlæsning
-   plus transskription tog cirka 1,23 s på denne allerede shaderopvarmede Mac.
-2. **Rust-kontrakter:** 17 almindelige tests består, inklusive profilopgradering,
-   annulleret Redux-installering, manglende-model-fejl uden providerskift og
-   separate tokenizer-mapper.
-3. **Rigtige modelvægte:** separat opt-in runtime-test består. Den genkender den
-   korte prøve, accepterer annullering af en lang gentaget prøve og genkender
-   derefter originalprøven igen med samme cached model og identisk tekst.
-4. **UI:** 11 browser-testgrupper består med produktions-HTML/CSS og isoleret IPC-
-   fixture. Frisk profil viser Redux; valgfri Whisper og klarstatus er kontrolleret.
-5. **Mac-bundle:** normal release-build uden `test-harness`, **24,77 MiB**, bygget.
-   Model-notices er verificeret i bundlen. GDD-model og grafvalidering består.
+1. **Real installation:** `local_probe` downloaded and verified all four files in an
+   isolated test profile through the app's installer. It then recognized
+   `Samples/da_test.wav` through the new production adapter. Cold model loading plus
+   transcription took about 1.23 s on this already shader-warmed Mac.
+2. **Rust contracts:** 17 ordinary tests pass, including profile upgrade, cancelled
+   Redux installation, missing-model error without provider switch and separate tokenizer directories.
+3. **Real model weights:** a separate opt-in runtime test passes. It recognizes the
+   short sample, accepts cancellation of a long repeated sample and then recognizes
+   the original sample again with the same cached model and identical text.
+4. **UI:** 11 browser test groups pass with production HTML/CSS and an isolated IPC
+   fixture. A fresh profile shows Redux; optional Whisper and readiness were checked.
+5. **Mac bundle:** normal release build without `test-harness`, **24.77 MiB**, built.
+   Model notices were verified in the bundle. GDD model and graph validation pass.
 
-## Begrænsninger
+## Limitations
 
-Mac'en blev låst under arbejdet. Brugeren valgte udtrykkeligt at fortsætte uden
-native UI-kontrol. Der er derfor **ikke** gennemført en ny native Redux-session
-eller mikrofon→tekstfelt-test i denne ændring. Tidligere native Whisper-kontrol er
-historisk evidens og påstås ikke at være Redux-verifikation.
+The Mac was locked during the work. The user explicitly chose to continue without
+native UI checks. Therefore **no** new native Redux session or microphone-to-text-field
+test was conducted for this change. Earlier native Whisper checks are historical
+evidence and are not claimed as Redux verification.
 
-UI-fixtures beviser ikke OS-adfærd. Rigtig mikrofon, fysisk global genvej,
-Windows/Linux og mobil mangler fortsat slutverificering. Windows/Linux native
-fokus- og HUD-adaptere er stadig uafsluttede. Dansk modelkvalitet er ikke endeligt
-accepteret på grundlag af én lydprøve.
+UI fixtures do not prove OS behavior. Real microphone, physical global shortcut,
+Windows/Linux and mobile still lack final verification. Windows/Linux native focus and
+HUD adapters remain incomplete. Danish model quality has not been finally accepted
+on the basis of one audio sample.
 
-## Gentag
+## Reproduce
 
 ```sh
 cargo test --workspace
@@ -64,6 +63,6 @@ VARA_TEST_MODELS="$PWD/target/redux-acceptance/models" cargo test --release -p v
 cargo tauri build --bundles app
 ```
 
-Release: `target/release/bundle/macos/Vara.app`. Genstart en allerede kørende app
-for at indlæse den nye build. Ingen testhistorik eller testmodeller er lagt i den
-almindelige brugerprofil. Se [maskinlæsbar evidens](redux-integration-2026-10-23.json).
+Release: `target/release/bundle/macos/Vara.app`. Restart an already running app to
+load the new build. No test history or test models were placed in the normal user
+profile. See [machine-readable evidence](redux-integration-2026-10-23.json).

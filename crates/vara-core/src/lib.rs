@@ -20,17 +20,17 @@ pub enum Error {
     PolicyMessage(UserMessage),
     #[error("{0}")]
     Policy(String),
-    #[error("Der er allerede en diktering i gang.")]
+    #[error("A dictation is already in progress.")]
     Busy,
-    #[error("Dikteringen er annulleret eller forældet.")]
+    #[error("The dictation was cancelled or is outdated.")]
     Cancelled,
-    #[error("Optagelsen er udløbet og kan ikke genprøves.")]
+    #[error("The recording has expired and cannot be retried.")]
     Expired,
-    #[error("Historikken kunne ikke gemmes. Teksten er stadig tilgængelig.")]
+    #[error("History could not be saved. The text is still available.")]
     Storage(#[source] rusqlite::Error),
-    #[error("Filbiblioteket kunne ikke læses eller gemmes. Originalfilerne er bevaret.")]
+    #[error("The file library could not be read or saved. The original files are preserved.")]
     FileStorage(#[source] rusqlite::Error),
-    #[error("Data kunne ikke læses: {0}")]
+    #[error("Data could not be read: {0}")]
     Data(#[from] serde_json::Error),
 }
 pub type Result<T> = std::result::Result<T, Error>;

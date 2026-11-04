@@ -5,8 +5,8 @@ const catalog=JSON.parse(fs.readFileSync(path.join(root,'crates/vara-core/messag
 i18n.setRuntimeCatalog(catalog);
 const placeholders=s=>[...s.matchAll(/\{(\w+)\}/g)].map(x=>x[1]).sort();
 for(const [code,entry] of Object.entries(catalog)){for(const locale of Object.keys(i18n.localeNames)){assert.ok(entry[locale],`${code}: missing ${locale}`);assert.deepEqual(placeholders(entry[locale]),placeholders(entry.en),`${code}: ${locale} placeholders`);}}
-for(const file of ['lib.rs','service.rs','transcription.rs']){
- const source=fs.readFileSync(path.join(root,'desktop/src-tauri/src',file),'utf8');
+for(const file of ['desktop/src-tauri/src/lib.rs','desktop/src-tauri/src/service.rs','desktop/src-tauri/src/transcription.rs','crates/vara-app/src/lib.rs']){
+ const source=fs.readFileSync(path.join(root,file),'utf8');
  for(const m of source.matchAll(/(?:host_message|host_wrapped|host_io|host_json|UserMessage::new)\(\s*"([^"]+)"/g)) assert.ok(catalog[m[1]],`${file}: ${m[1]}`);
 }
 for(const locality of ['local','lan','cloud','unknown']){

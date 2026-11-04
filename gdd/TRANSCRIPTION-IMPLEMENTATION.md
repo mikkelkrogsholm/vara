@@ -62,3 +62,98 @@ host speaker-provenance tests cover the persisted representation and legacy
 names. These browser fixtures do not establish native Windows/Linux acceptance or
 exercise real inference, cloud providers, downloads or user profiles. Native and
 provider error localization remains separate work.
+
+## Shared file jobs — 2026-11-04
+
+`vara-app` now owns the existing desktop document list, persisted queue and worker.
+The desktop adapter retains platform interactions. A per-profile lock prevents a
+second queue owner; one-file request IDs are stored transactionally with their
+documents and are removed on explicit document deletion. The typed Rust API
+provides submit/status/result/cancel. No Who submit option is implemented.
+See TRANSCRIPTION-SPEC.md for path, interruption and idempotency semantics.
+
+
+## Internal local backend — 2026-11-04 (#26)
+
+The Mac desktop executable has an internal worker entry after the existing Who
+and credential worker entries and before Tauri starts. It uses the same `Files`
+queue owner, profile, models, credential boundary and persisted documents. The
+Rust `local_backend::call` helper uses an explicitly supplied executable and
+profile, starts the internal worker if needed, and discards its standard streams.
+`default_profile()` uses `VARA_DATA_DIR` or the same `dirs::data_dir()` plus
+`dk.vara.desktop` as Tauri. An app-bundle worker resolves resources from
+`Contents/Resources`; only test-harness builds accept `VARA_RESOURCE_DIR` as
+an explicit test override. Who is never located through PATH.
+
+The Mac adapter places a profile-hashed Unix socket and ownership lock in a
+private per-user temporary directory, checks effective peer UID, and holds the
+lock for the server lifetime. Owned profile directories are tightened to 0700;
+symlinked profile endpoints, insecure sockets or lock files are rejected. A
+stale socket is removed only while holding its lock and after a failed connection.
+Each connection has one length-prefixed version-1 request, bounded to 32 MiB;
+responses are bounded to 128 MiB. Frame transfer has a 30-second deadline. AI,
+Who and Who-download calls may wait longer for the first response byte, after
+which the frame deadline applies; cancellation uses another connection. The
+worker starts in a separate process group, so the starter's Ctrl-C does not stop
+it. A dropped connection does not cancel accepted work. The worker exits normally
+after 60 seconds with no client activity and no file/AI/Who work; a later client starts it
+again. Test-harness builds alone can shorten this idle period and substitute a
+no-secret test host. Interrupted persisted work becomes failed, not replayed.
+
+The internal protocol is a typed allowlist of file operations and model readiness;
+it does not expose arbitrary invocation, secrets, shell or network listeners.
+Settings are read afresh from SQLite without initializing dictation history. Local
+model readiness does not download models; remote readiness is unknown rather than
+inferred from a key. The response carries a server instance UUID and monotonic
+revision for inexpensive GUI polling. A new instance invalidates the old revision.
+Responses also include the latest safe asynchronous Files error with its own
+revision. The Mac GUI polls instance and revision and emits `vara:files` on
+changes, and emits `vara:file-error` once per instance and notice revision; a
+later non-error revision does not erase that notice. Older overlapping list
+responses are discarded. AI, Who and Who-download busy state remains observable
+after GUI reconnection.
+Engine endpoint URLs and uncatalogued raw error text are excluded from replies;
+known runtime errors retain catalogued numeric parameters and causes.
+
+Errors in the response have a structured `code` and optional safe `message`.
+The backend-specific codes (`backend.permissions`, `backend.peer_denied`,
+`backend.unavailable`, `backend.already_running`, `backend.start_failed`,
+`backend.transport`, `backend.timeout`, `backend.response_invalid`,
+`backend.malformed`, `backend.frame_limit`,
+`backend.version_mismatch`, `backend.profile_unavailable`,
+`backend.operation_failed`, and `backend.unsupported_platform`) are stable wire
+codes. The Mac adapter maps them to catalogued Danish/English
+UserMessages without exposing identifiers; known application messages retain safe
+parameters and causes. The helper can also return wire codes before a response
+exists.
+
+**Current boundary:** the Mac GUI is a client of this backend and shares its
+queue, documents and profile media with other local clients. Native dialogs,
+clipboard, links, playback scope and draft-aware export remain in the GUI;
+closing the GUI does not cancel accepted backend jobs. Existing Windows and
+other non-Mac GUI file handling remains in process until a native transport
+adapter exists. The desktop executable now exposes the #27 `cli` subcommand;
+the packaged launcher is still #29. An isolated Tauri adapter fixture
+and socket/process checks used synthetic data on the development Mac, including
+reconnection, long AI waiting and cancellation, asset scope and GUI exit. A
+different OS user, signed installation, actual model inference, credential
+prompts, and Windows/Linux transport were not verified.
+
+
+## Agent CLI (#27)
+
+The desktop executable dispatches `cli` after internal workers and before Tauri.
+The CLI uses the shared backend and document exporter. A test-harness-only delay
+can hold submit responses or status calls; it does not simulate inference. Process
+tests use synthetic audio and a separately seeded ready-document fixture to test
+export and timing. They do not exercise real local inference or cloud providers.
+Windows/Linux local transport and the signed launcher remain unverified.
+
+The process regression checks the executable's test-harness-only version marker
+before creating a profile or starting the backend; it refuses normal builds.
+Build and run the fixture using the existing release cache and no network:
+
+```sh
+DEVELOPER_DIR=/Library/Developer/CommandLineTools CARGO_INCREMENTAL=0 CARGO_PROFILE_RELEASE_DEBUG=0 cargo build --release --locked --offline -p vara-desktop --features test-harness
+python3 scripts/tests/agent_cli.py target/release/vara-desktop
+```

@@ -7680,7 +7680,18 @@
           },
           "engine": {
             "type": "reference",
-            "target": "entity.engine"
+            "target": "entity.engine",
+            "optional": true,
+            "description": "Omitted by the agent CLI to snapshot the configured speech engine at first acceptance."
+          },
+          "language": {
+            "type": "string",
+            "optional": true
+          },
+          "request_id": {
+            "type": "string",
+            "optional": true,
+            "description": "One file only; profile-scoped until document deletion."
           }
         },
         "context": {},
@@ -7735,9 +7746,11 @@
             ]
           },
           "idempotency": {
-            "relevant": false,
-            "rationale": "Import is an explicit new batch; editing has revision control. No automatic replay of paste or cloud requests is permitted.",
-            "scenarios": []
+            "relevant": true,
+            "rationale": "One request ID with the same absolute source path and the same requested engine choice (including omission) and language returns the original document, even if defaults change; changed options conflict. Document and request commit atomically; deletion releases the ID.",
+            "scenarios": [
+              "scenario.file_import.idempotency"
+            ]
           }
         },
         "error_cases": {
@@ -8653,6 +8666,27 @@
           "minimum": 0,
           "maximum": 1
         }
+      }
+    },
+    "scenario.file_import.idempotency": {
+      "kind": "scenario",
+      "label": "Import and control file jobs: idempotency",
+      "description": "Simultaneous identical request IDs create one durable document; changed input conflicts, including after restart.",
+      "maturity": "specified",
+      "source_refs": [
+        {
+          "source": "source.transcription",
+          "purpose": "contract",
+          "selector": {
+            "kind": "whole-document"
+          }
+        }
+      ],
+      "scenario": {
+        "category": "concurrency",
+        "given": "One request ID identifies a file path, requested engine choice (including omission) and language in a profile.",
+        "when": "Identical submissions race, are repeated after restart, or are retried after the configured default changes.",
+        "then": "One original document is returned; its engine snapshot is preserved, and explicitly changed parameters conflict until deletion."
       }
     }
   },
@@ -10864,6 +10898,12 @@
       "relation": "calls",
       "to": "action.engine_diarize",
       "id": "edge.who.action_file_diarize.calls"
+    },
+    {
+      "id": "edge.file_import.idempotency",
+      "from": "scenario.file_import.idempotency",
+      "to": "action.file_import",
+      "relation": "exercises"
     }
   ],
   "sources": {
@@ -10884,7 +10924,7 @@
       "format": "text/markdown",
       "normative": true,
       "revision": {
-        "sha256": "a9f10143614770ff0f20409b4024a0710665d6f78ec22c2bccdd6aba459f482d"
+        "sha256": "18a46e860e4df90b6dfc951dd476fd54b261f538bf31957c011357f45724c8ed"
       }
     },
     "source.design_selection": {
@@ -10914,7 +10954,7 @@
       "format": "text/html",
       "normative": false,
       "revision": {
-        "sha256": "64c1d5db8184586237c71fe4c152932bd20c4cc526373fe7533f970ae389df45"
+        "sha256": "3cd38f5186546f62035361f794f38aabf1dbbe7a9a57ebfebdbb2771b6b44040"
       }
     },
     "source.rust_bindings": {
@@ -10924,7 +10964,7 @@
       "format": "text/markdown",
       "normative": false,
       "revision": {
-        "sha256": "7b059e8cc60a2d49a0bbbd957d95be553635be885fa7e4237ad9018b258df64b"
+        "sha256": "697affff66e3d84e55f3c47f663d5003c265a79018bc8737fb888caa23b27d8a"
       }
     },
     "source.transcription": {
@@ -10934,7 +10974,7 @@
       "format": "text/markdown",
       "normative": true,
       "revision": {
-        "sha256": "9955e95019f2a95c35cea9202fc2c2c298d642c5653215c3021a452ceeeb6017"
+        "sha256": "37c3374558f180514c293dee2ec137df9b30dfc8670e5020f059e3267488cf11"
       }
     }
   },

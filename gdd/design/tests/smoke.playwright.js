@@ -56,7 +56,7 @@ async function smoke(page) {
   await page.locator('[data-action="toggle-group"][data-app="mail"]').click()
   assert(
     (await page.locator(".transcript").textContent()) ===
-      "Hej Anna. Tak for din mail. Jeg kan godt torsdag kl. 10. Send gerne en invitation.",
+      "Hi Anna. Thanks for your email. Thursday at 10 works for me. Please send an invitation.",
     "Collapsing group keeps selected result",
   )
   await page.locator('[data-action="toggle-group"][data-app="mail"]').click()
@@ -77,7 +77,7 @@ async function smoke(page) {
   await click("toggle-search")
   await page.locator("#history-search").fill("zzzzzzz")
   assert(
-    await page.getByRole("heading", { name: "Ingen match" }).isVisible(),
+    await page.getByRole("heading", { name: "No matches" }).isVisible(),
     "No match state",
   )
   await click("clear-search")
@@ -88,21 +88,21 @@ async function smoke(page) {
   await nav("apps")
   await page.locator('[data-action="select-pref"][data-app="notes"]').click()
   await page.locator("#app-ai").check()
-  await page.locator("#app-prompt").fill("Gør til korte noter.")
+  await page.locator("#app-prompt").fill("Make concise notes.")
   await click("save-app")
-  await page.locator("#app-prompt").fill("Ikke gemt endnu")
+  await page.locator("#app-prompt").fill("Not saved yet")
   await nav("settings")
   assert(await page.locator("#modal").isVisible(), "Unsaved guard")
   await click("close-modal")
   assert(
-    (await page.locator("#app-prompt").inputValue()) === "Ikke gemt endnu",
+    (await page.locator("#app-prompt").inputValue()) === "Not saved yet",
     "Draft preserved",
   )
   await nav("settings")
   await click("discard-and-navigate")
   await nav("apps")
   assert(
-    (await page.locator("#app-prompt").inputValue()) === "Gør til korte noter.",
+    (await page.locator("#app-prompt").inputValue()) === "Make concise notes.",
     "Saved app preference preserved",
   )
   await page.locator("#app-prompt").fill("")
@@ -140,7 +140,7 @@ async function smoke(page) {
   await page.locator("#cleanup-days").fill("0")
   await click("save-retention")
   assert(
-    (await page.locator("#retention-error").textContent()).includes("positivt"),
+    (await page.locator("#retention-error").textContent()).includes("positive"),
     "Retention validates",
   )
   await page.locator("#cleanup-days").fill("14")
@@ -158,7 +158,7 @@ async function smoke(page) {
   await page.locator("#api-key").fill("x")
   await click("save-key")
   assert(
-    (await page.locator("#key-error").textContent()).includes("fiktiv"),
+    (await page.locator("#key-error").textContent()).includes("fictional"),
     "Fake key validation",
   )
   await page.locator("#api-key").fill("fake-demo-key")
@@ -171,19 +171,19 @@ async function smoke(page) {
   await page.locator("#api-key").fill("fake-demo-key")
   await click("save-key")
   checks.push("Key validation and secret clearing")
-  await page.locator("#endpoint-name").fill("Min model")
+  await page.locator("#endpoint-name").fill("My model")
   await page.locator("#endpoint-model").fill("model-1")
   await page.locator("#endpoint-url").fill("bad")
   await click("save-endpoint")
   assert(
-    (await page.locator("#endpoint-error").textContent()).includes("gyldig"),
+    (await page.locator("#endpoint-error").textContent()).includes("valid"),
     "Endpoint validation",
   )
   await page.locator("#endpoint-url").fill("http://localhost:11434/v1")
   await click("save-endpoint")
   assert(
     (await page.locator(".settings-content").textContent()).includes(
-      "Min model · model-1",
+      "My model · model-1",
     ),
     "Endpoint saved",
   )
@@ -214,7 +214,7 @@ async function smoke(page) {
   await session("mail", "focus", "default")
   assert(
     (await page.locator(".detail-pane .notice").textContent()).includes(
-      "Fokus ændrede",
+      "Focus changed",
     ),
     "Focus fallback",
   )
@@ -225,7 +225,7 @@ async function smoke(page) {
   await session("mail", "ai", "default")
   assert(
     (await page.locator(".detail-pane .notice").textContent()).includes(
-      "Originalen er bevaret",
+      "original is preserved",
     ),
     "AI fallback",
   )
@@ -252,7 +252,7 @@ async function smoke(page) {
   )
   assert(
     (await page.locator(".detail-pane .notice").textContent()).includes(
-      "Fokus ændrede",
+      "Focus changed",
     ),
     "Retry never assumes old focus",
   )
@@ -272,11 +272,11 @@ async function smoke(page) {
   await click("start-session")
   await click("stop-session")
   await nav("apps")
-  await page.locator("#app-prompt").fill("Mit igangværende arbejde")
+  await page.locator("#app-prompt").fill("My work in progress")
   await page.waitForTimeout(1250)
   assert(
     (await page.locator("#app-prompt").inputValue()) ===
-      "Mit igangværende arbejde",
+      "My work in progress",
     "Async finish preserves editor and focus context",
   )
   await click("reset-app")
@@ -299,7 +299,7 @@ async function smoke(page) {
   await click("cancel-download")
   await page.waitForTimeout(700)
   assert(
-    (await act("setup-download").textContent()).includes("Hent lokal"),
+    (await act("setup-download").textContent()).includes("Download local"),
     "Cancelled install cannot later become ready",
   )
   await click("setup-download")
@@ -386,7 +386,7 @@ async function smoke(page) {
   await click("cancel-session")
   checks.push("Reduced-motion state feedback")
   await page.goto(
-    "file:///Users/mikkelfreltoftkrogsholm/Projekter/vara/gdd/design/index.html",
+    new URL("file://" + process.cwd() + "/gdd/design/index.html").href,
   )
   await page.setViewportSize({ width: 320, height: 850 })
   await page.locator('[data-page="settings"]').focus()

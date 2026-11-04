@@ -4,66 +4,66 @@
 <rect x="230.390625" y="0" width="1049.609375" height="820" rx="0" fill="rgb(247, 244, 238)"/>
 <rect x="230.390625" y="0" width="300" height="820" rx="0" fill="rgb(247, 244, 238)"/>
 <line x1="530.390625" y1="0" x2="530.390625" y2="820" stroke="rgb(220, 214, 202)" stroke-width="1"/>
-<text  x="254.390625" y="56.95" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="22px" font-weight="bold">Transskribering</text>
+<text  x="254.390625" y="56.95" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="22px" font-weight="bold">Transcription</text>
 <rect x="246.390625" y="92" width="267" height="42" rx="10" fill="rgb(255, 252, 247)"/>
 <rect x="246.890625" y="92.5" width="266" height="41" rx="10" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
-<svg x="334.078125" y="103" width="20" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(37, 37, 31)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v16M4 12h16"></path></svg>
-<text  x="362.078125" y="117.603125" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Tilføj filer</text>
-<text  x="246.390625" y="163.4" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Søg i transskriptioner</text>
+<svg x="336.328125" y="103" width="20" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(37, 37, 31)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v16M4 12h16"></path></svg>
+<text  x="364.328125" y="117.603125" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Add files</text>
+<text  x="246.390625" y="163.4" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Search transcriptions</text>
 <rect x="246.390625" y="173" width="267" height="48.5" rx="10" fill="rgb(255, 252, 247)"/>
 <rect x="246.890625" y="173.5" width="266" height="47.5" rx="10" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
 <rect x="242.390625" y="239.5" width="275" height="78" rx="8" fill="rgb(232, 225, 213)"/>
 <line x1="242.390625" y1="317.5" x2="517.390625" y2="317.5" stroke="rgb(220, 214, 202)" stroke-width="1"/>
 <svg x="256.390625" y="268" width="20" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(37, 37, 31)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"></path><path d="M14 2v6h6M8 13h8M8 17h6"></path></svg>
-<text  x="290.390625" y="271.75" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="bold">Interview med Anna</text>
-<text  x="290.390625" y="294.55" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">da · 0:24 · Klar</text>
+<text  x="290.390625" y="271.75" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="bold">Interview with Anna</text>
+<text  x="290.390625" y="294.55" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">en · 0:24 · Ready</text>
 <svg x="481.390625" y="268" width="20" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(37, 37, 31)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7m4-7v7"></path></svg>
 <line x1="242.390625" y1="395.5" x2="517.390625" y2="395.5" stroke="rgb(220, 214, 202)" stroke-width="1"/>
 <svg x="256.390625" y="346" width="20" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(37, 37, 31)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"></path><path d="M14 2v6h6M8 13h8M8 17h6"></path></svg>
 <text  x="290.390625" y="349.75" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="bold">Workshop.mp4</text>
-<text  x="290.390625" y="372.55" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">da · 0:24 · Transskriberer…</text>
+<text  x="290.390625" y="372.55" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">en · 0:24 · Transcribing…</text>
 <svg x="481.390625" y="346" width="20" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(37, 37, 31)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 6 12 12M6 18 18 6"></path></svg>
 <line x1="242.390625" y1="473.5" x2="517.390625" y2="473.5" stroke="rgb(220, 214, 202)" stroke-width="1"/>
 <svg x="256.390625" y="424" width="20" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(37, 37, 31)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"></path><path d="M14 2v6h6M8 13h8M8 17h6"></path></svg>
-<text  x="290.390625" y="427.75" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="bold">Noter.m4a</text>
-<text  x="290.390625" y="450.55" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">da · 0:24 · Mislykkedes</text>
+<text  x="290.390625" y="427.75" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="bold">Notes.m4a</text>
+<text  x="290.390625" y="450.55" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">en · 0:24 · Failed</text>
 <svg x="481.390625" y="424" width="20" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(37, 37, 31)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7m4-7v7"></path></svg>
 <line x1="242.390625" y1="551.5" x2="517.390625" y2="551.5" stroke="rgb(220, 214, 202)" stroke-width="1"/>
 <svg x="256.390625" y="502" width="20" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(37, 37, 31)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"></path><path d="M14 2v6h6M8 13h8M8 17h6"></path></svg>
-<text  x="290.390625" y="505.75" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="bold">Ny fil</text>
-<text  x="290.390625" y="528.55" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">da · 0:24 · Venter</text>
+<text  x="290.390625" y="505.75" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="bold">New file</text>
+<text  x="290.390625" y="528.55" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">en · 0:24 · Waiting</text>
 <svg x="481.390625" y="502" width="20" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(37, 37, 31)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 6 12 12M6 18 18 6"></path></svg>
-<text  x="246.390625" y="798.7" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="12px" font-weight="normal">Lyd og video · Lokale afspilningskopier</text>
+<text  x="246.390625" y="798.7" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="12px" font-weight="normal">Audio and video · Local playback copies</text>
 <rect x="530.390625" y="0" width="749.609375" height="820" rx="0" fill="rgb(255, 252, 247)"/>
-<text transform="translate(558.390625,0) scale(0.9,1) translate(-558.390625,0)" x="558.390625" y="52.065625" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="23px" font-weight="bold">Interview med Anna</text>
-<svg x="767.65625" y="34.03125" width="16" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(99, 100, 89)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 3 5 5-12 12-6 1 1-6L16 3Z"></path></svg>
-<text  x="558.390625" y="79.1125" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">interview-anna.m4a · da · 0:24</text>
-<text  x="1006.828125" y="73.796875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Gemt</text>
-<svg x="1064.171875" y="58.796875" width="20" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(37, 37, 31)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="7" width="12" height="14" rx="2"></rect><path d="M15 7V3H4v14h4"></path></svg>
-<svg x="1112.171875" y="58.796875" width="20" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(37, 37, 31)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7m4-7v7"></path></svg>
+<text transform="translate(558.390625,0) scale(0.9,1) translate(-558.390625,0)" x="558.390625" y="52.065625" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="23px" font-weight="bold">Interview with Anna</text>
+<svg x="765.96875" y="34.03125" width="16" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(99, 100, 89)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 3 5 5-12 12-6 1 1-6L16 3Z"></path></svg>
+<text  x="558.390625" y="79.1125" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">interview-anna.m4a · en · 0:24</text>
+<text  x="1023.46875" y="73.796875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Saved</text>
+<svg x="1085.46875" y="58.796875" width="20" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(37, 37, 31)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="7" width="12" height="14" rx="2"></rect><path d="M15 7V3H4v14h4"></path></svg>
+<svg x="1133.46875" y="58.796875" width="20" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(37, 37, 31)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7m4-7v7"></path></svg>
 <line x1="530.390625" y1="168.09375" x2="1280" y2="168.09375" stroke="rgb(220, 214, 202)" stroke-width="1"/>
-<text  x="558.390625" y="143.84375" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Transskription</text>
-<line x1="675.3125" y1="167.09375" x2="791.703125" y2="167.09375" stroke="rgb(168, 68, 23)" stroke-width="3"/>
-<text  x="675.3125" y="143.84375" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="bold">AI-bearbejdning</text>
-<text  x="1160.125" y="144.946875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Vis original</text>
+<text  x="558.390625" y="143.84375" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Transcript</text>
+<line x1="647.46875" y1="167.09375" x2="745.109375" y2="167.09375" stroke="rgb(168, 68, 23)" stroke-width="3"/>
+<text  x="647.46875" y="143.84375" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="bold">AI processing</text>
+<text  x="1144.046875" y="144.946875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Show original</text>
 <rect x="558.390625" y="193.84375" width="8" height="8" rx="50" fill="rgb(158, 214, 154)"/>
-<text  x="575.390625" y="201.64375" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">På enheden · Ordtidskoder</text>
-<text  x="558.390625" y="240.99375" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Bearbejd teksten</text>
-<text  x="558.390625" y="262.84375" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Oprydning, resumé eller dine egne instruktioner. Den tidskodede original ændres ikke.</text>
-<text  x="558.390625" y="304.49375" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Tekstmodel</text>
+<text  x="575.390625" y="201.64375" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">On device · Word timestamps</text>
+<text  x="558.390625" y="240.99375" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Process the text</text>
+<text  x="558.390625" y="262.84375" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Clean up, summarise or use your own instructions. The timestamped original is not changed.</text>
+<text  x="558.390625" y="304.49375" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Text model</text>
 <svg x="558.390625" y="382.34375" width="16" height="16" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(37, 37, 31)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"></path></svg>
-<text  x="580.390625" y="394.14375" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">På denne enhed · Klar</text>
-<text  x="558.390625" y="435.49375" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Instruktioner til AI</text>
+<text  x="580.390625" y="394.14375" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">On this device · Ready</text>
+<text  x="558.390625" y="435.49375" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Instructions for AI</text>
 <rect x="558.390625" y="445.09375" width="693.609375" height="144" rx="10" fill="rgb(255, 252, 247)"/>
 <rect x="558.890625" y="445.59375" width="692.609375" height="143" rx="10" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
-<text x="570.390625" y="470.59375" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Lav et kort resumé af transskriptionen.</text>
-<text  x="558.390625" y="629.34375" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Teksten behandles på din enhed.</text>
+<text x="570.390625" y="470.59375" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Make a short summary of the transcription.</text>
+<text  x="558.390625" y="629.34375" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Text is processed on your device.</text>
 <line x1="530.390625" y1="741.40625" x2="1280" y2="741.40625" stroke="rgb(220, 214, 202)" stroke-width="1"/>
 <text  x="571.390625" y="785.80625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">−10 s</text>
-<text  x="722" y="785.80625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">+10 s</text>
-<text  x="789.1875" y="784.903125" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="12px" font-weight="normal">0:00 / 0:24</text>
-<rect x="866.078125" y="773.203125" width="307.921875" height="16" rx="0" fill="rgb(255, 255, 255)"/>
-<rect x="866.078125" y="779.203125" width="307.921875" height="4" rx="2" fill="#DCD6CA"/><circle cx="873.078125" cy="781.203125" r="7" fill="#A84417"/>
+<text  x="712.125" y="785.80625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">+10 s</text>
+<text  x="779.3125" y="784.903125" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="12px" font-weight="normal">0:00 / 0:24</text>
+<rect x="856.203125" y="773.203125" width="317.796875" height="16" rx="0" fill="rgb(255, 255, 255)"/>
+<rect x="856.203125" y="779.203125" width="317.796875" height="4" rx="2" fill="#DCD6CA"/><circle cx="863.203125" cy="781.203125" r="7" fill="#A84417"/>
 <rect x="1188" y="762.203125" width="68" height="38" rx="8" fill="rgb(255, 252, 247)"/>
 <rect x="1188.5" y="762.703125" width="67" height="37" rx="8" fill="none" stroke="rgb(220, 214, 202)" stroke-width="1"/>
 <path d="M1228 779.203125 l5 5 5 -5" fill="none" stroke="#6A6B5F" stroke-width="1.5"/>

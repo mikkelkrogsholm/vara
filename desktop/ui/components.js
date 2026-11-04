@@ -51,21 +51,22 @@
     `<fieldset class="processing-choice"><legend class="sr-only">${Vara.i18n.bind("ui.after-transcription")}</legend><label for="direct-text"><input id="direct-text" type="radio" name="text-processing" value="direct" ${enabled ? "" : "checked"}><span>${Vara.i18n.bind("ui.keep-transcription")}<small>${Vara.i18n.bind("ui.insert-the-transcription-as-it-is")}</small></span></label><label for="general-ai"><input id="general-ai" type="radio" name="text-processing" value="ai" ${enabled ? "checked" : ""} aria-controls="text-processing-fields"><span>${Vara.i18n.bind("ui.process-with-ai")}<small>${Vara.i18n.bind("ui.process-the-text-before-inserting-it")}</small></span></label></fieldset>`;
   // The id and unedited default label must both match: custom names stay intact.
   const builtins = {
-    "local.parakeet": ["Parakeet Redux · på enheden", "engine.parakeet"],
-    "local.whisper": ["Whisper · på enheden", "engine.whisper"],
-    "local.text": ["Qwen · på enheden", "engine.qwen"],
-    "openai.speech": ["OpenAI · tale", "engine.openai.speech"],
-    "elevenlabs.speech": ["ElevenLabs · tale", "engine.elevenlabs.speech"],
-    "openai.text": ["OpenAI · tekst", "engine.openai.text"],
-    "anthropic.text": ["Anthropic · tekst", "engine.anthropic.text"],
-    "gemini.text": ["Gemini · tekst", "engine.gemini.text"],
-    "claude.cli": ["Claude Code · eget login", "engine.claude.cli"],
-    "codex.cli": ["Codex · eget login", "engine.codex.cli"],
-    "gemini.cli": ["Gemini CLI · eget login", "engine.gemini.cli"],
+    "local.parakeet": [["Parakeet Redux · on device", "Parakeet Redux · på enheden"], "engine.parakeet"],
+    "local.whisper": [["Whisper · on device", "Whisper · på enheden"], "engine.whisper"],
+    "local.text": [["Qwen · on device", "Qwen · på enheden"], "engine.qwen"],
+    "openai.speech": [["OpenAI · speech", "OpenAI · tale"], "engine.openai.speech"],
+    "elevenlabs.speech": [["ElevenLabs · speech", "ElevenLabs · tale"], "engine.elevenlabs.speech"],
+    "openai.text": [["OpenAI · text", "OpenAI · tekst"], "engine.openai.text"],
+    "anthropic.text": [["Anthropic · text", "Anthropic · tekst"], "engine.anthropic.text"],
+    "gemini.text": [["Gemini · text", "Gemini · tekst"], "engine.gemini.text"],
+    "claude.cli": [["Claude Code · own login", "Claude Code · eget login"], "engine.claude.cli"],
+    "codex.cli": [["Codex · own login", "Codex · eget login"], "engine.codex.cli"],
+    "gemini.cli": [["Gemini CLI · own login", "Gemini CLI · eget login"], "engine.gemini.cli"],
+    "ollama.text": [["Ollama · local service", "Ollama · lokal tjeneste"], "engine.ollama"],
   };
   const displayEngineName = engine => {
     const entry = builtins[engine.id];
-    return entry && entry[0] === engine.label ? Vara.i18n.bind(entry[1]) : engine.label;
+    return entry && entry[0].includes(engine.label) ? Vara.i18n.bind(entry[1]) : engine.label;
   };
   const modelLabel = engine => engine.provider.startsWith("local_") ? displayEngineName(engine) : `${displayEngineName(engine)} · ${engine.model}`;
   const modelSelect = ({id, label, engines, selected, strict}) =>

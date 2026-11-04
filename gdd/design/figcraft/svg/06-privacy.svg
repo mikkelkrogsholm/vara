@@ -2,40 +2,39 @@
 <rect x="0" y="-1" width="1280" height="820" rx="0" fill="rgb(255, 252, 247)"/>
 <rect x="0" y="-1" width="1280" height="820" rx="0" fill="rgb(247, 244, 238)"/>
 <rect x="230.390625" y="-1" width="1049.609375" height="820" rx="0" fill="rgb(247, 244, 238)"/>
-<text  x="270.390625" y="72.1" fill="rgb(37, 37, 31)" font-family="Georgia, &quot;Noto Serif&quot;, &quot;Liberation Serif&quot;, serif" font-size="36px" font-weight="normal">Indstillinger</text>
-<text  x="270.390625" y="104.640625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">En stille hjælper, på dine præmisser.</text>
+<text  x="270.390625" y="72.1" fill="rgb(37, 37, 31)" font-family="Georgia, &quot;Noto Serif&quot;, &quot;Liberation Serif&quot;, serif" font-size="36px" font-weight="normal">Settings</text>
+<text  x="270.390625" y="104.640625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">A quiet helper, on your terms.</text>
 <line x1="270.390625" y1="192.390625" x2="1240" y2="192.390625" stroke="rgb(220, 214, 202)" stroke-width="1"/>
-<text  x="270.390625" y="171.140625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Diktering</text>
-<text  x="356.265625" y="171.140625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Modeller og nøgler</text>
-<line x1="508.953125" y1="191.390625" x2="566.859375" y2="191.390625" stroke="rgb(168, 68, 23)" stroke-width="2"/>
-<text  x="508.953125" y="171.140625" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="bold">Privatliv</text>
-<line x1="270.390625" y1="488.390625" x2="1240" y2="488.390625" stroke="rgb(220, 214, 202)" stroke-width="1"/>
-<text  x="270.390625" y="243.290625" fill="rgb(37, 37, 31)" font-family="Georgia, &quot;Noto Serif&quot;, &quot;Liberation Serif&quot;, serif" font-size="24px" font-weight="normal">Behandling</text>
-<text  x="270.390625" y="274.640625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Du bestemmer, hvor dine data</text>
-<text  x="270.390625" y="297.140625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">behandles.</text>
-<text  x="529.6875" y="252.790625" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Kun behandling på denne enhed</text>
-<text  x="529.6875" y="276.440625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Når dette er slået til, kan Vara kun bruge lokale modeller.</text>
-<rect x="1204" y="236.390625" width="36" height="22" rx="999" fill="rgb(129, 125, 114)"/>
-<circle cx="1215" cy="247.390625" r="9" fill="#fff"/>
-<svg x="529.6875" y="324.390625" width="20" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(99, 100, 89)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2" width="6" height="13" rx="3"></rect><path d="M5 10v2a7 7 0 0 0 14 0v-2M12 19v3m-4 0h8"></path></svg>
-<text  x="563.6875" y="338.640625" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Lyd: På denne enhed</text>
-<svg x="529.6875" y="368.890625" width="20" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(99, 100, 89)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3c6 5 6 13 0 18-6-5-6-13 0-18Z"></path></svg>
-<text  x="563.6875" y="383.140625" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Tekst: Direkte transskription som standard</text>
-<text  x="563.6875" y="410.640625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Apps med egne regler bruger deres valgte AI.</text>
-<text  x="529.6875" y="455.140625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Cloud bruges kun til de funktioner, du selv vælger.</text>
-<line x1="270.390625" y1="708.890625" x2="1240" y2="708.890625" stroke="rgb(220, 214, 202)" stroke-width="1"/>
-<text  x="270.390625" y="537.290625" fill="rgb(37, 37, 31)" font-family="Georgia, &quot;Noto Serif&quot;, &quot;Liberation Serif&quot;, serif" font-size="24px" font-weight="normal">Historik</text>
-<text  x="270.390625" y="568.640625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Dine dikteringer gemmes lokalt,</text>
-<text  x="270.390625" y="591.140625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">grupperet efter app.</text>
-<text  x="529.6875" y="529.790625" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Behold teksten</text>
-<text  x="529.6875" y="628.140625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Du kan vælge automatisk oprydning efter en periode.</text>
-<text  x="529.6875" y="675.940625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Når du sletter en diktering, slettes både originalen og den bearbejdede tekst.</text>
-<line x1="270.390625" y1="931.390625" x2="1240" y2="931.390625" stroke="rgb(220, 214, 202)" stroke-width="1"/>
-<text  x="270.390625" y="757.790625" fill="rgb(37, 37, 31)" font-family="Georgia, &quot;Noto Serif&quot;, &quot;Liberation Serif&quot;, serif" font-size="24px" font-weight="normal">Lyd</text>
-<text  x="270.390625" y="789.140625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Ingen lyd i historikken.</text>
-<svg x="529.6875" y="736.890625" width="20" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(99, 100, 89)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7m4-7v7"></path></svg>
-<text  x="563.6875" y="751.140625" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Efter vellykket transskription</text>
-<text  x="563.6875" y="778.640625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Lyden slettes automatisk.</text>
-<svg x="529.6875" y="808.890625" width="20" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(99, 100, 89)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 6v6l4 2"></path></svg>
-<text  x="563.6875" y="823.140625" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Hvis transskriptionen fejler</text>
+<text  x="270.390625" y="171.140625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Dictation</text>
+<text  x="355.921875" y="171.140625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Models and keys</text>
+<line x1="494.46875" y1="191.390625" x2="547.390625" y2="191.390625" stroke="rgb(168, 68, 23)" stroke-width="2"/>
+<text  x="494.46875" y="171.140625" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="bold">Privacy</text>
+<line x1="270.390625" y1="375.390625" x2="1240" y2="375.390625" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<text  x="270.390625" y="243.290625" fill="rgb(37, 37, 31)" font-family="Georgia, &quot;Noto Serif&quot;, &quot;Liberation Serif&quot;, serif" font-size="24px" font-weight="normal">Interface language</text>
+<text  x="270.390625" y="274.640625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Choose Vara’s interface</text>
+<text  x="270.390625" y="297.140625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">language. This does not change</text>
+<text  x="270.390625" y="319.640625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">speech or transcription language</text>
+<text  x="270.390625" y="342.140625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">or AI instructions.</text>
+<text  x="529.6875" y="235.790625" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Interface language</text>
+<line x1="270.390625" y1="643.390625" x2="1240" y2="643.390625" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<text  x="270.390625" y="398.290625" fill="rgb(37, 37, 31)" font-family="Georgia, &quot;Noto Serif&quot;, &quot;Liberation Serif&quot;, serif" font-size="24px" font-weight="normal">Processing</text>
+<text  x="270.390625" y="429.640625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">You decide where your data is</text>
+<text  x="270.390625" y="452.140625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">processed.</text>
+<text  x="529.6875" y="407.790625" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">On-device processing only</text>
+<text  x="529.6875" y="431.440625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">When enabled, Vara can only use local models.</text>
+<rect x="1204" y="391.390625" width="36" height="22" rx="999" fill="rgb(129, 125, 114)"/>
+<circle cx="1215" cy="402.390625" r="9" fill="#fff"/>
+<svg x="529.6875" y="479.390625" width="20" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(99, 100, 89)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2" width="6" height="13" rx="3"></rect><path d="M5 10v2a7 7 0 0 0 14 0v-2M12 19v3m-4 0h8"></path></svg>
+<text  x="563.6875" y="493.640625" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Audio: On this device</text>
+<svg x="529.6875" y="523.890625" width="20" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(99, 100, 89)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3c6 5 6 13 0 18-6-5-6-13 0-18Z"></path></svg>
+<text  x="563.6875" y="538.140625" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Text: Direct transcription by default</text>
+<text  x="563.6875" y="565.640625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Apps with custom rules use their selected AI.</text>
+<text  x="529.6875" y="610.140625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Cloud is used only for the features you choose.</text>
+<line x1="270.390625" y1="863.890625" x2="1240" y2="863.890625" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<text  x="270.390625" y="692.290625" fill="rgb(37, 37, 31)" font-family="Georgia, &quot;Noto Serif&quot;, &quot;Liberation Serif&quot;, serif" font-size="24px" font-weight="normal">History</text>
+<text  x="270.390625" y="723.640625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Your dictations are saved locally,</text>
+<text  x="270.390625" y="746.140625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">grouped by app.</text>
+<text  x="529.6875" y="684.790625" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Keep text</text>
+<text  x="529.6875" y="783.140625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">You can choose to delete automatically after a period.</text>
+<text  x="529.6875" y="830.940625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Deleting a dictation deletes both the original and processed text.</text>
 </svg>
