@@ -15,11 +15,11 @@ fn resolves_preference_and_ordered_system_languages() {
         "en"
     );
     assert_eq!(
-        resolve_ui_locale(UiLocale::System, &langs(&["fr-FR", "DA-dk", "en-US"])),
+        resolve_ui_locale(UiLocale::System, &langs(&["zz-ZZ", "DA-dk", "en-US"])),
         "da"
     );
     assert_eq!(
-        resolve_ui_locale(UiLocale::System, &langs(&["fr", "de"])),
+        resolve_ui_locale(UiLocale::System, &langs(&["zz", "de"])),
         "en"
     );
     assert_eq!(resolve_ui_locale(UiLocale::System, &[]), "en");
@@ -80,4 +80,28 @@ fn fresh_legacy_invalid_and_persisted_preferences() {
             UiLocale::En
         );
     }
+}
+
+#[cfg(feature = "test-extra-locale")]
+#[test]
+fn extra_catalog_uses_production_parse_resolution_and_persistence() {
+    let preference: UiLocale = serde_json::from_str("\"fr\"").unwrap();
+    assert_eq!(resolve_ui_locale(preference, &langs(&["da"])), "fr");
+    assert_eq!(
+        resolve_ui_locale(UiLocale::System, &langs(&["zz", "FR-ca"])),
+        "fr"
+    );
+    let dir = tempfile::tempdir().unwrap();
+    let path = dir.path().join("settings.sqlite3");
+    let store = Store::open(&path).unwrap();
+    let mut settings = store.settings().unwrap();
+    settings.ui_locale = preference;
+    store.save_settings(&settings).unwrap();
+    drop(store);
+    let loaded = Store::open(&path).unwrap().settings().unwrap();
+    assert_eq!(loaded.ui_locale, preference);
+    assert_eq!(serde_json::to_value(loaded).unwrap()["ui_locale"], "fr");
+    let message = vara_core::UserMessage::new("provider.http").number("status", 503);
+    assert_eq!(message.format("fr"), message.format("en"));
+    assert!(message.format("fr").contains("503"));
 }

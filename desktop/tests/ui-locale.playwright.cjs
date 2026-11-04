@@ -35,12 +35,28 @@ const fixture = JSON.parse(fs.readFileSync(path.join(__dirname,'fixtures/ui-stat
         if (action === 'file_list') return {documents:[structuredClone(window.testDocument)],media:{}};
         if (action === 'application_icons') return {};
         if (action === 'set_ui_locale') { if(window.waitLocale) await new Promise(resolve=>window.releaseLocale=resolve); if(window.failLocale) throw Error('fixture failure'); d.settings.ui_locale=payload.preference; d.resolved_ui_locale=payload.preference === 'system' ? 'en' : payload.preference; return {locale:d.resolved_ui_locale,revision:++d.ui_locale_revision}; }
+        if (action === 'shortcut_capture') return {native:!!window.enableNativeCapture};
         if (action === 'save_settings') { const locale=d.settings.ui_locale; d.settings=structuredClone(payload); d.settings.ui_locale=locale; }
         return null;
-      }},event:{listen:async(name,cb)=>{if(name==='vara:state') {window.emitState=()=>cb({payload:structuredClone(window.testState)}); window.emitPayload=p=>cb({payload:structuredClone(p)});} return ()=>{};}}};
+      }},event:{listen:async(name,cb)=>{if(name==='vara:state') {window.emitState=()=>cb({payload:structuredClone(window.testState)}); window.emitPayload=p=>cb({payload:structuredClone(p)});} if(name==='vara:shortcut-key') window.emitShortcut=(code,down)=>cb({payload:{code,down}}); return ()=>{};}}};
     },fixture);
     await page.goto(`http://127.0.0.1:${server.address().port}/ui/index.html`);
     await page.locator('[data-page="settings"]').click();
+    // A test-only language follows the same picker, host command and DOM binding path.
+    await page.evaluate(()=>{
+      Vara.i18n.localeNames.fr='Français (test)';
+      Vara.i18n.catalogs.fr={...Vara.i18n.catalogs.en, 'ui.settings':'Réglages de test'};
+    });
+    await page.locator('[data-page="history"]').click();
+    await page.locator('[data-page="settings"]').click();
+    assert.equal(await page.locator('#ui-locale option[value=fr]').textContent(),'Français (test)');
+    await page.locator('#ui-locale').selectOption('fr');
+    await page.waitForFunction(()=>document.documentElement.lang==='fr');
+    assert.equal(await page.locator('#view-title').textContent(),'Réglages de test');
+    assert.equal(await page.evaluate(()=>testState.settings.ui_locale),'fr');
+    await page.locator('#ui-locale').selectOption('da');
+    await page.waitForFunction(()=>document.documentElement.lang==='da');
+    await page.evaluate(()=>{delete Vara.i18n.localeNames.fr; delete Vara.i18n.catalogs.fr; testCalls.length=0;});
     await page.locator('#general-ai').check();
     const draft = page.locator('#general-prompt'); await draft.fill('Unsaved <prompt> & text');
     await draft.evaluate(el=>{el.focus();el.setSelectionRange(4,12)});
@@ -90,6 +106,14 @@ const fixture = JSON.parse(fs.readFileSync(path.join(__dirname,'fixtures/ui-stat
     assert.equal(await page.evaluate(()=>actualDialog===document.querySelector('#modal') && actualDialog.open),true);
     assert.deepEqual(await page.evaluate(start=>testCalls.slice(start).map(x=>x.action),modalCalls),['set_ui_locale']);
     await page.locator('dialog [data-action="close-modal"]').first().click();
+    // Native event fixture: modifier-only physical chord is still captured.
+    await page.evaluate(()=>window.enableNativeCapture=true);
+    await page.locator('[data-action="record-shortcut"]').click();
+    await page.evaluate(()=>{emitShortcut('AltLeft',true);emitShortcut('MetaLeft',true);emitShortcut('AltLeft',false);emitShortcut('MetaLeft',false);});
+    await page.locator('dialog [data-action="use-shortcut"]').click();
+    assert.equal(await page.locator('#shortcut').inputValue(),'Physical:AltLeft+MetaLeft');
+    await page.locator('[data-action="reset-form"]').click();
+    await page.evaluate(()=>window.enableNativeCapture=false);
     // Check in-place binding on an open modal and retained editor without replacing nodes.
     await page.evaluate(()=>{
       Vara.i18n.setLocale('en');

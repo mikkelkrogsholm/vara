@@ -176,6 +176,50 @@ const server = http.createServer((req, res) => {
       await page.locator('[data-action=setup-next]').click();
       assert.equal(await page.locator('#view-title').textContent(),t('Sig din første sætning.','Say your first sentence.'));
       await page.screenshot({path:path.join(shots,`${lang}-onboarding-720.png`)});
+      // Test-only longer catalog entries exercise the real binding/render path.
+      await page.evaluate(lang => {
+        const catalog=Vara.i18n.catalogs[lang];
+        for (const key of Object.keys(catalog)) {
+          const extend = value => value + (lang === 'da' ? ' ekstra forklarende tekst' : ' additional descriptive wording');
+          if (typeof catalog[key] === 'string') catalog[key] = extend(catalog[key]);
+          else for (const form of Object.keys(catalog[key])) catalog[key][form] = extend(catalog[key][form]);
+        }
+      }, lang);
+      await page.setViewportSize({width:1280,height:820});
+      await page.locator('[data-page=settings]').click();
+      await page.screenshot({path:path.join(shots,`${lang}-long-settings-1280.png`)});
+      await page.setViewportSize({width:720,height:560});
+      await page.screenshot({path:path.join(shots,`${lang}-long-settings-720.png`)});
+      const scaling=await page.evaluate(()=>{
+        const nodes=[...document.querySelectorAll('body *')];
+        const sizes=nodes.map(el=>parseFloat(getComputedStyle(el).fontSize));
+        nodes.forEach((el,i)=>el.style.fontSize=(sizes[i]*2)+'px');
+        const target=document.querySelector('#ui-locale');
+        const index=nodes.indexOf(target);
+        return [sizes[index],parseFloat(getComputedStyle(target).fontSize)];
+      });
+      assert.ok(Math.abs(scaling[1]-scaling[0]*2)<0.1, `computed font scaling ${scaling}`);
+      for (const selector of ['#ui-locale','[data-action="record-shortcut"]','[data-action="save-settings"]']) {
+        const control=page.locator(selector).first(); await control.scrollIntoViewIfNeeded();
+        const box=await control.boundingBox();
+        assert.ok(box && box.x>=0 && box.x+box.width<=720 && box.y>=0 && box.y+box.height<=560,`${lang} long ${selector} ${JSON.stringify(box)}`);
+      }
+      const longNavReachable=await page.evaluate(()=>[...document.querySelectorAll('.sidebar .nav-item')].every(el=>{
+        el.focus(); el.scrollIntoView({block:'nearest'});
+        const text=el.querySelector('span').getBoundingClientRect(), side=document.querySelector('.sidebar').getBoundingClientRect();
+        return document.activeElement===el && text.left>=side.left && text.right<=side.right && text.top>=side.top && text.bottom<=side.bottom;
+      }));
+      assert.equal(longNavReachable,true,`${lang} long navigation remains reachable`);
+      await page.screenshot({path:path.join(shots,`${lang}-long-settings-720-200.png`)});
+      await page.locator('[data-action="record-shortcut"]').click();
+      assert.equal(await modal.evaluate(el=>el.open),true);
+      assert.ok(await modal.getAttribute('aria-labelledby'));
+      assert.equal(await page.evaluate(()=>document.activeElement.id),'shortcut-recorder');
+      await page.keyboard.press('Tab');
+      assert.equal(await page.evaluate(()=>document.activeElement.dataset.action),'close-modal');
+      assert.match(await page.locator('#shortcut-recorder').textContent(),/Tab/);
+      await page.keyboard.press('Enter');
+      assert.equal(await modal.evaluate(el=>el.open),false);
       await page.close();
     }
     assert.deepEqual(errors, []);

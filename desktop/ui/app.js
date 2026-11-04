@@ -164,7 +164,7 @@
     picker.querySelector("h2").textContent = t("locale.heading");
     picker.querySelector("header p").textContent = t("locale.description");
     picker.querySelector('label[for="ui-locale"]').textContent = t("locale.label");
-    for (const option of picker.querySelectorAll("option")) option.textContent = t("locale." + option.value);
+    for (const option of picker.querySelectorAll("option")) option.textContent = option.value === "system" ? t("locale.system") : Vara.i18n.localeNames[option.value];
   }
   Vara.i18n.subscribe(updateLocalePicker);
   let localeWrites = Promise.resolve(), pendingLocale = null;
@@ -871,16 +871,16 @@
     $("modal").querySelector('[data-action="use-shortcut"]').disabled = !state.shortcutDraft || state.shortcutKeys.size > 0;
   }
   document.addEventListener("keydown", event => {
-    if ($("modal").open && $("shortcut-recorder")) {
-      event.preventDefault(); event.stopPropagation();
+    if ($("modal").open && $("shortcut-recorder") && document.activeElement === $("shortcut-recorder")) {
+      if (event.key !== "Tab") { event.preventDefault(); event.stopPropagation(); }
       if (!event.repeat) recordShortcutKey(event.code, true, "dom", event);
       return;
     }
     if (event.key === "Escape" && state.data?.session && !$("modal").open) api("cancel").catch(report);
   }, true);
   document.addEventListener("keyup", event => {
-    if ($("modal").open && $("shortcut-recorder")) {
-      event.preventDefault();
+    if ($("modal").open && $("shortcut-recorder") && state.shortcutKeys.has(event.code)) {
+      if (event.key !== "Tab") event.preventDefault();
       recordShortcutKey(event.code, false, "dom", event);
     }
   }, true);
@@ -901,7 +901,8 @@
       apply(event.payload),
     );
     await window.__TAURI__.event.listen("vara:shortcut-key", event => {
-      if (state.nativeCapture) recordShortcutKey(event.payload.code, event.payload.down, "native");
+      if (state.nativeCapture && (document.activeElement === $("shortcut-recorder") || (!event.payload.down && state.shortcutSources.native.has(event.payload.code))))
+        recordShortcutKey(event.payload.code, event.payload.down, "native");
     });
     // Device drivers must never hold onboarding or history hostage.
     let deviceDeadline;

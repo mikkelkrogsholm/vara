@@ -1,5 +1,7 @@
 /* message returns plain text; html escapes the entire message for HTML templates. */
 ((root) => {
+  // Keep these endonyms aligned with crates/vara-core/messages/locales.json.
+  const localeNames = { da: "Dansk", en: "English" };
   const catalogs = {
     en: {
       "tx.playback-copy-missing": "The playback copy is missing.",
@@ -1107,7 +1109,10 @@
   }
   const listeners = new Set();
   const escape = value => String(value).replace(/[&<>"']/g, c => ({"&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"})[c]);
-  const normalize = value => value === "da" ? "da" : "en";
+  const normalize = value => {
+    const language = String(value || "").split(/[-_]/)[0].toLowerCase();
+    return Object.hasOwn(catalogs, language) && Object.hasOwn(localeNames, language) ? language : "en";
+  };
   function message(key, args = {}) {
     let value = catalogs[locale][key] ?? catalogs.en[key];
     if (value == null) return String(key);
@@ -1139,7 +1144,7 @@
     for (const listener of listeners) listener(locale);
   }
   const i18n = {
-    catalogs, message, bind, resolve, setRuntimeCatalog, runtimeText, runtimeCode, bindRuntime, bindingCount: () => bindings.size, bindDate: (value, options) => bindFormat("date", value, options), bindNumber: (value, options) => bindFormat("number", value, options), refreshBindings, html: (key, args) => escape(message(key, args)), setLocale, getLocale: () => locale,
+    catalogs, localeNames, message, bind, resolve, setRuntimeCatalog, runtimeText, runtimeCode, bindRuntime, bindingCount: () => bindings.size, bindDate: (value, options) => bindFormat("date", value, options), bindNumber: (value, options) => bindFormat("number", value, options), refreshBindings, html: (key, args) => escape(message(key, args)), setLocale, getLocale: () => locale,
     subscribe(listener) { listeners.add(listener); return () => listeners.delete(listener); },
     number(value, options) { return new Intl.NumberFormat(locale, options).format(value); },
     date(value, options) { return new Intl.DateTimeFormat(locale, options).format(value); },

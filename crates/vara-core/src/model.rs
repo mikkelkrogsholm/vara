@@ -293,16 +293,70 @@ pub struct AppRule {
     pub prompt: String,
     pub engine_id: String,
 }
-/// The stored UI preference is separate from speech recognition language.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Default)]
-#[serde(rename_all = "snake_case")]
+/// A supported language is declared in the locale metadata, independently of speech.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum UiLocale {
-    #[default]
     System,
-    Da,
-    En,
+    Language(&'static str),
 }
 
+impl UiLocale {
+    #[allow(non_upper_case_globals)]
+    pub const Da: Self = Self::Language("da");
+    #[allow(non_upper_case_globals)]
+    pub const En: Self = Self::Language("en");
+}
+impl Default for UiLocale {
+    fn default() -> Self {
+        Self::System
+    }
+}
+
+#[derive(Debug, Deserialize)]
+struct LocaleMetadata {
+    id: &'static str,
+}
+
+fn supported_ui_locales() -> &'static [LocaleMetadata] {
+    static LOCALES: std::sync::OnceLock<Vec<LocaleMetadata>> = std::sync::OnceLock::new();
+    LOCALES.get_or_init(|| {
+        #[cfg(not(feature = "test-extra-locale"))]
+        let source = include_str!("../messages/locales.json");
+        #[cfg(feature = "test-extra-locale")]
+        let source = include_str!("../tests/fixtures/locales-extra.json");
+        serde_json::from_str(source).expect("valid UI locale metadata")
+    })
+}
+fn supported_ui_locale(value: &str) -> Option<&'static str> {
+    supported_ui_locales()
+        .iter()
+        .find(|entry| entry.id == value)
+        .map(|entry| entry.id)
+}
+impl Serialize for UiLocale {
+    fn serialize<S: serde::Serializer>(
+        &self,
+        serializer: S,
+    ) -> std::result::Result<S::Ok, S::Error> {
+        serializer.serialize_str(match self {
+            Self::System => "system",
+            Self::Language(id) => id,
+        })
+    }
+}
+impl<'de> Deserialize<'de> for UiLocale {
+    fn deserialize<D: serde::Deserializer<'de>>(
+        deserializer: D,
+    ) -> std::result::Result<Self, D::Error> {
+        let value = String::deserialize(deserializer)?;
+        if value == "system" {
+            return Ok(Self::System);
+        }
+        supported_ui_locale(&value)
+            .map(Self::Language)
+            .ok_or_else(|| serde::de::Error::custom("unsupported UI locale"))
+    }
+}
 fn legacy_ui_locale() -> UiLocale {
     UiLocale::Da
 }
@@ -310,32 +364,31 @@ fn deserialize_ui_locale<'de, D: serde::Deserializer<'de>>(
     deserializer: D,
 ) -> std::result::Result<UiLocale, D::Error> {
     let value = serde_json::Value::deserialize(deserializer)?;
-    Ok(match value.as_str() {
-        Some("system") => UiLocale::System,
-        Some("da") => UiLocale::Da,
-        _ => UiLocale::En,
-    })
+    Ok(value
+        .as_str()
+        .and_then(|value| {
+            if value == "system" {
+                Some(UiLocale::System)
+            } else {
+                supported_ui_locale(value).map(UiLocale::Language)
+            }
+        })
+        .unwrap_or(UiLocale::En))
 }
 
 /// Resolve the first supported language tag, independently of the presentation host.
 pub fn resolve_ui_locale(preference: UiLocale, system_languages: &[String]) -> &'static str {
     match preference {
-        UiLocale::Da => "da",
-        UiLocale::En => "en",
+        UiLocale::Language(id) => supported_ui_locale(id).unwrap_or("en"),
         UiLocale::System => system_languages
             .iter()
             .find_map(|tag| {
-                match tag
+                let language = tag
                     .split(['-', '_'])
                     .next()
                     .unwrap_or("")
-                    .to_ascii_lowercase()
-                    .as_str()
-                {
-                    "da" => Some("da"),
-                    "en" => Some("en"),
-                    _ => None,
-                }
+                    .to_ascii_lowercase();
+                supported_ui_locale(&language)
             })
             .unwrap_or("en"),
     }

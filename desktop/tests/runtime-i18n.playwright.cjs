@@ -62,5 +62,16 @@ try {
  const startup=await browser.newPage();await startup.goto(`http://127.0.0.1:${server.address().port}/ui/index.html`);assert.match(await startup.locator('#workspace').innerText(),/Open Vara as a desktop app/);assert.equal(await startup.locator('#sidebar').getAttribute('aria-label'),'Main navigation');await startup.close();
  const boot=await browser.newPage();await boot.addInitScript(()=>{window.__TAURI__={core:{invoke:()=>new Promise(()=>{})}}});await boot.goto(`http://127.0.0.1:${server.address().port}/ui/index.html`);
  await boot.evaluate(()=>window.dispatchEvent(new ErrorEvent('error',{message:'secret token /private/path'})));assert.match(await boot.locator('#startup').innerText(),/Vara could not open/);assert.doesNotMatch(await boot.locator('#startup').innerText(),/secret|private/);await boot.close();
+ // Before the full catalog loads, select the first supported system language.
+ for (const [languages,expected] of [[['en-GB','da-DK'],'Vara could not open'],[['fr-FR','da-DK','en-US'],'Vara kunne ikke åbne']]) {
+   const early=await browser.newPage();
+   await early.setContent('<div id="startup"></div>');
+   await early.evaluate(languages=>Object.defineProperty(navigator,'languages',{value:languages,configurable:true}),languages);
+   await early.addScriptTag({url:`http://127.0.0.1:${server.address().port}/ui/boot.js`});
+   await early.evaluate(()=>window.dispatchEvent(new ErrorEvent('error',{message:'secret'})));
+   assert.match(await early.locator('#startup').innerText(),new RegExp(expected));
+   assert.doesNotMatch(await early.locator('#startup').innerText(),/secret/);
+   await early.close();
+ }
  console.log(`PASS: runtime catalog, snapshot, report, causes, redaction, live locale, retained editor, Who and startup. Screenshots: ${shots}`);
 }finally{if(browser)await browser.close();await new Promise(r=>server.close(r));}})().catch(e=>{console.error(e);process.exitCode=1});

@@ -105,10 +105,14 @@ const server = http.createServer((req,res) => {
       await restore(); await action('tx-who-open').click(); await scale();
       assert.ok(await page.locator('dialog').evaluate(el=>el.scrollWidth<=el.clientWidth+1),`${lang}: Who dialog overflow`);
       await visibleBounds('[data-action="tx-who-run"]',`${lang} Who`); const countSpacing=await page.evaluate(()=>{const l=document.querySelector('[for=tx-who-count]').getBoundingClientRect(),s=document.querySelector('#tx-who-count').getBoundingClientRect();return s.top>=l.bottom}); assert.ok(countSpacing,`${lang}: count label and control overlap`); await page.screenshot({path:path.join(shots,`${lang}-who-720-200.png`)});
+      await visibleBounds('dialog #dialog-title',`${lang} Who title`);
+      await visibleBounds('dialog [data-action="close-modal"]',`${lang} Who close`);
       await page.locator('dialog [data-action="close-modal"]').first().click(); await restore();
       await action('tx-export').click(); await scale();
       assert.ok(await page.locator('dialog').evaluate(el=>el.scrollWidth<=el.clientWidth+1),`${lang}: export dialog overflow`);
       await visibleBounds('[data-action="tx-export-save"]',`${lang} export`); await page.screenshot({path:path.join(shots,`${lang}-export-720-200.png`)});
+      await visibleBounds('dialog #dialog-title',`${lang} export title`);
+      await visibleBounds('dialog [data-action="close-modal"]',`${lang} export close`);
       await page.locator('dialog [data-action="close-modal"]').first().click(); await restore();
     }
     assert.equal(await page.evaluate(()=>JSON.stringify(calls).includes('__vara_')),false,'no binding tokens in host payloads');

@@ -202,7 +202,7 @@
     "component.experience": {
       "kind": "component",
       "label": "Experience",
-      "description": "Present onboarding, history, configuration and honest session status. The main UI supports Danish and English using stable message keys; locale changes preserve user input, focus, selection, dialogs and active operations. User content and edited engine labels remain unchanged. File transcription follows the same localization boundary; native messages have separate localization work. Runtime message transport exists in Rust; host, web and native presentation migration remains incomplete.",
+      "description": "Present onboarding, history, configuration and honest session status. The main UI supports Danish and English using stable message keys; locale changes preserve user input, focus, selection, dialogs and active operations. User content and edited engine labels remain unchanged. File transcription and app-owned native messages follow the same localization boundary; stable runtime messages are formatted at presentation. OS-owned permission prompts follow the system language. Native Windows/Linux behavior and live microphone prompts remain unverified.",
       "maturity": "specified",
       "source_refs": [
         {
@@ -221,7 +221,7 @@
         }
       ],
       "boundary": {
-        "responsibility": "Present onboarding, history, configuration and honest session status. The main UI supports Danish and English using stable message keys; locale changes preserve user input, focus, selection, dialogs and active operations. User content and edited engine labels remain unchanged. File transcription follows the same localization boundary; native messages have separate localization work. Runtime message transport exists in Rust; host, web and native presentation migration remains incomplete.",
+        "responsibility": "Present onboarding, history, configuration and honest session status. The main UI supports Danish and English using stable message keys; locale changes preserve user input, focus, selection, dialogs and active operations. User content and edited engine labels remain unchanged. File transcription and app-owned native messages follow the same localization boundary; stable runtime messages are formatted at presentation. OS-owned permission prompts follow the system language. Native Windows/Linux behavior and live microphone prompts remain unverified.",
         "rationale": "A single owner keeps this responsibility replaceable behind public contracts in one desktop application.",
         "excludes": [
           "OS focus decisions, secret values and provider protocol logic."
@@ -579,7 +579,7 @@
     "entity.policy": {
       "kind": "entity",
       "label": "User preferences",
-      "description": "User preferences data contract. Handles are opaque; references identify logical records, never embedded secrets or binary audio. UI locale is independent of speech language: fresh profiles use system, old profiles missing the field use da, invalid stored values fall back to en. Resolve system against ordered host language tags, first supported da/en, otherwise en; native and web receive the same resolved locale. Change this preference independently without disturbing drafts or active effects.",
+      "description": "User preferences data contract. Handles are opaque; references identify logical records, never embedded secrets or binary audio. UI locale is independent of speech language: fresh profiles use system, old profiles missing the field use da, invalid stored values fall back to en. Resolve system against ordered host language tags, first supported catalog language (da/en in this release), otherwise en; native and web receive the same resolved locale. Change this preference independently without disturbing drafts or active effects.",
       "maturity": "specified",
       "source_refs": [
         {
@@ -10874,7 +10874,7 @@
       "format": "text/markdown",
       "normative": true,
       "revision": {
-        "sha256": "85bee31dbacff653f302bcd5e3ec99512f786a09bd706993144342318c92596c"
+        "sha256": "fcf93a290bfa83175646b5ccf4877b4f1e840658e2c5163022f2b26a9cc43ba8"
       }
     },
     "source.design": {
@@ -10884,7 +10884,7 @@
       "format": "text/markdown",
       "normative": true,
       "revision": {
-        "sha256": "48f9ced54ba91d48c13d42ca982eb484becedfad3b3e17572901f5f8b6018da5"
+        "sha256": "a9f10143614770ff0f20409b4024a0710665d6f78ec22c2bccdd6aba459f482d"
       }
     },
     "source.design_selection": {
@@ -10924,7 +10924,7 @@
       "format": "text/markdown",
       "normative": false,
       "revision": {
-        "sha256": "156bbada0bda5be29fe897d9f56544aa824551ddb4848913a652851016ed3761"
+        "sha256": "7b059e8cc60a2d49a0bbbd957d95be553635be885fa7e4237ad9018b258df64b"
       }
     },
     "source.transcription": {

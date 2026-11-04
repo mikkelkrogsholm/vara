@@ -261,7 +261,7 @@ platform SDK/LiteRT artifacts and target runtime acceptance before distribution.
 `language`. Fresh settings default to `system`; deserializing an existing JSON
 profile missing the field defaults to `da`, and invalid field values become `en`.
 `resolve_ui_locale` accepts the preference and the ordered host language tags and
-returns `da` or `en`; System selects the first supported base tag and otherwise
+returns a supported catalog ID (`da` or `en` in this release); System selects the first supported base tag and otherwise
 returns English. The platform adapter supplies macOS preferred languages or the
 Windows preferred UI language list; other targets use locale environment values.
 The desktop snapshot exposes `resolved_ui_locale` and a process-local locale
@@ -277,10 +277,19 @@ escaping components; `html` returns a fully escaped string for template HTML.
 Named placeholders are text, never markup. Use `number`/`date` and plural forms
 for locale-sensitive presentation. Locale subscribers and `data-i18n`,
 `data-i18n-aria-label`, `data-i18n-placeholder` bindings refresh in place;
-annotate leaf labels only, never an editable container. For a new language add a
-complete catalog and supported resolution, implement required plural categories,
-and run `node desktop/tests/i18n.test.cjs` plus the browser locale check. Keep
-user content and model metadata outside the catalogs.
+annotate leaf labels only, never an editable container. To add a language, add
+its base language ID and endonym to `crates/vara-core/messages/locales.json` and
+`localeNames` in `desktop/ui/i18n.js`, then add a complete matching UI catalog
+and translations for every runtime code in `crates/vara-core/messages/runtime.json`.
+Implement all `Intl.PluralRules` categories and preserve named placeholders.
+Translate and verify native HUD, tray, file chooser and macOS purpose-string
+resources, and platform-specific behavior before enabling a new production language.
+Missing runtime strings fall back to English, so catalog checks must reject gaps.
+Run `scripts/check-localization.sh` with the documented dependencies. Its isolated
+`test-extra-locale` Rust feature substitutes a test-only metadata file and must not
+be enabled for production builds. Browser tests inject a test-only catalog into
+the real picker, binding and formatter path. Keep user content, prompts, model
+metadata and speech-language choices outside the UI catalogs.
 
 ## Runtime messages
 

@@ -11,7 +11,7 @@ Derived from `gdd.json`; the graph owns action/type/scenario details. Regenerate
 | `component.engines` | Expose separately typed speech/text capabilities and provider readiness through adapters. Runtime-origin user messages use versioned codes, numeric safe parameters and structured classified causes; locale formatting belongs at presentation. | Session delivery, application policy and history ownership. |
 | `component.preferences` | Resolve deliberate processing choices into immutable per-session plans. | Running providers, reading target app content and owning secrets. |
 | `component.history` | Own durable text, staged recovery and bounded temporary audio lifecycle. | Provider protocols and implicit paste replay. |
-| `component.experience` | Present onboarding, history, configuration and honest session status. The main UI supports Danish and English using stable message keys; locale changes preserve user input, focus, selection, dialogs and active operations. User content and edited engine labels remain unchanged. File transcription follows the same localization boundary; native messages have separate localization work. Runtime message transport exists in Rust; host, web and native presentation migration remains incomplete. | OS focus decisions, secret values and provider protocol logic. |
+| `component.experience` | Present onboarding, history, configuration and honest session status. The main UI supports Danish and English using stable message keys; locale changes preserve user input, focus, selection, dialogs and active operations. User content and edited engine labels remain unchanged. File transcription and app-owned native messages follow the same localization boundary; stable runtime messages are formatted at presentation. OS-owned permission prompts follow the system language. Native Windows/Linux behavior and live microphone prompts remain unverified. | OS focus decisions, secret values and provider protocol logic. |
 | `component.transcription` | Own durable file jobs and document library independently from OS dictation delivery and captured-audio retention. | OS focus/insertion, provider protocols, changing or deleting user original files. |
 
 ## Main flow
@@ -145,7 +145,7 @@ Application processing preference data contract. Handles are opaque; references 
 ### User preferences
 `entity.policy`
 
-User preferences data contract. Handles are opaque; references identify logical records, never embedded secrets or binary audio. UI locale is independent of speech language: fresh profiles use system, old profiles missing the field use da, invalid stored values fall back to en. Resolve system against ordered host language tags, first supported da/en, otherwise en; native and web receive the same resolved locale. Change this preference independently without disturbing drafts or active effects.
+User preferences data contract. Handles are opaque; references identify logical records, never embedded secrets or binary audio. UI locale is independent of speech language: fresh profiles use system, old profiles missing the field use da, invalid stored values fall back to en. Resolve system against ordered host language tags, first supported catalog language (da/en in this release), otherwise en; native and web receive the same resolved locale. Change this preference independently without disturbing drafts or active effects.
 
 | Field | Type |
 | --- | --- |

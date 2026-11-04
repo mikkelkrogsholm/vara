@@ -6,7 +6,7 @@
     startup.replaceChildren();
     const title = document.createElement('h1');
     const i18n = window.Vara?.i18n;
-    const danish = i18n ? i18n.getLocale() === 'da' : (navigator.languages || [navigator.language]).some(l => /^da(?:-|$)/i.test(l));
+    const danish = i18n ? i18n.getLocale() === 'da' : (/^da(?:[-_]|$)/i.test((navigator.languages || [navigator.language]).find(l => /^(?:da|en)(?:[-_]|$)/i.test(l)) || ''));
     title.textContent = i18n ? i18n.bind('startup.failed') : (danish ? 'Vara kunne ikke åbne' : 'Vara could not open');
     const detail = document.createElement('p');
     // Before the runtime catalog is available, do not disclose arbitrary error

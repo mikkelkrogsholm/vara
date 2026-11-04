@@ -40,4 +40,18 @@ for (const file of ['app.js', 'components.js', 'views.js', 'transcription.js']) 
       assert.ok(Object.hasOwn(catalog, match[1]), `${file}: ${locale} missing ${match[1]}`);
   }
 }
+// The browser metadata must match the host's production language boundary.
+const metadata = JSON.parse(fs.readFileSync(path.join(__dirname, '../../crates/vara-core/messages/locales.json')));
+assert.deepEqual(Object.fromEntries(metadata.map(({id,name}) => [id,name])), i18n.localeNames);
+assert.deepEqual(Object.keys(i18n.localeNames).sort(), Object.keys(catalogs).sort());
+// A test-only catalog goes through the same normalization, formatting and binding code.
+catalogs.fr = {...catalogs.en, 'example.items': {one:'{count} élément de test', other:'{count} éléments de test'}};
+i18n.localeNames.fr = 'Français (test)';
+i18n.setLocale('FR-ca');
+assert.equal(i18n.getLocale(), 'fr');
+assert.equal(i18n.message('example.items', {count:2}), '2 éléments de test');
+assert.equal(i18n.resolve(i18n.bind('example.items', {count:2})), '2 éléments de test');
+assert.equal(i18n.number(1234.5), new Intl.NumberFormat('fr').format(1234.5));
+assert.equal(i18n.date(new Date('2025-03-01T12:00:00Z'), {timeZone:'UTC'}), new Intl.DateTimeFormat('fr',{timeZone:'UTC'}).format(new Date('2025-03-01T12:00:00Z')));
+delete catalogs.fr; delete i18n.localeNames.fr;
 console.log('Catalog parity, placeholders, escaping, plural, Intl formatting and locale hooks passed.');

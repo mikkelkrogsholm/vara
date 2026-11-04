@@ -112,7 +112,7 @@ motion or a global shortcut for access to essential controls. Honor text scaling
 and reduced motion. The main shell, history, app preferences, settings and
 onboarding and the file transcription workspace provide Danish and English UI
 labels. Interface language does not change speech language, transcription
-language or AI instructions. Native host messages remain separate localization work.
+language or AI instructions. App-owned native host messages use the same language boundary; OS-owned permission prompts follow the operating system.
 
 ## Architecture direction
 
@@ -183,8 +183,8 @@ ordered system languages, choosing the first supported Danish or English tag;
 English is the fallback. The user may persist System, Dansk or English. Profiles
 saved before this choice existed retain Danish; malformed saved choices safely
 fall back to English. Changing this preference takes effect without restarting,
-saving other pending settings, replacing live edits or repeating work. Translation
-of native host messages is delivered separately; user content and custom model
-names are never automatically translated. New anonymous speaker labels are
+saving other pending settings, replacing live edits or repeating work. App-owned native host messages are localized; OS-owned permission prompts follow
+the operating system. User content and custom model names are never automatically
+translated. New anonymous speaker labels are
 localized only when their generated provenance is recorded; legacy names and
 explicitly edited names are preserved verbatim.

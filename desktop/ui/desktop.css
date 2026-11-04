@@ -531,9 +531,9 @@ html[data-platform="macos"] .brand {
 .settings-field-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 24px; }
 .settings-field-grid .field { margin: 0; }
 .shortcut-field .field-label { display: block; margin-bottom: 8px; }
-.shortcut-control { display: flex; gap: 8px; align-items: stretch; min-width: 0; }
+.shortcut-control { display: flex; flex-wrap: wrap; gap: 8px; align-items: stretch; min-width: 0; }
 .shortcut-control kbd {
-  flex: 1;
+  flex: 1 1 7em;
   min-width: 0;
   padding: 10px 12px;
   border: 1px solid var(--color-divider);
@@ -542,7 +542,7 @@ html[data-platform="macos"] .brand {
   font-size: var(--type-caption-font-size);
   overflow-wrap: anywhere;
 }
-.shortcut-control .button { padding-inline: 14px; }
+.shortcut-control .button { padding-inline: 14px; max-width: 100%; white-space: normal; overflow-wrap: anywhere; }
 .processing-choice { border: 0; padding: 0; margin: 0 0 20px; display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 20px; }
 .processing-choice label { display: flex; gap: 10px; align-items: flex-start; cursor: pointer; min-width: 0; }
 .processing-choice input { width: 22px; height: 22px; margin: 1px 0 0; flex-shrink: 0; accent-color: var(--color-primary); }
