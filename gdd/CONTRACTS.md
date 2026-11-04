@@ -45,7 +45,7 @@ One application, shared Rust domain core. Public calls are explicit `calls` edge
 
 ## Agent CLI v1
 
-The CLI uses the shared file queue and exports. Its complete command, JSON, error, lifecycle and overwrite contract is normative in `TRANSCRIPTION-SPEC.md` under Agent-CLI v1; `CLI.md` gives usage. An omitted model is part of request identity and is resolved only on first acceptance. Interruption stops the client, not the accepted job.
+The CLI uses the shared file queue and exports. Its complete command, JSON, error, lifecycle and overwrite contract is normative in `TRANSCRIPTION-SPEC.md` under Agent-CLI v1; `CLI.md` gives usage. An omitted model is part of request identity and is resolved only on first acceptance. The optional Who plan and known count are durable parts of the same job; ASR readiness alone is not combined success. Original or saved text can be selected for export. Interruption stops the client, not the accepted job.
 
 ### Invocation target
 `entity.destination`

@@ -7,7 +7,7 @@ use std::{
     sync::atomic::{AtomicBool, Ordering},
     time::{Duration, Instant},
 };
-use vara_core::{FileStage, TranscriptionDocument, UserMessage};
+use vara_core::{FileStage, TranscriptionDocument, UserMessage, WhoStage};
 
 static INTERRUPTED: AtomicBool = AtomicBool::new(false);
 #[cfg(unix)]
@@ -15,13 +15,16 @@ extern "C" fn interrupt(_: libc::c_int) {
     INTERRUPTED.store(true, Ordering::SeqCst);
 }
 
-const HELP: &str = "Vara agent CLI v1\n\n  cli transcribe FILE [--model ID] [--language CODE] [--request-id ID] [--no-wait] [--timeout SECONDS] [--format json|txt|md|srt|vtt] [--output FILE] [--overwrite]\n  cli job status|wait|result|cancel ID [--timeout SECONDS] [--format FORMAT] [--output FILE] [--overwrite]\n  cli models [--json]\n  cli --help | --version\n\nDefault model: configured speech engine. Default language: automatic. Redux detects language automatically. Default is to wait without a deadline. --no-wait returns a durable job reference; --output cannot be combined with it (use job result later). Each submit prints its request ID before IPC and job ID after acceptance; retry identical input with --request-id after a lost receipt. Timeout or Ctrl-C stops waiting, not the job; use job cancel to cancel. JSON is the default. An explicit non-JSON format without --output writes only export content; --output returns a JSON receipt. Existing output requires --overwrite. No model is downloaded.\nExit: 0 success, 2 usage/input, 3 unavailable/privacy, 4 failed/cancelled job, 5 backend, 6 export, 7 interrupted/timeout.\n";
+const HELP: &str = "Vara agent CLI v1\n\n  cli transcribe FILE [--model ID] [--language CODE] [--diarize] [--speakers 1-16] [--request-id ID] [--no-wait] [--timeout SECONDS] [--format json|txt|md|srt|vtt] [--original] [--output FILE] [--overwrite]\n  cli job status|wait|result|cancel ID [--timeout SECONDS] [--format FORMAT] [--original] [--output FILE] [--overwrite]\n  cli models [--json]\n  cli --help | --version\n\nDefault model: configured speech engine. Default language: automatic. Redux detects language automatically. Default is to wait without a deadline. --no-wait returns a durable job reference; --output cannot be combined with it (use job result later). Each submit prints its request ID before IPC and job ID after acceptance; retry identical input with --request-id after a lost receipt. Timeout or Ctrl-C stops waiting, not the job; use job cancel to cancel. --original selects original ASR text and timing instead of saved edits. JSON is the default. An explicit non-JSON format without --output writes only export content; --output returns a JSON receipt. Existing output requires --overwrite. No model is downloaded.\nExit: 0 success, 2 usage/input, 3 unavailable/privacy, 4 failed/cancelled job, 5 backend, 6 export, 7 interrupted/timeout.\n";
 #[derive(Default)]
 struct Options {
     model: Option<String>,
     language: Option<String>,
     request_id: Option<String>,
     no_wait: bool,
+    diarize: bool,
+    speakers: Option<u32>,
+    original: bool,
     timeout: Option<Duration>,
     format: Option<String>,
     output: Option<PathBuf>,
@@ -166,6 +169,8 @@ fn parse_options(args: &[String], allowed: &[&str]) -> Result<Options, Failure> 
         i += 1;
         match key {
             "--no-wait" => o.no_wait = true,
+            "--diarize" => o.diarize = true,
+            "--original" => o.original = true,
             "--overwrite" => o.overwrite = true,
             "--json" => {}
             _ => {
@@ -175,6 +180,15 @@ fn parse_options(args: &[String], allowed: &[&str]) -> Result<Options, Failure> 
                     .ok_or_else(|| Failure::new("cli.invalid_arguments", 2))?;
                 i += 1;
                 match key {
+                    "--speakers" => {
+                        o.speakers = Some(
+                            value
+                                .parse::<u32>()
+                                .ok()
+                                .filter(|n| (1..=16).contains(n))
+                                .ok_or_else(|| Failure::new("cli.invalid_arguments", 2))?,
+                        )
+                    }
                     "--model" => o.model = Some(value.clone()),
                     "--language" => o.language = Some(value.clone()),
                     "--request-id" => o.request_id = Some(value.clone()),
@@ -198,6 +212,7 @@ fn parse_options(args: &[String], allowed: &[&str]) -> Result<Options, Failure> 
         .as_deref()
         .is_some_and(|f| !["json", "txt", "md", "srt", "vtt"].contains(&f))
         || o.overwrite && o.output.is_none()
+        || o.speakers.is_some() && !o.diarize
     {
         return Err(Failure::new("cli.invalid_arguments", 2));
     }
@@ -207,11 +222,53 @@ fn document(v: Value) -> Result<TranscriptionDocument, Failure> {
     serde_json::from_value(v).map_err(|_| Failure::new("backend.response_invalid", 5))
 }
 fn receipt(d: &TranscriptionDocument) -> Value {
-    json!({"schema_version":1,"ok":true,"job_id":d.id,"document_id":d.id,"status":d.stage,"timing_capability":d.engine.file_timing_capability()})
+    let status = match d.stage {
+        FileStage::Ready => match d.who_plan.as_ref().map(|p| p.stage) {
+            Some(WhoStage::Pending | WhoStage::Running) => "processing",
+            Some(WhoStage::Failed | WhoStage::Skipped) => "who_failed",
+            Some(WhoStage::Cancelled) => "who_cancelled",
+            _ => "ready",
+        },
+        FileStage::Failed => "failed",
+        FileStage::Cancelled => "cancelled",
+        FileStage::Queued => "queued",
+        FileStage::Decoding => "decoding",
+        FileStage::Transcribing => "transcribing",
+    };
+    json!({"schema_version":1,"ok":true,"job_id":d.id,"document_id":d.id,"status":status,"asr_stage":d.stage,"who":d.who_plan,"timing_capability":d.engine.file_timing_capability()})
 }
 fn terminal(d: &TranscriptionDocument) -> Result<bool, Failure> {
     match d.stage {
-        FileStage::Ready => Ok(true),
+        FileStage::Ready => match d.who_plan.as_ref().map(|p| p.stage) {
+            Some(WhoStage::Pending | WhoStage::Running) => Ok(false),
+            Some(WhoStage::Failed | WhoStage::Cancelled | WhoStage::Skipped) => {
+                let plan = d.who_plan.as_ref().unwrap();
+                let message = plan.error.as_deref().and_then(UserMessage::decode);
+                let code = message.as_ref().map(|m| m.code.clone()).unwrap_or_else(|| {
+                    if plan.stage == WhoStage::Cancelled {
+                        "file.job_cancelled".into()
+                    } else {
+                        "file.job_failed".into()
+                    }
+                });
+                Err(Failure {
+                    code,
+                    message,
+                    exit: 4,
+                    job_id: Some(d.id.clone()),
+                    request_id: None,
+                    status: Some(
+                        if plan.stage == WhoStage::Cancelled {
+                            "who_cancelled"
+                        } else {
+                            "who_failed"
+                        }
+                        .into(),
+                    ),
+                })
+            }
+            _ => Ok(true),
+        },
         FileStage::Failed | FileStage::Cancelled => {
             let message = d.error.as_deref().and_then(UserMessage::decode);
             let code = message.as_ref().map(|m| m.code.clone()).unwrap_or_else(|| {
@@ -283,7 +340,7 @@ fn output(
 ) -> Result<(), Failure> {
     let mut r = receipt(&d);
     let format = o.format.as_deref().unwrap_or("json");
-    let data = d.export(format, false).map_err(|e| {
+    let data = d.export(format, o.original).map_err(|e| {
         let message = UserMessage::decode(&e.wire());
         Failure {
             code: message
@@ -312,6 +369,7 @@ fn output(
                     format: format.into(),
                     path: absolute,
                     overwrite: o.overwrite,
+                    original: o.original,
                 },
                 exe,
                 deadline,
@@ -374,6 +432,9 @@ fn run(args: Vec<String>) -> Result<(), Failure> {
                 &[
                     "--model",
                     "--language",
+                    "--diarize",
+                    "--speakers",
+                    "--original",
                     "--request-id",
                     "--no-wait",
                     "--timeout",
@@ -408,6 +469,8 @@ fn run(args: Vec<String>) -> Result<(), Failure> {
                         engine_id: o.model.clone(),
                         language: o.language.clone(),
                         request_id: Some(request_id.clone()),
+                        diarize: o.diarize,
+                        speakers: o.speakers,
                     },
                 },
                 &exe,
@@ -440,8 +503,14 @@ fn run(args: Vec<String>) -> Result<(), Failure> {
                 .ok_or_else(|| Failure::new("cli.invalid_arguments", 2))?;
             let allowed = match action {
                 "status" | "cancel" => &[][..],
-                "wait" => &["--timeout", "--format", "--output", "--overwrite"][..],
-                "result" => &["--format", "--output", "--overwrite"][..],
+                "wait" => &[
+                    "--timeout",
+                    "--format",
+                    "--output",
+                    "--overwrite",
+                    "--original",
+                ][..],
+                "result" => &["--format", "--output", "--overwrite", "--original"][..],
                 _ => return Err(Failure::new("cli.invalid_arguments", 2)),
             };
             let o = parse_options(&args[3..], allowed)?;

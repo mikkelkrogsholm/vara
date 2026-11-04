@@ -5,6 +5,10 @@ pub struct SubmitRequest {
     pub engine_id: Option<String>,
     pub language: Option<String>,
     pub request_id: Option<String>,
+    #[serde(default)]
+    pub diarize: bool,
+    #[serde(default)]
+    pub speakers: Option<u32>,
 }
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct JobReceipt {
@@ -175,9 +179,20 @@ impl Files {
             TranscriptionStore::open(&root.join("transcriptions.sqlite3")).map_err(|e| e.wire())?;
         let mut documents = store.all().map_err(|e| e.wire())?;
         for d in &mut documents {
+            let mut changed = false;
+            if let Some(plan) = &mut d.who_plan {
+                if matches!(plan.stage, WhoStage::Pending | WhoStage::Running) {
+                    plan.stage = WhoStage::Failed;
+                    plan.error = Some(host_message("file.interrupted"));
+                    changed = true;
+                }
+            }
             if d.stage.busy() {
                 d.stage = FileStage::Failed;
                 d.error = Some(host_message("file.interrupted").into());
+                changed = true;
+            }
+            if changed {
                 store.save(d).map_err(|e| e.wire())?;
             }
         }
@@ -292,7 +307,7 @@ impl Files {
             .source
             .to_str()
             .ok_or_else(|| host_message("file.source_missing"))?;
-        let ids = self.command("file_add", json!({"paths":[source], "engine":request.engine_id, "language":request.language, "request_id":request.request_id}), settings)?;
+        let ids = self.command("file_add", json!({"paths":[source], "engine":request.engine_id, "language":request.language, "request_id":request.request_id, "diarize":request.diarize, "speakers":request.speakers}), settings)?;
         let job_id = ids[0]
             .as_str()
             .ok_or_else(|| host_message("file.action_unknown"))?
@@ -318,6 +333,7 @@ impl Files {
         format: &str,
         path: &std::path::Path,
         overwrite: bool,
+        original: bool,
     ) -> Result<()> {
         #[cfg(unix)]
         use std::os::unix::fs::{MetadataExt, OpenOptionsExt};
@@ -339,7 +355,7 @@ impl Files {
         sanitize(&mut value);
         let exported: TranscriptionDocument =
             serde_json::from_value(value).map_err(|e| host_json("file.export_serialize", &e))?;
-        let text = exported.export(format, false).map_err(|e| e.wire())?;
+        let text = exported.export(format, original).map_err(|e| e.wire())?;
         let parent = path
             .parent()
             .filter(|p| !p.as_os_str().is_empty())
@@ -456,9 +472,28 @@ impl Files {
                 } else {
                     format!("who:{}", id()?)
                 };
-                if let Some(c) = self.inner.lock().cancel.get(&key) {
+                let mut i = self.inner.lock();
+                if let Some(c) = i.cancel.get(&key) {
                     c.cancel();
                 }
+                if p["download"] != true {
+                    if let Some(mut d) = i
+                        .documents
+                        .iter()
+                        .find(|d| Some(d.id.as_str()) == p["id"].as_str())
+                        .cloned()
+                    {
+                        if let Some(plan) = &mut d.who_plan {
+                            if matches!(plan.stage, WhoStage::Pending | WhoStage::Running) {
+                                plan.stage = WhoStage::Cancelled;
+                                plan.error = None;
+                                Self::save(&mut i, d)?;
+                            }
+                        }
+                    }
+                }
+                drop(i);
+                self.emit();
             }
             "file_who_download" | "file_who" => {
                 let download = action == "file_who_download";
@@ -504,67 +539,7 @@ impl Files {
                     i.cancel.insert(key.clone(), cancel.clone());
                 }
                 self.emit();
-                let result = (|| -> Result<Value> {
-                    let library = self.who_library()?;
-                    let audio = document.as_ref().map(|d| self.path(&d.id));
-                    let value = vara_engine::who::run_known(
-                        &library,
-                        &self.who_directory(),
-                        if download { "download" } else { "diarize" },
-                        audio.as_deref(),
-                        known_count,
-                        &cancel,
-                    )?;
-                    if let Some(d) = &document {
-                        let who: Diarization = serde_json::from_value(value.clone())
-                            .map_err(|e| host_json("file.who_data", &e))?;
-                        who.validate(d.duration).map_err(|e| e.wire())?;
-                        if who.turns.is_empty() {
-                            return Err(host_message("file.who_unclear").into());
-                        }
-                        let annotated = who.annotate(d.transcript.as_ref().unwrap());
-                        let mut i = self.inner.lock();
-                        cancel.check()?;
-                        let mut current = i
-                            .documents
-                            .iter()
-                            .find(|v| v.id == d.id)
-                            .cloned()
-                            .ok_or(host_message("file.document_deleted"))?;
-                        // Recognition retry must not receive labels from an earlier source/result.
-                        if current.stage != FileStage::Ready
-                            || current.created_at != d.created_at
-                            || current.transcript.as_ref().map(|t| &t.text)
-                                != d.transcript.as_ref().map(|t| &t.text)
-                        {
-                            return Err(host_message("file.who_changed").into());
-                        }
-                        add_who_speaker_defaults(&mut current, &who.turns);
-                        current.diarization = Some(who);
-                        current.diarization_error = None;
-                        cancel.publish(|| {
-                            Self::save(&mut i, current)?;
-                            i.speaker_transcripts.insert(d.id.clone(), annotated);
-                            Ok(())
-                        })?;
-                    }
-                    Ok(value)
-                })();
-                let mut i = self.inner.lock();
-                i.cancel.remove(&key);
-                if let (Some(d), Err(error)) = (&document, &result) {
-                    if cancel.check().is_ok() {
-                        if let Some(mut current) =
-                            i.documents.iter().find(|v| v.id == d.id).cloned()
-                        {
-                            current.diarization_error = Some(error.clone());
-                            let _ = Self::save(&mut i, current);
-                        }
-                    }
-                }
-                drop(i);
-                self.emit();
-                return result;
+                return self.execute_who(download, document, known_count, cancel, key, false);
             }
             "file_add" => {
                 let paths: Vec<String> = serde_json::from_value(p["paths"].clone())
@@ -582,6 +557,21 @@ impl Files {
                 if request_id.is_some() && paths.len() != 1 {
                     return Err(host_message("file.request_invalid"));
                 }
+                let diarize = p["diarize"].as_bool().unwrap_or(false);
+                let speakers = if p["speakers"].is_null() {
+                    None
+                } else {
+                    Some(
+                        p["speakers"]
+                            .as_u64()
+                            .filter(|n| (1..=16).contains(n))
+                            .ok_or_else(|| host_message("file.who_count"))?
+                            as u32,
+                    )
+                };
+                if speakers.is_some() && !diarize {
+                    return Err(host_message("file.who_count"));
+                }
                 let language = p["language"]
                     .as_str()
                     .filter(|s| !s.is_empty())
@@ -589,9 +579,13 @@ impl Files {
                 let parameters = if request_id.is_some() {
                     let path = std::path::absolute(&paths[0])
                         .map_err(|e| host_io("file.source_missing", &e))?;
-                    Some(
-                        json!({"source":path,"engine":p["engine"],"language":language}).to_string(),
-                    )
+                    let mut identity =
+                        json!({"source":path,"engine":p["engine"],"language":language});
+                    if diarize {
+                        identity["diarize"] = json!(true);
+                        identity["speakers"] = json!(speakers);
+                    }
+                    Some(identity.to_string())
                 } else {
                     None
                 };
@@ -669,6 +663,11 @@ impl Files {
                         auto_speakers: BTreeMap::new(),
                         diarization: None,
                         diarization_error: None,
+                        who_plan: diarize.then_some(WhoPlan {
+                            known_speaker_count: speakers,
+                            stage: WhoStage::Pending,
+                            error: None,
+                        }),
                     };
                     ids.push(d.id.clone());
                     batch.push(d);
@@ -692,14 +691,22 @@ impl Files {
                     return Err(host_message("file.document_gone").into());
                 }
                 if action == "file_cancel"
-                    && !i.documents.iter().any(|d| d.id == id && d.stage.busy())
+                    && !i.documents.iter().any(|d| {
+                        d.id == id
+                            && (d.stage.busy()
+                                || d.who_plan.as_ref().is_some_and(|p| {
+                                    matches!(p.stage, WhoStage::Pending | WhoStage::Running)
+                                }))
+                    })
                 {
                     return Err(host_message("file.not_processing").into());
                 }
-                if action == "file_delete" {
+                if action == "file_delete" || action == "file_cancel" {
                     if let Some(c) = i.cancel.get(&format!("who:{id}")) {
                         c.cancel();
                     }
+                }
+                if action == "file_delete" {
                     if let Some(c) = i.cancel.get(&format!("ai:{id}")) {
                         c.cancel();
                     }
@@ -722,11 +729,24 @@ impl Files {
                     if d.stage.busy() {
                         d.stage = FileStage::Cancelled;
                         d.error = None;
-                        Self::save(&mut i, d)?;
                     }
+                    if let Some(plan) = &mut d.who_plan {
+                        if matches!(plan.stage, WhoStage::Pending | WhoStage::Running) {
+                            plan.stage = WhoStage::Cancelled;
+                            plan.error = None;
+                        }
+                    }
+                    Self::save(&mut i, d)?;
                 }
+                let remove_audio = action == "file_delete"
+                    || i.documents
+                        .iter()
+                        .find(|d| d.id == id)
+                        .is_some_and(|d| d.stage == FileStage::Cancelled);
                 drop(i);
-                let _ = std::fs::remove_file(self.path(id));
+                if remove_audio {
+                    let _ = std::fs::remove_file(self.path(id));
+                }
                 self.emit();
             }
             "file_retry" => {
@@ -910,6 +930,124 @@ impl Files {
         }
         Ok(Value::Null)
     }
+    fn execute_who(
+        &self,
+        download: bool,
+        document: Option<TranscriptionDocument>,
+        known_count: Option<u32>,
+        cancel: Cancellation,
+        key: String,
+        planned: bool,
+    ) -> Result<Value> {
+        let result = (|| -> Result<Value> {
+            #[cfg(feature = "test-harness")]
+            if planned {
+                if let Some(ms) = std::env::var("VARA_TEST_WHO_DELAY_MS")
+                    .ok()
+                    .and_then(|v| v.parse::<u64>().ok())
+                {
+                    for _ in 0..ms.min(30_000).div_ceil(10) {
+                        std::thread::sleep(std::time::Duration::from_millis(10));
+                        cancel.check()?;
+                    }
+                }
+            }
+            #[cfg(feature = "test-harness")]
+            let fixture = if planned {
+                std::env::var_os("VARA_TEST_WHO_FIXTURE")
+            } else {
+                None
+            };
+            #[cfg(not(feature = "test-harness"))]
+            let fixture: Option<std::ffi::OsString> = None;
+            let value = if let Some(path) = fixture {
+                let data = std::fs::read(path).map_err(|e| host_io("file.who_data", &e))?;
+                serde_json::from_slice(&data).map_err(|e| host_json("file.who_data", &e))?
+            } else {
+                let library = self.who_library()?;
+                let audio = document.as_ref().map(|d| self.path(&d.id));
+                vara_engine::who::run_known(
+                    &library,
+                    &self.who_directory(),
+                    if download { "download" } else { "diarize" },
+                    audio.as_deref(),
+                    known_count,
+                    &cancel,
+                )?
+            };
+            if let Some(d) = &document {
+                let who: Diarization = serde_json::from_value(value.clone())
+                    .map_err(|e| host_json("file.who_data", &e))?;
+                who.validate(d.duration).map_err(|e| e.wire())?;
+                if who.turns.is_empty() {
+                    return Err(host_message("file.who_unclear").into());
+                }
+                let annotated = who.annotate(d.transcript.as_ref().unwrap());
+                let mut i = self.inner.lock();
+                cancel.check()?;
+                let mut current = i
+                    .documents
+                    .iter()
+                    .find(|v| v.id == d.id)
+                    .cloned()
+                    .ok_or(host_message("file.document_deleted"))?;
+                // Recognition retry must not receive labels from an earlier source/result.
+                if current.stage != FileStage::Ready
+                    || current.created_at != d.created_at
+                    || current.transcript.as_ref().map(|t| &t.text)
+                        != d.transcript.as_ref().map(|t| &t.text)
+                {
+                    return Err(host_message("file.who_changed").into());
+                }
+                add_who_speaker_defaults(&mut current, &who.turns);
+                current.diarization = Some(who);
+                current.diarization_error = None;
+                if planned {
+                    if let Some(plan) = &mut current.who_plan {
+                        plan.stage = WhoStage::Ready;
+                        plan.error = None;
+                    }
+                }
+                cancel.publish(|| {
+                    Self::save(&mut i, current)?;
+                    i.speaker_transcripts.insert(d.id.clone(), annotated);
+                    Ok(())
+                })?;
+            }
+            Ok(value)
+        })();
+        let mut i = self.inner.lock();
+        i.cancel.remove(&key);
+        if let (Some(d), Err(error)) = (&document, &result) {
+            if cancel.check().is_ok() {
+                if let Some(mut current) = i.documents.iter().find(|v| v.id == d.id).cloned() {
+                    current.diarization_error = Some(error.clone());
+                    let _ = Self::save(&mut i, current);
+                }
+            }
+        }
+        if planned {
+            if let Some(d) = &document {
+                if let Some(mut current) = i.documents.iter().find(|v| v.id == d.id).cloned() {
+                    if let Some(plan) = &mut current.who_plan {
+                        if plan.stage == WhoStage::Running {
+                            if cancel.check().is_err() {
+                                plan.stage = WhoStage::Cancelled;
+                                plan.error = None;
+                            } else if let Err(error) = &result {
+                                plan.stage = WhoStage::Failed;
+                                plan.error = Some(error.clone());
+                            }
+                            let _ = Self::save(&mut i, current);
+                        }
+                    }
+                }
+            }
+        }
+        drop(i);
+        self.emit();
+        result
+    }
     fn kick(self: &Arc<Self>) {
         let mut i = self.inner.lock();
         if i.worker {
@@ -941,6 +1079,11 @@ impl Files {
                     for mut d in queued {
                         d.stage = FileStage::Failed;
                         d.error = Some(error.clone());
+                        if let Some(plan) = &mut d.who_plan {
+                            if plan.stage == WhoStage::Pending {
+                                plan.stage = WhoStage::Skipped;
+                            }
+                        }
                         let _ = Self::save(&mut i, d);
                     }
                     i.worker = false;
@@ -982,6 +1125,7 @@ impl Files {
             let result = self.process(&d, &c);
             let _ = std::fs::remove_file(self.root.join(format!("{}.part", d.id)));
             let mut i = self.inner.lock();
+            let mut who_launch = None;
             if let Some(mut current) = i.documents.iter().find(|v| v.id == d.id).cloned() {
                 if c.check().is_ok() && current.stage != FileStage::Cancelled {
                     match result {
@@ -1014,9 +1158,25 @@ impl Files {
                         Err(error) => {
                             current.stage = FileStage::Failed;
                             current.error = Some(error);
+                            if let Some(plan) = &mut current.who_plan {
+                                if plan.stage == WhoStage::Pending {
+                                    plan.stage = WhoStage::Skipped;
+                                }
+                            }
+                        }
+                    }
+                    if current.stage == FileStage::Ready {
+                        if let Some(plan) = &mut current.who_plan {
+                            if plan.stage == WhoStage::Pending {
+                                plan.stage = WhoStage::Running;
+                                let key = format!("who:{}", current.id);
+                                let token = Cancellation::default();
+                                who_launch = Some((key, token, plan.known_speaker_count));
+                            }
                         }
                     }
                     if let Err(error) = Self::save(&mut i, current.clone()) {
+                        who_launch = None;
                         current.stage = FileStage::Failed;
                         current.error = Some(host_wrapped("file.result_unsaved", &error));
                         if let Some(old) = i.documents.iter_mut().find(|v| v.id == current.id) {
@@ -1031,8 +1191,17 @@ impl Files {
                 let _ = std::fs::remove_file(self.path(&d.id));
             }
             i.cancel.remove(&d.id);
+            if let Some((key, token, _)) = &who_launch {
+                i.cancel.insert(key.clone(), token.clone());
+            }
+            let who_document = who_launch
+                .as_ref()
+                .and_then(|_| i.documents.iter().find(|v| v.id == d.id).cloned());
             drop(i);
             self.emit();
+            if let (Some((key, token, known)), Some(document)) = (who_launch, who_document) {
+                let _ = self.execute_who(false, Some(document), known, token, key, true);
+            }
         }
     }
     fn process(&self, d: &TranscriptionDocument, c: &Cancellation) -> Result<(f64, Transcript)> {
@@ -1056,6 +1225,24 @@ impl Files {
             d.stage = FileStage::Transcribing;
         })?;
         self.emit();
+        #[cfg(feature = "test-harness")]
+        if let Some(path) = std::env::var_os("VARA_TEST_ASR_FIXTURE") {
+            if let Some(ms) = std::env::var("VARA_TEST_ASR_DELAY_MS")
+                .ok()
+                .and_then(|v| v.parse::<u64>().ok())
+            {
+                for _ in 0..ms.min(30_000).div_ceil(10) {
+                    std::thread::sleep(std::time::Duration::from_millis(10));
+                    c.check()?;
+                }
+            }
+            let data = std::fs::read(path).map_err(|e| host_io("file.source_missing", &e))?;
+            let t: Transcript =
+                serde_json::from_slice(&data).map_err(|e| host_json("file.who_data", &e))?;
+            c.check()?;
+            t.validate(duration).map_err(|e| e.wire())?;
+            return Ok((duration, t));
+        }
         let secret = (self.host.secret)(&d.engine)?;
         let t = self.engines.transcribe_file(
             &d.engine,
@@ -1133,7 +1320,74 @@ mod tests {
             auto_speakers: BTreeMap::new(),
             diarization: None,
             diarization_error: None,
+            who_plan: None,
         }
+    }
+    #[test]
+    fn planned_who_failure_and_cancel_preserve_annotations_and_independent_ai() {
+        let dir = tempfile::tempdir().unwrap();
+        let service = Files::new(host(), dir.path().to_path_buf()).unwrap();
+        let mut doc = fixture(FileStage::Ready);
+        doc.diarization = Some(Diarization {
+            model: "prior".into(),
+            version: "1".into(),
+            turns: vec![SpeakerTurn {
+                speaker: "speaker".into(),
+                start: 0.,
+                end: 1.,
+            }],
+            raw_turns: None,
+            known_speakers: None,
+        });
+        doc.who_plan = Some(WhoPlan {
+            known_speaker_count: None,
+            stage: WhoStage::Running,
+            error: None,
+        });
+        let id = doc.id.clone();
+        let who = Cancellation::default();
+        let ai = Cancellation::default();
+        {
+            let mut i = service.inner.lock();
+            Files::save(&mut i, doc.clone()).unwrap();
+            i.cancel.insert(format!("who:{id}"), who.clone());
+            i.cancel.insert(format!("ai:{id}"), ai.clone());
+        }
+        assert!(
+            service
+                .execute_who(
+                    false,
+                    Some(doc.clone()),
+                    None,
+                    who,
+                    format!("who:{id}"),
+                    true
+                )
+                .is_err()
+        );
+        let failed = service.status(&id).unwrap();
+        assert_eq!(failed.stage, FileStage::Ready);
+        assert_eq!(failed.who_plan.as_ref().unwrap().stage, WhoStage::Failed);
+        assert_eq!(failed.diarization.as_ref().unwrap().model, "prior");
+        assert_eq!(failed.text(), "Edited");
+        service
+            .update(&id, |d| {
+                d.who_plan.as_mut().unwrap().stage = WhoStage::Running
+            })
+            .unwrap();
+        let who = Cancellation::default();
+        service
+            .inner
+            .lock()
+            .cancel
+            .insert(format!("who:{id}"), who.clone());
+        service.cancel(&id, &Settings::default()).unwrap();
+        assert!(who.check().is_err());
+        assert!(ai.check().is_ok());
+        let cancelled = service.status(&id).unwrap();
+        assert_eq!(cancelled.stage, FileStage::Ready);
+        assert_eq!(cancelled.who_plan.unwrap().stage, WhoStage::Cancelled);
+        assert_eq!(cancelled.diarization.unwrap().model, "prior");
     }
     #[test]
     fn default_model_request_identity_survives_setting_changes() {
@@ -1148,6 +1402,8 @@ mod tests {
             engine_id: None,
             language: None,
             request_id: Some("default-retry".into()),
+            diarize: false,
+            speakers: None,
         };
         let first = service.submit(req.clone(), &settings).unwrap().job_id;
         assert_eq!(service.status(&first).unwrap().engine.id, "openai.speech");
@@ -1179,6 +1435,8 @@ mod tests {
             engine_id: Some("openai.speech".into()),
             language: Some("da".into()),
             request_id: Some("request-1".into()),
+            diarize: false,
+            speakers: None,
         };
         let barrier = Arc::new(std::sync::Barrier::new(8));
         let threads: Vec<_> = (0..8)
@@ -1280,6 +1538,8 @@ mod tests {
                     engine_id: Some("openai.speech".into()),
                     language: Some("da".into()),
                     request_id: None,
+                    diarize: false,
+                    speakers: None,
                 },
                 &Settings::default(),
             )
@@ -1361,6 +1621,7 @@ mod tests {
             auto_speakers: BTreeMap::new(),
             diarization: None,
             diarization_error: None,
+            who_plan: None,
         };
         let turns = [
             SpeakerTurn {

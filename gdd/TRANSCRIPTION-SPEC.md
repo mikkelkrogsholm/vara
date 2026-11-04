@@ -203,25 +203,24 @@ absolut i klientens eget arbejdskatalog, inden den sendes til backend.
 Ved genstart markeres alle afbrudte ikke-terminale jobs Failed med den
 versionerede `file.interrupted`-årsag; de køres ikke automatisk igen. En
 forbindelse eller ventende klient ejer ikke et accepteret jobs levetid. Mac-
-transporten er en versioneret Unix-domain-socket begrænset til samme OS-bruger,
+transporten er en versioneret Unix-domain-socket (intern version 2, adskilt fra CLI-JSON version 1) begrænset til samme OS-bruger,
 med én låst backend pr. profil og automatisk opstart i en separat procesgruppe,
-så klientens Ctrl-C ikke afbryder backend. Desktop følger instans og
+så klientens Ctrl-C ikke afbryder backend. Forskellige interne versioner afvises, så en gammel backend ikke kan ignorere en Who-bestilling. Versionkonflikt stopper ikke en ældre backend eller dens aktive jobs automatisk. Desktop følger instans og
 revision og genindlæser ved ændringer; seneste fejlmeddelelse vises højst én
 gang pr. instans og revision. Aktiv AI og Who samt Who-download kan ses og
 annulleres efter GUI-genforbindelse. Lukkes GUI'en, fortsætter accepteret arbejde;
 backend stopper normalt efter 60 sekunders inaktivitet uden klienter eller jobs.
 Framing er tidsbegrænset, men ventetid på AI/Who er ikke en jobdeadline.
 Backend læser profilens gemte indstillinger og holder nøgler hos den betroede
-worker; den eksponerer ikke en generel invoke- eller secret-grænse. Automatisk
-Who som submit-option er endnu ikke leveret.
+worker; den eksponerer ikke en generel invoke- eller secret-grænse.
 
-## Agent-CLI v1 — kontrakt (#27)
+## Agent-CLI v1 — kontrakt (#27–28)
 
 Desktop-binæren accepterer `cli` før kommandoen; den signerede `vara`-launcher
-leveres i #29. Kommandoer: `transcribe FILE [--model ID] [--language CODE]
-[--request-id ID] [--no-wait] [--timeout SECONDS] [--format json|txt|md|srt|vtt]
+leveres i #29. Kommandoer: `transcribe FILE [--model ID] [--language CODE] [--diarize] [--speakers 1–16]
+[--original] [--request-id ID] [--no-wait] [--timeout SECONDS] [--format json|txt|md|srt|vtt]
 [--output FILE] [--overwrite]`, `job status|wait|result|cancel ID` (wait/result
-accepterer format/output/overwrite, wait også timeout), `models [--json]`,
+accepterer format/output/overwrite/original, wait også timeout), `models [--json]`,
 `--help`, `--version`. Ingen interaktion. Udeladt model er den gemte
 `speech_engine`, udeladt sprog automatisk; Redux understøtter kun automatisk.
 Inputstier gøres absolutte i klientens aktuelle mappe; deres eksisterende
@@ -257,3 +256,20 @@ Timeout, signal og lukket pipe stopper alene
 klientventning; cancel er eksplicit. Timing og faktiske ord/segmenter kommer fra
 dokumentet, uden konstruerede ordtider. Backendfejl er katalogiserede og ingen
 nøgler, endpoints eller provider-fejltekster returneres.
+
+
+`--diarize` gemmer et påkrævet Who-trin med dokumentet; `--speakers` kræver
+`--diarize` og skal være 1–16. Valgene indgår i request-identiteten. Who benytter
+eksisterende lokal runtime og opsætning uden download eller licensaccept. ASR
+forbliver `Ready` efter gemt ASR, mens CLI viser `processing` indtil Who er færdig.
+Kvitteringen indeholder særskilt `asr_stage` og `who`. Who-fejl eller annullering
+giver ikke-nul exit, status `who_failed`/`who_cancelled` og dokument-ID; tekst, lyd
+og eksisterende data bevares. Pending/running Who markeres afbrudt efter backend-
+genstart og genkøres ikke automatisk. Cancel dækker begge faser, også overgangen. Hvis ASR fejler før Who, gemmes Who som `skipped`.
+
+`--original` vælger oprindelig ASR-tekst og timing til eksport; ellers bruges gemt
+redigering. Usendte GUI-udkast er ikke tilgængelige. SRT/VTT kræver reelle tider og
+afviser redigeret tekst uden passende timing. JSON inkluderer separat rå ASR,
+Who-intervaller og `speaker_transcript` afledt af samme core-annotation som UI;
+`selected_text` og `original_selected` viser eksportvalget. Usikkerhed er ikke en
+ny taler, og u-timede ord får ikke fabrikerede tider.

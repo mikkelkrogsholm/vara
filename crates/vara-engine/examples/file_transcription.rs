@@ -53,6 +53,7 @@ fn main() -> std::result::Result<(), Box<dyn std::error::Error>> {
         auto_speakers: BTreeMap::new(),
         diarization: None,
         diarization_error: None,
+        who_plan: None,
     };
     std::fs::write(&args[2], doc.export("json", true)?)?;
     let subtitles = doc.export("srt", true)?;

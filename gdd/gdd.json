@@ -10964,7 +10964,7 @@
       "format": "text/markdown",
       "normative": false,
       "revision": {
-        "sha256": "88ceac351e42dd720c9872b814c016492747bc8073012124b0141b5e0ccfd15d"
+        "sha256": "b7c67f4f727dc833e7cd4499b2ab41fe79a70ce66b1003430ac8edce521e537f"
       }
     },
     "source.transcription": {
@@ -10974,7 +10974,7 @@
       "format": "text/markdown",
       "normative": true,
       "revision": {
-        "sha256": "e3ea9d008ba4b4adc3268af8de549871237eeba191be597acc0b4399dbe8323c"
+        "sha256": "c5b9c6f300fb9e5baee19dde0561e816b97d4b4c06835bb1cdee8f4da7e63342"
       }
     }
   },

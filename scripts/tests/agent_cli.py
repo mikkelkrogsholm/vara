@@ -3,7 +3,7 @@
 The ready document is an explicitly seeded transcript fixture, not inference.
 Run against the release test-harness desktop executable passed as argv[1].
 """
-import hashlib, json, os, pathlib, signal, sqlite3, subprocess, sys, tempfile, time, uuid, wave
+import hashlib, json, os, pathlib, signal, socket, sqlite3, struct, subprocess, sys, tempfile, time, uuid, wave
 
 exe = str(pathlib.Path(sys.argv[1]).resolve())
 # The fixture variables are intentionally ignored by production builds. Probe
@@ -150,6 +150,12 @@ for fmt in ('json','txt','md','srt','vtt'):
     assert failure['job_id']==rid and failure['status']=='ready' and target.read_bytes()==original
     assert js(run(ready,'job','status',rid))['status']=='ready'
     run(ready,'job','result',rid,'--format',fmt,'--output',target,'--overwrite')
+readonly=base/'readonly-output'; readonly.mkdir(mode=0o500)
+try:
+    failure=js(run(ready,'job','result',rid,'--output',readonly/'out.json',expected=6))
+    assert failure['error']['code']=='file.export_save' and not (readonly/'out.json').exists()
+finally:
+    readonly.chmod(0o700)
 run(ready,'job','result',rid,'--output',audio,'--overwrite',expected=6)
 before_other=other_audio.read_bytes(); failure=js(run(ready,'job','result',rid,'--output',other_audio,'--overwrite',expected=6)); assert failure['job_id']==rid and other_audio.read_bytes()==before_other
 case_alias=base/'OTHER SOURCE.WAV'
@@ -165,8 +171,94 @@ dblink=base/'profile-hard'; os.link(ready/'vara.sqlite3',dblink); run(ready,'job
 assert audio.read_bytes()==before_audio and work.read_bytes()==before_work
 assert js(run(ready,'job','status',rid))['status']=='ready'
 assert not list(base.glob('.vara-export-*.tmp'))
+# Synthetic ASR and Who fixtures exercise the real queue and CLI/backend. These
+# are deliberately injected only into marked test-harness builds, not inference.
+asr_fixture=base/'asr-fixture.json'; synthetic_asr=json.loads(json.dumps(doc['transcript']))
+synthetic_asr['segments'][0]['words']=[{'id':'w1','text':'Fixture','start':0.0,'end':0.4,'speaker':None},{'id':'w2','text':'words','start':0.5,'end':0.9,'speaker':None}]
+asr_fixture.write_text(json.dumps(synthetic_asr))
+who_fixture=base/'who-fixture.json'; who_fixture.write_text(json.dumps({'model':'fixture','version':'fixture','turns':[{'speaker':'who-0','start':0.0,'end':0.45},{'speaker':'who-uncertain','start':0.45,'end':0.9}]}))
+fixture_env={'VARA_TEST_ASR_FIXTURE':str(asr_fixture),'VARA_TEST_WHO_FIXTURE':str(who_fixture),'VARA_TEST_WHO_DELAY_MS':'2000'}
+def wait_running(profile_root, job_id, extra):
+    end=time.monotonic()+10
+    while time.monotonic()<end:
+        v=js(run(profile_root,'job','status',job_id,extra=extra))
+        if v.get('who',{}).get('stage')=='running': return v
+        time.sleep(.05)
+    raise AssertionError('Who did not enter running state')
+def list_rpc(r):
+    path=pathlib.Path('/tmp')/f'vara-{os.getuid()}'/(hashlib.sha256(str(r.resolve()).encode()).digest()[:16].hex()+'.sock')
+    payload=json.dumps({'version':2,'operation':{'action':'list'}}).encode()
+    with socket.socket(socket.AF_UNIX) as conn:
+        conn.settimeout(5); conn.connect(str(path)); conn.sendall(struct.pack('>I',len(payload))+payload)
+        def exact(n):
+            b=b''
+            while len(b)<n:
+                part=conn.recv(n-len(b)); assert part; b+=part
+            return b
+        return json.loads(exact(struct.unpack('>I',exact(4))[0]))
+who=profile('who-success')
+p=run(who,'transcribe',audio,'--diarize','--speakers','2','--no-wait','--request-id','who-id',extra=fixture_env)
+wid=js(p)['job_id']; v=wait_running(who,wid,fixture_env); assert v['status']=='processing'
+ui_busy=list_rpc(who); ui_doc=next(x for x in ui_busy['result']['documents'] if x['id']==wid); assert ui_doc['who_busy'] and ui_doc['stage']=='ready'
+assert js(run(who,'job','result',wid,extra=fixture_env))['status']=='processing'
+assert js(run(who,'job','wait',wid,'--timeout','.1',expected=7,extra=fixture_env))['job_id']==wid
+settings(who,speech_engine='groq.speech')
+assert js(run(who,'transcribe',audio,'--diarize','--speakers','2','--no-wait','--request-id','who-id',extra=fixture_env))['job_id']==wid
+assert js(run(who,'transcribe',audio,'--diarize','--speakers','3','--no-wait','--request-id','who-id',expected=2,extra=fixture_env))['error']['code']=='file.request_conflict'
+assert js(run(who,'transcribe',audio,'--speakers','2',expected=2,extra=fixture_env))['error']['code']=='cli.invalid_arguments'
+v=js(run(who,'job','wait',wid,extra=fixture_env)); d=v['document']; assert d['who_plan']['stage']=='ready'
+ui_done=list_rpc(who); ui_doc=next(x for x in ui_done['result']['documents'] if x['id']==wid); assert not ui_doc['who_busy'] and ui_done['revision']>ui_busy['revision'] and ui_doc['speaker_transcript'] is not None
+assert d['transcript']['segments'][0]['words'][0]['speaker'] is None
+assert d['speaker_transcript']['segments'][0]['words'][0]['speaker']=='who-0'
+assert d['speaker_transcript']['segments'][1]['words'][0]['speaker'] is None # uncertainty abstains
+assert d['diarization']['turns'][1]['speaker']=='who-uncertain' and 'who-uncertain' not in d['speakers']
+# Edited text remains saved separately. Subtitle timing is available only through --original.
+# Wait for owner to exit before directly seeding a saved edit in the fixture DB.
+def socket_for(r): return pathlib.Path('/tmp')/f'vara-{os.getuid()}'/(hashlib.sha256(str(r.resolve()).encode()).digest()[:16].hex()+'.sock')
+def stopped(r):
+    end=time.monotonic()+10
+    while socket_for(r).exists():
+        assert time.monotonic()<end
+        time.sleep(.05)
+stopped(who)
+db=sqlite3.connect(who/'transcriptions.sqlite3'); d=json.loads(db.execute('SELECT value FROM documents WHERE id=?',(wid,)).fetchone()[0]); d['edited_text']='Saved edit'; d['revision']=1; db.execute('UPDATE documents SET value=? WHERE id=?',(json.dumps(d),wid)); db.commit(); db.close()
+assert run(who,'job','result',wid,'--format','txt').stdout==b'Saved edit'
+assert run(who,'job','result',wid,'--format','txt','--original').stdout==b'Fixture words'
+assert js(run(who,'job','result',wid,'--format','srt',expected=6))['error']['code']=='transcription.subtitle_timing'
+assert b'Fixture words' in run(who,'job','result',wid,'--format','srt','--original').stdout
+assert js(run(who,'job','result',wid,'--original'))['document']['selected_text']=='Fixture words'
+asr_failed=profile('asr-before-who-failed')
+asr_fail_id=js(run(asr_failed,'transcribe',audio,'--diarize','--no-wait'))['job_id']
+assert js(run(asr_failed,'job','wait',asr_fail_id,expected=3))['error']['code']=='provider.missing_key'
+db=sqlite3.connect(asr_failed/'transcriptions.sqlite3'); saved=json.loads(db.execute('SELECT value FROM documents WHERE id=?',(asr_fail_id,)).fetchone()[0]); db.close()
+assert saved['stage']=='failed' and saved['who_plan']['stage']=='skipped'
+failed=profile('who-failed'); failure_env={'VARA_TEST_ASR_FIXTURE':str(asr_fixture),'VARA_TEST_WHO_DELAY_MS':'300'}
+fid=js(run(failed,'transcribe',audio,'--diarize','--no-wait',extra=failure_env))['job_id']
+f=js(run(failed,'job','wait',fid,expected=4,extra=failure_env)); assert f['status']=='who_failed' and f['error']['code'] in ('file.resource_missing','who.runtime_missing')
+db=sqlite3.connect(failed/'transcriptions.sqlite3'); saved=json.loads(db.execute('SELECT value FROM documents WHERE id=?',(fid,)).fetchone()[0]); db.close()
+assert saved['stage']=='ready' and saved['transcript']['text']=='Fixture words' and (failed/'transcriptions'/f'{fid}.wav').exists()
+cancel=profile('who-cancel'); cid=js(run(cancel,'transcribe',audio,'--diarize','--no-wait',extra=fixture_env))['job_id']; wait_running(cancel,cid,fixture_env)
+cancel_receipt=js(run(cancel,'job','cancel',cid,extra=fixture_env)); assert cancel_receipt['job_id']==cid and cancel_receipt['status']=='who_cancelled' and cancel_receipt['asr_stage']=='ready'
+assert js(run(cancel,'job','wait',cid,expected=4,extra=fixture_env))['status']=='who_cancelled'
+time.sleep(.3); db=sqlite3.connect(cancel/'transcriptions.sqlite3'); saved=json.loads(db.execute('SELECT value FROM documents WHERE id=?',(cid,)).fetchone()[0]); db.close()
+assert saved['stage']=='ready' and saved['transcript']['text']=='Fixture words' and saved['diarization'] is None and (cancel/'transcriptions'/f'{cid}.wav').exists()
+pending_root=profile('who-pending-cancel'); pe={**fixture_env,'VARA_TEST_ASR_DELAY_MS':'2000'}
+pid2=js(run(pending_root,'transcribe',audio,'--diarize','--no-wait',extra=pe))['job_id']; run(pending_root,'job','cancel',pid2,extra=pe)
+assert js(run(pending_root,'job','wait',pid2,expected=4,extra=pe))['status']=='cancelled'
+# Start and own the backend so its forced interruption cannot affect any user process.
+restart=profile('who-restart'); re={**fixture_env,'VARA_TEST_WHO_DELAY_MS':'10000'}
+backend=subprocess.Popen([exe,'--vara-internal-file-worker',str(restart)],env=env(restart,**re),stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+end=time.monotonic()+5
+while not socket_for(restart).exists():
+    assert backend.poll() is None and time.monotonic()<end
+    time.sleep(.05)
+jid=js(run(restart,'transcribe',audio,'--diarize','--no-wait',extra=re))['job_id']; wait_running(restart,jid,re)
+backend.kill(); backend.wait(timeout=5)
+f=js(run(restart,'job','status',jid,expected=4,extra=fixture_env)); assert f['status']=='who_failed' and f['error']['code']=='file.interrupted'
+db=sqlite3.connect(restart/'transcriptions.sqlite3'); saved=json.loads(db.execute('SELECT value FROM documents WHERE id=?',(jid,)).fetchone()[0]); db.close(); assert saved['stage']=='ready' and saved['transcript']['text']=='Fixture words'
+
 # Wait for every actual fixture backend to finish work and exit on idle.
-roots=[root,strict,late,sig,pipe,slow,ready]
+roots=[root,strict,late,sig,pipe,slow,ready,who,asr_failed,failed,cancel,pending_root,restart]
 deadline=time.monotonic()+15
 while True:
     sockets=[pathlib.Path('/tmp')/f'vara-{os.getuid()}'/(hashlib.sha256(str(r.resolve()).encode()).digest()[:16].hex()+'.sock') for r in roots]

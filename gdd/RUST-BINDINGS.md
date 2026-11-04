@@ -214,7 +214,7 @@ recorder remain on Diktering. No settings-schema or database migration is added.
   submit/status/result/cancel operations, document state and publication;
   `desktop/src-tauri/src/transcription.rs` supplies the Tauri adapter (dialogs,
   clipboard, links and events). On macOS `local_backend.rs` owns the shared Files
-  instance in a per-profile local worker with same-user Unix socket, typed v1
+  instance in a per-profile local worker with same-user Unix socket, typed v2
   operations, a separate process group from its starter, revision polling and an
   idle exit after 60 seconds without clients
   or work. GUI exit does not cancel accepted file jobs. The worker reads persisted
@@ -223,7 +223,7 @@ recorder remain on Diktering. No settings-schema or database migration is added.
   transaction. Other platforms retain the in-process adapter; their transport is
   not implemented or verified. `desktop/src-tauri/src/agent_cli.rs` exposes the
   versioned CLI through this same backend before Tauri startup; the packaged
-  `vara` launcher remains #29. The owner validates all known source paths and
+  `vara` launcher remains #29. RPC v2 rejects mixed older owners instead of silently dropping requested Who options; it does not stop an old owner or its active jobs. The owner validates all known source paths and
   writes protected exports atomically; the CLI does not access credentials directly.
   `vara-app` owns the shared catalog-filtered response projection for both RPC
   documents and exported JSON, including legacy endpoint and raw error removal.
@@ -257,6 +257,13 @@ is retained and flushed; audio/text do not enter the reporting payload.
 `Files` owns explicit status/download/run/cancel commands and atomic publication;
 its derived speaker transcript cache is rebuilt from persisted turns at startup.
 Original ASR and corrections remain separate from `Diarization`/`SpeakerTurn`.
+The optional durable `WhoPlan` records requested count and phase on the same
+document. The queue registers cancellation atomically with the ASR-to-Who
+transition; ASR stays Ready while CLI completion waits for Who. Interrupted Who
+is failed on restart without replay. JSON exports derive `speaker_transcript`
+through the same core annotation as the UI and retain original ASR separately.
+The `test-harness` feature can inject explicit synthetic ASR/Who fixtures and
+delays only for isolated process tests; it is excluded from production builds.
 
 Known-count mode runs two sequential cancellable children, with a private streamed
 60-second padded PCM copy for the second pass. It requires an unambiguous global

@@ -305,6 +305,8 @@ pub fn test_fixture_entry() -> bool {
                     engine_id: Some("openai.speech".into()),
                     language: None,
                     request_id: Some("adapter-fixture".into()),
+                    diarize: false,
+                    speakers: None,
                 },
             },
             &std::env::current_exe().unwrap(),

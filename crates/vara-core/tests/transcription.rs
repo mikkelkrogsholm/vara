@@ -54,6 +54,7 @@ fn document() -> TranscriptionDocument {
         auto_speakers: Default::default(),
         diarization: None,
         diarization_error: None,
+        who_plan: None,
     }
 }
 #[test]
@@ -103,6 +104,26 @@ fn text_only_models_cannot_export_invented_subtitles() {
     d.transcript.as_ref().unwrap().validate(3.).unwrap();
     assert!(d.export("vtt", true).is_err());
     assert_eq!(d.export("txt", true).unwrap(), "Ord uden tider");
+    d.diarization = Some(Diarization {
+        model: "fixture".into(),
+        version: "1".into(),
+        turns: vec![SpeakerTurn {
+            speaker: "who-0".into(),
+            start: 0.,
+            end: 1.,
+        }],
+        raw_turns: None,
+        known_speakers: None,
+    });
+    let value: serde_json::Value = serde_json::from_str(&d.export("json", true).unwrap()).unwrap();
+    assert!(
+        value["speaker_transcript"]["segments"][0]["words"]
+            .as_array()
+            .unwrap()
+            .is_empty()
+    );
+    assert!(value["speaker_transcript"]["segments"][0]["start"].is_null());
+    assert!(value["speaker_transcript"]["segments"][0]["speaker"].is_null());
 }
 #[test]
 fn documents_survive_restart_without_entering_dictation_history() {

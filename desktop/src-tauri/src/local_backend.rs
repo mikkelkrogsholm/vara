@@ -3,7 +3,8 @@ use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::path::{Path, PathBuf};
 
-pub const VERSION: u32 = 1;
+// v2 prevents old owners silently ignoring the durable Who request fields.
+pub const VERSION: u32 = 2;
 #[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(tag = "action", rename_all = "snake_case", deny_unknown_fields)]
 pub enum Operation {
@@ -32,6 +33,8 @@ pub enum Operation {
         format: String,
         path: PathBuf,
         overwrite: bool,
+        #[serde(default)]
+        original: bool,
     },
     Retry {
         id: String,
@@ -413,8 +416,10 @@ mod mac {
                     format,
                     path,
                     overwrite,
+                    original,
                 } => {
-                    self.files.export_to(&id, &format, &path, overwrite)?;
+                    self.files
+                        .export_to(&id, &format, &path, overwrite, original)?;
                     return Ok(Value::Null);
                 }
                 Operation::Cancel { id } => ("file_cancel", json!({"id":id})),
@@ -764,6 +769,8 @@ mod mac {
                         engine_id: Some("openai.speech".into()),
                         language: None,
                         request_id: Some("signal-test".into()),
+                        diarize: false,
+                        speakers: None,
                     },
                 },
             );
@@ -896,6 +903,20 @@ mod mac {
                 .map(|e| e.code.as_str()),
                 Some("backend.version_mismatch")
             );
+            // A v1 submit must never be accepted by this owner: it could not
+            // express the durable Who contract. Mismatch does not stop the owner.
+            assert_eq!(
+                raw(&root, br#"{"version":1,"operation":{"action":"submit","request":{"source":"/fixture.wav","engine_id":null,"language":null,"request_id":"old"}}}"#)
+                    .error.as_ref().map(|e| e.code.as_str()),
+                Some("backend.version_mismatch")
+            );
+            assert!(
+                invoke(&root, Operation::List).result.unwrap()["documents"]
+                    .as_array()
+                    .unwrap()
+                    .is_empty()
+            );
+            assert_eq!(invoke(&root, Operation::Ping).instance, ids[0]);
             assert_eq!(
                 raw(&root, b"not json")
                     .error
@@ -906,7 +927,7 @@ mod mac {
             assert_eq!(
                 raw(
                     &root,
-                    br#"{"version":1,"operation":{"action":"invoke","command":"secret"}}"#
+                    br#"{"version":2,"operation":{"action":"invoke","command":"secret"}}"#
                 )
                 .error
                 .as_ref()
@@ -942,6 +963,8 @@ mod mac {
                         engine_id: Some("openai.speech".into()),
                         language: Some("da".into()),
                         request_id: Some("disconnect".into()),
+                        diarize: false,
+                        speakers: None,
                     },
                 },
             };

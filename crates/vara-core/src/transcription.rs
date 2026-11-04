@@ -260,6 +260,24 @@ impl FileStage {
         matches!(self, Self::Queued | Self::Decoding | Self::Transcribing)
     }
 }
+/// Durable optional post-ASR work requested by a client.
+#[derive(Clone, Copy, Debug, Serialize, Deserialize, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum WhoStage {
+    Pending,
+    Running,
+    Ready,
+    Failed,
+    Cancelled,
+    Skipped,
+}
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct WhoPlan {
+    pub known_speaker_count: Option<u32>,
+    pub stage: WhoStage,
+    pub error: Option<String>,
+}
+
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct TranscriptionDocument {
     pub id: String,
@@ -288,6 +306,8 @@ pub struct TranscriptionDocument {
     pub diarization: Option<Diarization>,
     #[serde(default)]
     pub diarization_error: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub who_plan: Option<WhoPlan>,
 }
 impl TranscriptionDocument {
     pub fn text(&self) -> &str {
@@ -314,7 +334,16 @@ impl TranscriptionDocument {
                 // Keep the established export shape independent of UI metadata.
                 let mut exported = self.clone();
                 exported.auto_speakers.clear();
-                Ok(serde_json::to_string_pretty(&exported)?)
+                let mut value = serde_json::to_value(&exported)?;
+                value["selected_text"] = serde_json::json!(text);
+                value["original_selected"] = serde_json::json!(original);
+                value["speaker_transcript"] = self
+                    .diarization
+                    .as_ref()
+                    .map(|who| serde_json::to_value(who.annotate(t)))
+                    .transpose()?
+                    .unwrap_or(serde_json::Value::Null);
+                Ok(serde_json::to_string_pretty(&value)?)
             }
             "srt" | "vtt" => {
                 if (!original && self.edited_text.is_some()) || t.timing == Timing::None {
