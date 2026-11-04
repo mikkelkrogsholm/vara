@@ -11,5 +11,8 @@ fn main() {
     if vara_platform::credential_worker_entry() {
         return;
     }
+    if vara_desktop::local_backend::worker_entry() {
+        return;
+    }
     vara_desktop::run()
 }

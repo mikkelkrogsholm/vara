@@ -6183,14 +6183,18 @@ name = "vara-desktop"
 version = "0.1.0"
 dependencies = [
  "cc",
+ "dirs",
+ "libc",
  "parking_lot",
  "rfd",
  "same-file",
  "serde",
  "serde_json",
+ "sha2",
  "tauri",
  "tauri-build",
  "tauri-plugin-global-shortcut",
+ "tempfile",
  "thiserror 2.0.21",
  "tokio",
  "uuid",

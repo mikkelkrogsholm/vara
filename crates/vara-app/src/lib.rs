@@ -248,6 +248,11 @@ impl Files {
         self.command("file_cancel", json!({"id":id}), settings)
             .map(|_| ())
     }
+    /// Whether accepted work still owns the queue or an auxiliary operation.
+    pub fn busy(&self) -> bool {
+        let inner = self.inner.lock();
+        inner.worker || !inner.cancel.is_empty()
+    }
     pub fn stop(&self) {
         let i = self.inner.lock();
         for c in i.cancel.values() {

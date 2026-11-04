@@ -1,3 +1,4 @@
+pub mod local_backend;
 fn host_message(code: &str) -> String {
     vara_core::UserMessage::new(code).wire()
 }

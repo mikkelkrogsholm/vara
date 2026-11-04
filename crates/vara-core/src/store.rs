@@ -30,6 +30,35 @@ impl Store {
         }
         Ok(())
     }
+    /// Read the current preferences without initializing or mutating dictation state.
+    pub fn read_settings(path: &Path) -> Result<Settings> {
+        match std::fs::symlink_metadata(path) {
+            Err(e) if e.kind() == std::io::ErrorKind::NotFound => return Ok(Settings::default()),
+            Err(e) => {
+                return Err(Error::InvalidMessage(
+                    crate::UserMessage::new("storage.history")
+                        .caused_by(crate::UserMessage::io_cause(&e)),
+                ));
+            }
+            Ok(_) => {}
+        }
+        let db = Connection::open_with_flags(path, rusqlite::OpenFlags::SQLITE_OPEN_READ_ONLY)
+            .map_err(Error::Storage)?;
+        let value: Option<String> = db
+            .query_row("SELECT value FROM preferences WHERE id=1", [], |r| r.get(0))
+            .optional()
+            .map_err(Error::Storage)?;
+        let mut settings: Settings = value
+            .map(|v| serde_json::from_str(&v))
+            .transpose()?
+            .unwrap_or_default();
+        for engine in default_engines() {
+            if !settings.engines.iter().any(|old| old.id == engine.id) {
+                settings.engines.push(engine);
+            }
+        }
+        Ok(settings)
+    }
     pub fn settings(&self) -> Result<Settings> {
         let value: Option<String> = self
             .db
@@ -227,5 +256,53 @@ impl Store {
             .execute_batch("PRAGMA wal_checkpoint(TRUNCATE)")
             .map_err(Error::Storage)?;
         Ok(())
+    }
+}
+
+#[cfg(test)]
+mod readonly_settings_tests {
+    use super::*;
+    #[test]
+    fn reads_fresh_preferences_without_recovery_or_creating_a_database() {
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("vara.sqlite3");
+        assert!(!Store::read_settings(&path).unwrap().strict_local);
+        assert!(!path.exists());
+        let db = Connection::open(&path).unwrap();
+        db.execute_batch(
+            "CREATE TABLE preferences(id INTEGER PRIMARY KEY,value TEXT NOT NULL);
+          CREATE TABLE results(id TEXT,value TEXT); CREATE TABLE recovery(id TEXT,value TEXT);
+          CREATE TABLE staging(generation TEXT,value TEXT);
+          INSERT INTO results VALUES('r','{\"delivery\":\"pending\"}');
+          INSERT INTO recovery VALUES('r','recovery'); INSERT INTO staging VALUES('g','staging');",
+        )
+        .unwrap();
+        let mut settings = Settings::default();
+        db.execute(
+            "INSERT INTO preferences VALUES(1,?1)",
+            [serde_json::to_string(&settings).unwrap()],
+        )
+        .unwrap();
+        assert!(!Store::read_settings(&path).unwrap().strict_local);
+        settings.strict_local = true;
+        db.execute(
+            "UPDATE preferences SET value=?1",
+            [serde_json::to_string(&settings).unwrap()],
+        )
+        .unwrap();
+        assert!(Store::read_settings(&path).unwrap().strict_local);
+        for (table, expected) in [
+            ("results", "{\"delivery\":\"pending\"}"),
+            ("recovery", "recovery"),
+            ("staging", "staging"),
+        ] {
+            let actual: String = db
+                .query_row(&format!("SELECT value FROM {table}"), [], |r| r.get(0))
+                .unwrap();
+            assert_eq!(actual, expected);
+        }
+        drop(db);
+        std::fs::write(&path, b"broken").unwrap();
+        assert!(Store::read_settings(&path).is_err());
     }
 }
