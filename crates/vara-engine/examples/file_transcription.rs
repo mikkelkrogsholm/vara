@@ -29,7 +29,7 @@ fn main() -> std::result::Result<(), Box<dyn std::error::Error>> {
         .sum::<usize>();
     let doc = TranscriptionDocument {
         id: "fixture-danish".into(),
-        title: "Dansk prøve".into(),
+        title: "Danish sample".into(),
         source_name: std::path::Path::new(&args[1])
             .file_name()
             .unwrap()

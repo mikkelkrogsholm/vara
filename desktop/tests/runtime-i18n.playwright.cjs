@@ -29,6 +29,33 @@ try {
  },{fixture,catalog});
  await page.goto(`http://127.0.0.1:${server.address().port}/ui/index.html`);await page.locator('.history-row').first().waitFor();
  const locale=async l=>{await page.evaluate(l=>Vara.i18n.setLocale(l),l);await page.waitForTimeout(30)};
+ // Default labels from both new and existing installations localize without changing user data.
+ const labels=[
+   ['local.parakeet','Parakeet Redux · on device','Parakeet Redux · på enheden','engine.parakeet'],
+   ['local.whisper','Whisper · on device','Whisper · på enheden','engine.whisper'],
+   ['local.text','Qwen · on device','Qwen · på enheden','engine.qwen'],
+   ['openai.speech','OpenAI · speech','OpenAI · tale','engine.openai.speech'],
+   ['elevenlabs.speech','ElevenLabs · speech','ElevenLabs · tale','engine.elevenlabs.speech'],
+   ['openai.text','OpenAI · text','OpenAI · tekst','engine.openai.text'],
+   ['anthropic.text','Anthropic · text','Anthropic · tekst','engine.anthropic.text'],
+   ['gemini.text','Gemini · text','Gemini · tekst','engine.gemini.text'],
+   ['claude.cli','Claude Code · own login','Claude Code · eget login','engine.claude.cli'],
+   ['codex.cli','Codex · own login','Codex · eget login','engine.codex.cli'],
+   ['gemini.cli','Gemini CLI · own login','Gemini CLI · eget login','engine.gemini.cli'],
+   ['ollama.text','Ollama · local service','Ollama · lokal tjeneste','engine.ollama'],
+ ];
+ for(const language of ['en','da']) {
+   await locale(language);
+   const results=await page.evaluate(labels=>labels.map(([id,en,da,key])=>{
+     const inputs=[en,da,'My custom name'].map(label=>({id,label}));
+     return {rendered:inputs.map(engine=>Vara.i18n.resolve(Vara.desktopUi.displayEngineName(engine))), expected:Vara.i18n.message(key), inputs};
+   }),labels);
+   for(const [index,result] of results.entries()) {
+     assert.deepEqual(result.rendered,[result.expected,result.expected,'My custom name']);
+     assert.deepEqual(result.inputs.map(x=>x.label),[labels[index][1],labels[index][2],'My custom name']);
+   }
+ }
+ await locale('da');
  const activity=page.locator('.activity-region').first();
  assert.match(await activity.innerText(),/AI-bearbejdning mislykkedes/);assert.match(await activity.innerText(),/HTTP 503/);assert.match(await activity.innerText(),/Ukendt app/);
  await page.evaluate(()=>window.activityNode=document.querySelector('.activity-region .inline-state p'));await locale('en');

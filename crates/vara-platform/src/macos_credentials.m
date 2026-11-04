@@ -25,7 +25,7 @@ static OSStatus privateAccess(SecAccessRef *access) {
     if (status == errSecSuccess) {
         const void *apps[] = {app};
         CFArrayRef trusted = CFArrayCreate(NULL, apps, 1, &kCFTypeArrayCallBacks);
-        status = SecAccessCreate(CFSTR("Vara API-nøgle"), trusted, access);
+        status = SecAccessCreate(CFSTR("Vara API key"), trusted, access);
         CFRelease(trusted);
         CFRelease(app);
     }

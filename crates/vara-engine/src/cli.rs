@@ -230,7 +230,7 @@ pub async fn text(plan: &TextPlan, text: &str, cancel: &Cancellation) -> Result<
                 .env("GEMINI_SYSTEM_MD", system)
                 .args([
                     "--prompt",
-                    "Bearbejd kun transskriptionen fra stdin. Returnér kun færdig tekst.",
+                    "Process only the transcription from stdin. Return only the finished text.",
                     "--extensions",
                     "none",
                     "--output-format",
