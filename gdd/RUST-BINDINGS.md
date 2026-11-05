@@ -429,14 +429,22 @@ Missing backend evidence blocks installation. Settings/editor drafts and dialogs
 are guarded by UI; it becomes inert during the final swap. User data, models and
 credentials are retained. Network/signature errors cannot install or claim current.
 
-Workspace/Tauri version is 1.0.1, unreleased; CLI/RPC versions stay independent.
+Workspace/Tauri version is 1.0.1, publicly released for macOS Apple Silicon; CLI/RPC versions stay independent.
 The production updater key and GitHub updater environment are configured; a
 1.0.0 bootstrap with the public key was built, notarized, stapled and installed
-locally. Native upgrade and notarized 1.0.1 artifact acceptance remain pending.
+locally. The real native GUI 1.0.0→1.0.1 download, verified installation and
+restart passed with a notarized 1.0.1 app and retained data, models, credential
+presence and microphone permission. The independent old CLI owner survived and
+required manual idle-owner retirement under the update lock; automatic handoff
+remains open in [#37](https://github.com/mikkelkrogsholm/vara/issues/37), so broader
+updater acceptance remains partial.
 The updater snapshot reports `current_version` from the running package, separate
 from the discovered version. Settings presents it; a shared sidebar update action
 preserves live transcription editors and retains the existing install guards.
 The release overlay generator passes the same public key to the CLI bundler.
-The manifest generator verifies real artifact/signature paths and mappings; the
+The manifest generator verifies real artifact/signature paths and mappings, and
+rejects incompatible macOS archive roots/AppleDouble metadata and unsafe paths; the
 manual workflow prepares only macOS ARM drafts with existing tags and configured
-credentials. `RELEASING.md` records configuration and unverified native acceptance.
+credentials. `RELEASING.md` records the native evidence, manual CLI recovery and
+remaining CI/platform limits. The post-release archive guard does not change
+the public 1.0.1 tag.

@@ -73,20 +73,22 @@ until an actual release is made.
 
 ## Distribution status
 
-The local 1.0.0 bootstrap carrying the production public key was signed,
-notarized, stapled and accepted by Gatekeeper on 2026-11-05 (Apple submission
-`7f8cbeb1-25cb-4ef9-a39e-fd9e32f783dd`). It was installed and its native Settings
-manual-check button is enabled. No public release or real upgrade has been
-verified yet; the current 1.0.1 release candidate awaits notarization and native
-upgrade acceptance. The retired Swift app's Sparkle feed and DMG script do
-not release this app. Windows/Linux release acceptance remains open.
+[Vara 1.0.1](https://github.com/mikkelkrogsholm/vara/releases/tag/v1.0.1) is public
+for **macOS Apple Silicon (`darwin-aarch64`) only**, from tag `v1.0.1` at
+`11c5176`. The Developer ID signed app was notarized, stapled and accepted by
+Gatekeeper. The real installed 1.0.0 bootstrap upgraded through the visible
+Settings/check/download/install flow and restarted as 1.0.1. Automatic retirement
+of the previous independent CLI owner did **not** pass; the native GUI upgrade
+passed, while overall updater acceptance remains partial. See the evidence below.
+The retired Swift app's Sparkle feed and DMG script do not release this app.
+Windows/Linux and Intel Mac release acceptance remain open.
 
 After verification, generated `target` output can be removed to reclaim disk
 space. Keep the installed app and user profile; do not commit build output or keys.
 
 ## GitHub updates and release configuration
 
-The Rust app is **1.0.1, unreleased**. The retired Swift distribution and its
+The Rust app is **1.0.1, released 2026-11-05**. The retired Swift distribution and its
 Sparkle feed are unrelated. Stable discovery uses only
 `https://github.com/mikkelkrogsholm/vara/releases/latest/download/latest.json`.
 Drafts and prereleases do not activate this endpoint. Until a stable release
@@ -117,8 +119,9 @@ recording/retry/model starts, GUI file jobs and CLI backend operations during th
 final swap. Already accepted work is checked again after taking the exclusive
 lock. Older backends lacking authoritative busy evidence fail closed. User data,
 models and credentials are preserved; failed installation needs a fresh download.
-Downloaded bytes are held only in memory. Native replacement and permission
-continuity still need real verification. Settings shows the running package
+Downloaded bytes are held only in memory. Native GUI replacement, retained data
+and microphone permission were verified for 1.0.0→1.0.1; automatic independent
+CLI-owner handoff remains open. Settings shows the running package
 version separately from any available version. A quiet sidebar update button is
 reachable from every main view, including the transcription editor; downloading
 preserves that editor, and installing still requires saved work.
@@ -184,6 +187,25 @@ python3 scripts/generate-updater-manifest.py --version 1.0.1 \
   --notes-file CHANGELOG.md --output release-assets/latest.json
 ```
 
+When recreating a macOS updater archive after stapling, suppress AppleDouble
+metadata, then sign the **new bytes** with the existing updater key and regenerate
+the manifest:
+
+```sh
+COPYFILE_DISABLE=1 tar --no-mac-metadata -czf release-assets/Vara_1.0.1_aarch64.app.tar.gz \
+  -C target/release/bundle/macos Vara.app
+# Sign this archive using the existing secure signer environment before running
+# generate-updater-manifest.py with its new .sig file.
+```
+
+A root `._Vara.app` entry is incompatible with Tauri's macOS extraction: removing
+the first path component leaves an empty file path and installation fails before
+the swap. The manifest generator now validates real macOS tar.gz structure and
+rejects AppleDouble roots, multiple/non-app roots, unsafe paths and escaping
+symlinks in addition to its cryptographic checks. This guard is a post-release
+change; it does not alter the published 1.0.1 app or tag. Metadata-free extraction
+of the actual repaired app also passed strict signature and stapler validation.
+
 Recognized mappings: `darwin-aarch64`/`darwin-x86_64` → `.app.tar.gz`,
 `windows-x86_64-nsis`/`windows-aarch64-nsis` → `.exe`, and
 `linux-x86_64-appimage`/`linux-aarch64-appimage` → `.AppImage`. These are manifest
@@ -199,6 +221,38 @@ CLI/transcription jobs, model downloads, dirty editors, network failure and inva
 signatures, data/model/credential retention and OS permissions. Confirm the old
 idle CLI owner exits and subsequent calls launch the new owner. Drafts alone do
 not make updates available.
+
+### Native 1.0.0→1.0.1 evidence — 2026-11-05
+
+The installed bootstrap carried the production public key. Accessibility invoked
+the real visible Settings, manual check, download, verified-ready and install/restart
+controls. The GUI restarted; the installed bundle and public CLI reported 1.0.1,
+and Settings displayed `Du bruger Vara 1.0.1`. Deep/strict signature verification
+and Gatekeeper's Notarized Developer ID assessment passed. Apple accepted these
+notarization submissions:
+
+- 1.0.0 bootstrap: `7f8cbeb1-25cb-4ef9-a39e-fd9e32f783dd`.
+- 1.0.1 release: `5c0294ed-cab0-4e58-a03a-6645c3857e7f`.
+
+The original 344 dictation rows matched their baseline hash; two new user
+dictations brought the total to 346. All four transcriptions retained their table
+bytes/hashes. Preferences, recovery, cancelled and staging data matched the
+baseline. The 55 model files retained names, sizes and modification times. OpenAI
+credential presence and the microphone permission value (`auth_value=2`) remained
+unchanged. Only preservation counts/hashes and credential presence are recorded
+here; no credential values or transcript content are included. Private
+Accessibility logs remain local and are not release evidence files.
+
+The previous independent CLI owner survived the GUI restart. After authoritative
+busy status was false, it was manually retired under the exclusive update lock;
+a new 1.0.1 owner then served the public `vara models --json` command successfully.
+This is **manual recovery**, not evidence of automatic handoff. Automatic owner
+retirement is tracked in [#37](https://github.com/mikkelkrogsholm/vara/issues/37),
+and keeps the broader [#34 acceptance](https://github.com/mikkelkrogsholm/vara/issues/34)
+partial. Native upgrade evidence does not establish Windows/Linux/Intel Mac
+support or execution of the CI draft workflow; its Apple signing credentials
+remain unconfigured. Live active-work refusal scenarios beyond the recorded
+component/browser checks are not claimed here.
 
 ### Native macOS UI acceptance helper
 

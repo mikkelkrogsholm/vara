@@ -1,8 +1,13 @@
 # Changelog
 
-## Unreleased — 1.0.1
+## Unreleased
 
-- Prepare the first signed updater delivery from a 1.0.0 bootstrap carrying the production public key. Native upgrade and notarization acceptance remain pending.
+- Reject incompatible macOS updater archives before manifest generation, including top-level AppleDouble files that prevent Tauri installation. Add signed archive regression fixtures and an extraction diagnostic.
+
+## 1.0.1 — 2026-11-05
+
+- Release the Developer ID signed and notarized macOS Apple Silicon app. Verify the real in-app 1.0.0→1.0.1 check, signed download, installation and GUI restart with retained data, models, credential presence and microphone permission.
+- Package the updater archive without macOS AppleDouble metadata. Automatic retirement of the previous independent CLI owner remains unresolved; the test required a manual idle-owner handoff ([#37](https://github.com/mikkelkrogsholm/vara/issues/37)).
 - Show the running version in Settings and a shared update action on every main view, preserving live transcription drafts.
 - Pass the production public key to the release bundler as well as the runtime through a generated configuration overlay.
 - Add a macOS Accessibility helper for the real Settings/check/download/install journey, with explicit installation opt-in and no permission-dialog handling.
@@ -11,7 +16,7 @@
 
 - Identify the Rust/Tauri app as 1.0.0, independently of the retired Swift app.
 - Add localized GitHub update checks, automatic-check opt-out, signed downloads and explicit installation/restart guarded against active work and unsaved edits.
-- Prepare a manually dispatched, signed macOS Apple Silicon draft-release workflow and verified updater manifest generation. Production updater keys and the GitHub updater environment are now configured; Apple CI signing credentials, notarized 1.0.1 release artifacts and a real native upgrade remain unverified; the local 1.0.0 bootstrap is notarized. No public release has occurred.
+- Prepare a manually dispatched, signed macOS Apple Silicon draft-release workflow and verified updater manifest generation. This baseline was not published; the production updater configuration and native acceptance are recorded under 1.0.1.
 
 - Added a contributor guide, issue forms and a pull request template.
 - Added the MIT license and clarified separate third-party and model notices.
