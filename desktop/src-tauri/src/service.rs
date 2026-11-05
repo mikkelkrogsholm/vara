@@ -280,7 +280,13 @@ impl Service {
     pub fn shortcut(&self) -> String {
         self.inner.lock().settings.shortcut.clone()
     }
+    pub fn update_busy(&self) -> bool {
+        let i = self.inner.lock();
+        i.active.is_some() || i.unsaved.is_some() || !i.downloads.is_empty()
+    }
     pub fn start(self: &Arc<Self>, choice: ProcessingChoice) -> Result<()> {
+        let _activity = crate::activity::shared(self.audio.parent().unwrap())
+            .map_err(|_| crate::host_message("update.busy"))?;
         let mut i = self.inner.lock();
         if i.active.is_some() {
             return Err(Error::Busy.wire());
@@ -584,6 +590,8 @@ impl Service {
         Ok(outcome)
     }
     pub fn retry(self: &Arc<Self>, id: &str) -> Result<()> {
+        let _activity = crate::activity::shared(self.audio.parent().unwrap())
+            .map_err(|_| crate::host_message("update.busy"))?;
         self.maintenance()?;
         let mut i = self.inner.lock();
         if i.active.is_some() || i.unsaved.is_some() {
@@ -713,6 +721,8 @@ impl Service {
         Ok(())
     }
     pub fn install(self: &Arc<Self>, id: String) -> Result<()> {
+        let _activity = crate::activity::shared(self.audio.parent().unwrap())
+            .map_err(|_| crate::host_message("update.busy"))?;
         if vara_engine::artifacts(&id).is_none() {
             return Err(crate::host_message("host.model_unknown").into());
         }

@@ -13,6 +13,12 @@ fn copy(source: &Path, dest: &Path) {
     }
 }
 fn main() {
+    println!("cargo:rerun-if-env-changed=VARA_UPDATER_PUBLIC_KEY");
+    println!("cargo:rerun-if-env-changed=VARA_RELEASE_BUILD");
+    if env::var_os("VARA_RELEASE_BUILD").is_some() {
+        assert!(!env::var("VARA_UPDATER_PUBLIC_KEY").unwrap_or_default().trim().is_empty(),
+            "Release requires VARA_UPDATER_PUBLIC_KEY");
+    }
     let manifest = std::path::PathBuf::from(env::var_os("CARGO_MANIFEST_DIR").unwrap());
     let root = manifest.join("../..");
     let source = root.join("gdd/design");

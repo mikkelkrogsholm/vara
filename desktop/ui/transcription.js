@@ -691,6 +691,7 @@
     audio.addEventListener("ended", draw);
   }
   Vara.transcription = {
+    hasUnsavedChanges: () => tx.drafts.size > 0 || tx.saving.size > 0 || pendingSaves.size > 0,
     init,
     onSession(session) {
       if (session?.stage === "recording") audio.pause();

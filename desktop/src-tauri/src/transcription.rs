@@ -17,6 +17,7 @@ pub(crate) fn export_dialog(locale: &str, format: &str, name: &str) -> rfd::File
     )
 }
 pub struct Files {
+    root_gate: PathBuf,
     #[cfg(not(target_os = "macos"))]
     shared: Arc<vara_app::Files>,
     #[cfg(target_os = "macos")]
@@ -34,6 +35,7 @@ impl Files {
                 std::env::current_exe().map_err(|_| backend_message("backend.start_failed"))?;
             let running = Arc::new(std::sync::atomic::AtomicBool::new(true));
             let files = Arc::new(Self {
+                root_gate: root.clone(),
                 root,
                 executable,
                 running: running.clone(),
@@ -83,9 +85,20 @@ impl Files {
                 }),
             };
             Ok(Arc::new(Self {
+                root_gate: root.clone(),
                 shared: vara_app::Files::new(host, root)?,
             }))
         }
+    }
+    pub fn update_busy(&self) -> Result<bool> {
+        #[cfg(target_os = "macos")]
+        {
+            let response = crate::local_backend::call(&self.root, crate::local_backend::Operation::Ping, &self.executable)?;
+            response.result.and_then(|v| v["busy"].as_bool())
+                .ok_or_else(|| crate::host_message("update.busy"))
+        }
+        #[cfg(not(target_os = "macos"))]
+        { Ok(self.shared.busy()) }
     }
     pub fn stop(&self) {
         #[cfg(target_os = "macos")]
@@ -245,6 +258,8 @@ impl Files {
     }
     #[cfg(not(target_os = "macos"))]
     fn remote_or_shared(&self, action: &str, p: Value, settings: &Settings) -> Result<Value> {
+        let _activity = crate::activity::shared(&self.root_gate)
+            .map_err(|_| crate::host_message("update.busy"))?;
         self.shared.command(action, p, settings)
     }
     #[cfg(target_os = "macos")]

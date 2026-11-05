@@ -8,6 +8,7 @@
   const $ = (id) => document.getElementById(id);
   const state = {
     data: null,
+    update: null,
     page: "history",
     tab: "dictation",
     selected: null,
@@ -396,6 +397,15 @@
     const a = button.dataset.action,
       id = button.dataset.id;
     if (a.startsWith("tx-")) return Vara.transcription.action(button);
+    if (a === "update-install" && (state.dirty || $("modal").open || Vara.transcription.hasUnsavedChanges?.())) {
+      toast(Vara.i18n.bind("ui.save-your-changes-or-choose-discard-changes-first")); return;
+    }
+    if (["update-check", "update-download", "update-install"].includes(a)) {
+      if (a === "update-install") $("app-window").inert = true;
+      try { state.update = await api(a.replace("-", "_"), {manual:true}); }
+      finally { $("app-window").inert = false; }
+      if (!state.dirty) render(); return;
+    }
     switch (a) {
       case "navigate":
         navigate(() => {
@@ -772,6 +782,10 @@
     }
   });
   document.addEventListener("change", (event) => {
+    if (event.target.id === "update-automatic") {
+      api("update_preference", {automatic:event.target.checked}).then(value => {state.update=value;if (!state.dirty) render();}).catch(report);
+      return;
+    }
     if (event.target.id === "ui-locale") {
       if (pendingLocale !== null) { event.target.value = pendingLocale; return; }
       const preference = event.target.value;
@@ -904,6 +918,11 @@
       if (state.nativeCapture && (document.activeElement === $("shortcut-recorder") || (!event.payload.down && state.shortcutSources.native.has(event.payload.code))))
         recordShortcutKey(event.payload.code, event.payload.down, "native");
     });
+    // The host persists the daily throttle; failures and restarts do not spam checks.
+    const checkUpdates = () => api("update_check").then(value => {state.update=value; if (!state.dirty) render();}).catch(() => {});
+    window.__TAURI__.event.listen("vara:update", event => {state.update=event.payload; if (!state.dirty) render();});
+    api("update_status").then(value => {state.update=value; if (!state.dirty) render(); checkUpdates();}).catch(() => {});
+    setInterval(checkUpdates, 60 * 60 * 1000);
     // Device drivers must never hold onboarding or history hostage.
     let deviceDeadline;
     Promise.race([
