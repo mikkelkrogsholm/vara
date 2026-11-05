@@ -73,42 +73,46 @@ until an actual release is made.
 
 ## Distribution status
 
-[Vara 1.0.1](https://github.com/mikkelkrogsholm/vara/releases/tag/v1.0.1) is public
-for **macOS Apple Silicon (`darwin-aarch64`) only**, from tag `v1.0.1` at
-`11c5176`. The Developer ID signed app was notarized, stapled and accepted by
-Gatekeeper. The real installed 1.0.0 bootstrap upgraded through the visible
-Settings/check/download/install flow and restarted as 1.0.1. Automatic retirement
-of the previous independent CLI owner did **not** pass; the native GUI upgrade
-passed, while overall updater acceptance remains partial. See the evidence below.
+[Vara 1.0.2](https://github.com/mikkelkrogsholm/vara/releases/tag/v1.0.2) is public
+for **macOS Apple Silicon (`darwin-aarch64`) only**, from tag `v1.0.2` at
+`8c83e0c`. The Developer ID signed app was notarized, stapled and accepted by
+Gatekeeper. The real installed 1.0.1 app upgraded through the visible
+Settings/check/download/install flow and restarted as 1.0.2. The previous
+independent CLI owner exited automatically before any new CLI command, and the
+replacement reported build 1.0.2 through a raw private-socket Ping. Data, models,
+credential presence and microphone permission were preserved. This completes
+macOS Apple Silicon acceptance for [#34](https://github.com/mikkelkrogsholm/vara/issues/34)
+and [#37](https://github.com/mikkelkrogsholm/vara/issues/37). See the evidence below.
 The retired Swift app's Sparkle feed and DMG script do not release this app.
 Windows/Linux and Intel Mac release acceptance remain open.
 
-The 1.0.2 candidate repairs independent-owner handoff ([#37](https://github.com/mikkelkrogsholm/vara/issues/37)).
+Version 1.0.2 repairs independent-owner handoff.
 GUI and CLI probe the private v2 owner's `build_version`. Older idle owners,
 including the 1.0.0/1.0.1 owners that report `busy` without a build version, are
 retired only after taking the exclusive profile admission gate and rechecking
 busy state. The PID is authenticated by the kernel's Unix socket peer metadata.
 Busy accepted work continues on its existing owner until idle. Current/newer,
 unknown-busy and incompatible peers are retained. A concurrent installer keeps
-its Ping usable while it holds the gate. Signed 1.0.1→1.0.2 native GUI acceptance
-and publication remain pending; these changes do not amend the public 1.0.1 tag.
+its Ping usable while it holds the gate. The verified 1.0.1→1.0.2 upgrade
+required no manual process termination or app copying. The public 1.0.1 tag
+remains unchanged.
 
-Isolated macOS verification for this candidate used the retained notarized 1.0.0
+Isolated macOS verification for 1.0.2 used the retained notarized 1.0.0
 and 1.0.1 binaries on fresh temporary profiles. Each legacy owner exited through
 automatic handoff and the public `cli models --json` command reached a 1.0.2
 owner; repeated CLI calls retained that owner. The 13 native backend harness
 tests cover concurrent admission, retained durable jobs and cancellation, idle
 handoff, current/newer/unknown-owner retention, and the existing socket lifecycle.
-The three production-build admission-gate tests also pass. This evidence does
-not replace signed GUI upgrade acceptance on the installed profile.
+The three production-build admission-gate tests also pass. Installed-profile
+signed GUI upgrade acceptance is recorded below.
 
 After verification, generated `target` output can be removed to reclaim disk
 space. Keep the installed app and user profile; do not commit build output or keys.
 
 ## GitHub updates and release configuration
 
-The workspace is **1.0.2, an unreleased candidate**; the public app remains **1.0.1, released 2026-11-05**. The retired Swift distribution and its
-Sparkle feed are unrelated. Stable discovery uses only
+The workspace and public app are **1.0.2, released 2026-11-05**. The retired Swift
+distribution and its Sparkle feed are unrelated. Stable discovery uses only
 `https://github.com/mikkelkrogsholm/vara/releases/latest/download/latest.json`.
 Drafts and prereleases do not activate this endpoint. Until a stable release
 contains this asset, checks can fail; failure never means “up to date”.
@@ -139,9 +143,9 @@ final swap. Already accepted work is checked again after taking the exclusive
 lock. Older backends lacking authoritative busy evidence fail closed. User data,
 models and credentials are preserved; failed installation needs a fresh download.
 Downloaded bytes are held only in memory. Native GUI replacement, retained data
-and microphone permission were verified for 1.0.0→1.0.1; automatic independent
-CLI-owner handoff remains open. Settings shows the running package
-version separately from any available version. A quiet sidebar update button is
+and microphone permission were verified for 1.0.0→1.0.1 and 1.0.1→1.0.2;
+the latter also verified automatic independent CLI-owner handoff. Settings shows
+the running package version separately from any available version. A quiet sidebar update button is
 reachable from every main view, including the transcription editor; downloading
 preserves that editor, and installing still requires saved work.
 
@@ -200,9 +204,9 @@ key ID and exact signed version before writing. URLs use those exact filenames
 under this repository's `vX.Y.Z` release; no placeholder manifest is committed:
 
 ```sh
-python3 scripts/generate-updater-manifest.py --version 1.0.1 \
+python3 scripts/generate-updater-manifest.py --version 1.0.2 \
   --public-key-file /secure/path/updater.pub \
-  --artifact darwin-aarch64 release-assets/Vara_1.0.1_aarch64.app.tar.gz release-assets/Vara_1.0.1_aarch64.app.tar.gz.sig \
+  --artifact darwin-aarch64 release-assets/Vara_1.0.2_aarch64.app.tar.gz release-assets/Vara_1.0.2_aarch64.app.tar.gz.sig \
   --notes-file CHANGELOG.md --output release-assets/latest.json
 ```
 
@@ -211,7 +215,7 @@ metadata, then sign the **new bytes** with the existing updater key and regenera
 the manifest:
 
 ```sh
-COPYFILE_DISABLE=1 tar --no-mac-metadata -czf release-assets/Vara_1.0.1_aarch64.app.tar.gz \
+COPYFILE_DISABLE=1 tar --no-mac-metadata -czf release-assets/Vara_1.0.2_aarch64.app.tar.gz \
   -C target/release/bundle/macos Vara.app
 # Sign this archive using the existing secure signer environment before running
 # generate-updater-manifest.py with its new .sig file.
@@ -221,9 +225,9 @@ A root `._Vara.app` entry is incompatible with Tauri's macOS extraction: removin
 the first path component leaves an empty file path and installation fails before
 the swap. The manifest generator now validates real macOS tar.gz structure and
 rejects AppleDouble roots, multiple/non-app roots, unsafe paths and escaping
-symlinks in addition to its cryptographic checks. This guard is a post-release
-change; it does not alter the published 1.0.1 app or tag. Metadata-free extraction
-of the actual repaired app also passed strict signature and stapler validation.
+symlinks in addition to its cryptographic checks. The guard was used for the
+1.0.2 release and does not alter the published 1.0.1 app or tag. Metadata-free
+extraction of the actual release app passed strict signature and stapler validation.
 
 Recognized mappings: `darwin-aarch64`/`darwin-x86_64` → `.app.tar.gz`,
 `windows-x86_64-nsis`/`windows-aarch64-nsis` → `.exe`, and
@@ -235,8 +239,8 @@ Linux needs verified AppImage/system runtime dependencies. Verify each platform
 before adding release assets.
 
 Before a separate manual publication, inspect artifacts/URLs and notarization,
-clean installation and a real **1.0.0→1.0.1** upgrade. Exercise active recording,
-CLI/transcription jobs, model downloads, dirty editors, network failure and invalid
+clean installation and a real upgrade from the preceding released version.
+Exercise active recording, CLI/transcription jobs, model downloads, dirty editors, network failure and invalid
 signatures, data/model/credential retention and OS permissions. Confirm the old
 idle CLI owner exits and subsequent calls launch the new owner. Drafts alone do
 not make updates available.
@@ -265,13 +269,43 @@ Accessibility logs remain local and are not release evidence files.
 The previous independent CLI owner survived the GUI restart. After authoritative
 busy status was false, it was manually retired under the exclusive update lock;
 a new 1.0.1 owner then served the public `vara models --json` command successfully.
-This is **manual recovery**, not evidence of automatic handoff. Automatic owner
-retirement is tracked in [#37](https://github.com/mikkelkrogsholm/vara/issues/37),
-and keeps the broader [#34 acceptance](https://github.com/mikkelkrogsholm/vara/issues/34)
-partial. Native upgrade evidence does not establish Windows/Linux/Intel Mac
-support or execution of the CI draft workflow; its Apple signing credentials
-remain unconfigured. Live active-work refusal scenarios beyond the recorded
-component/browser checks are not claimed here.
+This was **manual recovery**, not evidence of automatic handoff in 1.0.1.
+The limitation in [#37](https://github.com/mikkelkrogsholm/vara/issues/37) and the
+remaining [#34 acceptance](https://github.com/mikkelkrogsholm/vara/issues/34)
+criterion were subsequently resolved by the 1.0.2 upgrade below. Native upgrade
+evidence does not establish Windows/Linux/Intel Mac support or execution of the
+CI draft workflow; its Apple signing credentials remain unconfigured. Live
+active-work refusal scenarios beyond the recorded component/browser checks are
+not claimed here.
+
+### Native 1.0.1→1.0.2 evidence — 2026-11-05
+
+The installed 1.0.1 app checked the real GitHub stable manifest, downloaded and
+verified the signed 1.0.2 archive, and installed/restarted through the visible
+Accessibility-controlled Settings actions. The installed bundle and public CLI
+reported 1.0.2, and Settings displayed `Du bruger Vara 1.0.2`. Apple accepted
+notarization submission `a50de417-b888-480b-b6f8-dae5a5412a72`; stapler validation, deep/strict codesign
+verification and Gatekeeper's Notarized Developer ID assessment passed.
+
+The previous independent file owner exited automatically after GUI restart,
+before any new CLI command was issued. A raw socket Ping, which cannot initiate
+handoff, reported `build_version: 1.0.2` and `busy: false` from the replacement.
+No manual process termination or app copying occurred during this upgrade.
+Two subsequent public `vara models --json` calls passed and retained the same
+replacement owner.
+
+All original 344 dictation rows retained their baseline hash; four new user
+entries brought the total to 348. All four transcriptions, other database tables
+and settings matched the baseline. The 55 model files retained names, sizes and
+modification times. OpenAI credential presence and microphone permission
+(`auth_value=2`) remained unchanged. Sanitized local receipts record these
+checks; private Accessibility logs and user content are not published.
+
+This passes the macOS Apple Silicon updater and automatic-owner-handoff
+acceptance for #34/#37. The release used the local Developer ID identity and
+notary profile. CI Apple certificate/password/notarization secrets remain
+unconfigured and its release workflow remains unexecuted. Windows/Linux and
+Intel Mac remain unverified.
 
 ### Native macOS UI acceptance helper
 
