@@ -12,6 +12,7 @@ import os
 from pathlib import Path
 import subprocess
 import tempfile
+import tarfile
 from urllib.parse import quote
 
 spec = importlib.util.spec_from_file_location('version_check', Path(__file__).with_name('check-version.py'))
@@ -62,6 +63,47 @@ def verify(artifact: Path, signature: str, public_key: str, version: str):
                 raise ValueError(f'Invalid {name} signature (OpenSSL 3 required)')
 
 
+def validate_macos_archive(artifact: Path):
+    """Match the updater's single .app root and skip-one-component extraction."""
+    roots = set()
+    contents = False
+    try:
+        with tarfile.open(artifact, 'r:gz') as archive:
+            for member in archive:
+                parts = member.name.rstrip('/').split('/')
+                if member.name.startswith('/') or any(part in ('', '.', '..') for part in parts):
+                    raise ValueError('Unsafe macOS archive path')
+                root = parts[0]
+                if root.startswith('._'):
+                    raise ValueError('macOS archive contains a top-level AppleDouble entry; create it with COPYFILE_DISABLE=1 tar --no-mac-metadata')
+                if not root.endswith('.app') or len(root) <= 4:
+                    raise ValueError('macOS archive must have one .app root')
+                roots.add(root)
+                if len(roots) != 1:
+                    raise ValueError('macOS archive must have one .app root')
+                if len(parts) == 1 and not member.isdir():
+                    raise ValueError('macOS archive file maps to an empty path after removing the .app root')
+                if not (member.isdir() or member.isfile() or member.issym()):
+                    raise ValueError('Unsupported macOS archive entry type')
+                if member.issym():
+                    # Relative bundle symlinks are normal; they must stay inside the root.
+                    target = parts[:-1]
+                    if member.linkname.startswith('/'):
+                        raise ValueError('Unsafe macOS archive symlink')
+                    for part in member.linkname.split('/'):
+                        if part == '..':
+                            if len(target) <= 1:
+                                raise ValueError('Unsafe macOS archive symlink')
+                            target = target[:-1]
+                        elif part not in ('', '.'):
+                            target = target + [part]
+                contents |= len(parts) > 2 and parts[1] == 'Contents' and member.isfile()
+    except (tarfile.TarError, EOFError) as error:
+        raise ValueError('Invalid macOS updater tar.gz archive') from error
+    if not roots or not contents:
+        raise ValueError('macOS archive must contain an app Contents directory with files')
+
+
 def generate(version, public_key, artifacts, notes=''):
     if not version_check.SEMVER.fullmatch(version) or '-' in version or '+' in version:
         raise ValueError('Stable release requires a plain MAJOR.MINOR.PATCH version')
@@ -76,6 +118,8 @@ def generate(version, public_key, artifacts, notes=''):
             raise ValueError('Artifact is missing or empty')
         signature = signature_path.read_text().strip()
         verify(artifact, signature, public_key, version)
+        if platform.startswith('darwin-'):
+            validate_macos_archive(artifact)
         platforms[platform] = {'signature': signature, 'url': f'{REPOSITORY}/releases/download/v{version}/{quote(artifact.name, safe="")}'}
     if not platforms:
         raise ValueError('At least one real platform artifact is required')
