@@ -366,7 +366,23 @@ mod mac {
         fn run(&self, operation: Operation) -> Result<Value, String> {
             // Ping remains available to the installer holding the exclusive gate.
             if matches!(operation, Operation::Ping) {
-                return Ok(json!({"ready":true, "busy": self.files.busy()}));
+                let result = json!({"ready":true, "busy": self.files.busy(), "build_version": env!("CARGO_PKG_VERSION")});
+                #[cfg(feature = "test-harness")]
+                let result = {
+                    let mut result = result;
+                    if let Ok(version) = std::env::var("VARA_TEST_BACKEND_BUILD_VERSION") {
+                        if version == "legacy" {
+                            result.as_object_mut().unwrap().remove("build_version");
+                        } else {
+                            result["build_version"] = json!(version);
+                        }
+                    }
+                    if std::env::var_os("VARA_TEST_BACKEND_UNKNOWN_BUSY").is_some() {
+                        result.as_object_mut().unwrap().remove("busy");
+                    }
+                    result
+                };
+                return Ok(result);
             }
             let _activity = crate::activity::shared(&self.root)
                 .map_err(|_| crate::host_message("update.busy"))?;
@@ -639,11 +655,119 @@ mod mac {
         fs::remove_file(socket).map_err(|_| err("backend.transport"))?;
         Ok(())
     }
-    pub fn call(root: &Path, operation: Operation, executable: &Path) -> Result<Response, String> {
-        let root = profile(root)?;
-        let (socket, _) = paths(&root)?;
-        let mut stream = match connect(&socket) {
-            Ok(s) => s,
+    // The PID comes from the kernel for this authenticated socket, never from
+    // protocol payloads or a process-name search.
+    fn peer_pid(stream: &UnixStream) -> Result<libc::pid_t, String> {
+        let mut pid: libc::pid_t = 0;
+        let mut len = std::mem::size_of_val(&pid) as libc::socklen_t;
+        if unsafe {
+            libc::getsockopt(
+                stream.as_raw_fd(),
+                libc::SOL_LOCAL,
+                libc::LOCAL_PEERPID,
+                (&mut pid as *mut libc::pid_t).cast(),
+                &mut len,
+            )
+        } != 0
+            || len as usize != std::mem::size_of_val(&pid)
+            || pid <= 1
+        {
+            return Err(err("backend.peer_denied"));
+        }
+        Ok(pid)
+    }
+    fn exchange(stream: &mut UnixStream, operation: Operation) -> Result<Response, String> {
+        let wait_for_work = matches!(
+            &operation,
+            Operation::Ai { .. } | Operation::Who { .. } | Operation::WhoDownload { .. }
+        );
+        let data = serde_json::to_vec(&Request {
+            version: VERSION,
+            operation,
+        })
+        .map_err(|_| err("backend.malformed"))?;
+        write_frame(stream, &data, MAX_REQUEST)?;
+        let bytes = read_frame_wait(stream, MAX_RESPONSE, wait_for_work)?;
+        let response: Response =
+            serde_json::from_slice(&bytes).map_err(|_| err("backend.response_invalid"))?;
+        if response.version != VERSION {
+            return Err(err("backend.version_mismatch"));
+        }
+        Ok(response)
+    }
+    fn older_idle(response: &Response, current: &str) -> bool {
+        if response.version != VERSION || response.error.is_some() {
+            return false;
+        }
+        let Some(result) = response.result.as_ref() else {
+            return false;
+        };
+        if result["busy"].as_bool() != Some(false) {
+            return false;
+        }
+        match result.get("build_version") {
+            // Released 1.0.0/1.0.1 v2 owners expose busy but no build version.
+            None => true,
+            Some(Value::String(version)) => {
+                match (
+                    semver::Version::parse(version),
+                    semver::Version::parse(current),
+                ) {
+                    (Ok(peer), Ok(current)) => peer < current,
+                    _ => false,
+                }
+            }
+            _ => false,
+        }
+    }
+    fn retire_idle_owner(
+        root: &Path,
+        socket: &Path,
+        lock_path: &Path,
+        initial: &Response,
+    ) -> Result<(), String> {
+        if !older_idle(initial, env!("CARGO_PKG_VERSION")) {
+            return Ok(());
+        }
+        // An installer may already hold the gate. Do not recurse or wait on it:
+        // its Ping must remain usable, and an ordinary caller can retry later.
+        let Ok(_gate) = crate::activity::exclusive(root) else {
+            return Ok(());
+        };
+        let mut stream = connect(socket)?;
+        let pid = peer_pid(&stream)?;
+        if pid == unsafe { libc::getpid() } {
+            return Ok(());
+        }
+        let authoritative = exchange(&mut stream, Operation::Ping)?;
+        if authoritative.instance != initial.instance
+            || !older_idle(&authoritative, env!("CARGO_PKG_VERSION"))
+        {
+            return Ok(());
+        }
+        // No admission is possible under the gate; accepted jobs were included
+        // in the authoritative busy check. SIGTERM also supports legacy owners.
+        if unsafe { libc::kill(pid, libc::SIGTERM) } != 0 {
+            return Err(err("backend.unavailable"));
+        }
+        drop(stream);
+        let until = Instant::now() + Duration::from_secs(5);
+        loop {
+            match lock(lock_path) {
+                Ok(guard) => {
+                    drop(guard);
+                    return Ok(());
+                }
+                Err(e) if e == "backend.already_running" && Instant::now() < until => {
+                    std::thread::sleep(Duration::from_millis(25))
+                }
+                Err(e) => return Err(e),
+            }
+        }
+    }
+    fn connection(root: &Path, socket: &Path, executable: &Path) -> Result<UnixStream, String> {
+        match connect(socket) {
+            Ok(s) => Ok(s),
             Err(e) if e == "backend.unavailable" => {
                 use std::os::unix::process::CommandExt;
                 let mut child = std::process::Command::new(executable)
@@ -663,7 +787,7 @@ mod mac {
                 let until = Instant::now() + Duration::from_secs(15);
                 loop {
                     match connect(&socket) {
-                        Ok(s) => break s,
+                        Ok(s) => break Ok(s),
                         Err(e) if e == "backend.unavailable" && Instant::now() < until => {
                             std::thread::sleep(Duration::from_millis(50))
                         }
@@ -671,25 +795,63 @@ mod mac {
                     }
                 }
             }
-            Err(e) => return Err(e),
-        };
-        let wait_for_work = matches!(
-            &operation,
-            Operation::Ai { .. } | Operation::Who { .. } | Operation::WhoDownload { .. }
-        );
-        let data = serde_json::to_vec(&Request {
-            version: VERSION,
-            operation,
-        })
-        .map_err(|_| err("backend.malformed"))?;
-        write_frame(&mut stream, &data, MAX_REQUEST)?;
-        let bytes = read_frame_wait(&mut stream, MAX_RESPONSE, wait_for_work)?;
-        let response: Response =
-            serde_json::from_slice(&bytes).map_err(|_| err("backend.response_invalid"))?;
-        if response.version != VERSION {
-            return Err(err("backend.version_mismatch"));
+            Err(e) => Err(e),
         }
-        Ok(response)
+    }
+    pub fn call(root: &Path, operation: Operation, executable: &Path) -> Result<Response, String> {
+        let ping = matches!(operation, Operation::Ping);
+        for attempt in 0..3 {
+            match call_once(root, operation.clone(), executable) {
+                Err(e)
+                    if ping
+                        && attempt < 2
+                        && matches!(
+                            e.as_str(),
+                            "backend.unavailable" | "backend.transport" | "backend.malformed"
+                        ) =>
+                {
+                    std::thread::sleep(Duration::from_millis(50));
+                }
+                result => return result,
+            }
+        }
+        unreachable!()
+    }
+    fn call_once(root: &Path, operation: Operation, executable: &Path) -> Result<Response, String> {
+        let root = profile(root)?;
+        let (socket, lock_path) = paths(&root)?;
+        // Retry only preparation, before the requested operation is sent. A
+        // concurrent upgrader can close the old peer during our probe. Never
+        // replay Submit or other mutations after an ambiguous transport error.
+        for attempt in 0..3 {
+            let prepared = (|| {
+                let mut stream = connection(&root, &socket, executable)?;
+                let ping = exchange(&mut stream, Operation::Ping)?;
+                retire_idle_owner(&root, &socket, &lock_path, &ping)
+            })();
+            match prepared {
+                Ok(()) => break,
+                Err(e)
+                    if attempt < 2
+                        && matches!(
+                            e.as_str(),
+                            "backend.unavailable" | "backend.transport" | "backend.malformed"
+                        ) =>
+                {
+                    std::thread::sleep(Duration::from_millis(50));
+                }
+                Err(e) => return Err(e),
+            }
+        }
+        // Keep the owner alive between final connect and request completion.
+        // Ping must also work for an installer already holding the exclusive gate.
+        let _admission = if matches!(operation, Operation::Ping) {
+            None
+        } else {
+            Some(crate::activity::shared(&root).map_err(|_| err("backend.unavailable"))?)
+        };
+        let mut stream = connection(&root, &socket, executable)?;
+        exchange(&mut stream, operation)
     }
 
     #[cfg(all(test, feature = "test-harness"))]
@@ -743,6 +905,250 @@ mod mac {
                 assert!(Instant::now() < end);
                 std::thread::sleep(Duration::from_millis(50));
             }
+        }
+        fn owner(root: &Path, version: &str, unknown_busy: bool) -> std::process::Child {
+            let root = profile(root).unwrap();
+            let mut cmd = std::process::Command::new(executable());
+            cmd.arg("--vara-internal-file-worker")
+                .arg(&root)
+                .env("VARA_TEST_BACKEND_BUILD_VERSION", version)
+                .env("VARA_TEST_BACKEND_DELAY_SECRET_MS", "2500")
+                .stdin(std::process::Stdio::null())
+                .stdout(std::process::Stdio::null())
+                .stderr(std::process::Stdio::null());
+            if unknown_busy {
+                cmd.env("VARA_TEST_BACKEND_UNKNOWN_BUSY", "1");
+            }
+            configure(&mut cmd);
+            let mut child = cmd.spawn().unwrap();
+            let (socket, _) = paths(&root).unwrap();
+            let end = Instant::now() + Duration::from_secs(15);
+            while connect(&socket).is_err() {
+                assert!(child.try_wait().unwrap().is_none());
+                assert!(Instant::now() < end);
+                std::thread::sleep(Duration::from_millis(25));
+            }
+            child
+        }
+        fn ping(root: &Path) -> Response {
+            raw(root, br#"{"version":2,"operation":{"action":"ping"}}"#)
+        }
+        #[test]
+        fn handoff_requires_known_idle_older_version() {
+            let response = |result| Response {
+                version: VERSION,
+                instance: "fixture".into(),
+                revision: 0,
+                notice: None,
+                result: Some(result),
+                error: None,
+            };
+            for result in [
+                json!({"busy":true}),
+                json!({}),
+                json!({"busy":false,"build_version":"1.0.2"}),
+                json!({"busy":false,"build_version":"2.0.0"}),
+                json!({"busy":false,"build_version":"invalid"}),
+                json!({"busy":false,"build_version":null}),
+            ] {
+                assert!(!older_idle(&response(result), "1.0.2"));
+            }
+            assert!(older_idle(&response(json!({"busy":false})), "1.0.2"));
+            assert!(older_idle(
+                &response(json!({"busy":false,"build_version":"1.0.1"})),
+                "1.0.2"
+            ));
+            let mut mismatch = response(json!({"busy":false}));
+            mismatch.version = 1;
+            assert!(!older_idle(&mismatch, "1.0.2"));
+        }
+        #[test]
+        fn current_newer_and_unknown_owner_are_retained() {
+            let temp = tempfile::tempdir().unwrap();
+            for (n, version, unknown) in [
+                (0, env!("CARGO_PKG_VERSION"), false),
+                (1, "99.0.0", false),
+                (2, "legacy", true),
+            ] {
+                let root = temp.path().join(n.to_string());
+                let mut child = owner(&root, version, unknown);
+                let before = ping(&root);
+                assert_eq!(invoke(&root, Operation::Ping).instance, before.instance);
+                assert!(child.try_wait().unwrap().is_none());
+                wait_stopped(&root);
+                assert!(child.wait().unwrap().success());
+            }
+        }
+        #[test]
+        fn concurrent_clients_retire_legacy_idle_owner_once() {
+            let temp = tempfile::tempdir().unwrap();
+            let root = temp.path().join("profile");
+            let mut child = owner(&root, "legacy", false);
+            let before = ping(&root);
+            let gate = crate::activity::exclusive(&root).unwrap();
+            assert_eq!(invoke(&root, Operation::Ping).instance, before.instance);
+            assert!(child.try_wait().unwrap().is_none());
+            drop(gate);
+            let clients: Vec<_> = (0..8)
+                .map(|_| {
+                    let root = root.clone();
+                    std::thread::spawn(move || invoke(&root, Operation::Ping))
+                })
+                .collect();
+            let responses: Vec<_> = clients.into_iter().map(|c| c.join().unwrap()).collect();
+            let after = invoke(&root, Operation::Ping);
+            assert_ne!(after.instance, before.instance);
+            assert_eq!(
+                after.result.as_ref().unwrap()["build_version"],
+                env!("CARGO_PKG_VERSION")
+            );
+            assert!(
+                responses
+                    .iter()
+                    .all(|r| r.instance == before.instance || r.instance == after.instance)
+            );
+            use std::os::unix::process::ExitStatusExt;
+            assert_eq!(child.wait().unwrap().signal(), Some(libc::SIGTERM));
+            wait_stopped(&root);
+        }
+        #[test]
+        fn concurrent_submissions_survive_owner_handoff() {
+            let temp = tempfile::tempdir().unwrap();
+            let root = temp.path().join("submissions");
+            let mut child = owner(&root, "legacy", false);
+            let before = ping(&root);
+            let source = temp.path().join("queue.wav");
+            wav(&source);
+            let clients: Vec<_> = (0..4)
+                .map(|n| {
+                    let root = root.clone();
+                    let source = source.clone();
+                    std::thread::spawn(move || {
+                        let op = Operation::Submit {
+                            request: vara_app::SubmitRequest {
+                                source,
+                                engine_id: Some("openai.speech".into()),
+                                language: Some("da".into()),
+                                request_id: Some(format!("concurrent-{n}")),
+                                diarize: false,
+                                speakers: None,
+                            },
+                        };
+                        for _ in 0..40 {
+                            match call(&root, op.clone(), &executable()) {
+                                // Admission contention occurs before transmitting Submit.
+                                Err(e) if e == "backend.unavailable" => {
+                                    std::thread::sleep(Duration::from_millis(25))
+                                }
+                                result => return result.unwrap(),
+                            }
+                        }
+                        panic!("admission did not settle");
+                    })
+                })
+                .collect();
+            let receipts: Vec<_> = clients.into_iter().map(|c| c.join().unwrap()).collect();
+            let ids: std::collections::HashSet<_> = receipts
+                .iter()
+                .map(|r| {
+                    assert!(r.error.is_none(), "{:?}", r.error);
+                    r.result.as_ref().unwrap()["job_id"]
+                        .as_str()
+                        .unwrap()
+                        .to_owned()
+                })
+                .collect();
+            assert_eq!(ids.len(), 4);
+            let end = Instant::now() + Duration::from_secs(15);
+            while ping(&root).result.unwrap()["busy"] == true {
+                assert!(Instant::now() < end);
+                std::thread::sleep(Duration::from_millis(50));
+            }
+            let after = invoke(&root, Operation::List);
+            assert_ne!(after.instance, before.instance);
+            assert_eq!(
+                after.result.unwrap()["documents"].as_array().unwrap().len(),
+                4
+            );
+            for id in ids {
+                let status = invoke(&root, Operation::Status { id: id.clone() });
+                assert_eq!(status.instance, after.instance);
+                assert_eq!(status.result.unwrap()["id"], id);
+            }
+            use std::os::unix::process::ExitStatusExt;
+            assert_eq!(child.wait().unwrap().signal(), Some(libc::SIGTERM));
+            wait_stopped(&root);
+        }
+        #[test]
+        fn older_versioned_owner_is_replaced() {
+            let temp = tempfile::tempdir().unwrap();
+            let root = temp.path().join("versioned");
+            let mut child = owner(&root, "1.0.1", false);
+            let before = ping(&root);
+            let after = invoke(&root, Operation::Ping);
+            assert_ne!(before.instance, after.instance);
+            assert_eq!(
+                after.result.unwrap()["build_version"],
+                env!("CARGO_PKG_VERSION")
+            );
+            use std::os::unix::process::ExitStatusExt;
+            assert_eq!(child.wait().unwrap().signal(), Some(libc::SIGTERM));
+            wait_stopped(&root);
+        }
+        #[test]
+        fn busy_legacy_owner_keeps_accepted_job_and_installer_ping() {
+            let temp = tempfile::tempdir().unwrap();
+            let root = temp.path().join("profile");
+            let mut child = owner(&root, "legacy", false);
+            let before = ping(&root);
+            let source = temp.path().join("busy.wav");
+            wav(&source);
+            let request = Request {
+                version: VERSION,
+                operation: Operation::Submit {
+                    request: vara_app::SubmitRequest {
+                        source,
+                        engine_id: Some("openai.speech".into()),
+                        language: Some("da".into()),
+                        request_id: Some("handoff-busy".into()),
+                        diarize: false,
+                        speakers: None,
+                    },
+                },
+            };
+            let submitted = raw(&root, &serde_json::to_vec(&request).unwrap());
+            let id = submitted.result.unwrap()["job_id"]
+                .as_str()
+                .unwrap()
+                .to_owned();
+            assert_eq!(ping(&root).result.unwrap()["busy"], true);
+            let gate = crate::activity::exclusive(&root).unwrap();
+            assert_eq!(invoke(&root, Operation::Ping).instance, before.instance);
+            drop(gate);
+            assert_eq!(
+                invoke(&root, Operation::Status { id: id.clone() }).instance,
+                before.instance
+            );
+            assert_eq!(
+                invoke(&root, Operation::Cancel { id: id.clone() }).instance,
+                before.instance
+            );
+            assert!(child.try_wait().unwrap().is_none());
+            let end = Instant::now() + Duration::from_secs(10);
+            while ping(&root).result.unwrap()["busy"] == true {
+                assert!(Instant::now() < end);
+                std::thread::sleep(Duration::from_millis(50));
+            }
+            let status = invoke(&root, Operation::Status { id: id.clone() });
+            assert_ne!(status.instance, before.instance);
+            assert_eq!(status.result.as_ref().unwrap()["id"], id);
+            assert_eq!(status.result.as_ref().unwrap()["stage"], "cancelled");
+            let result = invoke(&root, Operation::Result { id });
+            assert_eq!(result.instance, status.instance);
+            assert_eq!(result.error.unwrap().code, "file.not_ready");
+            use std::os::unix::process::ExitStatusExt;
+            assert_eq!(child.wait().unwrap().signal(), Some(libc::SIGTERM));
+            wait_stopped(&root);
         }
         fn wav(path: &Path) {
             let samples = vec![0u8; 32000];

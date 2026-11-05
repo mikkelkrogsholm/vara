@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### 1.0.2 candidate
+
+- Replace an authenticated older idle file-service owner after an app upgrade, so GUI and CLI use the running build. Preserve busy accepted jobs and defer handoff until idle; never replace a newer or unverified owner. The private protocol remains v2 and Ping now reports its build version.
+- Native 1.0.1→1.0.2 signed GUI installation and release acceptance remain pending.
+
 - Reject incompatible macOS updater archives before manifest generation, including top-level AppleDouble files that prevent Tauri installation. Add signed archive regression fixtures and an extraction diagnostic.
 
 ## 1.0.1 — 2026-11-05
