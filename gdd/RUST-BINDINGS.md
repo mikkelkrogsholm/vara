@@ -411,3 +411,25 @@ uses `backend.threads` when no IO source exists. Unix loader descriptions and
 CPAL backend descriptions may contain paths/device data and are never copied.
 These restrictions do not change cancellation, provider selection, model
 publication, Keychain trust or worker protocols.
+
+## GitHub updater and release boundary
+
+`desktop/src-tauri/src/updater.rs` owns fixed GitHub latest-manifest discovery,
+compile-time public-key configuration, persisted opt-out/daily-attempt throttle,
+and `update_status`, `update_preference`, `update_check`, `update_download`,
+`update_install` through the existing command dispatcher. Tauri verifies signed
+bytes and signed versions. Danish/English UI keys cover all states; host failures
+use canonical `update.busy` / `update.failed` messages.
+
+Downloading and installing are separate user actions. Installation takes an
+exclusive profile admission lock (`activity.rs`) then rechecks dictation/recovery,
+unsaved results/model downloads and authoritative file-owner busy state. Shared
+locks gate job admission, including native shortcuts and independent CLI requests.
+Missing backend evidence blocks installation. Settings/editor drafts and dialogs
+are guarded by UI; it becomes inert during the final swap. User data, models and
+credentials are retained. Network/signature errors cannot install or claim current.
+
+Workspace/Tauri version is 1.0.0, unreleased; CLI/RPC versions stay independent.
+The manifest generator verifies real artifact/signature paths and mappings; the
+manual workflow prepares only macOS ARM drafts with existing tags and configured
+credentials. `RELEASING.md` records configuration and unverified native acceptance.

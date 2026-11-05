@@ -1,0 +1,129 @@
+name: Prepare signed macOS draft release
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing release tag (vX.Y.Z); never creates tags
+        required: true
+        type: string
+permissions:
+  contents: write
+concurrency:
+  group: vara-draft-release
+  cancel-in-progress: false
+jobs:
+  draft:
+    runs-on: macos-15
+    timeout-minutes: 90
+    environment: release
+    env:
+      RELEASE_TAG: ${{ inputs.tag }}
+      VARA_RELEASE_BUILD: '1'
+      VARA_UPDATER_PUBLIC_KEY: ${{ vars.VARA_UPDATER_PUBLIC_KEY }}
+      TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+      TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+      APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
+      APPLE_ID: ${{ secrets.APPLE_ID }}
+      APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+      APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+      CARGO_INCREMENTAL: '0'
+      CARGO_PROFILE_RELEASE_DEBUG: '0'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.tag }}
+          fetch-depth: 0
+      - name: Validate existing tag, release state and credentials
+        env:
+          GH_TOKEN: ${{ github.token }}
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 scripts/check-version.py --tag "$RELEASE_TAG"
+          git show-ref --verify "refs/tags/$RELEASE_TAG"
+          test "$(git rev-parse HEAD)" = "$(git rev-list -n1 "$RELEASE_TAG")"
+          for name in VARA_UPDATER_PUBLIC_KEY TAURI_SIGNING_PRIVATE_KEY APPLE_SIGNING_IDENTITY APPLE_CERTIFICATE APPLE_CERTIFICATE_PASSWORD APPLE_ID APPLE_PASSWORD APPLE_TEAM_ID; do
+            test -n "${!name}" || { echo "Missing release configuration: $name" >&2; exit 1; }
+          done
+          if gh release view "$RELEASE_TAG" --json isDraft > "$RUNNER_TEMP/release.json" 2>/dev/null; then
+            python3 -c 'import json,sys; assert json.load(open(sys.argv[1]))["isDraft"], "Refusing to modify a published release"' "$RUNNER_TEMP/release.json"
+          fi
+      - name: Install release build tools
+        run: |
+          python3 - <<'PYTHON'
+          import glob, os, re, subprocess
+          candidates = sorted(glob.glob('/Applications/Xcode*.app/Contents/Developer'), reverse=True)
+          for candidate in candidates:
+              result = subprocess.run(['xcrun', 'swift', '--version'], env={**os.environ, 'DEVELOPER_DIR':candidate}, capture_output=True, text=True)
+              match = re.search(r'Swift version (\d+)\.(\d+)', result.stdout)
+              if result.returncode == 0 and match and tuple(map(int,match.groups())) >= (6,2):
+                  with open(os.environ['GITHUB_ENV'],'a') as output:
+                      output.write('DEVELOPER_DIR=' + candidate + '\n')
+                  print('Selected compatible Xcode:', candidate)
+                  break
+          else:
+              raise SystemExit('Release requires an installed Xcode with Swift 6.2+')
+          PYTHON
+          rustup show
+          cargo install tauri-cli --version 2.12.4 --locked
+          brew install openssl@3
+      - name: Import Apple Developer ID into a temporary runner keychain
+        env:
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          keychain="$RUNNER_TEMP/vara-signing.keychain-db"
+          password="$(openssl rand -hex 32)"
+          echo "::add-mask::$password"
+          printf '%s' "$APPLE_CERTIFICATE" | base64 --decode > "$RUNNER_TEMP/certificate.p12"
+          security create-keychain -p "$password" "$keychain"
+          security set-keychain-settings -lut 21600 "$keychain"
+          security unlock-keychain -p "$password" "$keychain"
+          security import "$RUNNER_TEMP/certificate.p12" -P "$APPLE_CERTIFICATE_PASSWORD" -A -t cert -f pkcs12 -k "$keychain"
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$password" "$keychain"
+          security list-keychains -d user -s "$keychain" login.keychain-db
+          rm "$RUNNER_TEMP/certificate.p12"
+      - name: Build signed and notarized app and updater artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          sh scripts/build-who-runtime.sh
+          cargo test --release --workspace --locked
+          cd desktop/src-tauri
+          cargo tauri build --config tauri.release.conf.json --bundles app,dmg -- --locked
+      - name: Verify bundle and generate latest.json from signed artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(uname -m)" = arm64
+          codesign --verify --deep --strict target/release/bundle/macos/Vara.app
+          xcrun stapler validate target/release/bundle/macos/Vara.app
+          version="${RELEASE_TAG#v}"
+          mkdir -p release-assets
+          cp target/release/bundle/macos/Vara.app.tar.gz "release-assets/Vara_${version}_aarch64.app.tar.gz"
+          cp target/release/bundle/macos/Vara.app.tar.gz.sig "release-assets/Vara_${version}_aarch64.app.tar.gz.sig"
+          cp target/release/bundle/dmg/*.dmg release-assets/
+          printf '%s' "$VARA_UPDATER_PUBLIC_KEY" > "$RUNNER_TEMP/updater.pub"
+          OPENSSL="$(brew --prefix openssl@3)/bin/openssl" python3 scripts/generate-updater-manifest.py \
+            --version "$version" --public-key-file "$RUNNER_TEMP/updater.pub" \
+            --artifact darwin-aarch64 "release-assets/Vara_${version}_aarch64.app.tar.gz" "release-assets/Vara_${version}_aarch64.app.tar.gz.sig" \
+            --notes-file CHANGELOG.md --output release-assets/latest.json
+      - name: Create or update draft only
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if gh release view "$RELEASE_TAG" --json isDraft > "$RUNNER_TEMP/release.json" 2>/dev/null; then
+            python3 -c 'import json,sys; assert json.load(open(sys.argv[1]))["isDraft"], "Refusing to modify a published release"' "$RUNNER_TEMP/release.json"
+          else
+            gh release create "$RELEASE_TAG" --verify-tag --draft --title "Vara $RELEASE_TAG" --notes-file CHANGELOG.md
+          fi
+          gh release upload "$RELEASE_TAG" release-assets/* --clobber
+      - name: Remove temporary certificate export
+        if: always()
+        run: rm -f "$RUNNER_TEMP/certificate.p12" "$RUNNER_TEMP/updater.pub"

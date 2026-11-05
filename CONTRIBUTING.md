@@ -35,7 +35,7 @@ Contributions are welcome, including documentation, bug fixes, UI translations a
 
 For bugs, use the issue form and include steps, expected and actual results, app version, operating system and relevant model. Feature ideas are welcome through the feature form. Please do not include private audio, transcripts, API keys, or other sensitive data in issues, logs, screenshots or pull requests; use synthetic or public examples.
 
-macOS is the active tested desktop platform; Windows and Linux integration and release testing remain open. Public packaging and notarization are not ready. See [RELEASING.md](RELEASING.md) for versions and shipping, and [LICENSE](LICENSE) for licensing.
+macOS is the active tested desktop platform; Windows and Linux integration and release testing remain open. GitHub updater and draft-release tooling are implemented; signed/notarized public packaging and a real native upgrade still need configured credentials and verification. See [RELEASING.md](RELEASING.md) for versions and shipping, and [LICENSE](LICENSE) for licensing.
 
 ## Finding your way around
 

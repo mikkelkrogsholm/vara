@@ -1,4 +1,6 @@
 {
+  "update.busy": {"da":"Afslut optagelser, transskriptioner og downloads før opdatering. Prøv igen bagefter.","en":"Finish recordings, transcriptions and downloads before updating. Then try again."},
+  "update.failed": {"da":"Opdateringen kunne ikke fuldføres. Prøv igen senere.","en":"The update could not be completed. Try again later."},
   "file.language_unsupported": {"da": "Denne model vælger selv talesprog. Fjern sprogvalget.", "en": "This model detects speech language automatically. Remove the language option."},
   "runtime.unknown": {
     "da": "Der opstod en ukendt fejl.",

@@ -364,6 +364,12 @@ mod mac {
     }
     impl State {
         fn run(&self, operation: Operation) -> Result<Value, String> {
+            // Ping remains available to the installer holding the exclusive gate.
+            if matches!(operation, Operation::Ping) {
+                return Ok(json!({"ready":true, "busy": self.files.busy()}));
+            }
+            let _activity = crate::activity::shared(&self.root)
+                .map_err(|_| crate::host_message("update.busy"))?;
             #[cfg(feature = "test-harness")]
             if matches!(&operation, Operation::Status { .. }) {
                 if let Some(ms) = std::env::var("VARA_TEST_BACKEND_DELAY_STATUS_MS")

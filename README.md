@@ -81,7 +81,7 @@ Who also runs locally. However, Vara's adapted version of the vendor's SDK sends
 
 ## Get started
 
-**Vara is in active development. The current app is built and tested on macOS.** A public download package and automatic updates are not ready yet.
+**Vara is in active development. The current app is built and tested on macOS.** Version 1.0.0 is unreleased. GitHub update checks and signed draft-release tooling are implemented; public distribution and a real upgrade still require configured release credentials and platform verification. See [RELEASING.md](RELEASING.md).
 
 If you already have the app installed:
 

@@ -38,6 +38,8 @@ fn with_restore_error(error: &str, restore: &str) -> String {
     }
     message.wire()
 }
+mod activity;
+mod updater;
 mod service;
 mod transcription;
 use service::Service;
@@ -224,6 +226,9 @@ async fn command(
     action: String,
     payload: Option<serde_json::Value>,
 ) -> Result<serde_json::Value, String> {
+    if action.starts_with("update_") {
+        return updater::command(&app, &action, payload.unwrap_or_default()).await;
+    }
     let service = state.inner().clone();
     tauri::async_runtime::spawn_blocking(move || {
         if action == "runtime_catalog" {
@@ -306,6 +311,7 @@ fn app_context() -> tauri::Context<tauri::Wry> {
 }
 pub fn run() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(
             tauri_plugin_global_shortcut::Builder::new()
                 .with_handler(|_app, _shortcut, event| {
@@ -323,6 +329,7 @@ pub fn run() {
             };
             let service =
                 Service::new(app.handle().clone(), root.clone()).map_err(std::io::Error::other)?;
+            app.manage(updater::Updates::new(root.clone()));
             transcription::allow_media(app.handle(), &root)?;
             let files = transcription::Files::new(app.handle().clone(), root)
                 .map_err(std::io::Error::other)?;
