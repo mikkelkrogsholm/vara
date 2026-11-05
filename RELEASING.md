@@ -60,7 +60,7 @@ sync. For an intentional version change:
    python3 scripts/check-version.py
    python3 -m unittest discover -s scripts/tests -p 'test_version.py'
    # For an explicit release, replace the example with the intended tag:
-   python3 scripts/check-version.py --tag v1.0.1
+   python3 scripts/check-version.py --tag v1.0.2
    ```
 
 Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html):
@@ -83,12 +83,31 @@ passed, while overall updater acceptance remains partial. See the evidence below
 The retired Swift app's Sparkle feed and DMG script do not release this app.
 Windows/Linux and Intel Mac release acceptance remain open.
 
+The 1.0.2 candidate repairs independent-owner handoff ([#37](https://github.com/mikkelkrogsholm/vara/issues/37)).
+GUI and CLI probe the private v2 owner's `build_version`. Older idle owners,
+including the 1.0.0/1.0.1 owners that report `busy` without a build version, are
+retired only after taking the exclusive profile admission gate and rechecking
+busy state. The PID is authenticated by the kernel's Unix socket peer metadata.
+Busy accepted work continues on its existing owner until idle. Current/newer,
+unknown-busy and incompatible peers are retained. A concurrent installer keeps
+its Ping usable while it holds the gate. Signed 1.0.1→1.0.2 native GUI acceptance
+and publication remain pending; these changes do not amend the public 1.0.1 tag.
+
+Isolated macOS verification for this candidate used the retained notarized 1.0.0
+and 1.0.1 binaries on fresh temporary profiles. Each legacy owner exited through
+automatic handoff and the public `cli models --json` command reached a 1.0.2
+owner; repeated CLI calls retained that owner. The 13 native backend harness
+tests cover concurrent admission, retained durable jobs and cancellation, idle
+handoff, current/newer/unknown-owner retention, and the existing socket lifecycle.
+The three production-build admission-gate tests also pass. This evidence does
+not replace signed GUI upgrade acceptance on the installed profile.
+
 After verification, generated `target` output can be removed to reclaim disk
 space. Keep the installed app and user profile; do not commit build output or keys.
 
 ## GitHub updates and release configuration
 
-The Rust app is **1.0.1, released 2026-11-05**. The retired Swift distribution and its
+The workspace is **1.0.2, an unreleased candidate**; the public app remains **1.0.1, released 2026-11-05**. The retired Swift distribution and its
 Sparkle feed are unrelated. Stable discovery uses only
 `https://github.com/mikkelkrogsholm/vara/releases/latest/download/latest.json`.
 Drafts and prereleases do not activate this endpoint. Until a stable release

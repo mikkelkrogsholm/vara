@@ -32,6 +32,7 @@ same-file = "1"
 dirs = "7"
 libc = "0.2"
 sha2 = "0.10"
+semver = "1"
 
 [features]
 # Developer fixture replay only. Excluded from normal debug/release builds and distributed apps.
