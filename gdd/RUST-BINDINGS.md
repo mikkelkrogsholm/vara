@@ -429,15 +429,27 @@ Missing backend evidence blocks installation. Settings/editor drafts and dialogs
 are guarded by UI; it becomes inert during the final swap. User data, models and
 credentials are retained. Network/signature errors cannot install or claim current.
 
-Workspace/Tauri version is 1.0.1, publicly released for macOS Apple Silicon; CLI/RPC versions stay independent.
-The production updater key and GitHub updater environment are configured; a
-1.0.0 bootstrap with the public key was built, notarized, stapled and installed
-locally. The real native GUI 1.0.0→1.0.1 download, verified installation and
-restart passed with a notarized 1.0.1 app and retained data, models, credential
-presence and microphone permission. The independent old CLI owner survived and
-required manual idle-owner retirement under the update lock; automatic handoff
-remains open in [#37](https://github.com/mikkelkrogsholm/vara/issues/37), so broader
-updater acceptance remains partial.
+Workspace/Tauri version is 1.0.2, publicly released for macOS Apple Silicon;
+CLI/RPC versions stay independent. The production updater key and GitHub updater
+environment are configured. The real native GUI 1.0.1→1.0.2 download, verified
+installation and restart passed with a Developer ID signed, notarized app and
+retained data, models, credential presence and microphone permission. The
+previous independent file owner exited automatically before any new CLI command;
+a raw socket Ping confirmed a replacement running build 1.0.2. This resolves
+[#37](https://github.com/mikkelkrogsholm/vara/issues/37) and completes macOS Apple
+Silicon [#34 acceptance](https://github.com/mikkelkrogsholm/vara/issues/34).
+The historical 1.0.0→1.0.1 test required manual idle-owner recovery; it remains
+recorded as such in `RELEASING.md`. Windows/Linux and Intel Mac remain unverified;
+CI Apple signing/notarization secrets remain unconfigured and its workflow has
+not run. The accepted releases used the local Developer ID and notary profile.
+
+The private v2 file-owner Ping reports `build_version`. Clients retire only
+kernel-authenticated older idle owners under the exclusive admission gate after
+a fresh busy/version/instance check, then wait for owner-lock release. Accepted
+busy jobs keep their owner until idle; current/newer/unknown owners are retained.
+Shared admission spans mutation transport, preventing retirement during a request;
+mutations are not replayed after an ambiguous transport error. Installer-held
+exclusive admission leaves Ping available.
 The updater snapshot reports `current_version` from the running package, separate
 from the discovered version. Settings presents it; a shared sidebar update action
 preserves live transcription editors and retains the existing install guards.
@@ -445,6 +457,6 @@ The release overlay generator passes the same public key to the CLI bundler.
 The manifest generator verifies real artifact/signature paths and mappings, and
 rejects incompatible macOS archive roots/AppleDouble metadata and unsafe paths; the
 manual workflow prepares only macOS ARM drafts with existing tags and configured
-credentials. `RELEASING.md` records the native evidence, manual CLI recovery and
-remaining CI/platform limits. The post-release archive guard does not change
-the public 1.0.1 tag.
+credentials. `RELEASING.md` records the successful native 1.0.2 handoff, historical
+manual 1.0.1 recovery and remaining CI/platform limits. The archive guard was used for
+1.0.2 and does not change the public 1.0.1 tag.
