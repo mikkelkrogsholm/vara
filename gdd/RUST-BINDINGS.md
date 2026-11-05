@@ -429,7 +429,14 @@ Missing backend evidence blocks installation. Settings/editor drafts and dialogs
 are guarded by UI; it becomes inert during the final swap. User data, models and
 credentials are retained. Network/signature errors cannot install or claim current.
 
-Workspace/Tauri version is 1.0.0, unreleased; CLI/RPC versions stay independent.
+Workspace/Tauri version is 1.0.1, unreleased; CLI/RPC versions stay independent.
+The production updater key and GitHub updater environment are configured; a
+1.0.0 bootstrap with the public key was built, notarized, stapled and installed
+locally. Native upgrade and notarized 1.0.1 artifact acceptance remain pending.
+The updater snapshot reports `current_version` from the running package, separate
+from the discovered version. Settings presents it; a shared sidebar update action
+preserves live transcription editors and retains the existing install guards.
+The release overlay generator passes the same public key to the CLI bundler.
 The manifest generator verifies real artifact/signature paths and mappings; the
 manual workflow prepares only macOS ARM drafts with existing tags and configured
 credentials. `RELEASING.md` records configuration and unverified native acceptance.

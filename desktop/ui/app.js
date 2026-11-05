@@ -920,7 +920,11 @@
     });
     // The host persists the daily throttle; failures and restarts do not spam checks.
     const checkUpdates = () => api("update_check").then(value => {state.update=value; if (!state.dirty) render();}).catch(() => {});
-    window.__TAURI__.event.listen("vara:update", event => {state.update=event.payload; if (!state.dirty) render();});
+    window.__TAURI__.event.listen("vara:update", event => {
+      state.update=event.payload;
+      if (!state.dirty) render();
+      else if ($("sidebar-update")) $("sidebar-update").innerHTML=Vara.views.updateIndicator(state);
+    });
     api("update_status").then(value => {state.update=value; if (!state.dirty) render(); checkUpdates();}).catch(() => {});
     setInterval(checkUpdates, 60 * 60 * 1000);
     // Device drivers must never hold onboarding or history hostage.

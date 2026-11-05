@@ -4,7 +4,7 @@ default-members = ["crates/vara-app", "crates/vara-core", "crates/vara-engine", 
 resolver = "2"
 
 [workspace.package]
-version = "1.0.0"
+version = "1.0.1"
 edition = "2024"
 license = "MIT"
 rust-version = "1.94"

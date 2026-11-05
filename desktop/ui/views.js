@@ -72,7 +72,14 @@
       )
       .join(
         "",
-      )}</nav><div class="sidebar-footer"><div class="sidebar-status"><span class="status-dot ${installed && micReady && local ? "" : "is-unready"}"></span><span>${tr(`sidebar.${s.page === "transcription" ? "dictation" : "audio"}.${local ? "local" : "cloud"}`)}</span><kbd>${e(binding(p.shortcut))}</kbd></div><p>${s.data.next_choice && s.data.next_choice !== "default" ? tr(s.data.next_choice === "direct" ? "sidebar.next.direct" : "sidebar.next.ai") + "<br>" : ""}${p.activation === "hold" ? Vara.i18n.bind("ui.hold-speak-and-release") : Vara.i18n.bind("ui.press-to-start-stop")}</p><p>${s.page === "transcription" ? tr("sidebar.file.hint") : local ? tr("sidebar.local.hint") : Vara.i18n.bind("ui.audio-is-processed-by-your-selected-provider")}</p>${textEngine ? `<p>${tr("history.text", { location: loc[textEngine.locality] })}</p>` : Object.values(p.app_rules).some((a) => a.enabled) ? ("<p>"+Vara.i18n.bind("ui.ai-follows-your-app-rules")+"</p>") : ""}${!installed || !micReady ? b(!installed ? Vara.i18n.bind("ui.download-speech-model") : Vara.i18n.bind("ui.finish-setup"), "setup", { variant: "quiet", cls: "sidebar-setup" }) : ""}<div class="sidebar-dictation-controls">${b(s.data.session?.stage === "recording" ? Vara.i18n.bind("ui.stop") : Vara.i18n.bind("ui.dictate"), s.data.session?.stage === "recording" ? "stop" : "start", { variant: "quiet", glyph: s.data.session?.stage === "recording" ? "stop" : "mic", attrs: s.data.session && s.data.session.stage !== "recording" ? "disabled" : "" })}${ib("more", Vara.i18n.bind("ui.processing-for-next-dictation"), "choose-processing")}</div></div>`;
+      )}</nav><div id="sidebar-update" role="status">${updateIndicator(s)}</div><div class="sidebar-footer"><div class="sidebar-status"><span class="status-dot ${installed && micReady && local ? "" : "is-unready"}"></span><span>${tr(`sidebar.${s.page === "transcription" ? "dictation" : "audio"}.${local ? "local" : "cloud"}`)}</span><kbd>${e(binding(p.shortcut))}</kbd></div><p>${s.data.next_choice && s.data.next_choice !== "default" ? tr(s.data.next_choice === "direct" ? "sidebar.next.direct" : "sidebar.next.ai") + "<br>" : ""}${p.activation === "hold" ? Vara.i18n.bind("ui.hold-speak-and-release") : Vara.i18n.bind("ui.press-to-start-stop")}</p><p>${s.page === "transcription" ? tr("sidebar.file.hint") : local ? tr("sidebar.local.hint") : Vara.i18n.bind("ui.audio-is-processed-by-your-selected-provider")}</p>${textEngine ? `<p>${tr("history.text", { location: loc[textEngine.locality] })}</p>` : Object.values(p.app_rules).some((a) => a.enabled) ? ("<p>"+Vara.i18n.bind("ui.ai-follows-your-app-rules")+"</p>") : ""}${!installed || !micReady ? b(!installed ? Vara.i18n.bind("ui.download-speech-model") : Vara.i18n.bind("ui.finish-setup"), "setup", { variant: "quiet", cls: "sidebar-setup" }) : ""}<div class="sidebar-dictation-controls">${b(s.data.session?.stage === "recording" ? Vara.i18n.bind("ui.stop") : Vara.i18n.bind("ui.dictate"), s.data.session?.stage === "recording" ? "stop" : "start", { variant: "quiet", glyph: s.data.session?.stage === "recording" ? "stop" : "mic", attrs: s.data.session && s.data.session.stage !== "recording" ? "disabled" : "" })}${ib("more", Vara.i18n.bind("ui.processing-for-next-dictation"), "choose-processing")}</div></div>`;
+  }
+  function updateIndicator(s) {
+    const u = s.update;
+    if (!u?.version) return "";
+    const busy = ["checking", "downloading", "installing"].includes(u.status);
+    return b(tr(u.downloaded ? "update.install-version" : "update.indicator", {version:u.version}),
+      u.downloaded ? "update-install" : "update-download", {variant:"quiet", attrs:busy || s.data.session || s.dirty ? "disabled" : ""});
   }
   function updateNotice(s) {
     const u = s.update;
@@ -209,7 +216,7 @@
     }
     const t = Vara.i18n.message;
     const updateSettings = s.update ? group(Vara.i18n.bind("update.heading"), Vara.i18n.bind("update.description"),
-      updateNotice(s) + `<label><input id="update-automatic" type="checkbox" ${s.update.automatic ? "checked" : ""}> ${tr("update.automatic")}</label>` +
+      `<p class="muted" id="update-current-version">${tr("update.installed", {version:s.update.current_version || "—"})}</p>` + updateNotice(s) + `<label><input id="update-automatic" type="checkbox" ${s.update.automatic ? "checked" : ""}> ${tr("update.automatic")}</label>` +
       b(Vara.i18n.bind("update.check"), "update-check", {attrs: ["disabled","checking","downloading","installing"].includes(s.update.status) ? "disabled" : ""})) : "";
     const languagePicker = group(t("locale.heading"), t("locale.description"), f({id:"ui-locale", label:t("locale.label"), value:p.ui_locale || "da", options:[["system",t("locale.system")],...Object.entries(Vara.i18n.localeNames)]}));
     return `<div class="page-scroll settings-page"><header class="page-header"><h1 id="view-title" tabindex="-1">${Vara.i18n.bind("ui.settings")}</h1><p class="muted">${Vara.i18n.bind("ui.a-quiet-helper-on-your-terms")}</p></header><nav class="settings-nav" aria-label="${Vara.i18n.bind("ui.settings")}">${[["dictation",Vara.i18n.bind("ui.dictation")],["connections",Vara.i18n.bind("ui.models-and-keys")],["privacy",Vara.i18n.bind("ui.privacy")]].map(([id,name])=>`<button class="${s.tab===id ? "is-current" : ""}" data-action="settings-tab" data-id="${id}" ${s.tab===id ? 'aria-current="page"' : ""}>${name}</button>`).join("")}</nav><div class="activity-region">${messages(s)}</div><div id="locale-picker">${languagePicker}${updateSettings}</div><form class="settings-form" id="settings-form">${body}<div class="form-message" role="status"></div><div class="actions sticky-save"><span class="unsaved" ${s.dirty ? "" : "hidden"}>${Vara.i18n.bind("ui.unsaved")}</span>${b(Vara.i18n.bind("ui.discard-changes"),"reset-form",{variant:"quiet"})}${b(Vara.i18n.bind("ui.save-settings"),"save-settings",{variant:"primary",attrs:s.dirty ? "" : "disabled"})}</div></form></div>`;
@@ -236,6 +243,7 @@
   }
   Vara.views = {
     sidebar,
+    updateIndicator,
     history,
     apps: appPreferences,
     settings,

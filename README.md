@@ -81,7 +81,7 @@ Who also runs locally. However, Vara's adapted version of the vendor's SDK sends
 
 ## Get started
 
-**Vara is in active development. The current app is built and tested on macOS.** Version 1.0.0 is unreleased. GitHub update checks and signed draft-release tooling are implemented; public distribution and a real upgrade still require configured release credentials and platform verification. See [RELEASING.md](RELEASING.md).
+**Vara is in active development. The current app is built and tested on macOS.** Version 1.0.1 is unreleased. GitHub update checks and signed draft-release tooling are implemented, and production updater trust is configured. Notarized public distribution and a real 1.0.0→1.0.1 upgrade remain pending verification. See [RELEASING.md](RELEASING.md).
 
 If you already have the app installed:
 
@@ -99,7 +99,7 @@ For longer recordings: Open **Transcription**, add your files and start transcri
 
 On macOS, agents can use the bundled `vara` command; see the [CLI guide](CLI.md) for installation and examples.
 
-The app is signed with Apple Developer ID, but is not yet notarized. File support depends on the format and codec; a separately installed FFmpeg can extend it. See the [current status](IMPLEMENTATION.md) and [release guide](RELEASING.md).
+The local 1.0.0 bootstrap is Developer ID signed and notarized; the 1.0.1 release candidate still awaits notarization and upgrade acceptance. File support depends on the format and codec; a separately installed FFmpeg can extend it. See the [current status](IMPLEMENTATION.md) and [release guide](RELEASING.md).
 
 ## Contribute
 

@@ -60,7 +60,7 @@ sync. For an intentional version change:
    python3 scripts/check-version.py
    python3 -m unittest discover -s scripts/tests -p 'test_version.py'
    # For an explicit release, replace the example with the intended tag:
-   python3 scripts/check-version.py --tag v1.0.0
+   python3 scripts/check-version.py --tag v1.0.1
    ```
 
 Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html):
@@ -73,9 +73,12 @@ until an actual release is made.
 
 ## Distribution status
 
-The locally built app is signed but is not currently notarized. The updater and
-draft release tooling below are implemented; no public 1.0.0 release, notarized
-CI artifact or real upgrade has been verified yet. The retired Swift app's Sparkle feed and DMG script do
+The local 1.0.0 bootstrap carrying the production public key was signed,
+notarized, stapled and accepted by Gatekeeper on 2026-11-05 (Apple submission
+`7f8cbeb1-25cb-4ef9-a39e-fd9e32f783dd`). It was installed and its native Settings
+manual-check button is enabled. No public release or real upgrade has been
+verified yet; the current 1.0.1 release candidate awaits notarization and native
+upgrade acceptance. The retired Swift app's Sparkle feed and DMG script do
 not release this app. Windows/Linux release acceptance remains open.
 
 After verification, generated `target` output can be removed to reclaim disk
@@ -83,7 +86,7 @@ space. Keep the installed app and user profile; do not commit build output or ke
 
 ## GitHub updates and release configuration
 
-The Rust app is **1.0.0, unreleased**. The retired Swift distribution and its
+The Rust app is **1.0.1, unreleased**. The retired Swift distribution and its
 Sparkle feed are unrelated. Stable discovery uses only
 `https://github.com/mikkelkrogsholm/vara/releases/latest/download/latest.json`.
 Drafts and prereleases do not activate this endpoint. Until a stable release
@@ -115,7 +118,33 @@ final swap. Already accepted work is checked again after taking the exclusive
 lock. Older backends lacking authoritative busy evidence fail closed. User data,
 models and credentials are preserved; failed installation needs a fresh download.
 Downloaded bytes are held only in memory. Native replacement and permission
-continuity still need real verification.
+continuity still need real verification. Settings shows the running package
+version separately from any available version. A quiet sidebar update button is
+reachable from every main view, including the transcription editor; downloading
+preserves that editor, and installing still requires saved work.
+
+### Release bundler public-key configuration
+
+The runtime compile-time key and the Tauri CLI bundler must receive the same
+public key. An empty `plugins.updater.pubkey` can allow compilation but fails
+updater artifact signing with “Missing comment in public key”. Generate the
+release overlay from the public environment value, rather than storing a key in
+tracked configuration. From the repository root, after preparing the existing
+signing/notarization environment and Who runtime:
+
+```sh
+export VARA_RELEASE_BUILD=1
+# VARA_UPDATER_PUBLIC_KEY must contain the existing Tauri base64 public key.
+cd desktop/src-tauri
+release_config="$(python3 ../../scripts/generate-release-config.py)"
+cargo tauri build --config "$release_config" --bundles app,dmg -- --locked
+```
+
+The generated JSON combines `tauri.release.conf.json` and the public key and is
+passed directly to the CLI, which merges it with `tauri.conf.json`. The generator
+fails before building if the key is absent, malformed or missing its Tauri
+comment. The draft workflow uses this same method. Private signing credentials
+remain in the existing secure environment; this command does not create keys.
 
 ### Explicit draft workflow
 
@@ -137,7 +166,11 @@ with that ephemeral runner; the exported PKCS#12 is removed. Updater signing is
 separate from Apple signing/notarization. Dependencies include Xcode/Swift, the
 pinned Who SDK, Rust from `rust-toolchain.toml`, Python 3.11+, Tauri CLI and OpenSSL
 3. The workflow selects an installed Xcode with Swift 6.2+ and fails clearly if none is available. Expensive release tests/builds run only on dispatch. This workflow has not been
-executed and no release credentials have been configured by this task.
+executed. On 2026-11-05, the production updater key was generated encrypted outside
+Git, its password retained in Keychain, and the GitHub `release` environment was
+configured with the updater private-key/password secrets and public-key variable.
+A local Developer ID identity and working `vara-notary` profile are available;
+this does not configure the CI Apple certificate/password secrets.
 
 The generator requires nonempty, versioned artifact files, real `.sig` paths and
 a public-key file. It cryptographically verifies the artifact and trusted comment,
@@ -145,9 +178,9 @@ key ID and exact signed version before writing. URLs use those exact filenames
 under this repository's `vX.Y.Z` release; no placeholder manifest is committed:
 
 ```sh
-python3 scripts/generate-updater-manifest.py --version 1.0.0 \
+python3 scripts/generate-updater-manifest.py --version 1.0.1 \
   --public-key-file /secure/path/updater.pub \
-  --artifact darwin-aarch64 release-assets/Vara_1.0.0_aarch64.app.tar.gz release-assets/Vara_1.0.0_aarch64.app.tar.gz.sig \
+  --artifact darwin-aarch64 release-assets/Vara_1.0.1_aarch64.app.tar.gz release-assets/Vara_1.0.1_aarch64.app.tar.gz.sig \
   --notes-file CHANGELOG.md --output release-assets/latest.json
 ```
 
@@ -166,6 +199,30 @@ CLI/transcription jobs, model downloads, dirty editors, network failure and inva
 signatures, data/model/credential retention and OS permissions. Confirm the old
 idle CLI owner exits and subsequent calls launch the new owner. Drafts alone do
 not make updates available.
+
+### Native macOS UI acceptance helper
+
+Build the standalone Accessibility helper without rebuilding Vara:
+
+```sh
+DEVELOPER_DIR=/Library/Developer/CommandLineTools swiftc desktop/tests/updater-native.swift -o /tmp/vara-updater-native
+/tmp/vara-updater-native --pid PID tree
+/tmp/vara-updater-native --pid PID settings
+/tmp/vara-updater-native --pid PID status
+/tmp/vara-updater-native --pid PID check
+/tmp/vara-updater-native --pid PID download
+# Run only when installation/restart is intended:
+/tmp/vara-updater-native --pid PID install --allow-install
+```
+
+Inspect `status` separately after each action and select the new PID after restart.
+The helper reads the real WKWebView Accessibility hierarchy, matches visible
+Danish/English button labels and invokes AXPress. It targets only `dk.vara.desktop`,
+requests no permissions and does not operate OS permission dialogs. Missing
+accessibility or disabled buttons fail explicitly. Tree/status output can contain
+visible user text; retain it locally. Successful AXPress alone is not upgrade
+acceptance: verify the installed version, app relaunch, retained data/models/keys
+and permissions separately.
 
 References: [Tauri updater](https://v2.tauri.app/plugin/updater/),
 [Apple signing](https://v2.tauri.app/distribute/sign/macos/),

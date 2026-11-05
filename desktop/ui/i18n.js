@@ -4,6 +4,9 @@
   const localeNames = { da: "Dansk", en: "English" };
   const catalogs = {
     en: {
+      "update.installed": "Running Vara {version}",
+      "update.indicator": "Vara {version} available — download",
+      "update.install-version": "Install Vara {version} and restart",
       "update.download": "Download update",
       "update.ready": "The update is verified and ready. Install when your work is saved.",
       "update.heading": "Updates",
@@ -507,6 +510,9 @@
       "example.items": { one: "{count} item", other: "{count} items" },
     },
     da: {
+      "update.installed": "Du bruger Vara {version}",
+      "update.indicator": "Vara {version} tilgængelig — hent",
+      "update.install-version": "Installer Vara {version} og genstart",
       "update.download": "Hent opdatering",
       "update.ready": "Opdateringen er verificeret og klar. Installer, når dit arbejde er gemt.",
       "update.heading": "Opdateringer",
