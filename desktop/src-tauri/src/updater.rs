@@ -50,7 +50,7 @@ impl Updates {
     }
     fn snapshot(&self) -> Value {
         let i = self.inner.lock();
-        json!({"status":i.status,"automatic":i.preferences.automatic,"version":i.pending.as_ref().map(|u| &u.version),"downloaded":i.downloaded.is_some()})
+        json!({"current_version":env!("CARGO_PKG_VERSION"),"status":i.status,"automatic":i.preferences.automatic,"version":i.pending.as_ref().map(|u| &u.version),"downloaded":i.downloaded.is_some()})
     }
     fn emit(&self, app: &tauri::AppHandle) {
         let _ = app.emit("vara:update", self.snapshot());
@@ -199,4 +199,14 @@ pub async fn command(
     }
     updates.emit(app);
     Ok(updates.snapshot())
+}
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn snapshot_reports_running_package_version() {
+        let updates = super::Updates::new(std::env::temp_dir().join("vara-version-snapshot-no-profile"));
+        assert_eq!(updates.snapshot()["current_version"], env!("CARGO_PKG_VERSION"));
+        assert!(updates.snapshot()["version"].is_null());
+    }
 }

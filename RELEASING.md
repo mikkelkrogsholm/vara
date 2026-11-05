@@ -73,11 +73,12 @@ until an actual release is made.
 
 ## Distribution status
 
-The locally built app is signed but is not currently notarized. The updater and
-draft release tooling below are implemented; no public release, notarized
-artifact or real upgrade has been verified yet. A local 1.0.0 bootstrap build
-with the production public key completed on 2026-11-05; the current 1.0.1
-release candidate is awaiting native upgrade acceptance. The retired Swift app's Sparkle feed and DMG script do
+The local 1.0.0 bootstrap carrying the production public key was signed,
+notarized, stapled and accepted by Gatekeeper on 2026-11-05 (Apple submission
+`7f8cbeb1-25cb-4ef9-a39e-fd9e32f783dd`). It was installed and its native Settings
+manual-check button is enabled. No public release or real upgrade has been
+verified yet; the current 1.0.1 release candidate awaits notarization and native
+upgrade acceptance. The retired Swift app's Sparkle feed and DMG script do
 not release this app. Windows/Linux release acceptance remains open.
 
 After verification, generated `target` output can be removed to reclaim disk
@@ -117,7 +118,33 @@ final swap. Already accepted work is checked again after taking the exclusive
 lock. Older backends lacking authoritative busy evidence fail closed. User data,
 models and credentials are preserved; failed installation needs a fresh download.
 Downloaded bytes are held only in memory. Native replacement and permission
-continuity still need real verification.
+continuity still need real verification. Settings shows the running package
+version separately from any available version. A quiet sidebar update button is
+reachable from every main view, including the transcription editor; downloading
+preserves that editor, and installing still requires saved work.
+
+### Release bundler public-key configuration
+
+The runtime compile-time key and the Tauri CLI bundler must receive the same
+public key. An empty `plugins.updater.pubkey` can allow compilation but fails
+updater artifact signing with “Missing comment in public key”. Generate the
+release overlay from the public environment value, rather than storing a key in
+tracked configuration. From the repository root, after preparing the existing
+signing/notarization environment and Who runtime:
+
+```sh
+export VARA_RELEASE_BUILD=1
+# VARA_UPDATER_PUBLIC_KEY must contain the existing Tauri base64 public key.
+cd desktop/src-tauri
+release_config="$(python3 ../../scripts/generate-release-config.py)"
+cargo tauri build --config "$release_config" --bundles app,dmg -- --locked
+```
+
+The generated JSON combines `tauri.release.conf.json` and the public key and is
+passed directly to the CLI, which merges it with `tauri.conf.json`. The generator
+fails before building if the key is absent, malformed or missing its Tauri
+comment. The draft workflow uses this same method. Private signing credentials
+remain in the existing secure environment; this command does not create keys.
 
 ### Explicit draft workflow
 

@@ -26,9 +26,9 @@ settings-v2, credential hardening, local app artwork and native insertion report
   floating HUD and physical shortcut integration still require completion and
   validation on those systems.
 - Mobile can reuse the Rust engine, but mobile hosts and UI have not been built.
-- The signed macOS app is not yet notarized. GitHub update checks, signed downloads
+- The local 1.0.0 bootstrap is signed, notarized and installed. GitHub update checks, signed downloads
   and explicit installation/restart are implemented. Production updater trust is
-  configured; notarized distribution and the native 1.0.0→1.0.1 upgrade remain
+  configured; notarized 1.0.1 distribution and the native 1.0.0→1.0.1 upgrade remain
   pending verification. See [RELEASING.md](RELEASING.md).
 - Codex CLI integration is unavailable pending a verified tools-off contract;
   optional Claude/Gemini CLI text paths remain capability/version gated.

@@ -99,7 +99,7 @@ For longer recordings: Open **Transcription**, add your files and start transcri
 
 On macOS, agents can use the bundled `vara` command; see the [CLI guide](CLI.md) for installation and examples.
 
-The app is signed with Apple Developer ID, but is not yet notarized. File support depends on the format and codec; a separately installed FFmpeg can extend it. See the [current status](IMPLEMENTATION.md) and [release guide](RELEASING.md).
+The local 1.0.0 bootstrap is Developer ID signed and notarized; the 1.0.1 release candidate still awaits notarization and upgrade acceptance. File support depends on the format and codec; a separately installed FFmpeg can extend it. See the [current status](IMPLEMENTATION.md) and [release guide](RELEASING.md).
 
 ## Contribute
 

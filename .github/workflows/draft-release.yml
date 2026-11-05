@@ -94,7 +94,8 @@ jobs:
           sh scripts/build-who-runtime.sh
           cargo test --release --workspace --locked
           cd desktop/src-tauri
-          cargo tauri build --config tauri.release.conf.json --bundles app,dmg -- --locked
+          release_config="$(python3 ../../scripts/generate-release-config.py)"
+          cargo tauri build --config "$release_config" --bundles app,dmg -- --locked
       - name: Verify bundle and generate latest.json from signed artifact
         shell: bash
         run: |
