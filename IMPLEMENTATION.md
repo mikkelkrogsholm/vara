@@ -26,10 +26,13 @@ settings-v2, credential hardening, local app artwork and native insertion report
   floating HUD and physical shortcut integration still require completion and
   validation on those systems.
 - Mobile can reuse the Rust engine, but mobile hosts and UI have not been built.
-- The local 1.0.0 bootstrap is signed, notarized and installed. GitHub update checks, signed downloads
-  and explicit installation/restart are implemented. Production updater trust is
-  configured; notarized 1.0.1 distribution and the native 1.0.0→1.0.1 upgrade remain
-  pending verification. See [RELEASING.md](RELEASING.md).
+- The signed, notarized 1.0.1 macOS Apple Silicon release is public. The real
+  in-app 1.0.0→1.0.1 download, installation and GUI restart passed with retained
+  data, models, credential presence and microphone permission. The previous
+  independent CLI process survived the restart and required a manual idle-owner
+  handoff; automatic retirement remains open in [#37](https://github.com/mikkelkrogsholm/vara/issues/37).
+  Overall updater acceptance is partial until that criterion passes. See
+  [RELEASING.md](RELEASING.md) for the evidence and remaining CI/platform limits.
 - Codex CLI integration is unavailable pending a verified tools-off contract;
   optional Claude/Gemini CLI text paths remain capability/version gated.
 - Model accuracy varies; no broad Danish accuracy acceptance is claimed.

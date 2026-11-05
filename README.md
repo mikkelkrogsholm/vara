@@ -81,7 +81,7 @@ Who also runs locally. However, Vara's adapted version of the vendor's SDK sends
 
 ## Get started
 
-**Vara is in active development. The current app is built and tested on macOS.** Version 1.0.1 is unreleased. GitHub update checks and signed draft-release tooling are implemented, and production updater trust is configured. Notarized public distribution and a real 1.0.0→1.0.1 upgrade remain pending verification. See [RELEASING.md](RELEASING.md).
+**Vara is in active development. The current app is built and tested on macOS.** Version [1.0.1 is released for macOS Apple Silicon](https://github.com/mikkelkrogsholm/vara/releases/tag/v1.0.1), Developer ID signed and notarized. The real in-app 1.0.0→1.0.1 GUI upgrade passed; automatic handoff of an existing independent CLI process remains an open limitation ([#37](https://github.com/mikkelkrogsholm/vara/issues/37)). See [RELEASING.md](RELEASING.md).
 
 If you already have the app installed:
 
@@ -91,6 +91,8 @@ If you already have the app installed:
 
 For longer recordings: Open **Transcription**, add your files and start transcription.
 
+**Settings → Updates** shows your running version. When a newer release is available, use the update notice to download it, then choose **Install and restart** after saving your work. You can also check manually in Settings.
+
 | Platform | Status |
 | --- | --- |
 | **macOS** | The active and tested desktop version. macOS 13+; Who requires macOS 15+. |
@@ -99,7 +101,7 @@ For longer recordings: Open **Transcription**, add your files and start transcri
 
 On macOS, agents can use the bundled `vara` command; see the [CLI guide](CLI.md) for installation and examples.
 
-The local 1.0.0 bootstrap is Developer ID signed and notarized; the 1.0.1 release candidate still awaits notarization and upgrade acceptance. File support depends on the format and codec; a separately installed FFmpeg can extend it. See the [current status](IMPLEMENTATION.md) and [release guide](RELEASING.md).
+The 1.0.1 macOS Apple Silicon release is Developer ID signed and notarized. File support depends on the format and codec; a separately installed FFmpeg can extend it. See the [current status](IMPLEMENTATION.md) and [release guide](RELEASING.md).
 
 ## Contribute
 
