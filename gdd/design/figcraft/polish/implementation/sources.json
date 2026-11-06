@@ -1,0 +1,13 @@
+{
+  "gdd/design/styles/tokens.css": "7c9a9587c1e193a3d17a00b889bcdb11c08cf6a1086040482e0bb27db424750c",
+  "gdd/design/styles/app.css": "a50c4f23f0d47e72d1d253a1dd4dcafc5f543600fc1eb35b375c8659b0613847",
+  "gdd/design/js/components.js": "f9c4a0259d92b3f392ca43c2c268b7e1b155841790457aa3548c8e74240818ea",
+  "desktop/ui/desktop.css": "4b0b15ef0023fa5aaf25f591248bbe4ebc4e2cc21f9dad1b2d660f8d1997359c",
+  "desktop/ui/views.js": "77f6f312da61976f49f66605d027f0ca5f53fa5c94c7b7d6c814eb868d2c6e5b",
+  "gdd/design/figcraft/capture.cjs": "5468964e37482aa410d0df2ee64cc67f187fdc5ffe507dbb6d3d23d1844ff939",
+  "gdd/design/figcraft/capture-transcription.cjs": "95d7453fe28be14e1e82427fb0e5f01c04cbcee7c17fa0107c26e186eacc87e0",
+  "gdd/design/figcraft/polish/check.cjs": "ed88c0d8ff26567ea4f5b17385c5eac81313d4af57ebb6e3a0ed618befed078d",
+  "gdd/design/figcraft/polish/proposal.css": "dac99c8745dba0cf5dfce5284112e560bdada773e9fb2b695e6cc79c77a969ca",
+  "gdd/design/figcraft/polish/interactive/Vara-interactive.figcraft": "e5cab0844b0c92d2287f071f14d17f01e95c91cbdbadc398cd2dd24691e4d438",
+  "gdd/design/figcraft/polish/interactive/routes.json": "ac99ff52e141ddf1b5da8af61163bbfa7b6f1196884c30adc364c4823813010c"
+}

@@ -394,6 +394,7 @@ kbd {
 }
 .row-meta {
   display: block;
+  margin-top: var(--space-xs);
   color: var(--color-muted);
   font-size: var(--type-caption-font-size);
   line-height: 1.6;
@@ -731,11 +732,21 @@ kbd {
   color: var(--color-muted);
   margin-top: 28px;
 }
+#app-form .form-title { margin-bottom: var(--space-base); }
+#app-form > .toggle-row { padding: 0; align-items: flex-start; margin-bottom: var(--space-xl); }
+#app-form > .toggle-row .switch { margin-top: 0; }
+#app-form .toggle-row p { margin-top: var(--space-sm); max-width: 64ch; }
+#app-ai-fields { display: flow-root; }
+#app-ai-fields[hidden] { display: none; }
+#app-form #app-ai-fields > .field { margin-block: var(--space-xl); }
+#app-form #app-ai-fields > .field:first-child { margin-top: 0; }
+#app-form > .actions { gap: var(--space-md); margin-top: var(--space-xl); }
+#app-form .form-footnote { margin-top: var(--space-xl); max-width: 68ch; }
 .field {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  margin: 20px 0;
+  gap: var(--space-sm);
+  margin: var(--space-xl) 0;
 }
 .field label,
 .field-label {
@@ -774,7 +785,7 @@ kbd {
   line-height: 1.6;
 }
 .field small {
-  margin-top: 2px;
+  margin-top: 0;
 }
 .field-error {
   font-size: 13px;
@@ -1034,13 +1045,22 @@ dialog::backdrop {
   position: absolute;
   right: 16px;
   top: 14px;
+  min-width: 32px;
+  min-height: 32px;
 }
 .dialog-content > h2 {
-  padding-right: 24px;
+  padding-right: var(--space-xxl);
   margin-bottom: 16px;
 }
 .dialog-content > p {
   margin-bottom: 16px;
+}
+dialog .field {
+  margin-block: var(--space-xl);
+}
+dialog .actions {
+  gap: var(--space-md);
+  margin-top: var(--space-xl);
 }
 .dialog-content .actions .button {
   flex-grow: 1;
@@ -1058,7 +1078,7 @@ dialog::backdrop {
 }
 .result-actions {
   display: grid;
-  gap: 12px;
+  gap: var(--space-sm);
 }
 .setup-options {
   display: flex;

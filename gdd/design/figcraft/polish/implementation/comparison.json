@@ -1,0 +1,122 @@
+[
+  {
+    "name": "01-history",
+    "polishFrame": 407,
+    "interactiveFrame": 885,
+    "differentPixels": 0,
+    "totalPixels": 4198400,
+    "bounds": null,
+    "approvedSha256": "7bd8c2adde23477749dda20dd2c9697ca459a4b65c3368a4faf4c6792715ba1b",
+    "actualSha256": "7bd8c2adde23477749dda20dd2c9697ca459a4b65c3368a4faf4c6792715ba1b"
+  },
+  {
+    "name": "03-apps",
+    "polishFrame": 538,
+    "interactiveFrame": 1149,
+    "differentPixels": 0,
+    "totalPixels": 4198400,
+    "bounds": null,
+    "approvedSha256": "edb76bf348b63b6b27667648365f0750873854e4fdcc775ed00a9b3ccc7ecd86",
+    "actualSha256": "edb76bf348b63b6b27667648365f0750873854e4fdcc775ed00a9b3ccc7ecd86"
+  },
+  {
+    "name": "04-dictation",
+    "polishFrame": 589,
+    "interactiveFrame": 1200,
+    "differentPixels": 0,
+    "totalPixels": 4198400,
+    "bounds": null,
+    "approvedSha256": "29f0466d3634efccd7856149f3c79caa701f461c6dabfc8ead098d5af161108f",
+    "actualSha256": "29f0466d3634efccd7856149f3c79caa701f461c6dabfc8ead098d5af161108f"
+  },
+  {
+    "name": "37-recording-controls",
+    "polishFrame": 646,
+    "interactiveFrame": 2054,
+    "differentPixels": 0,
+    "totalPixels": 4198400,
+    "bounds": null,
+    "approvedSha256": "2c51e463b0557bb4e9d2200f1d9bc2518d63f99b348c20c8fe15dc602b29c3b1",
+    "actualSha256": "2c51e463b0557bb4e9d2200f1d9bc2518d63f99b348c20c8fe15dc602b29c3b1"
+  },
+  {
+    "name": "39-local-models",
+    "polishFrame": 712,
+    "interactiveFrame": 2186,
+    "differentPixels": 0,
+    "totalPixels": 4198400,
+    "bounds": null,
+    "approvedSha256": "e66258e9280d0763cd30c07e3d9c2b4c639254b7b358e35c6da638a8b1158a99",
+    "actualSha256": "e66258e9280d0763cd30c07e3d9c2b4c639254b7b358e35c6da638a8b1158a99"
+  },
+  {
+    "name": "29-api-providers",
+    "polishFrame": 796,
+    "interactiveFrame": 1923,
+    "differentPixels": 0,
+    "totalPixels": 4198400,
+    "bounds": null,
+    "approvedSha256": "1f85ea71b471d35591d46c398ba2844288a58ab54302fa62098482ab5809d3eb",
+    "actualSha256": "1f85ea71b471d35591d46c398ba2844288a58ab54302fa62098482ab5809d3eb"
+  },
+  {
+    "name": "36-privacy-audio",
+    "polishFrame": 882,
+    "interactiveFrame": 2009,
+    "differentPixels": 0,
+    "totalPixels": 4198400,
+    "bounds": null,
+    "approvedSha256": "687ecd564f9d7ca42ed1182f6059986b1aadd62b0cb07736e4e831c05ef79693",
+    "actualSha256": "687ecd564f9d7ca42ed1182f6059986b1aadd62b0cb07736e4e831c05ef79693"
+  },
+  {
+    "name": "11-transcription-import",
+    "polishFrame": 927,
+    "interactiveFrame": 1431,
+    "differentPixels": 0,
+    "totalPixels": 4198400,
+    "bounds": null,
+    "approvedSha256": "1a6ce9af72889f41733ad8551e62ad9e5bee8b18cdc313e44cb6cc476fd94aad",
+    "actualSha256": "1a6ce9af72889f41733ad8551e62ad9e5bee8b18cdc313e44cb6cc476fd94aad"
+  },
+  {
+    "name": "12-transcription-editor",
+    "polishFrame": 982,
+    "interactiveFrame": 1486,
+    "differentPixels": 0,
+    "totalPixels": 4198400,
+    "bounds": null,
+    "approvedSha256": "8f03fccdfe3d69748a53361e619f57bd686d7e44a8c1aea3aa34d49ffc38727f",
+    "actualSha256": "8f03fccdfe3d69748a53361e619f57bd686d7e44a8c1aea3aa34d49ffc38727f"
+  },
+  {
+    "name": "24-transcription-ai",
+    "polishFrame": 1104,
+    "interactiveFrame": 1608,
+    "differentPixels": 0,
+    "totalPixels": 4198400,
+    "bounds": null,
+    "approvedSha256": "0435e421a6299b588929b0c2f9b68dda99006127442748d54a45c90944820fa2",
+    "actualSha256": "0435e421a6299b588929b0c2f9b68dda99006127442748d54a45c90944820fa2"
+  },
+  {
+    "name": "22-key-dialog",
+    "polishFrame": 1227,
+    "interactiveFrame": 4198,
+    "differentPixels": 0,
+    "totalPixels": 4198400,
+    "bounds": null,
+    "approvedSha256": "848535007afa6a2f1d610dd3b4f7a319db905e46d27935882b3e99e04bd2fbfa",
+    "actualSha256": "848535007afa6a2f1d610dd3b4f7a319db905e46d27935882b3e99e04bd2fbfa"
+  },
+  {
+    "name": "13-who-download",
+    "polishFrame": 1399,
+    "interactiveFrame": 3219,
+    "differentPixels": 0,
+    "totalPixels": 4198400,
+    "bounds": null,
+    "approvedSha256": "02351f994a69a8916fbb3de4efe1d01fcf2fd3930470b2e7b538aca65c4aa3b9",
+    "actualSha256": "02351f994a69a8916fbb3de4efe1d01fcf2fd3930470b2e7b538aca65c4aa3b9"
+  }
+]

@@ -1,0 +1,35 @@
+verify
+38 bounded checks; failures: []
+
+legacy
+ui.playwright.js: 23 checks passed
+transcription.playwright.js: 17 checks passed
+
+updater
+PASS: current/remote versions, DA/EN shared notices on all views, real editor/selection retention, manual check, opt-out and install guards
+
+main-i18n
+Both locales: history/copy/delete/failure/recovery, app rule, settings, real key/endpoint dialogs, retained drafts, UTF-8 and binding lifecycle passed. Screenshots: /tmp/vara-polish-i18n
+
+tx-i18n
+Import, jobs, editor/player, AI, Who, dialogs, speaker provenance and export locale checks passed. Screenshots: /tmp/vara-polish-tx-i18n
+
+locale
+Browser: locale save, dirty settings, selection, modal/editor bindings, HTML safety and isolated effects passed.
+
+runtime
+PASS: runtime catalog, snapshot, report, causes, redaction, live locale, retained editor, Who and startup. Screenshots: /tmp/vara-polish-runtime
+
+unit
+Catalog parity, placeholders, escaping, plural, Intl formatting and locale hooks passed.
+✔ desktop/tests/i18n.test.cjs (143.674292ms)
+PASS: 453 runtime codes, host origins, dynamic HUD keys, both languages, safe causes and unknown redaction
+✔ desktop/tests/runtime-messages.test.cjs (124.783333ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 151.023666

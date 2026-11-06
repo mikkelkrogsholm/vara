@@ -1296,6 +1296,21 @@ FigCraft is a derived editable reference, not a second token authority. The link
 manifest records source hashes/frame IDs and distinguishes fixture WebKit evidence
 from source-rendered AppKit HUDs and separate native-app observations.
 
-## Draft spacing refinement — awaiting design review
+## Approved spacing refinement — integrated
 
-A separate, unapproved design-only proposal is available in [the polish review](design/figcraft/polish/review.html), with [its bounded contract and checks](design/figcraft/polish/REVIEW.md) and editable `Vara-polish.figcraft`. It preserves the accepted palette, typography and capabilities. Production tokens and the baseline `Vara.figcraft` remain unchanged. This pointer does not approve the proposal or authorize app implementation.
+The user approved the [native interactive FigCraft prototype](design/figcraft/polish/interactive/Vara-interactive.figcraft)
+on 2026-11-06 and requested its implementation in the real app. Canonical
+`gdd/design/styles/app.css` and `desktop/ui/desktop.css` now use the existing
+spacing scale for 8 px label/control/help gaps, 12 px peer actions, 16 px related
+controls and 24 px groups/sections. Existing native controls, keyboard behavior,
+scrolling, localization, palette, typography and capabilities remain in use.
+The native recording HUD remains unchanged.
+
+[Implementation evidence and reproduction](design/figcraft/polish/implementation/README.md)
+bind the approved document and source hashes, twelve production browser captures,
+pixel comparisons and bounded geometry/stress/focus checks. The original
+[polish review](design/figcraft/polish/review.html), its [draft contract](design/figcraft/polish/REVIEW.md)
+and proposal CSS are retained as historical design evidence. Their draft wording
+records the earlier review stage; it does not describe the current approval or
+integration state. Canonical production sources remain the visual authority;
+prototype example interactions and fixed scroll frames are presentation only.

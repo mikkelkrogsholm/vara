@@ -1,0 +1,799 @@
+{
+  "browserVersion": "26.0",
+  "checks": [
+    {
+      "name": "01-history",
+      "size": {
+        "width": 1280,
+        "height": 820
+      },
+      "measurements": {
+        "fields": [],
+        "structuredRowsChecked": 0,
+        "historyListVisible": true,
+        "historyDisposition": "visible list with persistent direct actions",
+        "historyRowHeight": 76,
+        "directActions": [
+          {
+            "action": "copy",
+            "x": 543.78125,
+            "y": 160,
+            "w": 36,
+            "h": 36,
+            "right": 579.78125,
+            "bottom": 196
+          },
+          {
+            "action": "confirm-delete",
+            "x": 587.78125,
+            "y": 160,
+            "w": 36,
+            "h": 36,
+            "right": 623.78125,
+            "bottom": 196
+          }
+        ],
+        "visibleResultActions": [
+          {
+            "action": "copy",
+            "x": 1160,
+            "y": 42,
+            "w": 36,
+            "h": 36,
+            "right": 1196,
+            "bottom": 78
+          },
+          {
+            "action": "confirm-delete",
+            "x": 1204,
+            "y": 42,
+            "w": 36,
+            "h": 36,
+            "right": 1240,
+            "bottom": 78
+          }
+        ]
+      },
+      "failures": []
+    },
+    {
+      "name": "01-history",
+      "size": {
+        "width": 1000,
+        "height": 760
+      },
+      "measurements": {
+        "fields": [],
+        "structuredRowsChecked": 0,
+        "historyListVisible": false,
+        "historyDisposition": "inherited responsive list-hidden selected-detail state",
+        "historyRowHeight": null,
+        "directActions": [
+          {
+            "action": "copy",
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0,
+            "right": 0,
+            "bottom": 0
+          },
+          {
+            "action": "confirm-delete",
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0,
+            "right": 0,
+            "bottom": 0
+          }
+        ],
+        "visibleResultActions": [
+          {
+            "action": "copy",
+            "x": 888,
+            "y": 90,
+            "w": 36,
+            "h": 36,
+            "right": 924,
+            "bottom": 126
+          },
+          {
+            "action": "confirm-delete",
+            "x": 932,
+            "y": 90,
+            "w": 36,
+            "h": 36,
+            "right": 968,
+            "bottom": 126
+          }
+        ]
+      },
+      "failures": []
+    },
+    {
+      "name": "03-apps",
+      "size": {
+        "width": 1280,
+        "height": 820
+      },
+      "measurements": {
+        "fields": [
+          {
+            "id": "app-prompt",
+            "gap": 8
+          },
+          {
+            "id": "app-engine",
+            "gap": 8
+          }
+        ],
+        "toggleToPrompt": 24,
+        "structuredRowsChecked": 0,
+        "visibleResultActions": []
+      },
+      "failures": []
+    },
+    {
+      "name": "03-apps",
+      "size": {
+        "width": 1000,
+        "height": 760
+      },
+      "measurements": {
+        "fields": [
+          {
+            "id": "app-prompt",
+            "gap": 8
+          },
+          {
+            "id": "app-engine",
+            "gap": 8
+          }
+        ],
+        "toggleToPrompt": 24,
+        "structuredRowsChecked": 0,
+        "visibleResultActions": []
+      },
+      "failures": []
+    },
+    {
+      "legalActionReachable": null,
+      "name": "03-apps",
+      "kind": "1000×760 Danish-label + WCAG text-spacing override stress",
+      "updateLabelToButton": null,
+      "scroll": {
+        "clientHeight": 760,
+        "scrollHeight": 1101,
+        "canReachEnd": true
+      },
+      "legalCopyPreserved": null,
+      "failures": []
+    },
+    {
+      "name": "03-apps",
+      "kind": "150% computed font size at1000×760",
+      "actualFontSize": 21,
+      "updateGap": null,
+      "failures": []
+    },
+    {
+      "name": "03-apps",
+      "kind": "150% final action reachability",
+      "sidebarActionReachable": true,
+      "reachable": true,
+      "failures": []
+    },
+    {
+      "name": "04-dictation",
+      "size": {
+        "width": 1280,
+        "height": 820
+      },
+      "measurements": {
+        "updateLabelToButton": 16,
+        "fields": [
+          {
+            "id": "ui-locale",
+            "gap": 8
+          },
+          {
+            "id": "activation",
+            "gap": 8
+          },
+          {
+            "id": "",
+            "gap": 8
+          },
+          {
+            "id": "input-device",
+            "gap": 8
+          },
+          {
+            "id": "language",
+            "gap": 8
+          },
+          {
+            "id": "speech-engine",
+            "gap": 8
+          }
+        ],
+        "structuredRowsChecked": 0,
+        "visibleResultActions": []
+      },
+      "failures": []
+    },
+    {
+      "name": "04-dictation",
+      "size": {
+        "width": 1000,
+        "height": 760
+      },
+      "measurements": {
+        "updateLabelToButton": 16,
+        "fields": [
+          {
+            "id": "ui-locale",
+            "gap": 8
+          },
+          {
+            "id": "activation",
+            "gap": 8
+          },
+          {
+            "id": "",
+            "gap": 8
+          },
+          {
+            "id": "input-device",
+            "gap": 8
+          },
+          {
+            "id": "language",
+            "gap": 8
+          },
+          {
+            "id": "speech-engine",
+            "gap": 8
+          }
+        ],
+        "structuredRowsChecked": 0,
+        "visibleResultActions": []
+      },
+      "failures": []
+    },
+    {
+      "legalActionReachable": null,
+      "name": "04-dictation",
+      "kind": "1000×760 Danish-label + WCAG text-spacing override stress",
+      "updateLabelToButton": 16,
+      "scroll": {
+        "clientHeight": 760,
+        "scrollHeight": 2374,
+        "canReachEnd": true
+      },
+      "legalCopyPreserved": null,
+      "failures": []
+    },
+    {
+      "name": "04-dictation",
+      "kind": "stress focused visible control",
+      "focusedId": "general-ai",
+      "clearance": 341,
+      "failures": []
+    },
+    {
+      "name": "04-dictation",
+      "kind": "150% computed font size at1000×760",
+      "actualFontSize": 21,
+      "updateGap": 16,
+      "failures": []
+    },
+    {
+      "name": "04-dictation",
+      "kind": "150% final action reachability",
+      "sidebarActionReachable": true,
+      "reachable": true,
+      "failures": []
+    },
+    {
+      "name": "04-dictation",
+      "kind": "150% focused visible control",
+      "focusedId": "general-ai",
+      "clearance": 332.609375,
+      "failures": []
+    },
+    {
+      "name": "04-dictation",
+      "kind": "last visible control focused after scroll",
+      "focusedId": "general-ai",
+      "controlBottom": 272.921875,
+      "footerTop": 615.40625,
+      "clearance": 342.484375,
+      "failures": []
+    },
+    {
+      "name": "37-recording-controls",
+      "size": {
+        "width": 1280,
+        "height": 820
+      },
+      "measurements": {
+        "updateLabelToButton": 16,
+        "fields": [
+          {
+            "id": "ui-locale",
+            "gap": 8
+          },
+          {
+            "id": "activation",
+            "gap": 8
+          },
+          {
+            "id": "",
+            "gap": 8
+          },
+          {
+            "id": "input-device",
+            "gap": 8
+          },
+          {
+            "id": "language",
+            "gap": 8
+          },
+          {
+            "id": "speech-engine",
+            "gap": 8
+          }
+        ],
+        "structuredRowsChecked": 0,
+        "visibleResultActions": []
+      },
+      "failures": []
+    },
+    {
+      "name": "37-recording-controls",
+      "size": {
+        "width": 1000,
+        "height": 760
+      },
+      "measurements": {
+        "updateLabelToButton": 16,
+        "fields": [
+          {
+            "id": "ui-locale",
+            "gap": 8
+          },
+          {
+            "id": "activation",
+            "gap": 8
+          },
+          {
+            "id": "",
+            "gap": 8
+          },
+          {
+            "id": "input-device",
+            "gap": 8
+          },
+          {
+            "id": "language",
+            "gap": 8
+          },
+          {
+            "id": "speech-engine",
+            "gap": 8
+          }
+        ],
+        "structuredRowsChecked": 0,
+        "visibleResultActions": []
+      },
+      "failures": []
+    },
+    {
+      "name": "37-recording-controls",
+      "kind": "last visible control focused after scroll",
+      "focusedId": "general-ai",
+      "controlBottom": 272.921875,
+      "footerTop": 615.40625,
+      "clearance": 342.484375,
+      "failures": []
+    },
+    {
+      "name": "39-local-models",
+      "size": {
+        "width": 1280,
+        "height": 820
+      },
+      "measurements": {
+        "updateLabelToButton": 16,
+        "fields": [
+          {
+            "id": "ui-locale",
+            "gap": 8
+          }
+        ],
+        "structuredRowsChecked": 8,
+        "visibleResultActions": []
+      },
+      "failures": []
+    },
+    {
+      "name": "39-local-models",
+      "size": {
+        "width": 1000,
+        "height": 760
+      },
+      "measurements": {
+        "updateLabelToButton": 16,
+        "fields": [
+          {
+            "id": "ui-locale",
+            "gap": 8
+          }
+        ],
+        "structuredRowsChecked": 8,
+        "visibleResultActions": []
+      },
+      "failures": []
+    },
+    {
+      "name": "29-api-providers",
+      "size": {
+        "width": 1280,
+        "height": 820
+      },
+      "measurements": {
+        "updateLabelToButton": 16,
+        "fields": [
+          {
+            "id": "ui-locale",
+            "gap": 8
+          }
+        ],
+        "structuredRowsChecked": 8,
+        "visibleResultActions": []
+      },
+      "failures": []
+    },
+    {
+      "name": "29-api-providers",
+      "size": {
+        "width": 1000,
+        "height": 760
+      },
+      "measurements": {
+        "updateLabelToButton": 16,
+        "fields": [
+          {
+            "id": "ui-locale",
+            "gap": 8
+          }
+        ],
+        "structuredRowsChecked": 8,
+        "visibleResultActions": []
+      },
+      "failures": []
+    },
+    {
+      "name": "36-privacy-audio",
+      "size": {
+        "width": 1280,
+        "height": 820
+      },
+      "measurements": {
+        "updateLabelToButton": 16,
+        "fields": [
+          {
+            "id": "ui-locale",
+            "gap": 8
+          },
+          {
+            "id": "retention",
+            "gap": 8
+          }
+        ],
+        "structuredRowsChecked": 0,
+        "visibleResultActions": []
+      },
+      "failures": []
+    },
+    {
+      "name": "36-privacy-audio",
+      "size": {
+        "width": 1000,
+        "height": 760
+      },
+      "measurements": {
+        "updateLabelToButton": 16,
+        "fields": [
+          {
+            "id": "ui-locale",
+            "gap": 8
+          },
+          {
+            "id": "retention",
+            "gap": 8
+          }
+        ],
+        "structuredRowsChecked": 0,
+        "visibleResultActions": []
+      },
+      "failures": []
+    },
+    {
+      "name": "36-privacy-audio",
+      "kind": "last visible control focused after scroll",
+      "focusedId": "retention",
+      "controlBottom": 354.484375,
+      "footerTop": 684.40625,
+      "clearance": 329.921875,
+      "failures": []
+    },
+    {
+      "name": "22-key-dialog",
+      "size": {
+        "width": 1280,
+        "height": 820
+      },
+      "measurements": {
+        "updateLabelToButton": 16,
+        "fields": [
+          {
+            "id": "ui-locale",
+            "gap": 8
+          },
+          {
+            "id": "api-key",
+            "gap": 8
+          }
+        ],
+        "closeTarget": [
+          36,
+          36
+        ],
+        "structuredRowsChecked": 8,
+        "visibleResultActions": []
+      },
+      "failures": []
+    },
+    {
+      "name": "22-key-dialog",
+      "size": {
+        "width": 1000,
+        "height": 760
+      },
+      "measurements": {
+        "updateLabelToButton": 16,
+        "fields": [
+          {
+            "id": "ui-locale",
+            "gap": 8
+          },
+          {
+            "id": "api-key",
+            "gap": 8
+          }
+        ],
+        "closeTarget": [
+          36,
+          36
+        ],
+        "structuredRowsChecked": 8,
+        "visibleResultActions": []
+      },
+      "failures": []
+    },
+    {
+      "name": "11-transcription-import",
+      "size": {
+        "width": 1280,
+        "height": 820
+      },
+      "measurements": {
+        "fields": [
+          {
+            "id": "tx-engine",
+            "gap": 8
+          },
+          {
+            "id": "tx-language",
+            "gap": 8
+          },
+          {
+            "id": "tx-query",
+            "gap": 8
+          }
+        ],
+        "structuredRowsChecked": 0,
+        "visibleResultActions": []
+      },
+      "failures": []
+    },
+    {
+      "name": "11-transcription-import",
+      "size": {
+        "width": 1000,
+        "height": 760
+      },
+      "measurements": {
+        "fields": [
+          {
+            "id": "tx-engine",
+            "gap": 8
+          },
+          {
+            "id": "tx-language",
+            "gap": 8
+          },
+          {
+            "id": "tx-query",
+            "gap": 8
+          }
+        ],
+        "structuredRowsChecked": 0,
+        "visibleResultActions": []
+      },
+      "failures": []
+    },
+    {
+      "name": "12-transcription-editor",
+      "size": {
+        "width": 1280,
+        "height": 820
+      },
+      "measurements": {
+        "fields": [
+          {
+            "id": "tx-query",
+            "gap": 8
+          }
+        ],
+        "structuredRowsChecked": 0,
+        "visibleResultActions": []
+      },
+      "failures": []
+    },
+    {
+      "name": "12-transcription-editor",
+      "size": {
+        "width": 1000,
+        "height": 760
+      },
+      "measurements": {
+        "fields": [
+          {
+            "id": "tx-query",
+            "gap": 8
+          }
+        ],
+        "structuredRowsChecked": 0,
+        "visibleResultActions": []
+      },
+      "failures": []
+    },
+    {
+      "name": "24-transcription-ai",
+      "size": {
+        "width": 1280,
+        "height": 820
+      },
+      "measurements": {
+        "fields": [
+          {
+            "id": "tx-query",
+            "gap": 8
+          },
+          {
+            "id": "tx-ai-engine",
+            "gap": 8
+          },
+          {
+            "id": "tx-ai-prompt",
+            "gap": 8
+          }
+        ],
+        "structuredRowsChecked": 0,
+        "visibleResultActions": []
+      },
+      "failures": []
+    },
+    {
+      "name": "24-transcription-ai",
+      "size": {
+        "width": 1000,
+        "height": 760
+      },
+      "measurements": {
+        "fields": [
+          {
+            "id": "tx-query",
+            "gap": 8
+          },
+          {
+            "id": "tx-ai-engine",
+            "gap": 8
+          },
+          {
+            "id": "tx-ai-prompt",
+            "gap": 8
+          }
+        ],
+        "structuredRowsChecked": 0,
+        "visibleResultActions": []
+      },
+      "failures": []
+    },
+    {
+      "name": "13-who-download",
+      "size": {
+        "width": 1280,
+        "height": 820
+      },
+      "measurements": {
+        "fields": [
+          {
+            "id": "tx-query",
+            "gap": 8
+          }
+        ],
+        "closeTarget": [
+          36,
+          36
+        ],
+        "structuredRowsChecked": 0,
+        "visibleResultActions": []
+      },
+      "failures": []
+    },
+    {
+      "name": "13-who-download",
+      "size": {
+        "width": 1000,
+        "height": 760
+      },
+      "measurements": {
+        "fields": [
+          {
+            "id": "tx-query",
+            "gap": 8
+          }
+        ],
+        "closeTarget": [
+          36,
+          36
+        ],
+        "structuredRowsChecked": 0,
+        "visibleResultActions": []
+      },
+      "failures": []
+    },
+    {
+      "legalActionReachable": true,
+      "name": "13-who-download",
+      "kind": "1000×760 Danish-label + WCAG text-spacing override stress",
+      "updateLabelToButton": null,
+      "scroll": {
+        "clientHeight": 710,
+        "scrollHeight": 746,
+        "canReachEnd": true
+      },
+      "legalCopyPreserved": true,
+      "failures": []
+    },
+    {
+      "name": "13-who-download",
+      "kind": "150% computed font size at1000×760",
+      "actualFontSize": 21,
+      "updateGap": null,
+      "failures": []
+    },
+    {
+      "name": "13-who-download",
+      "kind": "150% final action reachability",
+      "sidebarActionReachable": true,
+      "reachable": true,
+      "failures": []
+    }
+  ]
+}
