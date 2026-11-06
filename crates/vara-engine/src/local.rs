@@ -91,12 +91,15 @@ impl Local {
                 std::sync::Arc::as_ptr(&cancel.0) as *mut std::ffi::c_void
             );
         }
-        state.full(params, &samples).map_err(|e| {
+        let inference = state.full(params, &samples);
+        // The native abort callback reports a backend error. Accepted cancellation
+        // owns the outcome, including when that abort caused full() to fail.
+        cancel.check()?;
+        inference.map_err(|e| {
             vara_core::UserMessage::new("whisper.transcription")
                 .caused_by(crate::backend_error::whisper(&e))
                 .wire()
         })?;
-        cancel.check()?;
         let mut text = String::new();
         let mut segments = Vec::new();
         for i in 0..state.full_n_segments() {
