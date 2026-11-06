@@ -1,0 +1,40 @@
+{
+  "mode": "offline_reference_correction_only",
+  "inference_calls": 0,
+  "cloud_requests": 0,
+  "corpus_version": "0.2.1",
+  "previous_corpus_version": "0.2.0",
+  "scored_utc": "2026-11-06T17:44:25.534816+00:00",
+  "reference_manifest_sha256": "7cdbb68738aef52dab47907a44ef7e4644acb4c6d593d058a75c3b840de057b4",
+  "cleanup_sha256": "3ab92cf20b07e68cd65de15012c46377be9a21e1f58b81ceb04b1aca844b870b",
+  "original_observations": [
+    {
+      "path": "47-quality-local.observations.jsonl",
+      "sha256": "3c95ae5a39bc4b38ce8a3f48e7571d786a3d4596f1caa27d81c92f3c90411062"
+    },
+    {
+      "path": "47-cloud-live.observations.jsonl",
+      "sha256": "aaf2623741c0c2fe0c583440c686715a8b724c2a8e78846ea83d760870222257"
+    }
+  ],
+  "combined_observations_sha256": "af78a14ecdaf9805cb7d6ceb672917d7ee2ac7cc4eba0847664c31fd608e4fa9",
+  "changed_statuses": [
+    {
+      "id": "gemini.text/text-names-amount-date/general_prompt/0",
+      "old_status": "pass",
+      "new_status": "fail"
+    },
+    {
+      "id": "gemini.text/text-similar-numbers/general_prompt/0",
+      "old_status": "fail",
+      "new_status": "pass"
+    }
+  ],
+  "statuses": {
+    "pass": 50,
+    "fail": 14,
+    "not_tested": 6
+  },
+  "local_inference_provenance": "47-quality-run.md and frozen 47-quality-local.jsonl metadata: base 141d30f, dirty tree, initial binary hash not captured; unchanged observations",
+  "cloud_inference_provenance": "47-cloud-live.execution.json: clean fdcc30bbd5a42a63a06af1a0fdc1a3dcf4080672, signed SHA256 17fc101fd95445a1a1b0bb2a2d955aefcb8f388d1703eec5ca6f6494daf4432b; unchanged observations"
+}

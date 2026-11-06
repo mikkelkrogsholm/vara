@@ -48,6 +48,57 @@ class EvaluationTests(unittest.TestCase):
         self.assertEqual(evaluation.score(case,expected+' Tak.',expected,exact_words=True)['status'],'fail')
         self.assertEqual(evaluation.score(case,expected.upper(),expected)['status'],'pass')
 
+    def test_payment_instruction_relation_from_captured_cloud_output(self):
+        case=next(c for c in self.cleanup['cases'] if c['id']=='text-names-amount-date')
+        expected=case['expected']['general_prompt']
+        captured=evaluation.ROOT/'gdd/reports/epic42/47-cloud-live.observations.jsonl'
+        actual=next(json.loads(line)['final'] for line in captured.read_text().splitlines()
+                    if json.loads(line)['id']=='gemini.text/text-names-amount-date/general_prompt/0')
+        result=evaluation.score(case,actual,expected)
+        self.assertEqual(result['status'],'fail')
+        self.assertFalse(next(f['pass'] for f in result['critical_facts'] if f['kind']=='payment_instruction'))
+        for good in (expected, expected.replace('Betal ikke','Undlad at betale'),
+                     expected.replace('1250 kroner','1.250 kroner'),
+                     expected.replace('1250 kroner','1250 kr.')):
+            with self.subTest(good=good):
+                self.assertEqual(evaluation.score(case,good,expected)['status'],'pass')
+
+    def test_payment_relation_rejects_changed_payer_intent_amount_or_negation(self):
+        case=next(c for c in self.cleanup['cases'] if c['id']=='text-names-amount-date')
+        expected=case['expected']['general_prompt']
+        for replacement in ('FigCraft vil ikke betale', 'FigCraft må ikke betale',
+                            'Vara betaler ikke', 'Betal', 'Undlad ikke at betale'):
+            actual=expected.replace('Betal ikke',replacement)
+            with self.subTest(replacement=replacement):
+                self.assertEqual(evaluation.score(case,actual,expected)['status'],'fail')
+        self.assertEqual(evaluation.score(case,expected.replace('1250','50'),expected)['status'],'fail')
+
+    def test_fixed_clock_relation_accepts_captured_equivalent_orthography(self):
+        case=next(c for c in self.cleanup['cases'] if c['id']=='text-similar-numbers')
+        expected=case['expected']['general_prompt']
+        captured=evaluation.ROOT/'gdd/reports/epic42/47-cloud-live.observations.jsonl'
+        actual=next(json.loads(line)['final'] for line in captured.read_text().splitlines()
+                    if json.loads(line)['id']=='gemini.text/text-similar-numbers/general_prompt/0')
+        self.assertEqual(evaluation.score(case,actual,expected)['status'],'pass')
+        for spelling in ('klokken 14','klokken 14.00','kl. 14.00','kl. 14:00'):
+            with self.subTest(spelling=spelling):
+                self.assertEqual(evaluation.score(case,expected.replace('klokken 14',spelling),expected)['status'],'pass')
+        local=evaluation.ROOT/'gdd/reports/epic42/47-quality-local.observations.jsonl'
+        relative_clause=next(json.loads(line)['final'] for line in local.read_text().splitlines()
+                             if json.loads(line)['id']=='local.text/text-similar-numbers/general_prompt/0')
+        self.assertEqual(evaluation.score(case,relative_clause,expected)['status'],'pass')
+        # Equivalent clock spelling still changes words under punctuation-only.
+        punctuation=case['expected']['punctuation_only']
+        self.assertEqual(evaluation.score(case,punctuation.replace('klokken 14','kl. 14.00'),punctuation,exact_words=True)['status'],'fail')
+
+    def test_fixed_clock_relation_rejects_wrong_time_and_negation(self):
+        case=next(c for c in self.cleanup['cases'] if c['id']=='text-similar-numbers')
+        expected=case['expected']['general_prompt']
+        for replacement in ('klokken 14.30','kl. 14.30','klokken 15','ikke klokken 14'):
+            with self.subTest(replacement=replacement):
+                self.assertEqual(evaluation.score(case,expected.replace('klokken 14',replacement),expected)['status'],'fail')
+        self.assertEqual(evaluation.score(case,expected.replace('ikke 50','50'),expected)['status'],'fail')
+
     def test_inventory_covers_matrix_and_profiles_without_cartesian(self):
         self.assertEqual(len({r['id'] for r in self.rows}),len(self.rows))
         for speech,text in evaluation.MATRIX.values():

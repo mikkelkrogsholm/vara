@@ -27,6 +27,11 @@ class AcceptanceCorpusTests(unittest.TestCase):
         self.assertEqual(validator.validate(self.root), [])
         self.assertEqual(len(self.manifest['cases']), 20)
 
+    def test_cleanup_version_must_match_manifest(self):
+        self.manifest['corpus_version']='different-reference-version'
+        self.save_manifest()
+        self.assertIn('Cleanup/manifest corpus version mismatch',validator.validate(self.root))
+
     def test_missing_asset(self):
         (self.root / self.manifest['cases'][0]['path']).unlink()
         self.assertTrue(any('missing audio' in error for error in validator.validate(self.root)))

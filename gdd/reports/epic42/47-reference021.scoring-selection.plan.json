@@ -1,0 +1,279 @@
+{
+  "models": "",
+  "rows": [
+    {
+      "id": "parakeet/da-000/direct/0",
+      "case": "da-000",
+      "speech": "local.parakeet",
+      "text": null,
+      "profile": null
+    },
+    {
+      "id": "whisper/da-000/direct/0",
+      "case": "da-000",
+      "speech": "local.whisper",
+      "text": null,
+      "profile": null
+    },
+    {
+      "id": "parakeet-qwen/da-000/punctuation_only/0",
+      "case": "da-000",
+      "speech": "local.parakeet",
+      "text": "local.text",
+      "profile": "punctuation_only"
+    },
+    {
+      "id": "parakeet/da-000/direct/1",
+      "case": "da-000",
+      "speech": "local.parakeet",
+      "text": null,
+      "profile": null
+    },
+    {
+      "id": "parakeet/da-000/direct/2",
+      "case": "da-000",
+      "speech": "local.parakeet",
+      "text": null,
+      "profile": null
+    },
+    {
+      "id": "whisper/da-000/direct/1",
+      "case": "da-000",
+      "speech": "local.whisper",
+      "text": null,
+      "profile": null
+    },
+    {
+      "id": "whisper/da-000/direct/2",
+      "case": "da-000",
+      "speech": "local.whisper",
+      "text": null,
+      "profile": null
+    },
+    {
+      "id": "parakeet/da-001/direct/0",
+      "case": "da-001",
+      "speech": "local.parakeet",
+      "text": null,
+      "profile": null
+    },
+    {
+      "id": "parakeet/en-000/direct/0",
+      "case": "en-000",
+      "speech": "local.parakeet",
+      "text": null,
+      "profile": null
+    },
+    {
+      "id": "parakeet/mixed-spliced/direct/0",
+      "case": "mixed-spliced",
+      "speech": "local.parakeet",
+      "text": null,
+      "profile": null
+    },
+    {
+      "id": "parakeet/da-paused/direct/0",
+      "case": "da-paused",
+      "speech": "local.parakeet",
+      "text": null,
+      "profile": null
+    },
+    {
+      "id": "parakeet/da-fast-structural/direct/0",
+      "case": "da-fast-structural",
+      "speech": "local.parakeet",
+      "text": null,
+      "profile": null
+    },
+    {
+      "id": "parakeet/silence/direct/0",
+      "case": "silence",
+      "speech": "local.parakeet",
+      "text": null,
+      "profile": null
+    },
+    {
+      "id": "parakeet/noise/direct/0",
+      "case": "noise",
+      "speech": "local.parakeet",
+      "text": null,
+      "profile": null
+    },
+    {
+      "id": "parakeet/long-boundaries/direct/0",
+      "case": "long-boundaries",
+      "speech": "local.parakeet",
+      "text": null,
+      "profile": null
+    },
+    {
+      "id": "parakeet/four-speakers/direct/0",
+      "case": "four-speakers",
+      "speech": "local.parakeet",
+      "text": null,
+      "profile": null
+    },
+    {
+      "id": "whisper/da-001/direct/0",
+      "case": "da-001",
+      "speech": "local.whisper",
+      "text": null,
+      "profile": null
+    },
+    {
+      "id": "whisper/en-000/direct/0",
+      "case": "en-000",
+      "speech": "local.whisper",
+      "text": null,
+      "profile": null
+    },
+    {
+      "id": "whisper/mixed-spliced/direct/0",
+      "case": "mixed-spliced",
+      "speech": "local.whisper",
+      "text": null,
+      "profile": null
+    },
+    {
+      "id": "whisper/da-paused/direct/0",
+      "case": "da-paused",
+      "speech": "local.whisper",
+      "text": null,
+      "profile": null
+    },
+    {
+      "id": "whisper/da-fast-structural/direct/0",
+      "case": "da-fast-structural",
+      "speech": "local.whisper",
+      "text": null,
+      "profile": null
+    },
+    {
+      "id": "whisper/silence/direct/0",
+      "case": "silence",
+      "speech": "local.whisper",
+      "text": null,
+      "profile": null
+    },
+    {
+      "id": "whisper/noise/direct/0",
+      "case": "noise",
+      "speech": "local.whisper",
+      "text": null,
+      "profile": null
+    },
+    {
+      "id": "whisper/long-boundaries/direct/0",
+      "case": "long-boundaries",
+      "speech": "local.whisper",
+      "text": null,
+      "profile": null
+    },
+    {
+      "id": "whisper/four-speakers/direct/0",
+      "case": "four-speakers",
+      "speech": "local.whisper",
+      "text": null,
+      "profile": null
+    },
+    {
+      "id": "parakeet-explicit-da/silence/direct/0",
+      "case": "silence",
+      "speech": "local.parakeet",
+      "text": null,
+      "profile": null,
+      "language": "da"
+    },
+    {
+      "id": "parakeet-explicit-da/noise/direct/0",
+      "case": "noise",
+      "speech": "local.parakeet",
+      "text": null,
+      "profile": null,
+      "language": "da"
+    },
+    {
+      "id": "whisper-explicit-da/silence/direct/0",
+      "case": "silence",
+      "speech": "local.whisper",
+      "text": null,
+      "profile": null,
+      "language": "da"
+    },
+    {
+      "id": "whisper-explicit-da/noise/direct/0",
+      "case": "noise",
+      "speech": "local.whisper",
+      "text": null,
+      "profile": null,
+      "language": "da"
+    },
+    {
+      "id": "local.text/text-names-amount-date/punctuation_only/0",
+      "case": "text-names-amount-date",
+      "speech": null,
+      "text": "local.text",
+      "profile": "punctuation_only"
+    },
+    {
+      "id": "local.text/text-instruction-as-data/punctuation_only/0",
+      "case": "text-instruction-as-data",
+      "speech": null,
+      "text": "local.text",
+      "profile": "punctuation_only"
+    },
+    {
+      "id": "local.text/text-similar-numbers/punctuation_only/0",
+      "case": "text-similar-numbers",
+      "speech": null,
+      "text": "local.text",
+      "profile": "punctuation_only"
+    },
+    {
+      "id": "local.text/text-names-amount-date/general_prompt/0",
+      "case": "text-names-amount-date",
+      "speech": null,
+      "text": "local.text",
+      "profile": "general_prompt"
+    },
+    {
+      "id": "local.text/text-instruction-as-data/general_prompt/0",
+      "case": "text-instruction-as-data",
+      "speech": null,
+      "text": "local.text",
+      "profile": "general_prompt"
+    },
+    {
+      "id": "local.text/text-similar-numbers/general_prompt/0",
+      "case": "text-similar-numbers",
+      "speech": null,
+      "text": "local.text",
+      "profile": "general_prompt"
+    },
+    {
+      "id": "local.text/text-names-amount-date/app_specific_prompt/0",
+      "case": "text-names-amount-date",
+      "speech": null,
+      "text": "local.text",
+      "profile": "app_specific_prompt"
+    },
+    {
+      "id": "local.text/text-instruction-as-data/app_specific_prompt/0",
+      "case": "text-instruction-as-data",
+      "speech": null,
+      "text": "local.text",
+      "profile": "app_specific_prompt"
+    },
+    {
+      "id": "local.text/text-similar-numbers/app_specific_prompt/0",
+      "case": "text-similar-numbers",
+      "speech": null,
+      "text": "local.text",
+      "profile": "app_specific_prompt"
+    }
+  ],
+  "cloud_opt_in": false,
+  "max_requests": 40,
+  "max_audio_seconds": 180.0,
+  "timeout_seconds": 120
+}

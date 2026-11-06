@@ -92,6 +92,7 @@ def validate(root):
     actual_paths = {p.resolve() for p in root.joinpath('audio').glob('*.wav')}
     check(set(paths) == actual_paths, 'Unlisted WAV assets')
     cleanup = json.loads((root / 'cleanup.json').read_text())
+    check(cleanup.get('corpus_version') == manifest.get('corpus_version'), 'Cleanup/manifest corpus version mismatch')
     profiles = {'punctuation_only', 'general_prompt', 'app_specific_prompt'}
     check(set(cleanup['profiles']) == profiles, 'Invalid cleanup profiles')
     cleanup_ids = [case['id'] for case in cleanup['cases']]

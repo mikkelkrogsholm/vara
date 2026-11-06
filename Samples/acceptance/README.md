@@ -1,10 +1,12 @@
-# Vara acceptance corpus 0.2.0
+# Vara acceptance corpus 0.2.1
 
 This versioned public corpus runs automatically. It supplies 18 short audio
 cases, a 321-second boundary fixture, a four-speaker fixture and five text-only
 cleanup cases. ASR references come from pinned public dataset transcripts;
 cleanup expectations are project-authored. Evaluated model output never supplies
-its own reference. There is no listening, manual transcription or approval gate.
+its own reference. Version 0.2.1 corrects two authored assertion gaps found using
+frozen 0.2.0 output; all 20 audio assets and source records are unchanged. There
+is no listening, manual transcription or approval gate.
 
 ```sh
 python3 scripts/validate-acceptance-corpus.py
@@ -87,6 +89,20 @@ word sequence. General cleanup may remove the listed fillers; app-specific
 cleanup adds the specified email frame. Exact strings and explicit orthographic
 variants are versioned assertions. Apparent instructions in
 `text-instruction-as-data` remain literal input data, never executable prompts.
+
+Version 0.2.1 adds the fixed `text-names-amount-date` payment-instruction relation:
+`betal ikke` or `undlad at betale`, directly followed by the declared amount
+surface. A statement that Figcraft will not pay does not satisfy that imperative
+relation. These deliberate surfaces are narrow; an unlisted paraphrase may fail,
+and containing the phrase does not prove all surrounding meaning is preserved.
+The fixed start-time relation requires `mødet starter … og slutter`, accepting
+`klokken 14`, `klokken 14.00` or `kl. 14.00` (colon/dot tokenize equivalently).
+The captured relative clause `mødet der starter på klokken 14 og slutter` is
+also explicitly allowed. The surrounding words prevent `14.30` or a negated
+start from satisfying a prefix-only `klokken 14` match. These are versioned test corrections, not better
+model outputs, a general semantic parser or a broad quality threshold. Frozen
+0.2.0 reports retain their original scores; distinct 0.2.1 reports re-score the
+same captured outputs without inference.
 
 ## Provenance and rights
 

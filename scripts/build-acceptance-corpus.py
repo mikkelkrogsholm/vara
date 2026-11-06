@@ -193,7 +193,7 @@ def read_pcm(path):
 
 def finalize(manifest, sources):
     """Version reference metadata offline; preserve all pinned audio bytes."""
-    manifest['corpus_version'] = '0.2.0'
+    manifest['corpus_version'] = '0.2.1'
     manifest['status'] = 'automatic_reference_checks'
     manifest['critical_fact_annotation_status'] = 'declared_highlighted_facts_checked_against_references'
     for case in manifest['cases']:

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "corpus_version": "0.2.0",
+  "corpus_version": "0.2.1",
   "supporting_files": [
     {
       "path": "sources.json",
@@ -8,7 +8,7 @@
     },
     {
       "path": "cleanup.json",
-      "sha256": "f07ecd990f7b6959f392b52f09e969d0b1a79806ebd2e05d355cbf09f9b94ae2"
+      "sha256": "3ab92cf20b07e68cd65de15012c46377be9a21e1f58b81ceb04b1aca844b870b"
     }
   ],
   "status": "automatic_reference_checks",
