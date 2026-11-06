@@ -1,0 +1,3 @@
+22-key-dialog: last8 physical rows x540..2539 darkpixels reference/export [0, 0]; final-row RGB [(183, 180, 173), (183, 179, 173)]; maximum channel rounding1
+30-endpoint-dialog: last8 physical rows x540..2539 darkpixels reference/export [0, 0]; final-row RGB [(183, 180, 173), (183, 179, 173)]; maximum channel rounding1
+31-model-dialog: last8 physical rows x540..2539 darkpixels reference/export [0, 0]; final-row RGB [(183, 180, 173), (183, 179, 173)]; maximum channel rounding1

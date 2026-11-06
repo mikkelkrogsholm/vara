@@ -1,0 +1,457 @@
+[
+  {
+    "command": "file.fontReport",
+    "params": {}
+  },
+  {
+    "command": "file.export",
+    "params": {
+      "ids": [
+        812
+      ],
+      "format": "png",
+      "scale": 2,
+      "path": "/Users/mikkelfreltoftkrogsholm/.codex/worktrees/who-long-recording/vara/gdd/design/figcraft/exports/01-history.png"
+    }
+  },
+  {
+    "command": "file.export",
+    "params": {
+      "ids": [
+        943
+      ],
+      "format": "png",
+      "scale": 2,
+      "path": "/Users/mikkelfreltoftkrogsholm/.codex/worktrees/who-long-recording/vara/gdd/design/figcraft/exports/02-original.png"
+    }
+  },
+  {
+    "command": "file.export",
+    "params": {
+      "ids": [
+        1076
+      ],
+      "format": "png",
+      "scale": 2,
+      "path": "/Users/mikkelfreltoftkrogsholm/.codex/worktrees/who-long-recording/vara/gdd/design/figcraft/exports/03-apps.png"
+    }
+  },
+  {
+    "command": "file.export",
+    "params": {
+      "ids": [
+        1122
+      ],
+      "format": "png",
+      "scale": 2,
+      "path": "/Users/mikkelfreltoftkrogsholm/.codex/worktrees/who-long-recording/vara/gdd/design/figcraft/exports/04-dictation.png"
+    }
+  },
+  {
+    "command": "file.export",
+    "params": {
+      "ids": [
+        1180
+      ],
+      "format": "png",
+      "scale": 2,
+      "path": "/Users/mikkelfreltoftkrogsholm/.codex/worktrees/who-long-recording/vara/gdd/design/figcraft/exports/05-connections.png"
+    }
+  },
+  {
+    "command": "file.export",
+    "params": {
+      "ids": [
+        1250
+      ],
+      "format": "png",
+      "scale": 2,
+      "path": "/Users/mikkelfreltoftkrogsholm/.codex/worktrees/who-long-recording/vara/gdd/design/figcraft/exports/06-privacy.png"
+    }
+  },
+  {
+    "command": "file.export",
+    "params": {
+      "ids": [
+        1316
+      ],
+      "format": "png",
+      "scale": 2,
+      "path": "/Users/mikkelfreltoftkrogsholm/.codex/worktrees/who-long-recording/vara/gdd/design/figcraft/exports/10-transcription-empty.png"
+    }
+  },
+  {
+    "command": "file.export",
+    "params": {
+      "ids": [
+        1361
+      ],
+      "format": "png",
+      "scale": 2,
+      "path": "/Users/mikkelfreltoftkrogsholm/.codex/worktrees/who-long-recording/vara/gdd/design/figcraft/exports/11-transcription-import.png"
+    }
+  },
+  {
+    "command": "file.export",
+    "params": {
+      "ids": [
+        1417
+      ],
+      "format": "png",
+      "scale": 2,
+      "path": "/Users/mikkelfreltoftkrogsholm/.codex/worktrees/who-long-recording/vara/gdd/design/figcraft/exports/12-transcription-editor.png"
+    }
+  },
+  {
+    "command": "file.export",
+    "params": {
+      "ids": [
+        1539
+      ],
+      "format": "png",
+      "scale": 2,
+      "path": "/Users/mikkelfreltoftkrogsholm/.codex/worktrees/who-long-recording/vara/gdd/design/figcraft/exports/24-transcription-ai.png"
+    }
+  },
+  {
+    "command": "file.export",
+    "params": {
+      "ids": [
+        1661
+      ],
+      "format": "png",
+      "scale": 2,
+      "path": "/Users/mikkelfreltoftkrogsholm/.codex/worktrees/who-long-recording/vara/gdd/design/figcraft/exports/26-dictation-permissions.png"
+    }
+  },
+  {
+    "command": "file.export",
+    "params": {
+      "ids": [
+        1713
+      ],
+      "format": "png",
+      "scale": 2,
+      "path": "/Users/mikkelfreltoftkrogsholm/.codex/worktrees/who-long-recording/vara/gdd/design/figcraft/exports/27-custom-endpoints.png"
+    }
+  },
+  {
+    "command": "file.export",
+    "params": {
+      "ids": [
+        1789
+      ],
+      "format": "png",
+      "scale": 2,
+      "path": "/Users/mikkelfreltoftkrogsholm/.codex/worktrees/who-long-recording/vara/gdd/design/figcraft/exports/28-cli-connections.png"
+    }
+  },
+  {
+    "command": "file.export",
+    "params": {
+      "ids": [
+        1845
+      ],
+      "format": "png",
+      "scale": 2,
+      "path": "/Users/mikkelfreltoftkrogsholm/.codex/worktrees/who-long-recording/vara/gdd/design/figcraft/exports/29-api-providers.png"
+    }
+  },
+  {
+    "command": "file.export",
+    "params": {
+      "ids": [
+        1940
+      ],
+      "format": "png",
+      "scale": 2,
+      "path": "/Users/mikkelfreltoftkrogsholm/.codex/worktrees/who-long-recording/vara/gdd/design/figcraft/exports/36-privacy-audio.png"
+    }
+  },
+  {
+    "command": "file.export",
+    "params": {
+      "ids": [
+        1985
+      ],
+      "format": "png",
+      "scale": 2,
+      "path": "/Users/mikkelfreltoftkrogsholm/.codex/worktrees/who-long-recording/vara/gdd/design/figcraft/exports/37-recording-controls.png"
+    }
+  },
+  {
+    "command": "file.export",
+    "params": {
+      "ids": [
+        2053
+      ],
+      "format": "png",
+      "scale": 2,
+      "path": "/Users/mikkelfreltoftkrogsholm/.codex/worktrees/who-long-recording/vara/gdd/design/figcraft/exports/38-speech-model.png"
+    }
+  },
+  {
+    "command": "file.export",
+    "params": {
+      "ids": [
+        2121
+      ],
+      "format": "png",
+      "scale": 2,
+      "path": "/Users/mikkelfreltoftkrogsholm/.codex/worktrees/who-long-recording/vara/gdd/design/figcraft/exports/39-local-models.png"
+    }
+  },
+  {
+    "command": "file.export",
+    "params": {
+      "ids": [
+        2214
+      ],
+      "format": "png",
+      "scale": 2,
+      "path": "/Users/mikkelfreltoftkrogsholm/.codex/worktrees/who-long-recording/vara/gdd/design/figcraft/exports/40-transcription-recent.png"
+    }
+  },
+  {
+    "command": "file.export",
+    "params": {
+      "ids": [
+        2285
+      ],
+      "format": "png",
+      "scale": 2,
+      "path": "/Users/mikkelfreltoftkrogsholm/.codex/worktrees/who-long-recording/vara/gdd/design/figcraft/exports/41-app-rule-disabled.png"
+    }
+  },
+  {
+    "command": "file.export",
+    "params": {
+      "ids": [
+        2321
+      ],
+      "format": "png",
+      "scale": 2,
+      "path": "/Users/mikkelfreltoftkrogsholm/.codex/worktrees/who-long-recording/vara/gdd/design/figcraft/exports/07-processing-dialog.png"
+    }
+  },
+  {
+    "command": "file.export",
+    "params": {
+      "ids": [
+        2537
+      ],
+      "format": "png",
+      "scale": 2,
+      "path": "/Users/mikkelfreltoftkrogsholm/.codex/worktrees/who-long-recording/vara/gdd/design/figcraft/exports/08-delete-dialog.png"
+    }
+  },
+  {
+    "command": "file.export",
+    "params": {
+      "ids": [
+        2748
+      ],
+      "format": "png",
+      "scale": 2,
+      "path": "/Users/mikkelfreltoftkrogsholm/.codex/worktrees/who-long-recording/vara/gdd/design/figcraft/exports/13-who-download.png"
+    }
+  },
+  {
+    "command": "file.export",
+    "params": {
+      "ids": [
+        3027
+      ],
+      "format": "png",
+      "scale": 2,
+      "path": "/Users/mikkelfreltoftkrogsholm/.codex/worktrees/who-long-recording/vara/gdd/design/figcraft/exports/14-who-known-count.png"
+    }
+  },
+  {
+    "command": "file.export",
+    "params": {
+      "ids": [
+        3312
+      ],
+      "format": "png",
+      "scale": 2,
+      "path": "/Users/mikkelfreltoftkrogsholm/.codex/worktrees/who-long-recording/vara/gdd/design/figcraft/exports/15-who-uncertainty.png"
+    }
+  },
+  {
+    "command": "file.export",
+    "params": {
+      "ids": [
+        3436
+      ],
+      "format": "png",
+      "scale": 2,
+      "path": "/Users/mikkelfreltoftkrogsholm/.codex/worktrees/who-long-recording/vara/gdd/design/figcraft/exports/09-setup-prepare.png"
+    }
+  },
+  {
+    "command": "file.export",
+    "params": {
+      "ids": [
+        3476
+      ],
+      "format": "png",
+      "scale": 2,
+      "path": "/Users/mikkelfreltoftkrogsholm/.codex/worktrees/who-long-recording/vara/gdd/design/figcraft/exports/16-setup-permissions.png"
+    }
+  },
+  {
+    "command": "file.export",
+    "params": {
+      "ids": [
+        3526
+      ],
+      "format": "png",
+      "scale": 2,
+      "path": "/Users/mikkelfreltoftkrogsholm/.codex/worktrees/who-long-recording/vara/gdd/design/figcraft/exports/17-setup-trial.png"
+    }
+  },
+  {
+    "command": "file.export",
+    "params": {
+      "ids": [
+        3563
+      ],
+      "format": "png",
+      "scale": 2,
+      "path": "/Users/mikkelfreltoftkrogsholm/.codex/worktrees/who-long-recording/vara/gdd/design/figcraft/exports/21-shortcut-dialog.png"
+    }
+  },
+  {
+    "command": "file.export",
+    "params": {
+      "ids": [
+        3718
+      ],
+      "format": "png",
+      "scale": 2,
+      "path": "/Users/mikkelfreltoftkrogsholm/.codex/worktrees/who-long-recording/vara/gdd/design/figcraft/exports/22-key-dialog.png"
+    }
+  },
+  {
+    "command": "file.export",
+    "params": {
+      "ids": [
+        3895
+      ],
+      "format": "png",
+      "scale": 2,
+      "path": "/Users/mikkelfreltoftkrogsholm/.codex/worktrees/who-long-recording/vara/gdd/design/figcraft/exports/23-app-picker.png"
+    }
+  },
+  {
+    "command": "file.export",
+    "params": {
+      "ids": [
+        4019
+      ],
+      "format": "png",
+      "scale": 2,
+      "path": "/Users/mikkelfreltoftkrogsholm/.codex/worktrees/who-long-recording/vara/gdd/design/figcraft/exports/25-transcription-export.png"
+    }
+  },
+  {
+    "command": "file.export",
+    "params": {
+      "ids": [
+        4224
+      ],
+      "format": "png",
+      "scale": 2,
+      "path": "/Users/mikkelfreltoftkrogsholm/.codex/worktrees/who-long-recording/vara/gdd/design/figcraft/exports/30-endpoint-dialog.png"
+    }
+  },
+  {
+    "command": "file.export",
+    "params": {
+      "ids": [
+        4387
+      ],
+      "format": "png",
+      "scale": 2,
+      "path": "/Users/mikkelfreltoftkrogsholm/.codex/worktrees/who-long-recording/vara/gdd/design/figcraft/exports/31-model-dialog.png"
+    }
+  },
+  {
+    "command": "file.export",
+    "params": {
+      "ids": [
+        4555
+      ],
+      "format": "png",
+      "scale": 2,
+      "path": "/Users/mikkelfreltoftkrogsholm/.codex/worktrees/who-long-recording/vara/gdd/design/figcraft/exports/32-update-available.png"
+    }
+  },
+  {
+    "command": "file.export",
+    "params": {
+      "ids": [
+        4623
+      ],
+      "format": "png",
+      "scale": 2,
+      "path": "/Users/mikkelfreltoftkrogsholm/.codex/worktrees/who-long-recording/vara/gdd/design/figcraft/exports/33-update-ready.png"
+    }
+  },
+  {
+    "command": "file.export",
+    "params": {
+      "ids": [
+        4691
+      ],
+      "format": "png",
+      "scale": 2,
+      "path": "/Users/mikkelfreltoftkrogsholm/.codex/worktrees/who-long-recording/vara/gdd/design/figcraft/exports/34-update-error.png"
+    }
+  },
+  {
+    "command": "file.export",
+    "params": {
+      "ids": [
+        4749
+      ],
+      "format": "png",
+      "scale": 2,
+      "path": "/Users/mikkelfreltoftkrogsholm/.codex/worktrees/who-long-recording/vara/gdd/design/figcraft/exports/35-recovery.png"
+    }
+  },
+  {
+    "command": "file.export",
+    "params": {
+      "ids": [
+        4886
+      ],
+      "format": "png",
+      "scale": 2,
+      "path": "/Users/mikkelfreltoftkrogsholm/.codex/worktrees/who-long-recording/vara/gdd/design/figcraft/exports/18-hud-recording.png"
+    }
+  },
+  {
+    "command": "file.export",
+    "params": {
+      "ids": [
+        4915
+      ],
+      "format": "png",
+      "scale": 2,
+      "path": "/Users/mikkelfreltoftkrogsholm/.codex/worktrees/who-long-recording/vara/gdd/design/figcraft/exports/19-hud-transcribing.png"
+    }
+  },
+  {
+    "command": "file.export",
+    "params": {
+      "ids": [
+        4954
+      ],
+      "format": "png",
+      "scale": 2,
+      "path": "/Users/mikkelfreltoftkrogsholm/.codex/worktrees/who-long-recording/vara/gdd/design/figcraft/exports/20-hud-processing.png"
+    }
+  }
+]

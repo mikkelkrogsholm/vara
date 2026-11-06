@@ -1283,3 +1283,15 @@ and media timestamps remain independent of interface language.
 At larger text sizes, navigation wraps and remains keyboard reachable in its own
 scrollable area rather than clipping labels. Shortcut controls wrap when longer
 labels need space; the keyboard can leave the recorder and activate dialog controls.
+
+
+### Editable FigCraft reference
+
+The [current editable Vara design](design/figcraft/Vara.figcraft) and its
+[reproduction and visual-review notes](design/figcraft/README.md) follow app 1.0.2
+source baseline `df3f936617b037c313745ea4c7ac08c49d474e67`. The refresh preserves the
+previous 31 frames and adds current language/updater, recovery and scrolled states.
+Canonical tokens remain owned by `gdd/design/styles` and the actual app/UI source;
+FigCraft is a derived editable reference, not a second token authority. The linked
+manifest records source hashes/frame IDs and distinguishes fixture WebKit evidence
+from source-rendered AppKit HUDs and separate native-app observations.

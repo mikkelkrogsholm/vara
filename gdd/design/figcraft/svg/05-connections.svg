@@ -1,50 +1,62 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="820" viewBox="0 0 1280 820">
-<rect x="0" y="0" width="1280" height="820" rx="0" fill="rgb(255, 252, 247)"/>
-<rect x="0" y="0" width="1280" height="820" rx="0" fill="rgb(247, 244, 238)"/>
-<rect x="230.390625" y="0" width="1049.609375" height="820" rx="0" fill="rgb(247, 244, 238)"/>
-<text  x="270.390625" y="73.1" fill="rgb(37, 37, 31)" font-family="Georgia, &quot;Noto Serif&quot;, &quot;Liberation Serif&quot;, serif" font-size="36px" font-weight="normal">Settings</text>
-<text  x="270.390625" y="105.640625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">A quiet helper, on your terms.</text>
+<rect width="1280" height="820" fill="rgb(240, 235, 227)"/>
+<rect   x="0" y="0" width="1280" height="820" rx="0" fill="rgb(255, 252, 247)"/>
+<rect   x="0" y="0" width="1280" height="820" rx="0" fill="rgb(247, 244, 238)"/>
+<defs><clipPath id="clip-1"><rect x="0" y="0" width="1280" height="820"/></clipPath></defs><g clip-path="url(#clip-1)">
+<rect   x="230.390625" y="0" width="1049.609375" height="820" rx="0" fill="rgb(247, 244, 238)"/>
+<defs><clipPath id="clip-3"><rect x="230.390625" y="0" width="1049.609375" height="820"/></clipPath></defs><g clip-path="url(#clip-3)">
+<text id="text-w500-n13" x="270.390625" y="73.1953125" fill="rgb(37, 37, 31)" font-family="Georgia, Noto Serif, Liberation Serif, serif" letter-spacing="-0.9" font-size="36px" font-weight="500">Settings</text>
+<text id="text-w400-n14" x="270.390625" y="106.625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="400">A quiet helper, on your terms.</text>
 <line x1="270.390625" y1="193.390625" x2="1240" y2="193.390625" stroke="rgb(220, 214, 202)" stroke-width="1"/>
-<text  x="270.390625" y="172.140625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Dictation</text>
+<text id="text-w400-n15" x="270.390869140625" y="173.140625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="400">Dictation</text>
 <line x1="355.921875" y1="192.390625" x2="475.046875" y2="192.390625" stroke="rgb(168, 68, 23)" stroke-width="2"/>
-<text  x="355.921875" y="172.140625" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="bold">Models and keys</text>
-<text  x="499.046875" y="172.140625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Privacy</text>
+<text id="text-w600-n16" x="355.921875" y="173.125" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="600">Models and keys</text>
+<text id="text-w400-n17" x="499.052001953125" y="173.140625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="400">Privacy</text>
 <line x1="270.390625" y1="376.390625" x2="1240" y2="376.390625" stroke="rgb(220, 214, 202)" stroke-width="1"/>
-<text  x="270.390625" y="244.290625" fill="rgb(37, 37, 31)" font-family="Georgia, &quot;Noto Serif&quot;, &quot;Liberation Serif&quot;, serif" font-size="24px" font-weight="normal">Interface language</text>
-<text  x="270.390625" y="275.640625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Choose Vara’s interface</text>
-<text  x="270.390625" y="298.140625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">language. This does not change</text>
-<text  x="270.390625" y="320.640625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">speech or transcription language</text>
-<text  x="270.390625" y="343.140625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">or AI instructions.</text>
-<text  x="529.6875" y="236.790625" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Interface language</text>
-<line x1="270.390625" y1="745.421875" x2="1240" y2="745.421875" stroke="rgb(220, 214, 202)" stroke-width="1"/>
-<text  x="270.390625" y="399.290625" fill="rgb(37, 37, 31)" font-family="Georgia, &quot;Noto Serif&quot;, &quot;Liberation Serif&quot;, serif" font-size="24px" font-weight="normal">Local models</text>
-<text  x="270.390625" y="430.640625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Download once. Use without an account or key.</text>
-<line x1="270.390625" y1="524.234375" x2="1240" y2="524.234375" stroke="rgb(220, 214, 202)" stroke-width="1"/>
-<text  x="270.390625" y="481.140625" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="bold">Parakeet Redux · speech</text>
-<text  x="270.390625" y="503.940625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Multilingual · 179 MB</text>
-<text  x="680.21875" y="492.690625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Installed on device</text>
-<rect x="1090.0625" y="468.0625" width="149.9375" height="38" rx="10" fill="rgb(255, 252, 247)"/>
-<rect x="1090.5625" y="468.5625" width="148.9375" height="37" rx="10" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
-<svg x="1107.0625" y="477.0625" width="20" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(37, 37, 31)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M4 17v4h16v-4"></path></svg>
-<text  x="1135.0625" y="491.665625" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Check model</text>
-<line x1="270.390625" y1="597.578125" x2="1240" y2="597.578125" stroke="rgb(220, 214, 202)" stroke-width="1"/>
-<text  x="270.390625" y="554.484375" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="bold">Whisper Base · speech</text>
-<text  x="270.390625" y="577.284375" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Optional alternative · 148 MB</text>
-<text  x="680.21875" y="566.034375" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Installed on device</text>
-<rect x="1090.0625" y="541.40625" width="149.9375" height="38" rx="10" fill="rgb(255, 252, 247)"/>
-<rect x="1090.5625" y="541.90625" width="148.9375" height="37" rx="10" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
-<svg x="1107.0625" y="550.40625" width="20" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(37, 37, 31)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M4 17v4h16v-4"></path></svg>
-<text  x="1135.0625" y="565.009375" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Check model</text>
-<line x1="270.390625" y1="670.921875" x2="1240" y2="670.921875" stroke="rgb(220, 214, 202)" stroke-width="1"/>
-<text  x="270.390625" y="627.828125" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="bold">Qwen3 0.6B · text</text>
-<text  x="270.390625" y="650.628125" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Optional AI processing · 651 MB</text>
-<text  x="680.21875" y="639.378125" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Installed on device</text>
-<rect x="1090.0625" y="614.75" width="149.9375" height="38" rx="10" fill="rgb(255, 252, 247)"/>
-<rect x="1090.5625" y="615.25" width="148.9375" height="37" rx="10" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
-<svg x="1107.0625" y="623.75" width="20" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(37, 37, 31)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M4 17v4h16v-4"></path></svg>
-<text  x="1135.0625" y="638.353125" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Check model</text>
-<text  x="270.390625" y="712.471875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Parakeet Redux: Moondream and NVIDIA · CC BY 4.0.</text>
-<line x1="270.390625" y1="1326.921875" x2="1240" y2="1326.921875" stroke="rgb(220, 214, 202)" stroke-width="1"/>
-<text  x="270.390625" y="794.321875" fill="rgb(37, 37, 31)" font-family="Georgia, &quot;Noto Serif&quot;, &quot;Liberation Serif&quot;, serif" font-size="24px" font-weight="normal">API keys</text>
-<text  x="270.390625" y="825.671875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Your own keys are saved in the system key store.</text>
+<text id="text-w500-n18" x="270.390625" y="244.8828125" fill="rgb(37, 37, 31)" font-family="Georgia, Noto Serif, Liberation Serif, serif" letter-spacing="-0.36" font-size="24px" font-weight="500">Interface language</text>
+<text id="text-w400-n19" x="270.390625" y="276.625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="400">Choose Vara’s interface</text>
+<text id="text-w400-n20" x="270.390625" y="299.125" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="400">language. This does not change</text>
+<text id="text-w400-n21" x="270.390625" y="321.625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="400">speech or transcription language</text>
+<text id="text-w400-n22" x="270.390625" y="344.125" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="400">or AI instructions.</text>
+<text id="text-w600-n23" x="529.6875" y="237.3828125" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="14px" font-weight="600">Interface language</text>
+<line x1="270.390625" y1="578.484375" x2="1240" y2="578.484375" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<text id="text-w500-n25" x="270.390625" y="425.890625" fill="rgb(37, 37, 31)" font-family="Georgia, Noto Serif, Liberation Serif, serif" letter-spacing="-0.36" font-size="24px" font-weight="500">Updates</text>
+<text id="text-w400-n26" x="270.390625" y="457.625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="400">Stable releases from GitHub.</text>
+<text id="text-w400-n27" x="270.390625" y="480.125" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="400">Checks contact GitHub, never</text>
+<text id="text-w400-n28" x="270.390625" y="502.625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="400">sending audio or text.</text>
+<text id="text-w400-n29" x="529.6875" y="419.625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="400">Running Vara 1.0.2</text>
+<rect   x="529.6875" y="440.890625" width="710.296875" height="53" rx="12" fill="rgb(233, 239, 240)"/>
+<svg x="545.6875" y="457.890625" width="20" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(63, 89, 98)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6m0-10v.1"></path></svg>
+<text id="text-w400-n30" x="575.6875" y="472.8828125" fill="rgb(63, 89, 98)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="14px" font-weight="400">Vara is up to date.</text>
+<rect x="531.6875" y="525.96875" width="12" height="12" rx="3" fill="#007AFF" stroke="#007AFF"/>
+<path d="M534.6875 531.96875 l3 3 l5 -6" fill="none" stroke="#fff" stroke-width="1.7"/>
+<text id="text-w400-n31" x="548.6875" y="536.28125" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="400">Check automatically</text>
+<rect   x="688.21875" y="509.890625" width="157.875" height="41.59375" rx="10" fill="rgb(255, 252, 247)"/>
+<rect x="688.71875" y="510.390625" width="156.875" height="40.59375" rx="10" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
+<text id="text-w600-n32" x="705.21875" y="536.1796875" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="14px" font-weight="600">Check for updates</text>
+<line x1="270.390625" y1="947.515625" x2="1240" y2="947.515625" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<text id="text-w500-n33" x="270.390625" y="601.9765625" fill="rgb(37, 37, 31)" font-family="Georgia, Noto Serif, Liberation Serif, serif" letter-spacing="-0.36" font-size="24px" font-weight="500">Local models</text>
+<text id="text-w400-n34" x="270.390625" y="633.71875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="400">Download once. Use without an account or key.</text>
+<line x1="270.390625" y1="726.328125" x2="1240" y2="726.328125" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<text id="text-w700-n35" x="270.390625" y="684.21875" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="700">Parakeet Redux · speech</text>
+<text id="text-w400-n36" x="270.390625" y="706.8984375" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="13px" font-weight="400">Multilingual · 179 MB</text>
+<text id="text-w400-n37" x="680.21875" y="695.6484375" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="13px" font-weight="400">Installed on device</text>
+<rect   x="1090.0625" y="670.15625" width="149.9375" height="38" rx="10" fill="rgb(255, 252, 247)"/>
+<rect x="1090.5625" y="670.65625" width="148.9375" height="37" rx="10" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
+<svg x="1107.0625" y="679.15625" width="20" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(37, 37, 31)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M4 17v4h16v-4"></path></svg>
+<text id="text-w600-n38" x="1135.0625" y="694.6484375" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="14px" font-weight="600">Check model</text>
+<line x1="270.390625" y1="799.671875" x2="1240" y2="799.671875" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<text id="text-w700-n39" x="270.390625" y="757.5625" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="700">Whisper Base · speech</text>
+<text id="text-w400-n40" x="270.390625" y="780.2421875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="13px" font-weight="400">Optional alternative · 148 MB</text>
+<text id="text-w400-n41" x="680.21875" y="768.9921875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="13px" font-weight="400">Installed on device</text>
+<rect   x="1090.0625" y="743.5" width="149.9375" height="38" rx="10" fill="rgb(255, 252, 247)"/>
+<rect x="1090.5625" y="744" width="148.9375" height="37" rx="10" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
+<svg x="1107.0625" y="752.5" width="20" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(37, 37, 31)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M4 17v4h16v-4"></path></svg>
+<text id="text-w600-n42" x="1135.0625" y="767.9921875" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="14px" font-weight="600">Check model</text>
+<line x1="270.390625" y1="873.015625" x2="1240" y2="873.015625" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<text id="text-w700-n43" x="270.390625" y="830.90625" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="700">Qwen3 0.6B · text</text>
+<rect   x="1090.0625" y="816.84375" width="149.9375" height="38" rx="10" fill="rgb(255, 252, 247)"/>
+<rect x="1090.5625" y="817.34375" width="148.9375" height="37" rx="10" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
+</g>
+</g>
 </svg>

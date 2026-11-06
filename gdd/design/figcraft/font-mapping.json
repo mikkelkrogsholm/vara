@@ -1,0 +1,67 @@
+{
+  "family_requested": "system-ui",
+  "family_resolved_by_cli": "System Font",
+  "axes": [
+    {
+      "default": 100.0,
+      "hidden": false,
+      "max": 150.0,
+      "min": 30.0,
+      "name": "Width",
+      "tag": "wdth"
+    },
+    {
+      "default": 28.0,
+      "hidden": false,
+      "max": 96.0,
+      "min": 17.0,
+      "name": "Optical Size",
+      "tag": "opsz"
+    },
+    {
+      "default": 400.0,
+      "hidden": true,
+      "max": 1000.0,
+      "min": 400.0,
+      "name": "GRAD",
+      "tag": "GRAD"
+    },
+    {
+      "default": 400.0,
+      "hidden": false,
+      "max": 1000.0,
+      "min": 1.0,
+      "name": "Weight",
+      "tag": "wght"
+    }
+  ],
+  "named_weights": {
+    "Regular": {
+      "GRAD": 400.0,
+      "opsz": 28.0,
+      "wdth": 100.0,
+      "wght": 400.0
+    },
+    "Medium": {
+      "GRAD": 400.0,
+      "opsz": 28.0,
+      "wdth": 100.0,
+      "wght": 510.0
+    },
+    "Semibold": {
+      "GRAD": 400.0,
+      "opsz": 28.0,
+      "wdth": 100.0,
+      "wght": 590.0
+    },
+    "Bold": {
+      "GRAD": 400.0,
+      "opsz": 28.0,
+      "wdth": 100.0,
+      "wght": 700.0
+    }
+  },
+  "conversion": "Use optical size clamped to actual font size within [17,96], plus explicit named weight axes. Adding a custom optical-size axis alone resets weight to the font default in the current renderer. Georgia keeps the actual computed weight, without numeric widening or scale transforms.",
+  "native_hud_font": ".AppleSystemUIFontMedium, 14pt; font family .AppleSystemUIFont (AppKit font report)",
+  "font_embedding": "None: system fonts are resolved locally; no Apple font redistribution."
+}

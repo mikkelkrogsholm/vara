@@ -1,0 +1,4 @@
+18-hud-recording font .AppleSystemUIFontMedium family .AppleSystemUIFont size 14.00 ascent 13.54 descent -2.95 baseline 3.00
+19-hud-transcribing font .AppleSystemUIFontMedium family .AppleSystemUIFont size 14.00 ascent 13.54 descent -2.95 baseline 3.00
+20-hud-processing font .AppleSystemUIFontMedium family .AppleSystemUIFont size 14.00 ascent 13.54 descent -2.95 baseline 3.00
+PASS: three source-rendered AppKit HUD references; synthetic public Mail origin; no profile or recording access

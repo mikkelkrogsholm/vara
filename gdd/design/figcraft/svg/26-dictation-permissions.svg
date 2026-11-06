@@ -1,42 +1,47 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="820" viewBox="0 0 1280 820">
-<rect x="0" y="0" width="1280" height="820" rx="0" fill="rgb(255, 252, 247)"/>
-<rect x="0" y="0" width="1280" height="820" rx="0" fill="rgb(247, 244, 238)"/>
-<rect x="230.390625" y="0" width="1049.609375" height="820" rx="0" fill="rgb(247, 244, 238)"/>
-<line x1="270.390625" y1="124.328125" x2="1240" y2="124.328125" stroke="rgb(220, 214, 202)" stroke-width="1"/>
-<text  x="270.390625" y="24.578125" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Choose the model that</text>
-<text  x="270.390625" y="47.078125" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">transcribes your speech.</text>
-<svg x="529.6875" y="63.578125" width="16" height="16" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(37, 37, 31)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"></path></svg>
-<text  x="551.6875" y="75.378125" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">On this device · Ready</text>
-<line x1="270.390625" y1="275.671875" x2="1240" y2="275.671875" stroke="rgb(220, 214, 202)" stroke-width="1"/>
-<text  x="270.390625" y="173.228125" fill="rgb(37, 37, 31)" font-family="Georgia, &quot;Noto Serif&quot;, &quot;Liberation Serif&quot;, serif" font-size="24px" font-weight="normal">After transcription</text>
-<text  x="270.390625" y="204.578125" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Your default for new dictations.</text>
-<circle cx="540.6875" cy="162.328125" r="10.5" fill="#fff" stroke="#A84417"/>
-<circle cx="540.6875" cy="162.328125" r="7" fill="#A84417"/>
-<text  x="561.6875" y="166.578125" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Keep transcription</text>
-<text  x="561.6875" y="191.378125" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Insert the transcription as it is.</text>
-<circle cx="905.84375" cy="162.328125" r="10.5" fill="#fff" stroke="#888"/>
-<text  x="926.84375" y="166.578125" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Process with AI</text>
-<text  x="926.84375" y="191.378125" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Process the text before inserting it.</text>
-<text  x="529.6875" y="237.128125" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Apps with custom rules use their own settings.</text>
-<text  x="816.640625" y="237.128125" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="bold">Manage apps →</text>
-<line x1="270.390625" y1="613.171875" x2="1240" y2="613.171875" stroke="rgb(220, 214, 202)" stroke-width="1"/>
-<text  x="270.390625" y="324.571875" fill="rgb(37, 37, 31)" font-family="Georgia, &quot;Noto Serif&quot;, &quot;Liberation Serif&quot;, serif" font-size="24px" font-weight="normal">Permissions</text>
-<text  x="270.390625" y="355.921875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Access to microphone, shortcut</text>
-<text  x="270.390625" y="378.421875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">and insertion in other apps.</text>
-<line x1="529.6875" y1="380.671875" x2="1240" y2="380.671875" stroke="rgb(220, 214, 202)" stroke-width="1"/>
-<text  x="529.6875" y="333.921875" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="bold">Microphone</text>
-<text  x="529.6875" y="357.721875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Used only when you start a dictation.</text>
-<svg x="1123.890625" y="332.671875" width="16" height="16" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(56, 102, 65)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"></path></svg>
-<text  x="1145.890625" y="344.471875" fill="rgb(56, 102, 65)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Access granted</text>
-<line x1="529.6875" y1="493.171875" x2="1240" y2="493.171875" stroke="rgb(220, 214, 202)" stroke-width="1"/>
-<text  x="529.6875" y="426.921875" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="bold">Global shortcuts</text>
-<text  x="529.6875" y="450.721875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Input monitoring lets Vara detect your shortcut while you work</text>
-<text  x="529.6875" y="470.221875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">in other apps.</text>
-<svg x="1123.890625" y="435.421875" width="16" height="16" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(56, 102, 65)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"></path></svg>
-<text  x="1145.890625" y="447.221875" fill="rgb(56, 102, 65)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Access granted</text>
-<line x1="529.6875" y1="586.171875" x2="1240" y2="586.171875" stroke="rgb(220, 214, 202)" stroke-width="1"/>
-<text  x="529.6875" y="539.421875" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="bold">Insertion in other apps</text>
-<text  x="529.6875" y="563.221875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Accessibility allows insertion into the original text field.</text>
-<svg x="1123.890625" y="538.171875" width="16" height="16" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(56, 102, 65)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"></path></svg>
-<text  x="1145.890625" y="549.971875" fill="rgb(56, 102, 65)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Access granted</text>
+<rect width="1280" height="820" fill="rgb(240, 235, 227)"/>
+<rect   x="0" y="0" width="1280" height="820" rx="0" fill="rgb(255, 252, 247)"/>
+<rect   x="0" y="0" width="1280" height="820" rx="0" fill="rgb(247, 244, 238)"/>
+<defs><clipPath id="clip-1"><rect x="0" y="0" width="1280" height="820"/></clipPath></defs><g clip-path="url(#clip-1)">
+<rect   x="230.390625" y="0" width="1049.609375" height="820" rx="0" fill="rgb(247, 244, 238)"/>
+<defs><clipPath id="clip-3"><rect x="230.390625" y="0" width="1049.609375" height="820"/></clipPath></defs><g clip-path="url(#clip-3)">
+<line x1="270.390625" y1="124.421875" x2="1240" y2="124.421875" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<text id="text-w400-n13" x="270.390625" y="25.65625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="400">Choose the model that</text>
+<text id="text-w400-n14" x="270.390625" y="48.15625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="400">transcribes your speech.</text>
+<svg x="529.6875" y="63.671875" width="16" height="16" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(37, 37, 31)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"></path></svg>
+<text id="text-w400-n16" x="551.6875" y="76.6640625" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="13px" font-weight="400">On this device · Ready</text>
+<line x1="270.390625" y1="275.765625" x2="1240" y2="275.765625" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<text id="text-w500-n17" x="270.390625" y="173.9140625" fill="rgb(37, 37, 31)" font-family="Georgia, Noto Serif, Liberation Serif, serif" letter-spacing="-0.36" font-size="24px" font-weight="500">After transcription</text>
+<text id="text-w400-n18" x="270.390625" y="205.65625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="400">Your default for new dictations.</text>
+<circle cx="540.6875" cy="162.421875" r="10.3" fill="rgb(168, 68, 23)" stroke="rgb(168, 68, 23)" stroke-width="1.5"/>
+<circle cx="540.6875" cy="162.421875" r="3" fill="#fff"/>
+<text id="text-w400-n19" x="561.6875" y="167.65625" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="400">Keep transcription</text>
+<text id="text-w400-n20" x="561.6875" y="192.3359375" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="13px" font-weight="400">Insert the transcription as it is.</text>
+<circle cx="905.828125" cy="162.421875" r="10.3" fill="#fff" stroke="#888" stroke-width="1.5"/>
+<text id="text-w400-n21" x="926.828125" y="167.65625" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="400">Process with AI</text>
+<text id="text-w400-n22" x="926.828125" y="192.3359375" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="13px" font-weight="400">Process the text before inserting it.</text>
+<text id="text-w400-n23" x="529.6875" y="237.7421875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="13px" font-weight="400">Apps with custom rules use their own settings.</text>
+<text id="text-w600-n24" x="816.625" y="237.7578125" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="13px" font-weight="600">Manage apps →</text>
+<line x1="270.390625" y1="613.265625" x2="1240" y2="613.265625" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<text id="text-w500-n25" x="270.390625" y="325.265625" fill="rgb(37, 37, 31)" font-family="Georgia, Noto Serif, Liberation Serif, serif" letter-spacing="-0.36" font-size="24px" font-weight="500">Permissions</text>
+<text id="text-w400-n26" x="270.390625" y="357" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="400">Access to microphone, shortcut</text>
+<text id="text-w400-n27" x="270.390625" y="379.5" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="400">and insertion in other apps.</text>
+<line x1="529.6875" y1="380.765625" x2="1239.984375" y2="380.765625" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<text id="text-w700-n28" x="529.6875" y="335.015625" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="700">Microphone</text>
+<text id="text-w400-n29" x="529.6875" y="359.0078125" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="13px" font-weight="400">Used only when you start a dictation.</text>
+<svg x="1123.875" y="332.765625" width="16" height="16" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(56, 102, 65)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"></path></svg>
+<text id="text-w400-n30" x="1145.875" y="345.7578125" fill="rgb(56, 102, 65)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="13px" font-weight="400">Access granted</text>
+<line x1="529.6875" y1="493.265625" x2="1239.984375" y2="493.265625" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<text id="text-w700-n31" x="529.6875" y="428" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="700">Global shortcuts</text>
+<text id="text-w400-n32" x="529.6875" y="452.0078125" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="13px" font-weight="400">Input monitoring lets Vara detect your shortcut while you</text>
+<text id="text-w400-n33" x="529.6875" y="471.5078125" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="13px" font-weight="400">work in other apps.</text>
+<svg x="1123.875" y="435.515625" width="16" height="16" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(56, 102, 65)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"></path></svg>
+<text id="text-w400-n34" x="1145.875" y="448.5078125" fill="rgb(56, 102, 65)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="13px" font-weight="400">Access granted</text>
+<line x1="529.6875" y1="586.265625" x2="1239.984375" y2="586.265625" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<text id="text-w700-n35" x="529.6875" y="540.5" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="700">Insertion in other apps</text>
+<text id="text-w400-n36" x="529.6875" y="564.5078125" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="13px" font-weight="400">Accessibility allows insertion into the original text field.</text>
+<svg x="1123.875" y="538.265625" width="16" height="16" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(56, 102, 65)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"></path></svg>
+<text id="text-w400-n37" x="1145.875" y="551.2578125" fill="rgb(56, 102, 65)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="13px" font-weight="400">Access granted</text>
+</g>
+</g>
 </svg>

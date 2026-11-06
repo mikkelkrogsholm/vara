@@ -5,44 +5,44 @@ async function run(page, out) {
  const outputs={};
 
  await page.setViewportSize({width:1280,height:820});
- await page.addInitScript(new Function('data',init),fixture);
+ const runtimeCatalog=require('../../../crates/vara-core/messages/runtime.json');
+ await page.addInitScript(({data,init,runtimeCatalog})=>{
+  new Function('data',init)(data);
+  window.designUpdate={current_version:'1.0.2',status:'current',automatic:true,version:null,downloaded:false};
+  const host=window.__TAURI__.core.invoke;
+  window.__TAURI__.core.invoke=async(name,args)=>{
+   if(args.action==='runtime_catalog')return runtimeCatalog;
+   if(args.action.startsWith('update_'))return {...window.designUpdate};
+   return host(name,args);
+  };
+  const listen=window.__TAURI__.event.listen;
+  window.__TAURI__.event.listen=async(name,fn)=>{if(name==='vara:update')window.designEmitUpdate=value=>{Object.assign(window.designUpdate,value);fn({payload:{...window.designUpdate}})};return listen(name,fn)};
+ },{data:fixture,init,runtimeCatalog});
  await page.route('**/ui/assets/mail.png',route=>route.continue());
  await page.goto('http://127.0.0.1:18770/ui/index.html');
  await page.waitForSelector('.history-row');
  const capture=async(name)=>{
+  await page.bringToFront();
+  if(name==='31-model-dialog'){await page.locator('#engine-label').focus();await page.locator('#engine-label').press('Meta+A');}
+  const focusBefore=await page.evaluate(()=>document.hasFocus());
   await page.screenshot({path:out+'/references/'+name+'.png'});
-  const svg=await page.evaluate(()=>{
-   const esc=s=>String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
-   let parts=['<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="820" viewBox="0 0 1280 820">'];
-   const assets=[];let inComponent=false;const hasDialog=!!document.querySelector('dialog[open]');
-   const vis=e=>{const c=getComputedStyle(e),r=e.getBoundingClientRect(); return c.display!=='none'&&c.visibility!=='hidden'&&+c.opacity!==0&&r.width>0&&r.height>0&&r.bottom>0&&r.right>0&&r.top<820&&r.left<1280};
-   const color=c=>c&&!/rgba\(0, 0, 0, 0\)|transparent/.test(c);
-   function walk(e){if(!vis(e)||e.tagName!=='DETAILS' && e.closest('details:not([open])') && !e.closest('summary'))return; const c=getComputedStyle(e),r=e.getBoundingClientRect();
-    if(!hasDialog&&!inComponent&&(e.matches('.sidebar, .sticky-save, button.button--primary, .field select'))){let saved=parts;parts=[];inComponent=true;walk(e);inComponent=false;let kind=e.matches('.sidebar')?'Sidebar':e.matches('.sticky-save')?'Save bar':e.matches('select')?'Select field':'Primary button';assets.push({kind,x:r.x,y:r.y,width:r.width,height:r.height,svg:`<svg xmlns="http://www.w3.org/2000/svg" width="${r.width}" height="${r.height}" viewBox="${r.x} ${r.y} ${r.width} ${r.height}">${parts.join('')}</svg>`});parts=saved;return;}
-    if(e.tagName.toLowerCase()==='svg'){let s=e.outerHTML.replace('<svg ',`<svg x="${r.x}" y="${r.y}" width="${r.width}" height="${r.height}" `).replaceAll('currentColor',c.color);if(e.closest('.original-disclosure:not([open]) summary'))s=`<g transform="rotate(-90 ${r.x+r.width/2} ${r.y+r.height/2})">${s}</g>`;parts.push(s);return}
-    if(e.tagName==='DIALOG'&&e.open)parts.push('<rect width="1280" height="820" fill="rgba(37,37,31,0.28)"/>');
-    if(e.matches('.history-row:not(.is-selected):not(:last-child)'))parts.push(`<line x1="${r.x+12}" y1="${r.bottom}" x2="${r.right-12}" y2="${r.bottom}" stroke="#DCD6CA" stroke-width="1"/>`);
-    if(color(c.backgroundColor))parts.push(`<rect x="${r.x}" y="${r.y}" width="${r.width}" height="${r.height}" rx="${parseFloat(c.borderTopLeftRadius)||0}" fill="${c.backgroundColor}"/>`);
-    let uniform=['Top','Right','Bottom','Left'].every(x=>c['border'+x+'Width']===c.borderTopWidth&&c['border'+x+'Color']===c.borderTopColor);let bw=parseFloat(c.borderTopWidth)||0;if(uniform&&bw&&color(c.borderTopColor)){parts.push(`<rect x="${r.x+bw/2}" y="${r.y+bw/2}" width="${r.width-bw}" height="${r.height-bw}" rx="${parseFloat(c.borderTopLeftRadius)||0}" fill="none" stroke="${c.borderTopColor}" stroke-width="${bw}"/>`)}
-    for(const side of (uniform?[]:['Top','Right','Bottom','Left'])){let w=parseFloat(c['border'+side+'Width'])||0,col=c['border'+side+'Color'];if(!w||!color(col))continue;let x1=r.x,y1=r.y,x2=r.right,y2=r.y;if(side==='Bottom')y1=y2=r.bottom;if(side==='Left')x2=x1=r.x,y2=r.bottom;if(side==='Right')x1=x2=r.right,y2=r.bottom;parts.push(`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${col}" stroke-width="${w}"/>`)}
-    if(e.tagName==='IMG'){parts.push(`<image x="${r.x}" y="${r.y}" width="${r.width}" height="${r.height}" href="${esc(e.src)}"/>`);return}
-    if(e.matches('.sidebar-nav .is-current, .sidebar nav .is-current'))parts.push(`<rect x="${r.x+5}" y="${r.y+12}" width="2" height="${r.height-24}" rx="1" fill="#f4a978"/>`);
-    if(e.tagName==='INPUT'&&e.classList.contains('switch')){parts.push(`<circle cx="${r.x+(e.checked?r.width-11:11)}" cy="${r.y+r.height/2}" r="9" fill="#fff"/>`);return}
-    if(e.tagName==='TEXTAREA'){let ctx=document.createElement('canvas').getContext('2d');ctx.font=c.font;let max=r.width-parseFloat(c.paddingLeft)-parseFloat(c.paddingRight),lines=[''];for(let word of (e.value||e.placeholder).split(/\s+/)){let last=lines.length-1,test=lines[last]?(lines[last]+' '+word):word;if(ctx.measureText(test).width>max&&lines[last])lines.push(word);else lines[last]=test}let x=r.x+parseFloat(c.paddingLeft||0),base=r.y+parseFloat(c.paddingTop||0)+parseFloat(c.fontSize)*0.9,lh=parseFloat(c.lineHeight)||parseFloat(c.fontSize)*1.4;lines.forEach((line,i)=>parts.push(`<text x="${x}" y="${base+i*lh}" fill="${c.color}" font-family="${esc(c.fontFamily)}" font-size="${c.fontSize}" font-weight="${(+c.fontWeight>=600||(+c.fontWeight>=500&&!c.fontFamily.includes('Georgia')))?'bold':'normal'}">${esc(line)}</text>`));return}
-    if(e.tagName==='INPUT'&&['radio','checkbox'].includes(e.type)){let cx=r.x+r.width/2,cy=r.y+r.height/2;parts.push(`<circle cx="${cx}" cy="${cy}" r="${Math.min(r.width,r.height)/2-0.5}" fill="#fff" stroke="${e.checked?'#A84417':'#888'}"/>`);if(e.checked)parts.push(`<circle cx="${cx}" cy="${cy}" r="${Math.min(r.width,r.height)/2-4}" fill="#A84417"/>`);return}
-    if(e.tagName==='INPUT'&&e.type==='range'){parts.push(`<rect x="${r.x}" y="${r.y+r.height/2-2}" width="${r.width}" height="4" rx="2" fill="#DCD6CA"/><circle cx="${r.x+7}" cy="${r.y+r.height/2}" r="7" fill="#A84417"/>`);return}
-    if(['INPUT','TEXTAREA','SELECT'].includes(e.tagName)){if(e.tagName==='SELECT')parts.push(`<path d="M${r.right-28} ${r.y+r.height/2-2} l5 5 5 -5" fill="none" stroke="#6A6B5F" stroke-width="1.5"/>`);let t=e.tagName==='SELECT'?e.selectedOptions[0]?.textContent:e.value||e.placeholder;if(t){let x=r.x+parseFloat(c.paddingLeft||0),y=r.y+(r.height-parseFloat(c.fontSize))/2+parseFloat(c.fontSize)*0.85;parts.push(`<text x="${x}" y="${y}" fill="${c.color}" font-family="${esc(c.fontFamily)}" font-size="${c.fontSize}" font-weight="${c.fontWeight}">${esc(t)}</text>`)}return}
-    for(const n of e.childNodes){if(n.nodeType===1)walk(n);else if(n.nodeType===3&&n.textContent.trim()){
-      let text=n.textContent,re=/\S+/g,m,lines=[];let clip=e;while(clip&&getComputedStyle(clip).overflowX==='visible')clip=clip.parentElement;let cr=clip?clip.getBoundingClientRect():{left:0,right:1280,top:0,bottom:820};
-      while((m=re.exec(text))){let range=document.createRange();range.setStart(n,m.index);range.setEnd(n,m.index+m[0].length);let q=range.getBoundingClientRect();if(!q.width||!q.height||q.bottom<=cr.top||q.top>=cr.bottom||q.right<=cr.left||q.left>=cr.right||q.top>=820)continue;let line=lines.find(l=>Math.abs(l.y-q.y)<2);if(!line){line={x:q.x,y:q.y,h:q.height,words:[],cut:false};lines.push(line)}if(q.right>cr.right){line.cut=true;continue}line.words.push(m[0]);}
-      for(let l of lines){if(!l.words.length)continue;let y=l.y+(l.h-parseFloat(c.fontSize))/2+parseFloat(c.fontSize)*0.85;let value=l.words.join(' ')+(l.cut?'…':'');parts.push(`<text ${e.closest('.tx-title')?`transform="translate(${l.x},0) scale(0.9,1) translate(${-l.x},0)"`:''} x="${l.x}" y="${y}" fill="${c.color}" font-family="${esc(c.fontFamily)}" font-size="${c.fontSize}" font-weight="${(+c.fontWeight>=600||(+c.fontWeight>=500&&!c.fontFamily.includes('Georgia')))?'bold':'normal'}">${esc(value)}</text>`)}
-    }}
-   }walk(document.body);parts.push('</svg>');return {main:parts.join('\n'),assets};
-  });
+  if(focusBefore!==await page.evaluate(()=>document.hasFocus()))throw Error('Window focus changed during '+name);
+  if(name==='31-model-dialog')console.log('31-model-dialog window focused: '+focusBefore);
+  // Selection endpoints can remain nonempty while WebKit suppresses the native
+  // selection paint. Measure the actual captured active-input pixels, preserving
+  // exactly the visible reference state rather than inventing a blue highlight.
+  let selectionPaintVisible=false;
+  if(name==='31-model-dialog'){
+   const r=await page.locator('#engine-label').boundingBox();
+   const bounds=[r.x*2,r.y*2,(r.x+r.width)*2,(r.y+r.height)*2].map(Math.round);
+   selectionPaintVisible=require('child_process').execFileSync('python3',['-c',"from PIL import Image;import sys;im=Image.open(sys.argv[1]).convert('RGB').crop(tuple(map(int,sys.argv[2:])));print(sum(b>r+20 and b>g for r,g,b in im.getdata())>20)",out+'/references/'+name+'.png',...bounds.map(String)],{encoding:'utf8'}).trim()==='True';
+   console.log(name+' visible selection paint: '+selectionPaintVisible);
+  }
+  const svg=await page.evaluate(require('./serialize.cjs'),{selectionPaintVisible});
   outputs[name]=svg;
  };
  await page.locator('[data-page="transcription"]').click();
- await capture('10-transcription-empty');
+ await capture('10-transcription-empty');await page.locator('.tx-recent').scrollIntoViewIfNeeded();await capture('40-transcription-recent');await page.locator('#workspace').evaluate(e=>e.scrollTop=0);
  await page.locator('[data-action="tx-pick"]').first().click();await capture('11-transcription-import');
  await page.locator('[data-action="tx-start"]').first().click();
  await page.locator('[data-action="tx-select"][data-id="file-1"]').click();await page.waitForSelector('.tx-word');await capture('12-transcription-editor');

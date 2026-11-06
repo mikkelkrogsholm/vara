@@ -1,0 +1,586 @@
+{
+  "source_revision": "175fcf62b686a0bc5730cbe0ff0d1485a61beea0",
+  "installed_app_version": "1.0.2",
+  "native_file_sha256": "a0b8d5d7739dace528e0854152ed5575f88e89182895bed866f25f5997fd1ab8",
+  "tool_version": "figcraft-cli 0.15.1",
+  "font_report": {
+    "embeddedFontFiles": 0,
+    "externalPenpotFontRefs": [],
+    "fontLicenseNotices": 0,
+    "fonts": [
+      {
+        "available": true,
+        "family": "Georgia",
+        "layers": [
+          "text-w400-n14",
+          "text-w400-n16",
+          "text-w400-n36",
+          "text-w400-n37",
+          "text-w400-n39",
+          "text-w400-n41",
+          "text-w400-n42",
+          "text-w400-n43",
+          "text-w400-n44",
+          "text-w400-n45",
+          "text-w400-n46",
+          "text-w500-n13",
+          "text-w500-n15",
+          "text-w500-n17",
+          "text-w500-n18",
+          "text-w500-n22",
+          "text-w500-n24",
+          "text-w500-n25",
+          "text-w500-n28",
+          "text-w500-n29",
+          "text-w500-n31",
+          "text-w500-n33",
+          "text-w500-n38",
+          "text-w500-n39",
+          "text-w600-n1"
+        ]
+      },
+      {
+        "available": true,
+        "family": "system-ui",
+        "layers": [
+          "text-w400-n10",
+          "text-w400-n11",
+          "text-w400-n2",
+          "text-w400-n24",
+          "text-w400-n3",
+          "text-w400-n30",
+          "text-w400-n36",
+          "text-w400-n4",
+          "text-w400-n41",
+          "text-w400-n43",
+          "text-w400-n5",
+          "text-w400-n6",
+          "text-w400-n8",
+          "text-w400-n9",
+          "text-w500-n2",
+          "text-w500-n4",
+          "text-w500-n5",
+          "text-w500-n7",
+          "text-w600-n12",
+          "text-w600-n32",
+          "text-w600-n38",
+          "text-w600-n42",
+          "text-w600-n44",
+          "text-w600-n45",
+          "text-w600-n46"
+        ]
+      }
+    ],
+    "missing": 0,
+    "total": 2
+  },
+  "editable_text_layers": 2018,
+  "components": 58,
+  "instances": 95,
+  "preserved_old_frames": 31,
+  "frames": [
+    {
+      "name": "01-history",
+      "frame_id": 812,
+      "reference_engine": "WebKit 26.0 fictional host fixture",
+      "logical_size": [
+        1280,
+        820
+      ],
+      "reference_sha256": "0b0cb1366e54cd303fd38a3ee23e6541933f180bd4be8046e4a4399ae2a0ecd1",
+      "export_sha256": "f5b1c439fa6ce1d6909ab5dbf4387e3f78b90f62a1a74c463af60c0d73fea10d",
+      "native_live_app_verified": false
+    },
+    {
+      "name": "02-original",
+      "frame_id": 943,
+      "reference_engine": "WebKit 26.0 fictional host fixture",
+      "logical_size": [
+        1280,
+        820
+      ],
+      "reference_sha256": "3fac222e528054398fe3a541aafc4e7e1b187201272e6a42c879f39d9eb31ea7",
+      "export_sha256": "e93d05cba5e2860ec4480bc9fec6fccbaec8bd9d5b0db6faf12f08500288934a",
+      "native_live_app_verified": false
+    },
+    {
+      "name": "03-apps",
+      "frame_id": 1076,
+      "reference_engine": "WebKit 26.0 fictional host fixture",
+      "logical_size": [
+        1280,
+        820
+      ],
+      "reference_sha256": "f54a4646d223e7874dd2faa7277dcf15819dbb58c70a8c4e4bc6a26ce4cc0e55",
+      "export_sha256": "83b86f5258dcac70621e5760d5d60fa2cfe847c417ae08e54fb652ed80baf71d",
+      "native_live_app_verified": false
+    },
+    {
+      "name": "04-dictation",
+      "frame_id": 1122,
+      "reference_engine": "WebKit 26.0 fictional host fixture",
+      "logical_size": [
+        1280,
+        820
+      ],
+      "reference_sha256": "138e7b293c2993b62a11c15a1c8656c6b07b64400c2ac7be630df86d2c1f130a",
+      "export_sha256": "d2371595944dfac96a6381ebf8ab68cb67b56212bb21f2d9aa9e46370a0c3ade",
+      "native_live_app_verified": false
+    },
+    {
+      "name": "05-connections",
+      "frame_id": 1180,
+      "reference_engine": "WebKit 26.0 fictional host fixture",
+      "logical_size": [
+        1280,
+        820
+      ],
+      "reference_sha256": "2b46e78f6a338bd7af51202c7166ab78653d081eb60201e0476f3a4a377f32dc",
+      "export_sha256": "ec5e710b82febf75168c229f09ac8784371cbd43bd5ea805d7e554c25da56a74",
+      "native_live_app_verified": false
+    },
+    {
+      "name": "06-privacy",
+      "frame_id": 1250,
+      "reference_engine": "WebKit 26.0 fictional host fixture",
+      "logical_size": [
+        1280,
+        820
+      ],
+      "reference_sha256": "fa209d6c36d2721078e33cc36197d556b152bf1c0cdc8ceaea181324d23e473f",
+      "export_sha256": "403342d3155e3bfe3aa6a1529b3f7fa19149cd7f65b5e653efcbbe3ac072cf7b",
+      "native_live_app_verified": false
+    },
+    {
+      "name": "10-transcription-empty",
+      "frame_id": 1316,
+      "reference_engine": "WebKit 26.0 fictional host fixture",
+      "logical_size": [
+        1280,
+        820
+      ],
+      "reference_sha256": "0e9b34160555ac171236b0e668fa2e9952fb93afa16e64b7524fe4ae4245c506",
+      "export_sha256": "fb43c022946ba3702e45a4f2117970a53ac1ff9448644b19578f449656bff41e",
+      "native_live_app_verified": false
+    },
+    {
+      "name": "11-transcription-import",
+      "frame_id": 1361,
+      "reference_engine": "WebKit 26.0 fictional host fixture",
+      "logical_size": [
+        1280,
+        820
+      ],
+      "reference_sha256": "58febf9010209f23ac5d4d7c47b813f1a11f736df29472fe0f989e96d31ae38b",
+      "export_sha256": "47908e2665478bb63f29ec115108178f513e2e0d29055b4b9d70670c5a2d6b54",
+      "native_live_app_verified": false
+    },
+    {
+      "name": "12-transcription-editor",
+      "frame_id": 1417,
+      "reference_engine": "WebKit 26.0 fictional host fixture",
+      "logical_size": [
+        1280,
+        820
+      ],
+      "reference_sha256": "1e2eddc9ef482f82a874ccefa3b72eb7fff3e6816b722fab67969352881e6bb8",
+      "export_sha256": "feffab169e48e5a7b7088343859e3bce96a09ef99a70358de6392a4e96632db5",
+      "native_live_app_verified": false
+    },
+    {
+      "name": "24-transcription-ai",
+      "frame_id": 1539,
+      "reference_engine": "WebKit 26.0 fictional host fixture",
+      "logical_size": [
+        1280,
+        820
+      ],
+      "reference_sha256": "de0e56234ca5ade8786871a0c8d02ef10406a4b1761ec602e27cc254407499f5",
+      "export_sha256": "07bf0d8a1eeb8078b74ded11c1f807ab43989e1a73a967e501922c5039740722",
+      "native_live_app_verified": false
+    },
+    {
+      "name": "26-dictation-permissions",
+      "frame_id": 1661,
+      "reference_engine": "WebKit 26.0 fictional host fixture",
+      "logical_size": [
+        1280,
+        820
+      ],
+      "reference_sha256": "c8225c0472d6e2feedb090ccc952655a4d6d0169c2d393e4e257ca10d1840017",
+      "export_sha256": "94195474736cdede75433b4f844cb0fced503ca2655b9540010b7d5b26398b45",
+      "native_live_app_verified": false
+    },
+    {
+      "name": "27-custom-endpoints",
+      "frame_id": 1713,
+      "reference_engine": "WebKit 26.0 fictional host fixture",
+      "logical_size": [
+        1280,
+        820
+      ],
+      "reference_sha256": "baf7050f36dce3eeda87b735c5c08ef7df41e40f57e9e0294954721c331be88d",
+      "export_sha256": "d98358ffb5a488f124e7e50e5a08697d7d04a557390d18a6b1111c044392d0ac",
+      "native_live_app_verified": false
+    },
+    {
+      "name": "28-cli-connections",
+      "frame_id": 1789,
+      "reference_engine": "WebKit 26.0 fictional host fixture",
+      "logical_size": [
+        1280,
+        820
+      ],
+      "reference_sha256": "d951cb2f00567263a73784888a7657465f14a7bf31008b4b8f67b8fb80c60c4f",
+      "export_sha256": "0f905ed4535803edd1a4f32cf7d38d4ef8da2d14eee972ed60b2199709d20245",
+      "native_live_app_verified": false
+    },
+    {
+      "name": "29-api-providers",
+      "frame_id": 1845,
+      "reference_engine": "WebKit 26.0 fictional host fixture",
+      "logical_size": [
+        1280,
+        820
+      ],
+      "reference_sha256": "321e0c81b8ed341a429ce95a489bfc7c0f15d5eef64f99ab9bc1f7f3a290389d",
+      "export_sha256": "17fd99e8282f7cbb1a63deec5ea5e871c578b7a054a2cefaa017eb32b0284b60",
+      "native_live_app_verified": false
+    },
+    {
+      "name": "36-privacy-audio",
+      "frame_id": 1940,
+      "reference_engine": "WebKit 26.0 fictional host fixture",
+      "logical_size": [
+        1280,
+        820
+      ],
+      "reference_sha256": "5d18ad2ffe6e3260dfd1ce40792a2bc7a85f1d6621197ec3d7f6d2c4257dc03c",
+      "export_sha256": "d4d0b65fcb2a515c2f31f3d67228a3132c34fcb665ebe5ca4f9a6a12834363ec",
+      "native_live_app_verified": false
+    },
+    {
+      "name": "37-recording-controls",
+      "frame_id": 1985,
+      "reference_engine": "WebKit 26.0 fictional host fixture",
+      "logical_size": [
+        1280,
+        820
+      ],
+      "reference_sha256": "6b7ffc04ce35502321d64cdc2dc5d1402461a13e598c56e2fd7a00952f232537",
+      "export_sha256": "746617e798b218585a15690b5ae9d5cfdb82108f1a1358c3bddd99a061a4f683",
+      "native_live_app_verified": false
+    },
+    {
+      "name": "38-speech-model",
+      "frame_id": 2053,
+      "reference_engine": "WebKit 26.0 fictional host fixture",
+      "logical_size": [
+        1280,
+        820
+      ],
+      "reference_sha256": "6b7ffc04ce35502321d64cdc2dc5d1402461a13e598c56e2fd7a00952f232537",
+      "export_sha256": "746617e798b218585a15690b5ae9d5cfdb82108f1a1358c3bddd99a061a4f683",
+      "native_live_app_verified": false
+    },
+    {
+      "name": "39-local-models",
+      "frame_id": 2121,
+      "reference_engine": "WebKit 26.0 fictional host fixture",
+      "logical_size": [
+        1280,
+        820
+      ],
+      "reference_sha256": "3238bc8214d12bcc0d30763613e1f839871f02d8de2d9ec63c4c989acd4bf225",
+      "export_sha256": "d3d69d4b7dd8bfe6663b3fb4aba5a6168eb3cdfc6d513485fc6886b742930085",
+      "native_live_app_verified": false
+    },
+    {
+      "name": "40-transcription-recent",
+      "frame_id": 2214,
+      "reference_engine": "WebKit 26.0 fictional host fixture",
+      "logical_size": [
+        1280,
+        820
+      ],
+      "reference_sha256": "a485d8b39a5eb7f17f790aa6f763f17b5e39072329adfd342957a4373aac9427",
+      "export_sha256": "155ae68fcb9a54ed91a78fb68e826096850471d7825bcfc4937075c5d719f347",
+      "native_live_app_verified": false
+    },
+    {
+      "name": "41-app-rule-disabled",
+      "frame_id": 2285,
+      "reference_engine": "WebKit 26.0 fictional host fixture",
+      "logical_size": [
+        1280,
+        820
+      ],
+      "reference_sha256": "dc0ec0ed3336043294e8f6955b89410a1e6455eee5af8611ef9ed7cf9bfc43c9",
+      "export_sha256": "655953eabcdd2fe0f7370df5c5614ace6aba239bb18d58137a60a7f557c1039e",
+      "native_live_app_verified": false
+    },
+    {
+      "name": "07-processing-dialog",
+      "frame_id": 2321,
+      "reference_engine": "WebKit 26.0 fictional host fixture",
+      "logical_size": [
+        1280,
+        820
+      ],
+      "reference_sha256": "b285d997412a235b53655883db7f6f288e916547bff8842af93485dc76a6f6ef",
+      "export_sha256": "02bbacc50916c8b24d21551fc015efc027470e93a31f33ac909608b559b06ba2",
+      "native_live_app_verified": false
+    },
+    {
+      "name": "08-delete-dialog",
+      "frame_id": 2537,
+      "reference_engine": "WebKit 26.0 fictional host fixture",
+      "logical_size": [
+        1280,
+        820
+      ],
+      "reference_sha256": "dd732ae8b73b72a1383fd0f55c52751adc6fabe8985f78f80f3d69751123e38a",
+      "export_sha256": "1e8760a32554513054e5dee90badd375fced8f3212ac2cc54f0a028e98516945",
+      "native_live_app_verified": false
+    },
+    {
+      "name": "13-who-download",
+      "frame_id": 2748,
+      "reference_engine": "WebKit 26.0 fictional host fixture",
+      "logical_size": [
+        1280,
+        820
+      ],
+      "reference_sha256": "df1b2b85810e084f1ab85e3bcc17555413791aa2374daea5ce592c37b0229e20",
+      "export_sha256": "3d115f70f463f99beb6e69fb46a05639f5a138449da40c34818aa3a2633d5b0f",
+      "native_live_app_verified": false
+    },
+    {
+      "name": "14-who-known-count",
+      "frame_id": 3027,
+      "reference_engine": "WebKit 26.0 fictional host fixture",
+      "logical_size": [
+        1280,
+        820
+      ],
+      "reference_sha256": "8eda4f83084dc65c1fef80dc4975cfc5674715efb3978391df685b996ed20d08",
+      "export_sha256": "8472510e3da9fd2b03422e07eb98ac75e77cbcbfc633c78434bcbb0ffc463a63",
+      "native_live_app_verified": false
+    },
+    {
+      "name": "15-who-uncertainty",
+      "frame_id": 3312,
+      "reference_engine": "WebKit 26.0 fictional host fixture",
+      "logical_size": [
+        1280,
+        820
+      ],
+      "reference_sha256": "94f816e757038a8f74242894b113eadb0028974f3b638fe266d89412af1f996b",
+      "export_sha256": "be81850a0c48acf9c20a139ded80bb6952a5710e7b79b91debd3fbada98748a0",
+      "native_live_app_verified": false
+    },
+    {
+      "name": "09-setup-prepare",
+      "frame_id": 3436,
+      "reference_engine": "WebKit 26.0 fictional host fixture",
+      "logical_size": [
+        1280,
+        820
+      ],
+      "reference_sha256": "8df3f3d11305a5431b7a4f58169f62ec4433c092ad6bd01d22a6aa299fe9999f",
+      "export_sha256": "a8702c0d4e2f7af33cab4496b1abda181cd6e2e56516675d14a0af9e88abcdc2",
+      "native_live_app_verified": false
+    },
+    {
+      "name": "16-setup-permissions",
+      "frame_id": 3476,
+      "reference_engine": "WebKit 26.0 fictional host fixture",
+      "logical_size": [
+        1280,
+        820
+      ],
+      "reference_sha256": "505a4dee5e822276c27b5d33094d800950f7b9d4ebde8daadde2a11f5ae5525b",
+      "export_sha256": "f5f0f24a25e88b0e63a86a45db9e1f71f1dbe586519a741bffcbc98c6912c864",
+      "native_live_app_verified": false
+    },
+    {
+      "name": "17-setup-trial",
+      "frame_id": 3526,
+      "reference_engine": "WebKit 26.0 fictional host fixture",
+      "logical_size": [
+        1280,
+        820
+      ],
+      "reference_sha256": "31b150c0b62d81cc2f4f64dd8731f0f4d3c44d48c2e45fdefdaffcb2ef3c494b",
+      "export_sha256": "7f1aaae68d18a8554a76a76b09a0a21ebaf906c39e5e20e9fc58431225e874e9",
+      "native_live_app_verified": false
+    },
+    {
+      "name": "21-shortcut-dialog",
+      "frame_id": 3563,
+      "reference_engine": "WebKit 26.0 fictional host fixture",
+      "logical_size": [
+        1280,
+        820
+      ],
+      "reference_sha256": "b051989191bb607870e9494fc0bbbf4d9d59ae82efb706304695e0db65e03f61",
+      "export_sha256": "30df55321d0f9a3244bae9dca72710650df7298dd419bcbe589f92d7d47f11cc",
+      "native_live_app_verified": false
+    },
+    {
+      "name": "22-key-dialog",
+      "frame_id": 3718,
+      "reference_engine": "WebKit 26.0 fictional host fixture",
+      "logical_size": [
+        1280,
+        820
+      ],
+      "reference_sha256": "e8788f66ecd51e0e1e62bf41a81f51f5e8f894c82d52607931e51432a58ca394",
+      "export_sha256": "7c660eb88b7470e20c0ffd321a61259d886441d48dd4cfbaac1017aa65450ce6",
+      "native_live_app_verified": false
+    },
+    {
+      "name": "23-app-picker",
+      "frame_id": 3895,
+      "reference_engine": "WebKit 26.0 fictional host fixture",
+      "logical_size": [
+        1280,
+        820
+      ],
+      "reference_sha256": "df0c1c6aaa08bb3a8e436cd21057dde2fc51ad2e845eaaa62c6deae3e9bdddd6",
+      "export_sha256": "146d0c6f204c6069ba29e8356706c7e59bcde8acf47b968cb80b41d146890970",
+      "native_live_app_verified": false
+    },
+    {
+      "name": "25-transcription-export",
+      "frame_id": 4019,
+      "reference_engine": "WebKit 26.0 fictional host fixture",
+      "logical_size": [
+        1280,
+        820
+      ],
+      "reference_sha256": "38bb20f165c29b5aae3bf11afbd917b38f550f6ece4fd24dd714a9119d324ae6",
+      "export_sha256": "098e15104796e47c5b8663914fba25d31ff59fe900ceabcd1c70a802d228fc16",
+      "native_live_app_verified": false
+    },
+    {
+      "name": "30-endpoint-dialog",
+      "frame_id": 4224,
+      "reference_engine": "WebKit 26.0 fictional host fixture",
+      "logical_size": [
+        1280,
+        820
+      ],
+      "reference_sha256": "1ab263f5d8b383f64768bca28dcf97b04049da6a0c0ff390d9b5cbdbfb390c99",
+      "export_sha256": "a9eb2d61fe7735a2cb196c00dd9501a24fcd17003b58a0eff535827fbe9ae7b2",
+      "native_live_app_verified": false
+    },
+    {
+      "name": "31-model-dialog",
+      "frame_id": 4387,
+      "reference_engine": "WebKit 26.0 fictional host fixture",
+      "logical_size": [
+        1280,
+        820
+      ],
+      "reference_sha256": "09a242ce4ac02ceade22738c044982aa674da8cbcc8e3a9e55533deb66ba4337",
+      "export_sha256": "cbe474e777f2d055478863cc750bf152dbcbcf2a44ba816187935170788e4178",
+      "native_live_app_verified": false
+    },
+    {
+      "name": "32-update-available",
+      "frame_id": 4555,
+      "reference_engine": "WebKit 26.0 fictional host fixture",
+      "logical_size": [
+        1280,
+        820
+      ],
+      "reference_sha256": "7196307c144996cbc861a06cf32c1115b51844a14a026be85884f3ab7e612ffd",
+      "export_sha256": "c9a1ef7864b214d94926a483b813b1cd763202c332e53cd0bc9283fb21022d2c",
+      "native_live_app_verified": false
+    },
+    {
+      "name": "33-update-ready",
+      "frame_id": 4623,
+      "reference_engine": "WebKit 26.0 fictional host fixture",
+      "logical_size": [
+        1280,
+        820
+      ],
+      "reference_sha256": "cad30c3f38ae7e1ef8ad52d71bfdb24962f7819eb8f68b14cb219e832009832d",
+      "export_sha256": "8fb02a15bf7b0de9b5dc3e3a2797fcf7adbe3d7e53237a63edea17ee93dbd0eb",
+      "native_live_app_verified": false
+    },
+    {
+      "name": "34-update-error",
+      "frame_id": 4691,
+      "reference_engine": "WebKit 26.0 fictional host fixture",
+      "logical_size": [
+        1280,
+        820
+      ],
+      "reference_sha256": "2bcdaa5791287afdb6cfe8e2c6a16cb7eaebcfded43a9252e712f9a308874295",
+      "export_sha256": "e997486ed10919460785c93a5217f85e8bc36208a41fc09ccac677b3b3f29dc7",
+      "native_live_app_verified": false
+    },
+    {
+      "name": "35-recovery",
+      "frame_id": 4749,
+      "reference_engine": "WebKit 26.0 fictional host fixture",
+      "logical_size": [
+        1280,
+        820
+      ],
+      "reference_sha256": "3233ab8be3a58b13fbce4f9253d1e205055e6994d55f39144918502a50c57dc6",
+      "export_sha256": "8446ec1cc6a9e18c1fa324f38d13a509441775db4f545c8e8373289aa05f2875",
+      "native_live_app_verified": false
+    },
+    {
+      "name": "18-hud-recording",
+      "frame_id": 4886,
+      "reference_engine": "AppKit source-rendered synthetic HUD",
+      "logical_size": [
+        520,
+        76
+      ],
+      "reference_sha256": "8ea11e781257509b89c392ecac931bdef97e9f1fc44b24a8c90d33c852931eb2",
+      "export_sha256": "c94ebd144a81ef153653ed8ac6d154f626f3e1f562e99edd2870048e868975bc",
+      "native_live_app_verified": false
+    },
+    {
+      "name": "19-hud-transcribing",
+      "frame_id": 4915,
+      "reference_engine": "AppKit source-rendered synthetic HUD",
+      "logical_size": [
+        520,
+        76
+      ],
+      "reference_sha256": "c5e4e238335d917d981c432a88fec2b454cbc20316a2dafb5f8146ee181a015f",
+      "export_sha256": "77a45b7ddaa7a82331b3d134cee9a3e3bfa0df11b161a76a7f5d3e8e9618f074",
+      "native_live_app_verified": false
+    },
+    {
+      "name": "20-hud-processing",
+      "frame_id": 4954,
+      "reference_engine": "AppKit source-rendered synthetic HUD",
+      "logical_size": [
+        520,
+        76
+      ],
+      "reference_sha256": "e3c92dbf960ce0b960462c812ef2555efc0865f2265afee8d49969af880d5359",
+      "export_sha256": "9c4bda3ceb2db812d9d7c8764894c7e8a6c7001629a239a2b622696d97130307",
+      "native_live_app_verified": false
+    }
+  ],
+  "source_hashes": {
+    "gdd/design/styles/tokens.css": "7c9a9587c1e193a3d17a00b889bcdb11c08cf6a1086040482e0bb27db424750c",
+    "gdd/design/styles/app.css": "27451854d8449bba10c2f7ef23892dead38b10235adca5227f396a32567d9d4e",
+    "desktop/ui/app.js": "82968abc62937b0824a868e94228838d113e14cacb9d22436888ea8cbd05c184",
+    "desktop/ui/views.js": "77f6f312da61976f49f66605d027f0ca5f53fa5c94c7b7d6c814eb868d2c6e5b",
+    "desktop/ui/i18n.js": "e1f3ac7deb89c4e395c8e75d0348b978282048960e3c4246b55990c29ed04216",
+    "desktop/ui/transcription.js": "e0474bc441e8505dad9f80751a8dc36e2d30252ff4600f37247fffdd2e702389",
+    "desktop/ui/desktop.css": "f2f0bf4e6afb12921b46fa065daed1af2221cf0b4dd1166f9dd0876befdab393",
+    "crates/vara-platform/src/macos_hud.m": "85fd2101e6402958eeeadfdf3d310612d89ae471a3c7f0dd63ef63572479e88b",
+    "crates/vara-core/messages/runtime.json": "b30686e5a3a0c52c754841a30bd85dff31f22d9ae429271af5f28c80a06da54e"
+  }
+}

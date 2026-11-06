@@ -1,0 +1,4 @@
+31-model-dialog window focused: true
+31-model-dialog visible selection paint: false
+capture.cjs: 29 fresh frames; 26.0
+capture-transcription.cjs: 9 fresh frames; 26.0

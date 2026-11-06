@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="820" viewBox="0 0 1280 820">
+<rect width="1280" height="820" fill="rgb(240, 235, 227)"/>
+<rect   x="0" y="0" width="1280" height="820" rx="0" fill="rgb(255, 252, 247)"/>
+<rect   x="0" y="0" width="1280" height="820" rx="0" fill="rgb(247, 244, 238)"/>
+<defs><clipPath id="clip-1"><rect x="0" y="0" width="1280" height="820"/></clipPath></defs><g clip-path="url(#clip-1)">
+<rect   x="230.390625" y="0" width="1049.609375" height="820" rx="0" fill="rgb(247, 244, 238)"/>
+<defs><clipPath id="clip-3"><rect x="230.390625" y="0" width="1049.609375" height="820"/></clipPath></defs><g clip-path="url(#clip-3)">
+<line x1="270.390625" y1="0.484375" x2="1240" y2="0.484375" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<line x1="270.390625" y1="369.515625" x2="1240" y2="369.515625" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<text id="text-w500-n13" x="270.390625" y="23.9765625" fill="rgb(37, 37, 31)" font-family="Georgia, Noto Serif, Liberation Serif, serif" letter-spacing="-0.36" font-size="24px" font-weight="500">Local models</text>
+<text id="text-w400-n14" x="270.390625" y="55.71875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="400">Download once. Use without an account or key.</text>
+<line x1="270.390625" y1="148.328125" x2="1240" y2="148.328125" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<text id="text-w700-n15" x="270.390625" y="106.21875" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="700">Parakeet Redux · speech</text>
+<text id="text-w400-n16" x="270.390625" y="128.8984375" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="13px" font-weight="400">Multilingual · 179 MB</text>
+<text id="text-w400-n17" x="680.21875" y="117.6484375" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="13px" font-weight="400">Installed on device</text>
+<rect   x="1090.0625" y="92.15625" width="149.9375" height="38" rx="10" fill="rgb(255, 252, 247)"/>
+<rect x="1090.5625" y="92.65625" width="148.9375" height="37" rx="10" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
+<svg x="1107.0625" y="101.15625" width="20" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(37, 37, 31)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M4 17v4h16v-4"></path></svg>
+<text id="text-w600-n18" x="1135.0625" y="116.6484375" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="14px" font-weight="600">Check model</text>
+<line x1="270.390625" y1="221.671875" x2="1240" y2="221.671875" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<text id="text-w700-n19" x="270.390625" y="179.5625" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="700">Whisper Base · speech</text>
+<text id="text-w400-n20" x="270.390625" y="202.2421875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="13px" font-weight="400">Optional alternative · 148 MB</text>
+<text id="text-w400-n21" x="680.21875" y="190.9921875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="13px" font-weight="400">Installed on device</text>
+<rect   x="1090.0625" y="165.5" width="149.9375" height="38" rx="10" fill="rgb(255, 252, 247)"/>
+<rect x="1090.5625" y="166" width="148.9375" height="37" rx="10" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
+<svg x="1107.0625" y="174.5" width="20" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(37, 37, 31)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M4 17v4h16v-4"></path></svg>
+<text id="text-w600-n22" x="1135.0625" y="189.9921875" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="14px" font-weight="600">Check model</text>
+<line x1="270.390625" y1="295.015625" x2="1240" y2="295.015625" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<text id="text-w700-n23" x="270.390625" y="252.90625" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="700">Qwen3 0.6B · text</text>
+<text id="text-w400-n24" x="270.390625" y="275.5859375" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="13px" font-weight="400">Optional AI processing · 651 MB</text>
+<text id="text-w400-n25" x="680.21875" y="264.3359375" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="13px" font-weight="400">Installed on device</text>
+<rect   x="1090.0625" y="238.84375" width="149.9375" height="38" rx="10" fill="rgb(255, 252, 247)"/>
+<rect x="1090.5625" y="239.34375" width="148.9375" height="37" rx="10" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
+<svg x="1107.0625" y="247.84375" width="20" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(37, 37, 31)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M4 17v4h16v-4"></path></svg>
+<text id="text-w600-n26" x="1135.0625" y="263.3359375" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="14px" font-weight="600">Check model</text>
+<text id="text-w400-n27" x="270.390625" y="337.7578125" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="13px" font-weight="400">Parakeet Redux: Moondream and NVIDIA · CC BY 4.0.</text>
+<line x1="270.390625" y1="951.015625" x2="1240" y2="951.015625" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<text id="text-w500-n28" x="270.390625" y="419.0078125" fill="rgb(37, 37, 31)" font-family="Georgia, Noto Serif, Liberation Serif, serif" letter-spacing="-0.36" font-size="24px" font-weight="500">API keys</text>
+<text id="text-w400-n29" x="270.390625" y="450.75" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="400">Your own keys are saved in the system key store.</text>
+<line x1="270.390625" y1="561.015625" x2="1240" y2="561.015625" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<text id="text-w500-n30" x="270.390625" y="511.59375" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="500">OpenAI</text>
+<text id="text-w400-n31" x="270.390625" y="531.2578125" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="13px" font-weight="400">Speech and text</text>
+<text id="text-w400-n32" x="651.515625" y="520.0078125" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="13px" font-weight="400">No key added</text>
+<rect   x="1123.921875" y="508.015625" width="116.078125" height="38" rx="10" fill="rgb(255, 252, 247)"/>
+<rect x="1124.421875" y="508.515625" width="115.078125" height="37" rx="10" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
+<svg x="1140.921875" y="517.015625" width="20" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(37, 37, 31)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="9" r="5"></circle><path d="m12 13 8 8m-5-5 3-3m0 6 3-3"></path></svg>
+<text id="text-w600-n33" x="1168.921875" y="532.5078125" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="14px" font-weight="600">Add key</text>
+<line x1="270.390625" y1="652.015625" x2="1240" y2="652.015625" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<text id="text-w500-n34" x="270.390625" y="602.59375" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="500">Groq</text>
+<text id="text-w400-n35" x="270.390625" y="622.2578125" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="13px" font-weight="400">Whisper for speech · AI for text</text>
+<text id="text-w400-n36" x="651.515625" y="611.0078125" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="13px" font-weight="400">No key added</text>
+<rect   x="1123.921875" y="599.015625" width="116.078125" height="38" rx="10" fill="rgb(255, 252, 247)"/>
+<rect x="1124.421875" y="599.515625" width="115.078125" height="37" rx="10" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
+<svg x="1140.921875" y="608.015625" width="20" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(37, 37, 31)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="9" r="5"></circle><path d="m12 13 8 8m-5-5 3-3m0 6 3-3"></path></svg>
+<text id="text-w600-n37" x="1168.921875" y="623.5078125" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="14px" font-weight="600">Add key</text>
+<line x1="270.390625" y1="743.015625" x2="1240" y2="743.015625" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<text id="text-w500-n38" x="270.390625" y="693.59375" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="500">ElevenLabs</text>
+<text id="text-w400-n39" x="270.390625" y="713.265625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="13px" font-weight="400">Speech</text>
+<text id="text-w400-n40" x="651.515625" y="702.0078125" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="13px" font-weight="400">No key added</text>
+<rect   x="1123.921875" y="690.015625" width="116.078125" height="38" rx="10" fill="rgb(255, 252, 247)"/>
+<rect x="1124.421875" y="690.515625" width="115.078125" height="37" rx="10" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
+<svg x="1140.921875" y="699.015625" width="20" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(37, 37, 31)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="9" r="5"></circle><path d="m12 13 8 8m-5-5 3-3m0 6 3-3"></path></svg>
+<text id="text-w600-n41" x="1168.921875" y="714.5078125" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="14px" font-weight="600">Add key</text>
+<line x1="270.390625" y1="834.015625" x2="1240" y2="834.015625" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<text id="text-w500-n42" x="270.390625" y="784.59375" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="500">Anthropic</text>
+<text id="text-w400-n43" x="270.390625" y="804.265625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="13px" font-weight="400">Text</text>
+<text id="text-w400-n44" x="651.515625" y="793.0078125" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="13px" font-weight="400">No key added</text>
+<rect   x="1123.921875" y="781.015625" width="116.078125" height="38" rx="10" fill="rgb(255, 252, 247)"/>
+<rect x="1124.421875" y="781.515625" width="115.078125" height="37" rx="10" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
+<svg x="1140.921875" y="790.015625" width="20" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(37, 37, 31)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="9" r="5"></circle><path d="m12 13 8 8m-5-5 3-3m0 6 3-3"></path></svg>
+<text id="text-w600-n45" x="1168.921875" y="805.5078125" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="14px" font-weight="600">Add key</text>
+</g>
+</g>
+</svg>

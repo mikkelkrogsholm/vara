@@ -1,45 +1,52 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="820" viewBox="0 0 1280 820">
-<rect x="0" y="-1" width="1280" height="820" rx="0" fill="rgb(255, 252, 247)"/>
-<rect x="0" y="-1" width="1280" height="820" rx="0" fill="rgb(247, 244, 238)"/>
-<rect x="230.390625" y="-1" width="1049.609375" height="820" rx="0" fill="rgb(247, 244, 238)"/>
-<line x1="270.390625" y1="-617.078125" x2="1240" y2="-617.078125" stroke="rgb(220, 214, 202)" stroke-width="1"/>
-<line x1="270.390625" y1="16.578125" x2="1240" y2="16.578125" stroke="rgb(220, 214, 202)" stroke-width="1"/>
-<line x1="270.390625" y1="91.171875" x2="1240" y2="91.171875" stroke="rgb(220, 214, 202)" stroke-width="1"/>
-<text  x="270.390625" y="48.953125" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="bold">Ollama · local service</text>
-<text  x="270.390625" y="68.753125" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">qwen3:0.6b · On this device</text>
-<rect x="1179.6875" y="32.578125" width="60.3125" height="41.59375" rx="10" fill="rgb(255, 252, 247)"/>
-<rect x="1180.1875" y="33.078125" width="59.3125" height="40.59375" rx="10" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
-<text  x="1196.6875" y="57.978125" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Edit</text>
-<text  x="270.390625" y="123.546875" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="bold">Groq · Whisper Large-v3</text>
-<text  x="270.390625" y="143.346875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">whisper-large-v3 · At selected provider</text>
-<rect x="1179.6875" y="107.171875" width="60.3125" height="41.59375" rx="10" fill="rgb(255, 252, 247)"/>
-<rect x="1180.1875" y="107.671875" width="59.3125" height="40.59375" rx="10" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
-<text  x="1196.6875" y="132.571875" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Edit</text>
-<rect x="270.390625" y="164.765625" width="124.5625" height="41.59375" rx="10" fill="rgb(255, 252, 247)"/>
-<rect x="270.890625" y="165.265625" width="123.5625" height="40.59375" rx="10" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
-<text  x="287.390625" y="190.165625" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Add endpoint</text>
-<line x1="270.390625" y1="246.359375" x2="1240" y2="246.359375" stroke="rgb(220, 214, 202)" stroke-width="1"/>
-<text  x="270.390625" y="297.859375" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="20px" font-weight="bold">Installed CLI tools</text>
-<svg x="1222" y="282.359375" width="18" height="18" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(37, 37, 31)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg>
-<text  x="270.390625" y="331.609375" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="normal">Optional text connections with their own login.</text>
-<line x1="270.390625" y1="432.453125" x2="1240" y2="432.453125" stroke="rgb(220, 214, 202)" stroke-width="1"/>
-<text  x="270.390625" y="390.234375" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="bold">Claude Code</text>
-<text  x="270.390625" y="410.034375" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Not checked. Text may be processed by an external provider.</text>
-<rect x="1163.328125" y="373.859375" width="76.671875" height="41.59375" rx="10" fill="rgb(255, 252, 247)"/>
-<rect x="1163.828125" y="374.359375" width="75.671875" height="40.59375" rx="10" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
-<text  x="1180.328125" y="399.259375" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Check</text>
-<line x1="270.390625" y1="507.046875" x2="1240" y2="507.046875" stroke="rgb(220, 214, 202)" stroke-width="1"/>
-<text  x="270.390625" y="464.828125" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="bold">Codex</text>
-<text  x="270.390625" y="484.628125" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Not checked. Text may be processed by an external provider.</text>
-<rect x="1163.328125" y="448.453125" width="76.671875" height="41.59375" rx="10" fill="rgb(255, 252, 247)"/>
-<rect x="1163.828125" y="448.953125" width="75.671875" height="40.59375" rx="10" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
-<text  x="1180.328125" y="473.853125" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Check</text>
-<text  x="270.390625" y="539.421875" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="15px" font-weight="bold">Gemini CLI</text>
-<text  x="270.390625" y="559.221875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Not checked. Text may be processed by an external provider.</text>
-<rect x="1163.328125" y="523.046875" width="76.671875" height="41.59375" rx="10" fill="rgb(255, 252, 247)"/>
-<rect x="1163.828125" y="523.546875" width="75.671875" height="40.59375" rx="10" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
-<text  x="1180.328125" y="548.446875" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="14px" font-weight="bold">Check</text>
-<text  x="270.390625" y="601.096875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">Change model selections under</text>
-<text  x="466.375" y="601.096875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="bold">Dictation →</text>
-<text  x="540.140625" y="601.096875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, &quot;Segoe UI&quot;, sans-serif" font-size="13px" font-weight="normal">.</text>
+<rect width="1280" height="820" fill="rgb(240, 235, 227)"/>
+<rect   x="0" y="-1" width="1280" height="820" rx="0" fill="rgb(255, 252, 247)"/>
+<rect   x="0" y="-1" width="1280" height="820" rx="0" fill="rgb(247, 244, 238)"/>
+<defs><clipPath id="clip-1"><rect x="0" y="-1" width="1280" height="820"/></clipPath></defs><g clip-path="url(#clip-1)">
+<rect   x="230.390625" y="-1" width="1049.609375" height="820" rx="0" fill="rgb(247, 244, 238)"/>
+<defs><clipPath id="clip-3"><rect x="230.390625" y="-1" width="1049.609375" height="820"/></clipPath></defs><g clip-path="url(#clip-3)">
+<line x1="270.390625" y1="-616.984375" x2="1240" y2="-616.984375" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<line x1="270.390625" y1="16.671875" x2="1240" y2="16.671875" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<line x1="270.390625" y1="91.265625" x2="1240" y2="91.265625" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<text id="text-w500-n13" x="270.390625" y="50.03125" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="500">Ollama · local service</text>
+<text id="text-w400-n14" x="270.390625" y="69.7109375" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="13px" font-weight="400">qwen3:0.6b · On this device</text>
+<rect   x="1179.6875" y="32.671875" width="60.3125" height="41.59375" rx="10" fill="rgb(255, 252, 247)"/>
+<rect x="1180.1875" y="33.171875" width="59.3125" height="40.59375" rx="10" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
+<text id="text-w600-n15" x="1196.6903076171875" y="58.96875" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="14px" font-weight="600">Edit</text>
+<text id="text-w500-n16" x="270.390625" y="124.625" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="500">Groq · Whisper Large-v3</text>
+<text id="text-w400-n17" x="270.390625" y="144.3046875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="13px" font-weight="400">whisper-large-v3 · At selected provider</text>
+<rect   x="1179.6875" y="107.265625" width="60.3125" height="41.59375" rx="10" fill="rgb(255, 252, 247)"/>
+<rect x="1180.1875" y="107.765625" width="59.3125" height="40.59375" rx="10" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
+<text id="text-w600-n18" x="1196.6903076171875" y="133.5625" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="14px" font-weight="600">Edit</text>
+<rect   x="270.390625" y="164.859375" width="124.5625" height="41.59375" rx="10" fill="rgb(255, 252, 247)"/>
+<rect x="270.890625" y="165.359375" width="123.5625" height="40.59375" rx="10" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
+<text id="text-w600-n19" x="287.390625" y="191.1484375" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="14px" font-weight="600">Add endpoint</text>
+<line x1="270.390625" y1="246.453125" x2="1240" y2="246.453125" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<text id="text-w600-n20" x="270.390625" y="298.9453125" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="20px" font-weight="600">Installed CLI tools</text>
+<svg x="1222" y="282.453125" width="18" height="18" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(37, 37, 31)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg>
+<text id="text-w400-n21" x="270.390625" y="332.6875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="400">Optional text connections with their own login.</text>
+<line x1="270.390625" y1="432.546875" x2="1240" y2="432.546875" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<text id="text-w500-n22" x="270.390625" y="391.3125" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="500">Claude Code</text>
+<text id="text-w400-n23" x="270.390625" y="410.9921875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="13px" font-weight="400">Not checked. Text may be processed by an external provider.</text>
+<rect   x="1163.328125" y="373.953125" width="76.671875" height="41.59375" rx="10" fill="rgb(255, 252, 247)"/>
+<rect x="1163.828125" y="374.453125" width="75.671875" height="40.59375" rx="10" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
+<text id="text-w600-n24" x="1180.3314208984375" y="400.25" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="14px" font-weight="600">Check</text>
+<line x1="270.390625" y1="507.140625" x2="1240" y2="507.140625" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<text id="text-w500-n25" x="270.390625" y="465.921875" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="500">Codex</text>
+<text id="text-w400-n26" x="270.390625" y="485.5859375" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="13px" font-weight="400">Not checked. Text may be processed by an external provider.</text>
+<rect   x="1163.328125" y="448.546875" width="76.671875" height="41.59375" rx="10" fill="rgb(255, 252, 247)"/>
+<rect x="1163.828125" y="449.046875" width="75.671875" height="40.59375" rx="10" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
+<text id="text-w600-n27" x="1180.3314208984375" y="474.84375" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="14px" font-weight="600">Check</text>
+<text id="text-w500-n28" x="270.390625" y="540.5" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="500">Gemini CLI</text>
+<text id="text-w400-n29" x="270.390625" y="560.1796875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="13px" font-weight="400">Not checked. Text may be processed by an external provider.</text>
+<rect   x="1163.328125" y="523.140625" width="76.671875" height="41.59375" rx="10" fill="rgb(255, 252, 247)"/>
+<rect x="1163.828125" y="523.640625" width="75.671875" height="40.59375" rx="10" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
+<text id="text-w600-n30" x="1180.3314208984375" y="549.4375" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="14px" font-weight="600">Check</text>
+<text id="text-w400-n31" x="270.390625" y="601.7109375" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="13px" font-weight="400">Change model selections under</text>
+<text id="text-w600-n32" x="466.359375" y="601.7265625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="13px" font-weight="600">Dictation →</text>
+<text id="text-w400-n33" x="540.13720703125" y="601.7275390625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="13px" font-weight="400">.</text>
+</g>
+</g>
+<defs><clipPath id="clip-4"><rect x="0" y="819" width="1" height="1"/></clipPath></defs><g clip-path="url(#clip-4)">
+</g>
 </svg>
