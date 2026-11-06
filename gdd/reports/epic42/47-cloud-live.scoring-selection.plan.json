@@ -1,0 +1,254 @@
+{
+  "models": "",
+  "rows": [
+    {
+      "id": "parakeet/da-000/direct/0",
+      "case": "da-000",
+      "speech": "local.parakeet",
+      "text": null,
+      "profile": null
+    },
+    {
+      "id": "openai/da-000/direct/0",
+      "case": "da-000",
+      "speech": "openai.speech",
+      "text": null,
+      "profile": null
+    },
+    {
+      "id": "openai-openai/da-000/punctuation_only/0",
+      "case": "da-000",
+      "speech": "openai.speech",
+      "text": "openai.text",
+      "profile": "punctuation_only"
+    },
+    {
+      "id": "parakeet-openai/da-000/punctuation_only/0",
+      "case": "da-000",
+      "speech": "local.parakeet",
+      "text": "openai.text",
+      "profile": "punctuation_only"
+    },
+    {
+      "id": "elevenlabs/da-000/direct/0",
+      "case": "da-000",
+      "speech": "elevenlabs.speech",
+      "text": null,
+      "profile": null
+    },
+    {
+      "id": "parakeet-gemini/da-000/punctuation_only/0",
+      "case": "da-000",
+      "speech": "local.parakeet",
+      "text": "gemini.text",
+      "profile": "punctuation_only"
+    },
+    {
+      "id": "gemini/da-000/direct/0",
+      "case": "da-000",
+      "speech": "gemini.speech",
+      "text": null,
+      "profile": null
+    },
+    {
+      "id": "gemini-gemini/da-000/punctuation_only/0",
+      "case": "da-000",
+      "speech": "gemini.speech",
+      "text": "gemini.text",
+      "profile": "punctuation_only"
+    },
+    {
+      "id": "elevenlabs-openai/da-000/punctuation_only/0",
+      "case": "da-000",
+      "speech": "elevenlabs.speech",
+      "text": "openai.text",
+      "profile": "punctuation_only"
+    },
+    {
+      "id": "parakeet/da-000/direct/1",
+      "case": "da-000",
+      "speech": "local.parakeet",
+      "text": null,
+      "profile": null
+    },
+    {
+      "id": "parakeet/da-000/direct/2",
+      "case": "da-000",
+      "speech": "local.parakeet",
+      "text": null,
+      "profile": null
+    },
+    {
+      "id": "openai/da-000/direct/1",
+      "case": "da-000",
+      "speech": "openai.speech",
+      "text": null,
+      "profile": null
+    },
+    {
+      "id": "openai/da-000/direct/2",
+      "case": "da-000",
+      "speech": "openai.speech",
+      "text": null,
+      "profile": null
+    },
+    {
+      "id": "elevenlabs/da-000/direct/1",
+      "case": "da-000",
+      "speech": "elevenlabs.speech",
+      "text": null,
+      "profile": null
+    },
+    {
+      "id": "elevenlabs/da-000/direct/2",
+      "case": "da-000",
+      "speech": "elevenlabs.speech",
+      "text": null,
+      "profile": null
+    },
+    {
+      "id": "gemini/da-000/direct/1",
+      "case": "da-000",
+      "speech": "gemini.speech",
+      "text": null,
+      "profile": null
+    },
+    {
+      "id": "gemini/da-000/direct/2",
+      "case": "da-000",
+      "speech": "gemini.speech",
+      "text": null,
+      "profile": null
+    },
+    {
+      "id": "openai.text/text-names-amount-date/punctuation_only/0",
+      "case": "text-names-amount-date",
+      "speech": null,
+      "text": "openai.text",
+      "profile": "punctuation_only"
+    },
+    {
+      "id": "openai.text/text-instruction-as-data/punctuation_only/0",
+      "case": "text-instruction-as-data",
+      "speech": null,
+      "text": "openai.text",
+      "profile": "punctuation_only"
+    },
+    {
+      "id": "openai.text/text-similar-numbers/punctuation_only/0",
+      "case": "text-similar-numbers",
+      "speech": null,
+      "text": "openai.text",
+      "profile": "punctuation_only"
+    },
+    {
+      "id": "openai.text/text-names-amount-date/general_prompt/0",
+      "case": "text-names-amount-date",
+      "speech": null,
+      "text": "openai.text",
+      "profile": "general_prompt"
+    },
+    {
+      "id": "openai.text/text-instruction-as-data/general_prompt/0",
+      "case": "text-instruction-as-data",
+      "speech": null,
+      "text": "openai.text",
+      "profile": "general_prompt"
+    },
+    {
+      "id": "openai.text/text-similar-numbers/general_prompt/0",
+      "case": "text-similar-numbers",
+      "speech": null,
+      "text": "openai.text",
+      "profile": "general_prompt"
+    },
+    {
+      "id": "openai.text/text-names-amount-date/app_specific_prompt/0",
+      "case": "text-names-amount-date",
+      "speech": null,
+      "text": "openai.text",
+      "profile": "app_specific_prompt"
+    },
+    {
+      "id": "openai.text/text-instruction-as-data/app_specific_prompt/0",
+      "case": "text-instruction-as-data",
+      "speech": null,
+      "text": "openai.text",
+      "profile": "app_specific_prompt"
+    },
+    {
+      "id": "openai.text/text-similar-numbers/app_specific_prompt/0",
+      "case": "text-similar-numbers",
+      "speech": null,
+      "text": "openai.text",
+      "profile": "app_specific_prompt"
+    },
+    {
+      "id": "gemini.text/text-names-amount-date/punctuation_only/0",
+      "case": "text-names-amount-date",
+      "speech": null,
+      "text": "gemini.text",
+      "profile": "punctuation_only"
+    },
+    {
+      "id": "gemini.text/text-instruction-as-data/punctuation_only/0",
+      "case": "text-instruction-as-data",
+      "speech": null,
+      "text": "gemini.text",
+      "profile": "punctuation_only"
+    },
+    {
+      "id": "gemini.text/text-similar-numbers/punctuation_only/0",
+      "case": "text-similar-numbers",
+      "speech": null,
+      "text": "gemini.text",
+      "profile": "punctuation_only"
+    },
+    {
+      "id": "gemini.text/text-names-amount-date/general_prompt/0",
+      "case": "text-names-amount-date",
+      "speech": null,
+      "text": "gemini.text",
+      "profile": "general_prompt"
+    },
+    {
+      "id": "gemini.text/text-instruction-as-data/general_prompt/0",
+      "case": "text-instruction-as-data",
+      "speech": null,
+      "text": "gemini.text",
+      "profile": "general_prompt"
+    },
+    {
+      "id": "gemini.text/text-similar-numbers/general_prompt/0",
+      "case": "text-similar-numbers",
+      "speech": null,
+      "text": "gemini.text",
+      "profile": "general_prompt"
+    },
+    {
+      "id": "gemini.text/text-names-amount-date/app_specific_prompt/0",
+      "case": "text-names-amount-date",
+      "speech": null,
+      "text": "gemini.text",
+      "profile": "app_specific_prompt"
+    },
+    {
+      "id": "gemini.text/text-instruction-as-data/app_specific_prompt/0",
+      "case": "text-instruction-as-data",
+      "speech": null,
+      "text": "gemini.text",
+      "profile": "app_specific_prompt"
+    },
+    {
+      "id": "gemini.text/text-similar-numbers/app_specific_prompt/0",
+      "case": "text-similar-numbers",
+      "speech": null,
+      "text": "gemini.text",
+      "profile": "app_specific_prompt"
+    }
+  ],
+  "cloud_opt_in": true,
+  "max_requests": 40,
+  "max_audio_seconds": 180.0,
+  "timeout_seconds": 120
+}
