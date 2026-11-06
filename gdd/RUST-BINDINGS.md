@@ -466,9 +466,14 @@ manual 1.0.1 recovery and remaining CI/platform limits. The archive guard was us
 `gemini.speech` is an optional cloud speech engine, independently selected from
 `gemini.text` and `gemini.cli`, using the existing `gemini` BYOK account.
 New profiles remain local/direct; settings migration only adds missing built-ins.
-The candidate default is `gemini-3.5-transcribe`. Its live model availability,
-Danish accuracy and optional metadata remain **not tested** in this implementation
-run; catalogue/docs presence alone is not inference acceptance.
+The default `gemini-3.5-transcribe` has bounded live evidence: one public Danish
+clip passed the direct speech source-reference checks in the
+[frozen cloud baseline](reports/epic42/47-cloud-run.md). That Danish clip and a
+public four-speaker fixture also returned real word timing and provider speaker
+IDs through saved-key production CLI and native desktop adapter paths in
+[automated product acceptance](reports/epic42/48-product-acceptance.md).
+These observations do not establish broad Danish accuracy, cross-chunk speaker
+identity, native OS insertion or UI behavior.
 
 The shared `Engines::speech` and `transcribe_file` paths use Developer API
 `POST /v1beta/models/{model}:generateContent` with header-only `x-goog-api-key`.
