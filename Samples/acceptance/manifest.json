@@ -1,18 +1,18 @@
 {
   "schema_version": 1,
-  "corpus_version": "0.1.0",
+  "corpus_version": "0.2.0",
   "supporting_files": [
     {
       "path": "sources.json",
-      "sha256": "fae7f96df7e0051a7857bedb4aa0a2a6193972be7965be3bdf1f4d38b895f571"
+      "sha256": "c8c6b40bd14ead035e5d1041e40d6c48c032a2b7410763678aeabd703f6cacb6"
     },
     {
       "path": "cleanup.json",
-      "sha256": "24b7953b8ccf218b858cbcf66c783ed36710de6b006dd9c19157d0017ab11c89"
+      "sha256": "f07ecd990f7b6959f392b52f09e969d0b1a79806ebd2e05d355cbf09f9b94ae2"
     }
   ],
-  "status": "prepared_pending_human_review",
-  "critical_fact_annotation_status": "highlighted_facts_pending_review_not_exhaustive",
+  "status": "automatic_reference_checks",
+  "critical_fact_annotation_status": "declared_highlighted_facts_checked_against_references",
   "cases": [
     {
       "id": "da-000",
@@ -50,12 +50,11 @@
       },
       "reference": {
         "text": "Gamle romerske måltider kunne ikke have indeholdt fødevarer, som kom til Europa fra Amerika eller Asien i senere århundreder.",
-        "origin": "source_reference",
-        "human_listening_review": "pending",
-        "reviewer": null,
-        "reviewed_at": null
+        "origin": "dataset_provided",
+        "status": "provisional_source_reference",
+        "word_alignment": "not_available"
       },
-      "annotation_extent": "whole_clip_source_reference_pending_listening",
+      "annotation_extent": "whole_clip_source_reference",
       "critical_facts": [
         {
           "kind": "negation",
@@ -103,12 +102,11 @@
       },
       "reference": {
         "text": "Alligevel blev firs procent af vores varer beskattet gennem told i mellemamerikanske lande.",
-        "origin": "source_reference",
-        "human_listening_review": "pending",
-        "reviewer": null,
-        "reviewed_at": null
+        "origin": "dataset_provided",
+        "status": "provisional_source_reference",
+        "word_alignment": "not_available"
       },
-      "annotation_extent": "whole_clip_source_reference_pending_listening",
+      "annotation_extent": "whole_clip_source_reference",
       "critical_facts": [
         {
           "kind": "percentage",
@@ -159,12 +157,11 @@
       },
       "reference": {
         "text": "Julen er en af kristendommens vigtigste helligdage og fejres som Jesu fødselsdag.",
-        "origin": "source_reference",
-        "human_listening_review": "pending",
-        "reviewer": null,
-        "reviewed_at": null
+        "origin": "dataset_provided",
+        "status": "provisional_source_reference",
+        "word_alignment": "not_available"
       },
-      "annotation_extent": "whole_clip_source_reference_pending_listening",
+      "annotation_extent": "whole_clip_source_reference",
       "critical_facts": [],
       "allowed_orthographic_variants": []
     },
@@ -204,12 +201,11 @@
       },
       "reference": {
         "text": "De østafrikanske øer ligger i Det Indiske Ocean ud for Afrikas østkyst.",
-        "origin": "source_reference",
-        "human_listening_review": "pending",
-        "reviewer": null,
-        "reviewed_at": null
+        "origin": "dataset_provided",
+        "status": "provisional_source_reference",
+        "word_alignment": "not_available"
       },
-      "annotation_extent": "whole_clip_source_reference_pending_listening",
+      "annotation_extent": "whole_clip_source_reference",
       "critical_facts": [],
       "allowed_orthographic_variants": []
     },
@@ -249,12 +245,11 @@
       },
       "reference": {
         "text": "Du kan se pyramiderne i mørket, og du kan se dem i stilhed før showet begynder.",
-        "origin": "source_reference",
-        "human_listening_review": "pending",
-        "reviewer": null,
-        "reviewed_at": null
+        "origin": "dataset_provided",
+        "status": "provisional_source_reference",
+        "word_alignment": "not_available"
       },
-      "annotation_extent": "whole_clip_source_reference_pending_listening",
+      "annotation_extent": "whole_clip_source_reference",
       "critical_facts": [],
       "allowed_orthographic_variants": []
     },
@@ -294,12 +289,11 @@
       },
       "reference": {
         "text": "Dernæst tog Lakkha Singh føringen for at synge bhajanerne.",
-        "origin": "source_reference",
-        "human_listening_review": "pending",
-        "reviewer": null,
-        "reviewed_at": null
+        "origin": "dataset_provided",
+        "status": "provisional_source_reference",
+        "word_alignment": "not_available"
       },
-      "annotation_extent": "whole_clip_source_reference_pending_listening",
+      "annotation_extent": "whole_clip_source_reference",
       "critical_facts": [],
       "allowed_orthographic_variants": []
     },
@@ -339,12 +333,11 @@
       },
       "reference": {
         "text": "Den endelige score var en et-points sejr, 21 til 20, der endte All Blacks' sejrstribe på 15 kampe.",
-        "origin": "source_reference",
-        "human_listening_review": "pending",
-        "reviewer": null,
-        "reviewed_at": null
+        "origin": "dataset_provided",
+        "status": "provisional_source_reference",
+        "word_alignment": "not_available"
       },
-      "annotation_extent": "whole_clip_source_reference_pending_listening",
+      "annotation_extent": "whole_clip_source_reference",
       "critical_facts": [
         {
           "kind": "score",
@@ -401,12 +394,11 @@
       },
       "reference": {
         "text": "Forskning i AI omfatter at kunne fremstille maskiner til at automatisere opgaver, der kræver intelligent adfærd.",
-        "origin": "source_reference",
-        "human_listening_review": "pending",
-        "reviewer": null,
-        "reviewed_at": null
+        "origin": "dataset_provided",
+        "status": "provisional_source_reference",
+        "word_alignment": "not_available"
       },
-      "annotation_extent": "whole_clip_source_reference_pending_listening",
+      "annotation_extent": "whole_clip_source_reference",
       "critical_facts": [],
       "allowed_orthographic_variants": []
     },
@@ -446,12 +438,11 @@
       },
       "reference": {
         "text": "Flyulykker er almindelige i Iran, der har en ældre flåde, som ikke er vedligeholdt for at kunne udføre civile og militære operationer.",
-        "origin": "source_reference",
-        "human_listening_review": "pending",
-        "reviewer": null,
-        "reviewed_at": null
+        "origin": "dataset_provided",
+        "status": "provisional_source_reference",
+        "word_alignment": "not_available"
       },
-      "annotation_extent": "whole_clip_source_reference_pending_listening",
+      "annotation_extent": "whole_clip_source_reference",
       "critical_facts": [
         {
           "kind": "negation",
@@ -499,12 +490,11 @@
       },
       "reference": {
         "text": "Den skrækslagne Kong Ludvig 16., dronning Marie Antoinette, deres to små børn (11 år gamle Marie Therese og fire år gamle Louis-Charles) og kongens søster, fru Elizabeth, blev tvunget tilbage til Paris fra Versailles den 6. oktober 1789 af en flok markedskvinder.",
-        "origin": "source_reference",
-        "human_listening_review": "pending",
-        "reviewer": null,
-        "reviewed_at": null
+        "origin": "dataset_provided",
+        "status": "provisional_source_reference",
+        "word_alignment": "not_available"
       },
-      "annotation_extent": "whole_clip_source_reference_pending_listening",
+      "annotation_extent": "whole_clip_source_reference",
       "critical_facts": [
         {
           "kind": "date",
@@ -553,12 +543,11 @@
       },
       "reference": {
         "text": "Den mest udbredte lokale øl er \"Number One\", som ikke er en kompliceret øl men er behagelig og forfriskende. Den anden lokale øl hedder \"Manta\".",
-        "origin": "source_reference",
-        "human_listening_review": "pending",
-        "reviewer": null,
-        "reviewed_at": null
+        "origin": "dataset_provided",
+        "status": "provisional_source_reference",
+        "word_alignment": "not_available"
       },
-      "annotation_extent": "whole_clip_source_reference_pending_listening",
+      "annotation_extent": "whole_clip_source_reference",
       "critical_facts": [
         {
           "kind": "negation",
@@ -613,12 +602,11 @@
       },
       "reference": {
         "text": "Den nordlige del af Sentinel Range besidder Antarktis' højeste bjerge, Vinson Massif (også kaldt Mount Vinson), der topper på 4.892 m.",
-        "origin": "source_reference",
-        "human_listening_review": "pending",
-        "reviewer": null,
-        "reviewed_at": null
+        "origin": "dataset_provided",
+        "status": "provisional_source_reference",
+        "word_alignment": "not_available"
       },
-      "annotation_extent": "whole_clip_source_reference_pending_listening",
+      "annotation_extent": "whole_clip_source_reference",
       "critical_facts": [
         {
           "kind": "height",
@@ -668,12 +656,11 @@
       },
       "reference": {
         "text": "When you call someone who is thousands of miles away, you are using a satellite.",
-        "origin": "source_reference",
-        "human_listening_review": "pending",
-        "reviewer": null,
-        "reviewed_at": null
+        "origin": "dataset_provided",
+        "status": "provisional_source_reference",
+        "word_alignment": "not_available"
       },
-      "annotation_extent": "whole_clip_source_reference_pending_listening",
+      "annotation_extent": "whole_clip_source_reference",
       "critical_facts": [],
       "allowed_orthographic_variants": []
     },
@@ -702,12 +689,11 @@
       },
       "reference": {
         "text": "Gamle romerske måltider kunne ikke have indeholdt fødevarer, som kom til Europa fra Amerika eller Asien i senere århundreder.",
-        "origin": "derived_source_reference",
-        "human_listening_review": "pending",
-        "reviewer": null,
-        "reviewed_at": null
+        "origin": "derived_dataset_provided",
+        "status": "provisional_source_reference",
+        "word_alignment": "not_available"
       },
-      "annotation_extent": "whole_clip_pending_listening",
+      "annotation_extent": "whole_clip",
       "critical_facts": [
         {
           "kind": "negation",
@@ -744,12 +730,11 @@
       },
       "reference": {
         "text": "Alligevel blev firs procent af vores varer beskattet gennem told i mellemamerikanske lande.",
-        "origin": "derived_source_reference",
-        "human_listening_review": "pending",
-        "reviewer": null,
-        "reviewed_at": null
+        "origin": "derived_dataset_provided",
+        "status": "provisional_source_reference",
+        "word_alignment": "not_available"
       },
-      "annotation_extent": "whole_clip_pending_listening",
+      "annotation_extent": "whole_clip",
       "critical_facts": [
         {
           "kind": "percentage",
@@ -790,12 +775,11 @@
       },
       "reference": {
         "text": "Forskning i AI omfatter at kunne fremstille maskiner til at automatisere opgaver, der kræver intelligent adfærd. When you call someone who is thousands of miles away, you are using a satellite.",
-        "origin": "derived_source_reference",
-        "human_listening_review": "pending",
-        "reviewer": null,
-        "reviewed_at": null
+        "origin": "derived_dataset_provided",
+        "status": "provisional_source_reference",
+        "word_alignment": "not_available"
       },
-      "annotation_extent": "whole_clip_pending_listening",
+      "annotation_extent": "whole_clip",
       "critical_facts": [],
       "allowed_orthographic_variants": []
     },
@@ -824,11 +808,10 @@
       "reference": {
         "text": "",
         "origin": "generated_non_speech",
-        "human_listening_review": "pending",
-        "reviewer": null,
-        "reviewed_at": null
+        "status": "deterministic_generated_expectation",
+        "word_alignment": "not_available"
       },
-      "annotation_extent": "whole_clip_pending_listening",
+      "annotation_extent": "whole_clip",
       "critical_facts": [],
       "allowed_orthographic_variants": []
     },
@@ -857,11 +840,10 @@
       "reference": {
         "text": "",
         "origin": "generated_non_speech",
-        "human_listening_review": "pending",
-        "reviewer": null,
-        "reviewed_at": null
+        "status": "deterministic_generated_expectation",
+        "word_alignment": "not_available"
       },
-      "annotation_extent": "whole_clip_pending_listening",
+      "annotation_extent": "whole_clip",
       "critical_facts": [],
       "allowed_orthographic_variants": []
     },
@@ -891,12 +873,11 @@
       },
       "reference": {
         "text": null,
-        "origin": "derived_source_reference",
-        "human_listening_review": "pending",
-        "reviewer": null,
-        "reviewed_at": null
+        "origin": "derived_dataset_provided",
+        "status": "provisional_source_reference",
+        "word_alignment": "not_available"
       },
-      "annotation_extent": "listed_source_placement_anchors_only_pending_listening",
+      "annotation_extent": "listed_source_placement_anchors_only",
       "critical_facts": [
         {
           "kind": "negation",
@@ -913,36 +894,28 @@
           "end_seconds": 40.84,
           "source_case": "da-000",
           "text": "Gamle romerske måltider kunne ikke have indeholdt fødevarer, som kom til Europa fra Amerika eller Asien i senere århundreder.",
-          "review_status": "pending",
-          "reviewer": null,
-          "reviewed_at": null
+          "alignment": "deterministic_clip_placement"
         },
         {
           "start_seconds": 58,
           "end_seconds": 70.84,
           "source_case": "da-000",
           "text": "Gamle romerske måltider kunne ikke have indeholdt fødevarer, som kom til Europa fra Amerika eller Asien i senere århundreder.",
-          "review_status": "pending",
-          "reviewer": null,
-          "reviewed_at": null
+          "alignment": "deterministic_clip_placement"
         },
         {
           "start_seconds": 148,
           "end_seconds": 160.84,
           "source_case": "da-000",
           "text": "Gamle romerske måltider kunne ikke have indeholdt fødevarer, som kom til Europa fra Amerika eller Asien i senere århundreder.",
-          "review_status": "pending",
-          "reviewer": null,
-          "reviewed_at": null
+          "alignment": "deterministic_clip_placement"
         },
         {
           "start_seconds": 298,
           "end_seconds": 310.84,
           "source_case": "da-000",
           "text": "Gamle romerske måltider kunne ikke have indeholdt fødevarer, som kom til Europa fra Amerika eller Asien i senere århundreder.",
-          "review_status": "pending",
-          "reviewer": null,
-          "reviewed_at": null
+          "alignment": "deterministic_clip_placement"
         }
       ],
       "nominal_chunk_seconds": 30
@@ -970,12 +943,11 @@
       },
       "reference": {
         "text": null,
-        "origin": "derived_source_reference",
-        "human_listening_review": "pending",
-        "reviewer": null,
-        "reviewed_at": null
+        "origin": "derived_dataset_provided",
+        "status": "provisional_source_reference",
+        "word_alignment": "not_available"
       },
-      "annotation_extent": "listed_source_turns_only_pending_listening",
+      "annotation_extent": "listed_source_turns_only",
       "critical_facts": [],
       "allowed_orthographic_variants": [],
       "turns": [
@@ -996,12 +968,11 @@
             "source_sha256": "9ce35224156f071ab58eb7feb8a5ceae600f6f9f353da2a6cbf797b6b1ac8a23",
             "source_url": "https://datasets-server.huggingface.co/cached-assets/openslr/librispeech_asr/--/71cacbfb7e2354c4226d01e70d77d5fca3d04ba1/--/clean/test/0/audio/audio.flac",
             "acquired_on": "2026-11-06",
-            "transformation": "FLAC decoded to mono16kHz PCM16 by ffmpeg"
+            "transformation": "FLAC decoded to mono16kHz PCM16 by ffmpeg",
+            "pcm_sha256": "9afaada0c1b445dae8a3baae5bbaffdcedbd2c09eb66b86720b8045c854feefc"
           },
           "text": "CONCORD RETURNED TO ITS PLACE AMIDST THE TENTS",
-          "review_status": "pending",
-          "reviewer": null,
-          "reviewed_at": null
+          "alignment": "deterministic_clip_placement"
         },
         {
           "start_seconds": 4.005,
@@ -1020,12 +991,11 @@
             "source_sha256": "9c4d285c536c8562a3b9add558d159b84c5b3d8c27922669906ae8da831fc25c",
             "source_url": "https://datasets-server.huggingface.co/cached-assets/openslr/librispeech_asr/--/71cacbfb7e2354c4226d01e70d77d5fca3d04ba1/--/clean/test/100/audio/audio.flac",
             "acquired_on": "2026-11-06",
-            "transformation": "FLAC decoded to mono16kHz PCM16 by ffmpeg"
+            "transformation": "FLAC decoded to mono16kHz PCM16 by ffmpeg",
+            "pcm_sha256": "fee3c16cdf8e5b8b97c730b53b9831f06119414b7466f77d3b0276d1d78d7448"
           },
           "text": "THE DELAWARES ARE CHILDREN OF THE TORTOISE AND THEY OUTSTRIP THE DEER",
-          "review_status": "pending",
-          "reviewer": null,
-          "reviewed_at": null
+          "alignment": "deterministic_clip_placement"
         },
         {
           "start_seconds": 8.36,
@@ -1044,12 +1014,11 @@
             "source_sha256": "d654a43d06f0e8b586b525e8ec83d6e3c0dc83c3f4742f8e25fd291db77248b3",
             "source_url": "https://datasets-server.huggingface.co/cached-assets/openslr/librispeech_asr/--/71cacbfb7e2354c4226d01e70d77d5fca3d04ba1/--/clean/test/200/audio/audio.flac",
             "acquired_on": "2026-11-06",
-            "transformation": "FLAC decoded to mono16kHz PCM16 by ffmpeg"
+            "transformation": "FLAC decoded to mono16kHz PCM16 by ffmpeg",
+            "pcm_sha256": "1a6720fd3cf848baa6eea26d14d837f1c2678dbec1119bf8e6f7d045711e68dd"
           },
           "text": "SATURDAY AUGUST FIFTEENTH THE SEA UNBROKEN ALL ROUND NO LAND IN SIGHT",
-          "review_status": "pending",
-          "reviewer": null,
-          "reviewed_at": null
+          "alignment": "deterministic_clip_placement"
         },
         {
           "start_seconds": 15.899999999999999,
@@ -1068,12 +1037,11 @@
             "source_sha256": "33f5a3ea8ef8e5d58e0a543ae208b21d081b98e4cfe27d7f61a5cae8217dd91b",
             "source_url": "https://datasets-server.huggingface.co/cached-assets/openslr/librispeech_asr/--/71cacbfb7e2354c4226d01e70d77d5fca3d04ba1/--/clean/test/300/audio/audio.flac",
             "acquired_on": "2026-11-06",
-            "transformation": "FLAC decoded to mono16kHz PCM16 by ffmpeg"
+            "transformation": "FLAC decoded to mono16kHz PCM16 by ffmpeg",
+            "pcm_sha256": "65eca33069a71f68b2ba988d3e511899300eb00f9905f4580c0c8666c5b6cb6f"
           },
           "text": "THE INMATES BEING REMOVED AT THE APPOINTED HOUR A FEW CANNON BALLS WERE FIRED THROUGH THE STONE WALLS",
-          "review_status": "pending",
-          "reviewer": null,
-          "reviewed_at": null
+          "alignment": "deterministic_clip_placement"
         }
       ],
       "distinct_speaker_count": 4

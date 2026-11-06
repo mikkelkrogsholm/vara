@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Explicit, bounded public download; never uploads or reads user recordings."""
+import argparse
 import hashlib
 import json
 from pathlib import Path
@@ -61,9 +62,8 @@ def rights(generated=False):
             'automatic_upload': False}
 
 
-def review(text, kind='source_reference'):
-    return {'text': text, 'origin': kind, 'human_listening_review': 'pending',
-            'reviewer': None, 'reviewed_at': None}
+def reference_metadata(text, kind='dataset_provided'):
+    return {'text': text, 'origin': kind}
 
 
 def main():
@@ -97,15 +97,15 @@ def main():
             source_records.append(record)
             cases.append({'id': case_id, **save_audio(case_id, pcm), 'language': config[:2],
                           'scenario': ['natural_read_speech'], 'fixture_kind': 'source_speech',
-                          'provenance': record, 'rights': rights(), 'reference': review(texts[case_id]),
-                          'annotation_extent': 'whole_clip_source_reference_pending_listening',
+                          'provenance': record, 'rights': rights(), 'reference': reference_metadata(texts[case_id]),
+                          'annotation_extent': 'whole_clip_source_reference',
                           'critical_facts': [], 'allowed_orthographic_variants': []})
     def derived(case_id, pcm, sources, scenario, text, language='da', **extra):
         cases.append({'id': case_id, **save_audio(case_id, pcm), 'language': language,
                       'scenario': scenario, 'fixture_kind': 'structural_derivation',
                       'provenance': {'source_cases': sources, 'transformation': extra.pop('transformation')},
-                      'rights': rights(not sources), 'reference': review(text, 'derived_source_reference' if sources else 'generated_non_speech'),
-                      'annotation_extent': 'whole_clip_pending_listening',
+                      'rights': rights(not sources), 'reference': reference_metadata(text, 'derived_dataset_provided' if sources else 'generated_non_speech'),
+                      'annotation_extent': 'whole_clip',
                       'critical_facts': [], 'allowed_orthographic_variants': [], **extra})
     derived('da-paused', b'\0' * RATE * 2 + buffers['da-000'] + b'\0' * RATE * 4,
             ['da-000'], ['leading_trailing_pause'], texts['da-000'], transformation='1s silence + source + 2s silence')
@@ -126,10 +126,10 @@ def main():
         pcm = buffers['da-000']
         long_pcm[start * RATE * 2:start * RATE * 2 + len(pcm)] = pcm
         anchors.append({'start_seconds': start, 'end_seconds': start + len(pcm)/(RATE*2),
-                        'source_case': 'da-000', 'text': texts['da-000'], 'review_status': 'pending', 'reviewer': None, 'reviewed_at': None})
+                        'source_case': 'da-000', 'text': texts['da-000'], 'alignment': 'deterministic_clip_placement'})
     derived('long-boundaries', bytes(long_pcm), ['da-000'], ['chunk_boundary_30s', 'over_five_minutes'], None,
             transformation='321s silence bed with full da-000 at28,58,148,298s; repeated structural input',
-            annotation_extent='listed_source_placement_anchors_only_pending_listening', anchors=anchors,
+            annotation_extent='listed_source_placement_anchors_only', anchors=anchors,
             nominal_chunk_seconds=30)
     turns, parts, cursor, speaker_ids = [], [], 0.0, []
     libri_revision = '71cacbfb7e2354c4226d01e70d77d5fca3d04ba1'
@@ -156,7 +156,7 @@ def main():
         duration = len(pcm)/(RATE*2)
         turns.append({'start_seconds': cursor, 'end_seconds': cursor + duration,
                       'source_label': source_id, 'speaker_id': str(row['speaker_id']),
-                      'provenance': record, 'text': row['text'], 'review_status': 'pending', 'reviewer': None, 'reviewed_at': None})
+                      'provenance': record, 'text': row['text'], 'alignment': 'deterministic_clip_placement'})
         speaker_ids.append(row['speaker_id'])
         parts.extend([pcm, b'\0' * RATE])
         cursor += duration + 0.5
@@ -164,11 +164,11 @@ def main():
         raise ValueError('Expected four metadata-distinct speakers')
     derived('four-speakers', b''.join(parts), [], ['four_speakers_structural'], None, language='en',
             transformation='Four LibriSpeech speakers separated by0.5s silence; not natural conversation',
-            annotation_extent='listed_source_turns_only_pending_listening', turns=turns,
+            annotation_extent='listed_source_turns_only', turns=turns,
             distinct_speaker_count=4)
     cases[-1]['rights'] = rights()
     cases[-1]['rights']['permission_basis'] = 'Public LibriSpeech CC-BY-4.0; attribution in README.md'
-    cases[-1]['reference']['origin'] = 'derived_source_reference'
+    cases[-1]['reference']['origin'] = 'derived_dataset_provided'
     facts = {
         'da-000': [('negation', 'ikke', ['ikke'])],
         'da-001': [('percentage', '80%', ['firs procent', '80 procent', '80 %', '80%'])],
@@ -183,13 +183,59 @@ def main():
     for case in cases:
         if case['fixture_kind'] == 'structural_derivation':
             case['critical_facts'] = [fact for source in case['provenance']['source_cases'] for fact in by_id[source]['critical_facts']]
-    dump(ROOT / 'sources.json', source_records)
-    dump(ROOT / 'manifest.json', {'schema_version': 1, 'corpus_version': '0.1.0',
-                                 'supporting_files': [{'path': name, 'sha256': hashlib.sha256((ROOT / name).read_bytes()).hexdigest()} for name in ['sources.json', 'cleanup.json']],
-                                 'status': 'prepared_pending_human_review',
-                                 'critical_fact_annotation_status': 'highlighted_facts_pending_review_not_exhaustive', 'cases': cases})
-    print(f'Prepared {len(cases)} cases; no human listening review claimed.')
+    finalize({'schema_version': 1, 'cases': cases}, source_records)
+
+
+def read_pcm(path):
+    with wave.open(str(path), 'rb') as audio:
+        return audio.readframes(audio.getnframes())
+
+
+def finalize(manifest, sources):
+    """Version reference metadata offline; preserve all pinned audio bytes."""
+    manifest['corpus_version'] = '0.2.0'
+    manifest['status'] = 'automatic_reference_checks'
+    manifest['critical_fact_annotation_status'] = 'declared_highlighted_facts_checked_against_references'
+    for case in manifest['cases']:
+        reference = case['reference']
+        for key in ['human_listening_review', 'reviewer', 'reviewed_at']:
+            reference.pop(key, None)
+        origin = reference['origin']
+        reference['origin'] = {'source_reference': 'dataset_provided',
+                               'derived_source_reference': 'derived_dataset_provided'}.get(origin, origin)
+        reference['status'] = 'provisional_source_reference' if reference['origin'] != 'generated_non_speech' else 'deterministic_generated_expectation'
+        reference['word_alignment'] = 'not_available'
+        case['annotation_extent'] = case['annotation_extent'].replace('_pending_listening', '')
+        for group in ['anchors', 'turns']:
+            for annotation in case.get(group, []):
+                for key in ['review_status', 'reviewer', 'reviewed_at']:
+                    annotation.pop(key, None)
+                annotation['alignment'] = 'deterministic_clip_placement'
+                if 'provenance' in annotation:
+                    record = next(source for source in sources if source['dataset'] == annotation['provenance']['dataset'] and source['utterance_id'] == annotation['provenance']['utterance_id'])
+                    pcm = read_pcm(ROOT / case['path'])
+                    start, end = (round(annotation[key] * RATE) * 2 for key in ['start_seconds', 'end_seconds'])
+                    pcm_hash = hashlib.sha256(pcm[start:end]).hexdigest()
+                    if record.get('pcm_sha256', pcm_hash) != pcm_hash:
+                        raise ValueError('Pinned source PCM differs from declared turn placement')
+                    record['pcm_sha256'] = pcm_hash
+                    annotation['provenance'] = record
+    dump(ROOT / 'sources.json', sources)
+    manifest['supporting_files'] = [{'path': name, 'sha256': hashlib.sha256((ROOT / name).read_bytes()).hexdigest()} for name in ['sources.json', 'cleanup.json']]
+    dump(ROOT / 'manifest.json', manifest)
+    print(f"Prepared {len(manifest['cases'])} cases with automatic source-reference checks.")
+
+
+def offline():
+    manifest = json.loads((ROOT / 'manifest.json').read_text())
+    for case in manifest['cases']:
+        if hashlib.sha256((ROOT / case['path']).read_bytes()).hexdigest() != case['sha256']:
+            raise ValueError('Changed pinned audio; offline metadata update refused')
+    finalize(manifest, json.loads((ROOT / 'sources.json').read_text()))
 
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--offline', action='store_true', help='Update reference metadata/hashes from checked-in sources without downloading or changing audio')
+    args = parser.parse_args()
+    offline() if args.offline else main()

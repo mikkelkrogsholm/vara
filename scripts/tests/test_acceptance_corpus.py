@@ -63,26 +63,45 @@ class AcceptanceCorpusTests(unittest.TestCase):
         self.assertTrue(any('four speaker IDs required' in error for error in errors))
         self.assertTrue(any('speaker provenance mismatch' in error for error in errors))
 
-    def test_claimed_annotation_review_requires_attribution(self):
-        case = next(c for c in self.manifest['cases'] if 'anchors' in c)
-        case['anchors'][0]['review_status'] = 'reviewed'
+    def test_source_transcript_must_match_dataset_record(self):
+        self.manifest['cases'][0]['reference']['text'] = 'Et opdigtet resultat.'
         self.save_manifest()
-        self.assertTrue(any('annotation review lacks attribution' in error for error in validator.validate(self.root)))
+        self.assertTrue(any('source transcript mismatch' in error for error in validator.validate(self.root)))
 
-    def test_claimed_case_review_requires_attribution(self):
-        self.manifest['cases'][0]['reference']['human_listening_review'] = 'reviewed'
+    def test_missing_source_record(self):
+        (self.root / 'sources.json').write_text('[]')
+        self.assertTrue(any('missing or changed source reference' in error for error in validator.validate(self.root)))
+
+    def test_shifted_anchor_fails_sample_placement(self):
+        case = next(c for c in self.manifest['cases'] if 'anchors' in c)
+        case['anchors'][0]['start_seconds'] += 0.01
+        case['anchors'][0]['end_seconds'] += 0.01
         self.save_manifest()
-        self.assertTrue(any('review lacks attribution' in error for error in validator.validate(self.root)))
+        self.assertTrue(any('source placement PCM mismatch' in error for error in validator.validate(self.root)))
+
+    def test_turn_text_must_match_dataset_record(self):
+        case = next(c for c in self.manifest['cases'] if 'turns' in c)
+        case['turns'][0]['text'] = 'INVENTED WORDS'
+        self.save_manifest()
+        self.assertTrue(any('turn transcript mismatch' in error for error in validator.validate(self.root)))
+
+    def test_audio_fact_must_exist_in_reference(self):
+        self.manifest['cases'][0]['critical_facts'][0]['accepted_surfaces'] = ['aldrig sagt']
+        self.save_manifest()
+        self.assertTrue(any('critical fact absent from reference' in error for error in validator.validate(self.root)))
+
+    def test_cleanup_cannot_drop_negation(self):
+        path = self.root / 'cleanup.json'
+        cleanup = json.loads(path.read_text())
+        cleanup['cases'][0]['expected']['general_prompt'] = cleanup['cases'][0]['expected']['general_prompt'].replace('ikke ', '')
+        path.write_text(json.dumps(cleanup))
+        self.assertTrue(any('critical fact absent: ikke' in error for error in validator.validate(self.root)))
 
     def test_rejects_outside_path(self):
         self.manifest['cases'][0]['path'] = '../private.wav'
         self.save_manifest()
         self.assertTrue(any('path escapes corpus' in error for error in validator.validate(self.root)))
 
-    def test_human_review_gate_fails_for_prepared_corpus(self):
-        errors = validator.validate(self.root, require_reviewed=True)
-        self.assertTrue(any('listening review pending' in error for error in errors))
-        self.assertIn('Cleanup expectations human review pending', errors)
 
 
 if __name__ == '__main__':
