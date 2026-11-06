@@ -154,3 +154,11 @@ and concurrent-Service backend socket endpoints were confirmed absent after
 idle exit; no unrelated process was stopped. Task-owned `/tmp` profiles and
 outputs remain for MAIN's review and authorized cleanup. Durable public
 observations are checked in here.
+
+## Native continuation after unlocking the Mac
+
+The later [native continuation report](48-native-continuation.md) records actual
+CUA launch, public-fixture local ASR/history and the remaining tool limitations.
+The Mac was unlocked for that continuation. Global hotkey activation, successful
+OS insertion and Codex input remain unverified; Codex access was explicitly
+blocked by CUA. The original evidence above remains historical and unchanged.
