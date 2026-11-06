@@ -2,17 +2,20 @@
 
 The native app launches, Dictate/Stop runs real local Parakeet recognition, and
 the native Transcription file chooser completes a public file with word timing.
-OS insertion and global keyboard activation remain unverified. The initially
-unlocked Mac later locked again; Codex access is separately blocked by CUA.
+The final 2026-11-06 continuation verified actual TextEdit insertion with an
+empty clipboard. Global keyboard activation remains unverified; the user
+explicitly skipped the final changed-focus test. Codex access remains blocked
+by CUA.
 
 This continues the frozen [original acceptance report](48-product-acceptance.md).
 Structured observations and signed artifact provenance are in
 [48-native-continuation.json](48-native-continuation.json).
 
-## Observed native behavior
+## Earlier native observations (before the final continuation)
 
-MAIN performed all app launches, clicks, focus attempts and keyboard operations
-through CUA. The worker built/staged artifacts, ran offline checks and read only
+In the earlier observations below, MAIN performed app launches, clicks, focus
+attempts and keyboard operations through CUA. In the final continuation, the
+user physically foregrounded TextEdit as recorded below. The worker built/staged artifacts, ran offline checks and read only
 the task-owned fixture databases. Neither worker nor helper controlled another
 app or synthesized OS key events.
 
@@ -83,15 +86,15 @@ MAIN observed `ai.storyteller.figcraft`, `textedit_front:false` at 18:48:12 UTC
 following the CUA TextEdit AX/coordinate focus attempt. CUA targeting therefore
 had not established TextEdit as the actual foreground app at that observation.
 MAIN then used standard Finder UI (a separate window, `/System/Applications`,
-the observed TextEdit item and its “Åbn Finderemne” action). At18:50:24 UTC the
+the observed TextEdit item and its “Åbn Finderemne” action). At 18:50:24 UTC the
 observer returned `com.apple.TextEdit`, `textedit_front:true`. This established
 a normal UI activation route without shell activation or guard bypass.
 
 A subsequent timed Dictate/Finder/TextEdit attempt encountered `loginwindow`;
 CUA state at 18:51 UTC confirmed the Mac had locked again. No new session or
-insertion was verified. MAIN has one asynchronous unlock request pending.
-The signed timed app and task-owned profile are retained for quick resumption;
-compiler-cache cleanup belongs to MAIN after associated jobs are terminal.
+insertion was verified at that point. An unlock request was pending then; the
+final continuation below supersedes that historical status. No unlock request
+or changed-focus trial remains pending in this report.
 
 ## Native public file import
 
@@ -109,3 +112,62 @@ corrected. This is observed output, not a broad timing-quality claim. Native
 playback, seeking and export UI actions were not exercised in this continuation;
 visible controls alone are not a playback/export pass. Earlier frozen export
 and browser evidence retains its original scope.
+
+
+## Final continuation — 2026-11-06, recorded at 21:05 UTC
+
+The user physically foregrounded TextEdit. After the existing native Dictate
+button initiated the guarded 6 s delayed fixture, the read-only foreground
+observer confirmed `com.apple.TextEdit`. The real local Parakeet pipeline then
+inserted the exact public fixture transcript into the actual TextEdit document.
+Fresh native AX showed the transcript once. No scripted recognition, insertion,
+focus control or guard bypass was used.
+
+| Result | Read-only store evidence | Scope |
+| --- | --- | --- |
+| `1f18b3cd-bb55-4374-9056-d0cd39ea9199` | TextEdit origin, `inserted`, 12.84 s, original public transcript, no AI text | Successful stable-focus native insertion; fresh AX confirmed one transcript |
+| `0194db8e-d116-4f94-898c-76a5a295e2bb` | TextEdit origin, `inserted`, 12.84 s, original public transcript, no AI text | A separately initiated run completed before a second document was created; this is not duplicate publication or a changed-focus test |
+
+Clipboard observer session `52557`, marker `clipboard-check-8`, reported
+`unchanged:true`, `before_type_count:0`, `after_type_count:0` during the first
+successful insertion. This verifies preservation of an **empty clipboard only**.
+Earlier comparisons with three types occurred without successful insertion;
+non-empty clipboard preservation across insertion remains unverified. No
+clipboard contents, type names or content hashes were exported.
+
+A later attempted focus-change run guard-aborted when Codex became foreground;
+no additional result was published. The user then explicitly instructed
+“Spring den sidste fokusprøve over”. The final changed-focus test is
+**skipped_by_user**, not passed and not awaiting another unlock. Changed-focus
+manual-ready delivery remains unverified by native testing.
+
+Read-only inspection at 21:05 UTC confirmed three total results: the original
+Vara `manual_ready` row and these two distinct TextEdit `inserted` rows, with
+zero recoveries and zero staged originals. The native file document
+`660139c9-03f2-4e0e-877e-70e1eeab6c1d` remains `ready`. The JSON retains the
+public transcripts and current result evidence; transient native target tokens
+are represented only by their presence.
+
+Current native acceptance status:
+
+- Stable-focus TextEdit insertion: **passed**, through the guarded delayed
+  public-file fixture and real native insertion path.
+- Empty clipboard preservation during successful insertion: **passed**.
+- Non-empty clipboard preservation during successful insertion: **not_tested**.
+- Final changed-focus trial: **skipped_by_user**; no fallback success claimed.
+- Global shortcut and hold/toggle activation: **not_tested**.
+- Codex input: **not_tested**, due CUA's explicit safety restriction.
+- Native public file selection/local transcription/word-control rendering:
+  **passed** within the earlier recorded scope.
+- Native playback, seeking and export UI actions: **not_tested**.
+
+MAIN sent Cmd-Q to the temporary test app and obtained the normal
+`/Applications/Vara.app` through CUA; running inventory showed the normal app.
+Installed files were untouched. MAIN’s read-only check at 21:05 UTC found only
+the normal app and its personal-profile backend running, with no temporary test
+app/backend or Cargo jobs. Compiler intermediates had been cleaned: `target`
+was 67,868 KiB; the retained staged signed app/profile directory was 35,640 KiB.
+This report update performs no app control, deletion or rebuild.
+There were zero cloud calls in this continuation. The aggregate remains
+39 requests and USD 0.80 reserved, not measured billing. This partial native
+acceptance does not close the remaining unverified requirements.

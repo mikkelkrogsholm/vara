@@ -159,6 +159,8 @@ observations are checked in here.
 
 The later [native continuation report](48-native-continuation.md) records actual
 CUA launch, public-fixture local ASR/history and the remaining tool limitations.
-The Mac was unlocked for that continuation. Global hotkey activation, successful
-OS insertion and Codex input remain unverified; Codex access was explicitly
-blocked by CUA. The original evidence above remains historical and unchanged.
+The Mac was unlocked for that continuation. Its final 2026-11-06 update verifies
+stable-focus TextEdit insertion and empty-clipboard preservation. The user
+explicitly skipped the final changed-focus test. Global hotkey activation and
+Codex input remain unverified; Codex access was explicitly blocked by CUA.
+The original evidence above remains historical and unchanged.

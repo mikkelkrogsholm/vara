@@ -7,111 +7,6 @@
     "sha256": "823386a11c070104e26aaa6761cc7db68159a6d2e4e4fd83f16ebfbccb2542f7",
     "duration_secs": 12.84
   },
-  "dictation_store_read_only_snapshot": {
-    "counts": {
-      "results": 1,
-      "recovery": 0,
-      "staging": 0
-    },
-    "public_results": [
-      {
-        "id": "262b2573-f38b-40ba-b3b2-eb0b4c3e2a38",
-        "generation": "7a6f0bb9-a711-4d93-a220-59463e3a937c",
-        "origin": {
-          "app_id": "dk.vara.desktop",
-          "app_name": "Vara",
-          "target_token": null
-        },
-        "created_at": 1793990143,
-        "original": "Gamle romerske måltider kunne ikke have indeholdt fødevarer som kom til Europa fra Amerika eller Asien i senere århundreder",
-        "processed": null,
-        "fallback": false,
-        "delivery": "manual_ready",
-        "plan": {
-          "speech": {
-            "id": "local.parakeet",
-            "label": "Parakeet Redux · on device",
-            "kind": "speech",
-            "provider": "local_parakeet",
-            "model": "parakeet-redux",
-            "endpoint": null,
-            "locality": "on_device"
-          },
-          "text": null,
-          "strict_local": true,
-          "language": null
-        },
-        "duration_secs": 12.84
-      }
-    ],
-    "audio_files": 0
-  },
-  "observations": [
-    {
-      "source": "MAIN CUA",
-      "case": "native_launch",
-      "status": "pass",
-      "detail": "Current native UI launched on unlocked Mac; local Parakeet ready, all three existing permissions granted."
-    },
-    {
-      "source": "MAIN CUA",
-      "case": "physical_activation",
-      "status": "not_tested",
-      "detail": "F18 recognized in shortcut capture UI; global F18 attempts in TextEdit and Vara did not start a session through CUA. No hotkey success or product defect inferred."
-    },
-    {
-      "source": "MAIN CUA + read-only fixture SQLite",
-      "case": "native_button_local_asr",
-      "status": "pass",
-      "detail": "Existing Dictate/Stop buttons produced exactly one real public local-Parakeet result, origin Vara, manual_ready; TextEdit remained unchanged."
-    },
-    {
-      "source": "MAIN CUA",
-      "case": "timed_textedit_insertion",
-      "status": "not_tested",
-      "attempts": 3,
-      "detail": "First two CUA AX/coordinate focus attempts produced no result/recovery and an unknown-error UI. Read-only foreground observer later showed Figcraft remained front. Standard Finder UI subsequently made TextEdit genuinely foreground. A further timed attempt then encountered loginwindow and CUA confirmed the Mac locked again. No insertion succeeded; guards retained."
-    },
-    {
-      "source": "MAIN observer execution",
-      "case": "clipboard_read_only",
-      "status": "observed_without_insertion",
-      "attempts": [
-        {
-          "status": "timed_out"
-        },
-        {
-          "unchanged": true,
-          "before_type_count": 3,
-          "after_type_count": 3
-        },
-        {
-          "unchanged": true,
-          "before_type_count": 3,
-          "after_type_count": 3
-        },
-        {
-          "unchanged": true,
-          "before_type_count": 3,
-          "after_type_count": 3
-        }
-      ],
-      "detail": "No successful OS insertion occurred during these comparisons; they do not prove clipboard preservation across successful insertion."
-    },
-    {
-      "source": "MAIN CUA explicit safety response",
-      "case": "codex_input",
-      "status": "not_tested",
-      "detail": "CUA explicitly blocked com.openai.codex for safety reasons. No alternate name/path/script was used."
-    },
-    {
-      "source": "MAIN CUA + read-only task-owned SQLite",
-      "case": "native_transcription_import",
-      "status": "pass",
-      "document_id": "660139c9-03f2-4e0e-877e-70e1eeab6c1d",
-      "detail": "Native Choose files/NSOpenPanel imported public da-000; local Parakeet completed. Full AX showed Ready, On device · Word timestamps, all19word buttons and player/export controls. Playback, seeking and export UI actions were not exercised."
-    }
-  ],
   "foreground_diagnostic": {
     "path": "/tmp/vara-epic42-native-stage/frontmost-observer",
     "sha256": "07440d0d7ce1507d63ef711561452e83f36c0bea445c2e043fa69dcb4d78d19c",
@@ -386,5 +281,214 @@
       "timing_end_minus_duration_secs": 0.04
     }
   ],
-  "current_state": "Mac locked again; one async unlock request pending with MAIN; staged timed app/profile retained for resumption; no insertion verified."
+  "current_state": "Stable-focus TextEdit insertion verified; changed-focus test skipped_by_user. No pending unlock or focus trial. Remaining native scopes explicitly not_tested; normal installed app obtained through CUA, staged artifacts retained.",
+  "earlier_dictation_store_read_only_snapshot": {
+    "counts": {
+      "results": 1,
+      "recovery": 0,
+      "staging": 0
+    },
+    "public_results": [
+      {
+        "id": "262b2573-f38b-40ba-b3b2-eb0b4c3e2a38",
+        "generation": "7a6f0bb9-a711-4d93-a220-59463e3a937c",
+        "origin": {
+          "app_id": "dk.vara.desktop",
+          "app_name": "Vara",
+          "target_token": null
+        },
+        "created_at": 1793990143,
+        "original": "Gamle romerske måltider kunne ikke have indeholdt fødevarer som kom til Europa fra Amerika eller Asien i senere århundreder",
+        "processed": null,
+        "fallback": false,
+        "delivery": "manual_ready",
+        "plan": {
+          "speech": {
+            "id": "local.parakeet",
+            "label": "Parakeet Redux · on device",
+            "kind": "speech",
+            "provider": "local_parakeet",
+            "model": "parakeet-redux",
+            "endpoint": null,
+            "locality": "on_device"
+          },
+          "text": null,
+          "strict_local": true,
+          "language": null
+        },
+        "duration_secs": 12.84
+      }
+    ],
+    "audio_files": 0
+  },
+  "dictation_store_read_only_snapshot": {
+    "observed_at_utc": "2026-11-06 21:05",
+    "counts": {
+      "results": 3,
+      "recovery": 0,
+      "staging": 0
+    },
+    "public_results": [
+      {
+        "id": "262b2573-f38b-40ba-b3b2-eb0b4c3e2a38",
+        "created_at": 1793990143,
+        "original": "Gamle romerske måltider kunne ikke have indeholdt fødevarer som kom til Europa fra Amerika eller Asien i senere århundreder",
+        "processed": null,
+        "delivery": "manual_ready",
+        "duration_secs": 12.84,
+        "origin": {
+          "app_id": "dk.vara.desktop",
+          "app_name": "Vara",
+          "target_token_present": false
+        }
+      },
+      {
+        "id": "1f18b3cd-bb55-4374-9056-d0cd39ea9199",
+        "created_at": 1793998675,
+        "original": "Gamle romerske måltider kunne ikke have indeholdt fødevarer som kom til Europa fra Amerika eller Asien i senere århundreder",
+        "processed": null,
+        "delivery": "inserted",
+        "duration_secs": 12.84,
+        "origin": {
+          "app_id": "com.apple.TextEdit",
+          "app_name": "TextEdit",
+          "target_token_present": true
+        }
+      },
+      {
+        "id": "0194db8e-d116-4f94-898c-76a5a295e2bb",
+        "created_at": 1793998772,
+        "original": "Gamle romerske måltider kunne ikke have indeholdt fødevarer som kom til Europa fra Amerika eller Asien i senere århundreder",
+        "processed": null,
+        "delivery": "inserted",
+        "duration_secs": 12.84,
+        "origin": {
+          "app_id": "com.apple.TextEdit",
+          "app_name": "TextEdit",
+          "target_token_present": true
+        }
+      }
+    ],
+    "sanitization": "Transient native target tokens omitted; presence retained."
+  },
+  "final_continuation": {
+    "date_utc": "2026-11-06",
+    "recorded_at_utc": "2026-11-06 21:05",
+    "source": "MAIN native CUA observations, user physical TextEdit foregrounding, read-only observers and worker read-only fixture SQLite",
+    "stable_focus_insertion": {
+      "status": "pass",
+      "result_id": "1f18b3cd-bb55-4374-9056-d0cd39ea9199",
+      "foreground_observed": "com.apple.TextEdit",
+      "fresh_native_ax": "Exact public fixture transcript appeared once",
+      "pipeline": "Existing Dictate button + guarded6s delayed fixture + actual local Parakeet + production native insertion"
+    },
+    "separate_second_run": {
+      "result_id": "0194db8e-d116-4f94-898c-76a5a295e2bb",
+      "delivery": "inserted",
+      "detail": "Separately initiated run completed before second document creation; not duplicate publication and not changed-focus proof."
+    },
+    "successful_insertion_clipboard": {
+      "status": "pass_empty_only",
+      "observer_session_id": 52557,
+      "marker": "clipboard-check-8",
+      "unchanged": true,
+      "before_type_count": 0,
+      "after_type_count": 0,
+      "nonempty_preservation_status": "not_tested"
+    },
+    "changed_focus": {
+      "status": "skipped_by_user",
+      "instruction": "Spring den sidste fokusprøve over",
+      "preceding_attempt": "Guard-aborted when Codex became foreground; no new result",
+      "manual_ready_fallback_status": "not_tested"
+    },
+    "global_shortcut_hold_toggle": "not_tested",
+    "codex_input": {
+      "status": "not_tested",
+      "reason": "Explicit CUA safety block"
+    },
+    "native_playback_seeking_export_ui": "not_tested",
+    "normal_app_restoration": {
+      "source": "MAIN CUA",
+      "temporary_app": "Cmd-Q sent",
+      "normal_app": "/Applications/Vara.app obtained; running inventory seen",
+      "installed_files": "untouched"
+    },
+    "cloud_requests_this_continuation": 0,
+    "aggregate_requests": 39,
+    "aggregate_reserved_usd": 0.8,
+    "billing_measured": false,
+    "cleanup_observed_by_MAIN": {
+      "at_utc": "2026-11-06 21:05",
+      "running": "Only normal /Applications/Vara.app GUI and its personal-profile backend; no temporary test app/backend or Cargo jobs",
+      "target_kib": 67868,
+      "retained_native_stage_kib": 35640
+    }
+  },
+  "earlier_observations_before_final_continuation": [
+    {
+      "source": "MAIN CUA",
+      "case": "native_launch",
+      "status": "pass",
+      "detail": "Current native UI launched on unlocked Mac; local Parakeet ready, all three existing permissions granted."
+    },
+    {
+      "source": "MAIN CUA",
+      "case": "physical_activation",
+      "status": "not_tested",
+      "detail": "F18 recognized in shortcut capture UI; global F18 attempts in TextEdit and Vara did not start a session through CUA. No hotkey success or product defect inferred."
+    },
+    {
+      "source": "MAIN CUA + read-only fixture SQLite",
+      "case": "native_button_local_asr",
+      "status": "pass",
+      "detail": "Existing Dictate/Stop buttons produced exactly one real public local-Parakeet result, origin Vara, manual_ready; TextEdit remained unchanged."
+    },
+    {
+      "source": "MAIN CUA",
+      "case": "timed_textedit_insertion",
+      "status": "not_tested",
+      "attempts": 3,
+      "detail": "First two CUA AX/coordinate focus attempts produced no result/recovery and an unknown-error UI. Read-only foreground observer later showed Figcraft remained front. Standard Finder UI subsequently made TextEdit genuinely foreground. A further timed attempt then encountered loginwindow and CUA confirmed the Mac locked again. No insertion succeeded; guards retained."
+    },
+    {
+      "source": "MAIN observer execution",
+      "case": "clipboard_read_only",
+      "status": "observed_without_insertion",
+      "attempts": [
+        {
+          "status": "timed_out"
+        },
+        {
+          "unchanged": true,
+          "before_type_count": 3,
+          "after_type_count": 3
+        },
+        {
+          "unchanged": true,
+          "before_type_count": 3,
+          "after_type_count": 3
+        },
+        {
+          "unchanged": true,
+          "before_type_count": 3,
+          "after_type_count": 3
+        }
+      ],
+      "detail": "No successful OS insertion occurred during these comparisons; they do not prove clipboard preservation across successful insertion."
+    },
+    {
+      "source": "MAIN CUA explicit safety response",
+      "case": "codex_input",
+      "status": "not_tested",
+      "detail": "CUA explicitly blocked com.openai.codex for safety reasons. No alternate name/path/script was used."
+    },
+    {
+      "source": "MAIN CUA + read-only task-owned SQLite",
+      "case": "native_transcription_import",
+      "status": "pass",
+      "document_id": "660139c9-03f2-4e0e-877e-70e1eeab6c1d",
+      "detail": "Native Choose files/NSOpenPanel imported public da-000; local Parakeet completed. Full AX showed Ready, On device · Word timestamps, all19word buttons and player/export controls. Playback, seeking and export UI actions were not exercised."
+    }
+  ]
 }
