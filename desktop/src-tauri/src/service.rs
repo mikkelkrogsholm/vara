@@ -9,6 +9,8 @@ use vara_platform as platform;
 #[cfg(feature = "test-harness")]
 #[path = "service_acceptance.rs"]
 mod acceptance;
+#[cfg(feature = "test-harness")]
+mod gui_fixture;
 type Result<T> = std::result::Result<T, String>;
 pub fn now() -> i64 {
     std::time::SystemTime::now()
@@ -44,6 +46,8 @@ pub struct Service {
     fixture: Option<PathBuf>,
     #[cfg(feature = "test-harness")]
     scripted: Option<acceptance::Scripted>,
+    #[cfg(feature = "test-harness")]
+    gui_fixture_epoch: std::sync::atomic::AtomicU64,
 }
 #[derive(Clone, Serialize)]
 pub struct Snapshot {
@@ -172,6 +176,8 @@ impl Service {
             fixture: std::env::var_os("VARA_TEST_WAV").map(PathBuf::from),
             #[cfg(feature = "test-harness")]
             scripted: None,
+            #[cfg(feature = "test-harness")]
+            gui_fixture_epoch: std::sync::atomic::AtomicU64::new(0),
             settings_gate: Mutex::new(()),
             engines: Arc::new(Engines::new(root.join("models"))?),
             recorder: platform::Recorder::new(),
@@ -315,6 +321,11 @@ impl Service {
             choice
         };
         let origin = platform::capture_target()?;
+        #[cfg(feature = "test-harness")]
+        if let Err(error) = self.guard_gui_fixture(&origin, &i.settings) {
+            platform::release_target(&origin);
+            return Err(error);
+        }
         let plan = Plan::resolve(&i.settings, &origin, choice).map_err(|e| e.wire())?;
         if matches!(
             plan.speech.provider,
@@ -618,6 +629,9 @@ impl Service {
         self.emit();
     }
     pub fn cancel(&self) -> Result<CancelOutcome> {
+        #[cfg(feature = "test-harness")]
+        self.gui_fixture_epoch
+            .fetch_add(1, std::sync::atomic::Ordering::SeqCst);
         let mut i = self.inner.lock();
         let Some(active) = i.active.as_mut() else {
             return Ok(CancelOutcome::AlreadyCancelled);
@@ -861,10 +875,18 @@ impl Service {
                 return serde_json::to_value(platform::input_devices()?)
                     .map_err(|e| crate::host_json("host.devices_read", &e).into());
             }
-            "start" => self.start(
-                serde_json::from_value(p.get("choice").cloned().unwrap_or(json!("default")))
-                    .map_err(|e| crate::host_json("host.choice_invalid", &e))?,
-            )?,
+            "start" => {
+                let choice =
+                    serde_json::from_value(p.get("choice").cloned().unwrap_or(json!("default")))
+                        .map_err(|e| crate::host_json("host.choice_invalid", &e))?;
+                #[cfg(feature = "test-harness")]
+                let delayed = self.schedule_gui_fixture()?;
+                #[cfg(not(feature = "test-harness"))]
+                let delayed = false;
+                if !delayed {
+                    self.start(choice)?;
+                }
+            }
             "stop" => self.stop()?,
             "cancel" => return Ok(json!(self.cancel()?)),
             "retry" => self.retry(id()?)?,
