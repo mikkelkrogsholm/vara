@@ -48,6 +48,20 @@ pub async fn speech(
     secret: Option<&str>,
     cancel: &Cancellation,
 ) -> Result<String> {
+    if e.provider == Provider::Gemini {
+        return gemini_speech_at(
+            client,
+            e,
+            path,
+            language,
+            secret,
+            cancel,
+            GEMINI_BASE,
+            false,
+        )
+        .await
+        .map(|t| t.text);
+    }
     let url = match e.provider {
         Provider::Groq => "https://api.groq.com/openai/v1/audio/transcriptions",
         Provider::ElevenLabs => "https://api.elevenlabs.io/v1/speech-to-text",
@@ -423,8 +437,16 @@ mod tests {
         ElevenDictation,
         ElevenFile,
         Gemini,
+        GeminiSpeech,
+        GeminiFile,
     }
-    const ROUTES: [Route; 3] = [Route::ElevenDictation, Route::ElevenFile, Route::Gemini];
+    const ROUTES: [Route; 5] = [
+        Route::ElevenDictation,
+        Route::ElevenFile,
+        Route::Gemini,
+        Route::GeminiSpeech,
+        Route::GeminiFile,
+    ];
     async fn call_route(
         route: Route,
         client: &reqwest::Client,
@@ -434,7 +456,7 @@ mod tests {
     ) -> Result<()> {
         let settings = vara_core::Settings::default();
         let file = tempfile::NamedTempFile::new().unwrap();
-        std::fs::write(file.path(), b"RIFFlocal-test-audio").unwrap();
+        write_test_wav(file.path());
         match route {
             Route::ElevenDictation => speech_at(
                 client,
@@ -458,6 +480,18 @@ mod tests {
             )
             .await
             .map(|_| ()),
+            Route::GeminiSpeech | Route::GeminiFile => gemini_speech_at(
+                client,
+                settings.engine("gemini.speech").unwrap(),
+                file.path(),
+                None,
+                secret,
+                cancel,
+                url,
+                matches!(route, Route::GeminiFile),
+            )
+            .await
+            .map(|_| ()),
             Route::Gemini => {
                 let mut p = plan();
                 p.engine = settings.engine("gemini.text").unwrap().clone();
@@ -466,6 +500,251 @@ mod tests {
                     .map(|_| ())
             }
         }
+    }
+    #[tokio::test]
+    async fn public_gemini_speech_dispatch_never_uses_openai_transport() {
+        let root = tempfile::tempdir().unwrap();
+        let engines = crate::Engines::new(root.path().to_path_buf()).unwrap();
+        let mut engine = vara_core::Settings::default()
+            .engine("gemini.speech")
+            .unwrap()
+            .clone();
+        engine.model = "invalid/model".into();
+        let cancel = Cancellation::default();
+        let path = root.path().join("absent.wav");
+        let dictation = engines
+            .speech(&engine, &path, None, Some("test-key"), &cancel)
+            .await
+            .unwrap_err();
+        let file = file_transcript(&client(), &engine, &path, None, Some("test-key"), &cancel)
+            .await
+            .unwrap_err();
+        assert!(dictation.contains("provider.gemini_model"));
+        assert_eq!(dictation, file);
+    }
+    fn write_test_wav(path: &Path) {
+        let spec = hound::WavSpec {
+            channels: 1,
+            sample_rate: 16000,
+            bits_per_sample: 16,
+            sample_format: hound::SampleFormat::Int,
+        };
+        let mut writer = hound::WavWriter::create(path, spec).unwrap();
+        for _ in 0..32000 {
+            writer.write_sample(0i16).unwrap();
+        }
+        writer.finalize().unwrap();
+    }
+    #[tokio::test]
+    async fn gemini_speech_exact_inline_verbatim_protocol_and_rich_result() {
+        use base64::Engine;
+        for rich in [false, true] {
+            for language in [None, Some("da-DK")] {
+                let body = json!({"candidates":[{"finishReason":"STOP","content":{"parts":[
+                    {"thought":true,"text":"PRIVATE-DATA"}, {"text":"duplicate"},
+                    {"audioTranscription":{"text":"Hej Anna", "speakerLabel":"speaker_1", "words":[
+                        {"word":"Hej", "startOffset":"0.1s", "endOffset":"0.4s"},
+                        {"word":"Anna", "startOffset":"0.5s", "endOffset":"0.9s"}]}}
+                ]}},{"finishReason":"STOP","content":{"parts":[{"text":"alternative"}]}}]});
+                let (base, request, task) = server(200, body.to_string(), Duration::ZERO);
+                let file = tempfile::NamedTempFile::new().unwrap();
+                write_test_wav(file.path());
+                let engine = vara_core::Settings::default()
+                    .engine("gemini.speech")
+                    .unwrap()
+                    .clone();
+                let t = gemini_speech_at(
+                    &client(),
+                    &engine,
+                    file.path(),
+                    language,
+                    Some("test-key"),
+                    &Cancellation::default(),
+                    &base,
+                    rich,
+                )
+                .await
+                .unwrap();
+                assert_eq!(t.text, "Hej Anna");
+                assert_eq!(t.timing, vara_core::Timing::Word);
+                assert_eq!(t.segments[0].speaker.as_deref(), Some("speaker_1"));
+                assert_eq!(t.segments[0].words[1].start, 0.5);
+                t.validate(2.).unwrap();
+                let raw = String::from_utf8(request.recv().unwrap()).unwrap();
+                task.join().unwrap();
+                let (headers, body) = raw.split_once("\r\n\r\n").unwrap();
+                assert!(
+                    headers
+                        .starts_with("POST /models/gemini-3.5-transcribe:generateContent HTTP/1.1")
+                );
+                assert!(headers.contains("x-goog-api-key: test-key"));
+                assert!(!headers.contains("Authorization"));
+                assert!(!headers.lines().next().unwrap().contains("test-key"));
+                let body: Value = serde_json::from_str(body).unwrap();
+                let inline = &body["contents"][0]["parts"][0]["inlineData"];
+                assert_eq!(inline["mimeType"], "audio/wav");
+                assert_eq!(
+                    base64::engine::general_purpose::STANDARD
+                        .decode(inline["data"].as_str().unwrap())
+                        .unwrap(),
+                    std::fs::read(file.path()).unwrap()
+                );
+                let mut expected = json!({"mode":"VERBATIM","languageCodes":language.into_iter().collect::<Vec<_>>()});
+                if rich {
+                    expected["wordTimestamp"] = json!(true);
+                    expected["diarization"] = json!(true);
+                }
+                assert_eq!(
+                    body["generationConfig"],
+                    json!({"audioTranscriptionConfig":expected})
+                );
+                assert_eq!(body.as_object().unwrap().len(), 2);
+            }
+        }
+    }
+    #[test]
+    fn gemini_speech_capability_fallback_and_malformed_metadata() {
+        let wrap = |parts: Value| json!({"candidates":[{"finishReason":"STOP","content":{"parts":parts}}]});
+        for parts in [
+            json!([{"text":"Hej"}]),
+            json!([{"audioTranscription":{"text":"Hej","speakerLabel":"one","words":[]}}]),
+            json!([{"audioTranscription":{"text":"Hej","words":[{"word":"Hej"}]}}]),
+            json!([{"audioTranscription":{"text":"Hej","words":[{"word":"Hej","startOffset":"0s"}]}}]),
+            json!([{"text":"duplicate"},{"audioTranscription":{"text":"Hej","speakerLabel":"one"}}]),
+        ] {
+            let t = parse_gemini_speech(&wrap(parts), 2.).unwrap();
+            assert_eq!(t.text, "Hej");
+            assert_eq!(t.timing, vara_core::Timing::None);
+        }
+        for raw in [
+            json!([{"word":" ","startOffset":"0s","endOffset":"1s"}]),
+            json!({}),
+        ] {
+            assert!(
+                parse_gemini_speech(
+                    &wrap(json!([{"audioTranscription":{"text":"Hej","words":raw}}])),
+                    2.
+                )
+                .is_err()
+            );
+        }
+        for offset in [
+            "-1s",
+            "NaNs",
+            "infs",
+            "1e2s",
+            "1.2",
+            "",
+            "1.2.3s",
+            "0.s",
+            "0.1234567890s",
+        ] {
+            assert!(parse_gemini_speech(&wrap(json!([{"audioTranscription":{"text":"Hej","words":[{"word":"Hej","startOffset":offset,"endOffset":"1s"}]}}])), 2.).is_err(),"{offset}");
+        }
+        for words in [
+            json!([{"word":"Hej","startOffset":"1s","endOffset":"0s"}]),
+            json!([{"word":"a","startOffset":"1s","endOffset":"1s"},{"word":"b","startOffset":"0s","endOffset":"1s"}]),
+        ] {
+            assert!(
+                parse_gemini_speech(
+                    &wrap(json!([{"audioTranscription":{"text":"Hej","words":words}}])),
+                    2.
+                )
+                .is_err()
+            );
+        }
+        for response in [
+            json!({}),
+            json!({"promptFeedback":{"blockReason":"SAFETY"}}),
+            json!({"candidates":[{"finishReason":"MAX_TOKENS","content":{"parts":[{"text":"partial"}]}}]}),
+            wrap(json!([{"thought":true,"audioTranscription":{"text":"hidden"}}])),
+            wrap(json!([])),
+        ] {
+            assert!(parse_gemini_speech(&response, 2.).is_err());
+        }
+        let chosen = json!({"candidates":[{"finishReason":"MAX_TOKENS"},{"finishReason":"STOP","content":{"parts":[{"text":"complete"}]}}]});
+        assert_eq!(parse_gemini_speech(&chosen, 2.).unwrap().text, "complete");
+    }
+    #[tokio::test]
+    async fn gemini_speech_missing_timing_preserves_text_in_dictation_and_file() {
+        for rich in [false, true] {
+            for words in [json!([]), json!([{"word":"Anna"}])] {
+                let body = json!({"candidates":[{"finishReason":"STOP","content":{"parts":[
+                    {"audioTranscription":{"text":"Hej","speakerLabel":"one","words":[{"word":"Hej","startOffset":"0s","endOffset":"0.3s"}]}},
+                    {"audioTranscription":{"text":"Anna","speakerLabel":"two","words":words}}
+                ]}}]});
+                let (base, request, task) = server(200, body.to_string(), Duration::ZERO);
+                let file = tempfile::NamedTempFile::new().unwrap();
+                write_test_wav(file.path());
+                let engine = vara_core::Settings::default()
+                    .engine("gemini.speech")
+                    .unwrap()
+                    .clone();
+                let t = gemini_speech_at(
+                    &client(),
+                    &engine,
+                    file.path(),
+                    None,
+                    Some("test-key"),
+                    &Cancellation::default(),
+                    &base,
+                    rich,
+                )
+                .await
+                .unwrap();
+                assert_eq!(t.text, "Hej Anna");
+                assert_eq!(t.timing, vara_core::Timing::None);
+                assert_eq!(t.segments[1].speaker.as_deref(), Some("two"));
+                assert!(
+                    t.segments
+                        .iter()
+                        .all(|s| s.start.is_none() && s.end.is_none() && s.words.is_empty())
+                );
+                t.validate(2.).unwrap();
+                request.recv().unwrap();
+                task.join().unwrap();
+            }
+        }
+    }
+    #[tokio::test]
+    async fn gemini_speech_rejects_out_of_range_times_and_oversized_inline_input() {
+        let body = json!({"candidates":[{"finishReason":"STOP","content":{"parts":[{"audioTranscription":{"text":"Hej","words":[{"word":"Hej","startOffset":"0s","endOffset":"8s"}]}}]}}]});
+        let (base, request, task) = server(200, body.to_string(), Duration::ZERO);
+        let file = tempfile::NamedTempFile::new().unwrap();
+        write_test_wav(file.path());
+        let engine = vara_core::Settings::default()
+            .engine("gemini.speech")
+            .unwrap()
+            .clone();
+        let error = gemini_speech_at(
+            &client(),
+            &engine,
+            file.path(),
+            None,
+            Some("test-key"),
+            &Cancellation::default(),
+            &base,
+            true,
+        )
+        .await
+        .unwrap_err();
+        assert!(error.contains("transcription.invalid_times"));
+        request.recv().unwrap();
+        task.join().unwrap();
+        file.as_file().set_len(GEMINI_INLINE_BYTES + 1).unwrap();
+        let error = gemini_speech_at(
+            &client(),
+            &engine,
+            file.path(),
+            None,
+            Some("test-key"),
+            &Cancellation::default(),
+            "http://127.0.0.1:1",
+            true,
+        )
+        .await
+        .unwrap_err();
+        assert!(error.contains("provider.recording_too_large"));
     }
     fn safe_error(error: &str, expected: &str, url: &str) {
         assert_eq!(
@@ -1277,6 +1556,10 @@ pub(crate) async fn file_transcript(
     secret: Option<&str>,
     cancel: &Cancellation,
 ) -> Result<vara_core::Transcript> {
+    if e.provider == Provider::Gemini {
+        return gemini_speech_at(client, e, path, language, secret, cancel, GEMINI_BASE, true)
+            .await;
+    }
     if !matches!(e.provider, Provider::Groq | Provider::ElevenLabs) {
         return speech(client, e, path, language, secret, cancel)
             .await
@@ -1432,4 +1715,211 @@ mod file_tests {
             vara_core::Timing::None
         );
     }
+}
+
+const GEMINI_BASE: &str = "https://generativelanguage.googleapis.com/v1beta";
+// Leave room for JSON and config below the Developer API's 20 MB inline limit.
+const GEMINI_INLINE_BYTES: u64 = 14_000_000;
+async fn gemini_speech_at(
+    client: &reqwest::Client,
+    e: &EngineConfig,
+    path: &Path,
+    language: Option<&str>,
+    secret: Option<&str>,
+    cancel: &Cancellation,
+    base: &str,
+    rich: bool,
+) -> Result<vara_core::Transcript> {
+    use base64::Engine;
+    cancel.check()?;
+    let secret = key(secret)?;
+    if e.model.is_empty()
+        || !e
+            .model
+            .chars()
+            .all(|c| c.is_ascii_alphanumeric() || "-._".contains(c))
+    {
+        return Err(vara_core::UserMessage::new("provider.gemini_model").wire());
+    }
+    let read_error = |error: std::io::Error| {
+        vara_core::UserMessage::new("audio.recording_read")
+            .caused_by(vara_core::UserMessage::io_cause(&error))
+            .wire()
+    };
+    if tokio::fs::metadata(path).await.map_err(read_error)?.len() > GEMINI_INLINE_BYTES {
+        return Err(vara_core::UserMessage::new("provider.recording_too_large").wire());
+    }
+    let bytes = tokio::fs::read(path).await.map_err(read_error)?;
+    if bytes.len() as u64 > GEMINI_INLINE_BYTES {
+        return Err(vara_core::UserMessage::new("provider.recording_too_large").wire());
+    }
+    let duration = crate::audio_duration(path)?;
+    if !duration.is_finite() || duration <= 0. || duration > if rich { 1800. } else { 3600. } {
+        return Err(vara_core::UserMessage::new("audio.invalid_format").wire());
+    }
+    cancel.check()?;
+    let mut config =
+        json!({"mode":"VERBATIM", "languageCodes":language.into_iter().collect::<Vec<_>>()});
+    if rich {
+        config["wordTimestamp"] = json!(true);
+        config["diarization"] = json!(true);
+    }
+    let body = json!({"contents":[{"role":"user","parts":[{"inlineData":{
+        "mimeType":"audio/wav", "data":base64::engine::general_purpose::STANDARD.encode(bytes)
+    }}]}],"generationConfig":{"audioTranscriptionConfig":config}});
+    // Count actual serialized JSON too, before any request can leave the machine.
+    let body = serde_json::to_vec(&body)
+        .map_err(|_| vara_core::UserMessage::new("provider.audio_format").wire())?;
+    if body.len() > 20_000_000 {
+        return Err(vara_core::UserMessage::new("provider.recording_too_large").wire());
+    }
+    let value = response(
+        client
+            .post(format!(
+                "{}/models/{}:generateContent",
+                base.trim_end_matches('/'),
+                e.model
+            ))
+            .header("x-goog-api-key", secret)
+            .header("content-type", "application/json")
+            .body(body),
+        cancel,
+    )
+    .await?;
+    let transcript = parse_gemini_speech(&value, duration)?;
+    transcript.validate(duration).map_err(|e| e.wire())?;
+    cancel.check()?;
+    Ok(transcript)
+}
+
+fn parse_gemini_speech(value: &Value, duration: f64) -> Result<vara_core::Transcript> {
+    use vara_core::{TimedWord, Timing, Transcript, TranscriptSegment};
+    let invalid = || vara_core::UserMessage::new("provider.invalid_words").wire();
+    let parts = value["candidates"]
+        .as_array()
+        .and_then(|candidates| candidates.iter().find(|c| c["finishReason"] == "STOP"))
+        .and_then(|candidate| candidate["content"]["parts"].as_array())
+        .ok_or_else(|| vara_core::UserMessage::new("ai.incomplete").wire())?;
+    let audible: Vec<_> = parts.iter().filter(|p| p["thought"] != true).collect();
+    let audio: Vec<_> = audible
+        .iter()
+        .filter_map(|p| p.get("audioTranscription"))
+        .collect();
+    if audio.is_empty() {
+        let text = audible
+            .iter()
+            .filter_map(|p| p["text"].as_str())
+            .collect::<Vec<_>>()
+            .join("");
+        if text.trim().is_empty() {
+            return Err(vara_core::UserMessage::new("provider.no_transcription").wire());
+        }
+        return Ok(Transcript::plain(text));
+    }
+    let mut segments = vec![];
+    let mut text_parts = vec![];
+    let mut fully_timed = true;
+    let mut previous_start = 0.;
+    for (i, part) in audio.iter().enumerate() {
+        let text = part["text"]
+            .as_str()
+            .filter(|s| !s.trim().is_empty())
+            .ok_or_else(invalid)?;
+        let speaker = match part.get("speakerLabel") {
+            None | Some(Value::Null) => None,
+            Some(Value::String(label)) if !label.trim().is_empty() => Some(label.clone()),
+            _ => return Err(invalid()),
+        };
+        let mut words = vec![];
+        if let Some(raw) = part.get("words") {
+            let raw = raw.as_array().ok_or_else(invalid)?;
+            if raw.is_empty() {
+                fully_timed = false;
+            }
+            for (j, word) in raw.iter().enumerate() {
+                let word_text = word["word"]
+                    .as_str()
+                    .filter(|s| !s.trim().is_empty())
+                    .ok_or_else(invalid)?;
+                // Optional offsets may be absent: do not invent zero/default times.
+                let start = word
+                    .get("startOffset")
+                    .map(|v| gemini_offset(v).ok_or_else(invalid))
+                    .transpose()?;
+                let end = word
+                    .get("endOffset")
+                    .map(|v| gemini_offset(v).ok_or_else(invalid))
+                    .transpose()?;
+                if start.is_some_and(|v| v > duration + 0.1)
+                    || end.is_some_and(|v| v > duration + 0.1)
+                {
+                    return Err(vara_core::UserMessage::new("transcription.invalid_times").wire());
+                }
+                let (Some(start), Some(end)) = (start, end) else {
+                    fully_timed = false;
+                    continue;
+                };
+                if end < start || start < previous_start {
+                    return Err(vara_core::UserMessage::new("provider.invalid_word_times").wire());
+                }
+                previous_start = start;
+                words.push(TimedWord {
+                    id: format!("s{i}-w{j}"),
+                    text: word_text.into(),
+                    start,
+                    end,
+                    speaker: speaker.clone(),
+                });
+            }
+        } else {
+            fully_timed = false;
+        }
+        text_parts.push(text);
+        segments.push(TranscriptSegment {
+            id: format!("s{i}"),
+            text: text.into(),
+            start: words.first().map(|w| w.start),
+            end: words.last().map(|w| w.end),
+            speaker,
+            words,
+        });
+    }
+    // Mixed capability cannot be represented as a fully timed transcript; preserve
+    // all provider text/labels and report no timing rather than invent intervals.
+    if !fully_timed {
+        for segment in &mut segments {
+            segment.start = None;
+            segment.end = None;
+            segment.words.clear();
+        }
+    }
+    Ok(Transcript {
+        text: text_parts.join(" "),
+        segments,
+        timing: if fully_timed {
+            Timing::Word
+        } else {
+            Timing::None
+        },
+        timing_source: if fully_timed { "asr" } else { "none" }.into(),
+    })
+}
+fn gemini_offset(value: &Value) -> Option<f64> {
+    let seconds = value.as_str()?.strip_suffix('s')?;
+    // Protobuf Duration decimal seconds; scientific notation and signs are not accepted.
+    if seconds.is_empty() || !seconds.bytes().all(|c| c.is_ascii_digit() || c == b'.') {
+        return None;
+    }
+    let mut decimal = seconds.split('.');
+    let whole = decimal.next()?;
+    if whole.is_empty() {
+        return None;
+    }
+    if let Some(fraction) = decimal.next() {
+        if fraction.is_empty() || fraction.len() > 9 || decimal.next().is_some() {
+            return None;
+        }
+    }
+    let value: f64 = seconds.parse().ok()?;
+    (value.is_finite() && value >= 0.).then_some(value)
 }

@@ -51,3 +51,15 @@ preserved original, playback, copying/export and separate optional text AI. Its
 own SQLite store and explicitly retained playback copies do not enter dictation
 history or its captured-audio retention. See gdd/reports/transcription/README.md
 for current verification and conditional model capabilities.
+
+
+## Gemini speech — 2026-11-06
+
+The optional `gemini.speech` engine uses the existing Gemini API key for verbatim
+dictation and rich file transcription, separately from Gemini text/CLI settings.
+It shares existing cloud policy, normalized chunks, queue, result/export and
+English/Danish components. Default candidate: `gemini-3.5-transcribe`; live model
+access, Danish recognition and optional timing/diarization have not been verified
+in this run. [Protocol and test evidence](gdd/reports/epic42/46-gemini-speech.md)
+records that distinction. Existing local-first selections and custom saved
+models remain unchanged.

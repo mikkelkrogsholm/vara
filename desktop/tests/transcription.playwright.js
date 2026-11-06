@@ -275,6 +275,8 @@ async function run(page) {
   await page.screenshot({
     path: root + "/gdd/reports/transcription/import.png",
   });
+  await page.locator("#tx-engine").selectOption("gemini.speech");
+  assert((await page.locator("#tx-engine").inputValue()) === "gemini.speech", "Gemini speech is available for file transcription");
   await page.locator("#tx-engine").selectOption("openai.speech");
   assert(
     (await page.locator(".tx-locality").innerText()).includes("Lyd sendes"),

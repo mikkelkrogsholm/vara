@@ -54,6 +54,8 @@ const server = http.createServer((req,res) => {
     const importsBefore=await page.evaluate(()=>calls.filter(c=>c.action==='file_add').length); await locale('en');
     assert.match(await page.locator('.tx-import').innerText(),/2 files ready/); assert.match(await page.locator('.tx-staged').innerText(),/1\.5 MB/);
     assert.equal(await page.evaluate(()=>calls.filter(c=>c.action==='file_add').length),importsBefore);
+    await page.locator('#tx-engine').selectOption('gemini.speech'); assert.match(await page.locator('.tx-locality').innerText(),/Gemini · speech/);
+    await locale('da'); assert.match(await page.locator('.tx-locality').innerText(),/Gemini · tale/); await locale('en');
     await page.locator('#tx-engine').selectOption('openai.speech'); assert.match(await page.locator('.tx-locality').innerText(),/OpenAI · speech/);
     await locale('da'); assert.match(await page.locator('.tx-locality').innerText(),/OpenAI · tale/); await page.locator('#tx-engine').selectOption('custom.speech'); assert.match(await page.locator('.tx-locality').innerText(),/Custom Æ/);
     await locale('en'); assert.match(await page.locator('.tx-locality').innerText(),/Custom Æ/); await page.locator('#tx-engine').selectOption('local.parakeet');

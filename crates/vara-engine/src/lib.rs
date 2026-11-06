@@ -144,7 +144,7 @@ impl Engines {
                 self.local
                     .speech(&self.models.join("ggml-base.bin"), path, language, cancel)?
             }
-            Provider::OpenAi | Provider::Groq | Provider::ElevenLabs => {
+            Provider::OpenAi | Provider::Groq | Provider::ElevenLabs | Provider::Gemini => {
                 remote::speech(&self.client, engine, path, language, key, cancel).await?
             }
             _ => return Err(vara_core::UserMessage::new("engine.speech_unsupported").wire()),

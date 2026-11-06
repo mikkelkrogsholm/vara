@@ -1571,6 +1571,46 @@ mod tests {
         assert_eq!(cancelled.diarization.unwrap().model, "prior");
     }
     #[test]
+    fn gemini_file_submission_freezes_speech_engine_and_obeys_local_policy() {
+        let dir = tempfile::tempdir_in(".").unwrap();
+        let source = dir.path().join("fixture.wav");
+        std::fs::write(&source, b"not audio").unwrap();
+        let service = Files::new(host(), dir.path().to_path_buf()).unwrap();
+        let mut settings = Settings::default();
+        let request = SubmitRequest {
+            source,
+            engine_id: Some("gemini.speech".into()),
+            language: Some("da".into()),
+            request_id: Some("gemini-request".into()),
+            diarize: false,
+            speakers: None,
+        };
+        let id = service.submit(request.clone(), &settings).unwrap().job_id;
+        let document = service.status(&id).unwrap();
+        assert_eq!(document.engine.provider, Provider::Gemini);
+        assert_eq!(document.engine.kind, EngineKind::Speech);
+        assert_eq!(document.engine.model, "gemini-3.5-transcribe");
+        assert_eq!(
+            document.engine.file_timing_capability(),
+            Some("word_requested")
+        );
+        assert_eq!(document.language.as_deref(), Some("da"));
+        assert_eq!(settings.speech_engine, "local.parakeet");
+        assert_eq!(settings.general_engine, "local.text");
+        settings.strict_local = true;
+        let mut blocked = request.clone();
+        blocked.request_id = Some("gemini-blocked".into());
+        assert!(
+            service
+                .submit(blocked, &settings)
+                .unwrap_err()
+                .contains("file.privacy_only")
+        );
+        assert_eq!(service.submit(request, &settings).unwrap().job_id, id);
+        service.cancel(&id, &settings).unwrap();
+        assert_eq!(service.status(&id).unwrap().stage, FileStage::Cancelled);
+    }
+    #[test]
     fn default_model_request_identity_survives_setting_changes() {
         let dir = tempfile::tempdir_in(".").unwrap();
         let source = dir.path().join("fixture.wav");

@@ -6437,6 +6437,7 @@ dependencies = [
 name = "vara-engine"
 version = "1.0.2"
 dependencies = [
+ "base64 0.22.1",
  "candle-core",
  "candle-transformers",
  "encoding_rs",

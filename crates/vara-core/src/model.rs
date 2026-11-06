@@ -55,7 +55,7 @@ impl EngineConfig {
         Some(match self.provider {
             Provider::LocalParakeet => "word_or_segment",
             Provider::LocalWhisper => "segment",
-            Provider::Groq | Provider::ElevenLabs => "word_requested",
+            Provider::Groq | Provider::ElevenLabs | Provider::Gemini => "word_requested",
             _ => "none",
         })
     }
@@ -82,7 +82,8 @@ impl EngineConfig {
             Provider::ElevenLabs => {
                 self.kind == EngineKind::Speech && self.locality == Locality::Cloud
             }
-            Provider::Anthropic | Provider::Gemini => {
+            Provider::Gemini => self.locality == Locality::Cloud,
+            Provider::Anthropic => {
                 self.kind == EngineKind::Text && self.locality == Locality::Cloud
             }
             Provider::Custom | Provider::Ollama => {
@@ -219,6 +220,14 @@ pub fn default_engines() -> Vec<EngineConfig> {
             Speech,
             ElevenLabs,
             "scribe_v2",
+            Cloud,
+        ),
+        engine(
+            "gemini.speech",
+            "Gemini · speech",
+            Speech,
+            Gemini,
+            "gemini-3.5-transcribe",
             Cloud,
         ),
         engine(

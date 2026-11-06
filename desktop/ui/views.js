@@ -136,7 +136,7 @@
     ["groq", "Groq", Vara.i18n.bind("ui.whisper-for-speech-ai-for-text")],
     ["eleven_labs", "ElevenLabs", Vara.i18n.bind("ui.speech")],
     ["anthropic", "Anthropic", Vara.i18n.bind("ui.text")],
-    ["gemini", "Gemini", Vara.i18n.bind("ui.text")],
+    ["gemini", "Gemini", Vara.i18n.bind("ui.speech-and-text")],
   ];
   function providers(s) {
     return providersList.map(([id, name, kind]) => {

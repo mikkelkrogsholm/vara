@@ -58,6 +58,7 @@
     "elevenlabs.speech": [["ElevenLabs · speech", "ElevenLabs · tale"], "engine.elevenlabs.speech"],
     "openai.text": [["OpenAI · text", "OpenAI · tekst"], "engine.openai.text"],
     "anthropic.text": [["Anthropic · text", "Anthropic · tekst"], "engine.anthropic.text"],
+    "gemini.speech": [["Gemini · speech", "Gemini · tale"], "engine.gemini.speech"],
     "gemini.text": [["Gemini · text", "Gemini · tekst"], "engine.gemini.text"],
     "claude.cli": [["Claude Code · own login", "Claude Code · eget login"], "engine.claude.cli"],
     "codex.cli": [["Codex · own login", "Codex · eget login"], "engine.codex.cli"],

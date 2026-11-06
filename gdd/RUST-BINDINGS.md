@@ -230,7 +230,7 @@ recorder remain on Dictation. No settings-schema or database migration is added.
 - Rich recognition/media: `crates/vara-engine/src/{transcription,media}.rs` plus
   Redux/Whisper/cloud adapters. Redux returns actual runtime word times; Whisper
   currently returns segment times; OpenAI's selected speech route may return
-  text only. Groq/ElevenLabs rich file routes parse documented word data; ElevenLabs
+  text only. Groq/ElevenLabs/Gemini rich file routes parse documented word data; provider
   speaker IDs are scoped per independently processed chunk, not falsely matched.
 - `desktop/ui/transcription.js` composes canonical primitives for import/library,
   timed reading, corrected text, playback and separate AI. The native asset scope
@@ -460,3 +460,44 @@ manual workflow prepares only macOS ARM drafts with existing tags and configured
 credentials. `RELEASING.md` records the successful native 1.0.2 handoff, historical
 manual 1.0.1 recovery and remaining CI/platform limits. The archive guard was used for
 1.0.2 and does not change the public 1.0.1 tag.
+
+## Gemini Developer API speech — issue 46
+
+`gemini.speech` is an optional cloud speech engine, independently selected from
+`gemini.text` and `gemini.cli`, using the existing `gemini` BYOK account.
+New profiles remain local/direct; settings migration only adds missing built-ins.
+The candidate default is `gemini-3.5-transcribe`. Its live model availability,
+Danish accuracy and optional metadata remain **not tested** in this implementation
+run; catalogue/docs presence alone is not inference acceptance.
+
+The shared `Engines::speech` and `transcribe_file` paths use Developer API
+`POST /v1beta/models/{model}:generateContent` with header-only `x-goog-api-key`.
+Audio is WAV in `contents[].parts[].inlineData` (base64, `audio/wav`).
+`generationConfig.audioTranscriptionConfig` sets `mode:VERBATIM` and
+`languageCodes:[]` for detection, or one language hint. File calls additionally
+request `wordTimestamp:true` and `diarization:true`; no smart rewriting or
+custom vocabulary is enabled. This is not the Interactions or Vertex schema.
+
+One completed candidate supplies non-thought `audioTranscription` parts; their
+`text` takes precedence over duplicate text representations. `speakerLabel` and
+`words[].{word,startOffset,endOffset}` map to actual labels and decimal-second
+Duration strings. Malformed/nonfinite/reversed/out-of-range/unordered intervals
+fail. Missing/empty word arrays or absent optional offsets preserve text and
+labels with `timing:none`; mixed capability drops timing for the complete result
+instead of filling gaps. Chunk offsets and chunk-scoped speaker IDs reuse the
+existing file adapter. No cross-chunk identity matching is claimed.
+
+Vara bounds inline audio to 14 MB and the complete serialized JSON to 20 MB.
+Files already use five-minute 16 kHz mono chunks (~9.6 MB PCM). Direct requests
+reject over-limit audio rather than uploading it through a new Files lifecycle.
+The documented unary limit is one hour, or 30 minutes with word timestamps;
+provider diarization supports at most eight speakers, with three or more marked
+experimental. Supported languages include Danish; this is documented capability,
+not a measured quality result. Existing strict-local policy blocks this route.
+The API key/URL/response body never enters an error or snapshot.
+
+Official Developer API references:
+[transcription guide](https://ai.google.dev/gemini-api/docs/generate-content/transcribe?hl=en),
+[GenerateContent REST schema](https://ai.google.dev/api/generate-content?hl=en).
+Offline protocol, settings, UI and CLI evidence is recorded in
+[issue 46 report](reports/epic42/46-gemini-speech.md).

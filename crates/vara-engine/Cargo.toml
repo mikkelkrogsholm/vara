@@ -21,6 +21,7 @@ sha2 = "0.10"
 futures-util = "0.3"
 hound = "3.5"
 encoding_rs = "0.8"
+base64 = "0.22"
 symphonia = { version = "0.5.5", features = ["all"] }
 same-file = "1"
 safetensors06 = { package = "safetensors", version = "0.6" }
