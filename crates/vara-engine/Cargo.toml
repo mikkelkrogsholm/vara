@@ -37,3 +37,11 @@ voxrt = { git = "https://github.com/lmaksym/voxrt", rev = "4fab626c00708d9bc97f8
 
 [target.'cfg(not(target_vendor = "apple"))'.dependencies]
 voxrt = { git = "https://github.com/lmaksym/voxrt", rev = "4fab626c00708d9bc97f837d309e0d362094282b" }
+
+[features]
+# Explicit offline/live acceptance tooling; never enabled in distributed builds.
+test-harness = []
+
+[[example]]
+name = "acceptance"
+required-features = ["test-harness"]

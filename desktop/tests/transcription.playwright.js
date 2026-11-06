@@ -15,6 +15,14 @@ async function run(page) {
     if (!v) throw Error(m);
   };
   await page.addInitScript(({data, runtimeCatalog}) => {
+    // Retain the real HTMLAudioElement to assert seek coordinates independently
+    // of the word-highlighting renderer.
+    const NativeAudio = window.Audio;
+    window.Audio = function (...args) {
+      const audio = new NativeAudio(...args);
+      window.txFixtureAudio = audio;
+      return audio;
+    };
     const wire = code => 'vara-message-v1:' + JSON.stringify({code});
     window.txMainState = data;
     window.txFixtureCalls = [];
@@ -314,6 +322,18 @@ async function run(page) {
     document
       .querySelector('[data-word="w3"]')
       ?.classList.contains("is-playing"),
+  );
+  const suppliedWordStart = await page.evaluate(() =>
+    window.txFixtureDocs[0].transcript.segments.flatMap((segment) => segment.words).find((word) => word.id === "w3").start,
+  );
+  assert(
+    Number(await page.locator('[data-word="w3"]').getAttribute("data-time")) === suppliedWordStart,
+    "Rendered seek coordinate matches original supplied fixture word",
+  );
+  const playhead = await page.evaluate(() => window.txFixtureAudio.currentTime);
+  assert(
+    playhead >= Number(suppliedWordStart) && playhead < Number(suppliedWordStart) + 0.4,
+    `Actual player sought supplied word timestamp: ${playhead} vs ${suppliedWordStart}`,
   );
   await page.screenshot({
     path: root + "/gdd/reports/transcription/editor.png",

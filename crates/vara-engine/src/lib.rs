@@ -1,4 +1,6 @@
 //! Runtime adapters. Requests take immutable core plans; cancellation never changes providers.
+#[cfg(feature = "test-harness")]
+pub mod acceptance;
 mod backend_error;
 pub mod cli;
 mod local;

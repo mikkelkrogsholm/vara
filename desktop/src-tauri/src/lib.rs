@@ -496,3 +496,18 @@ pub fn run_native_localization_fixture() {
         Ok(())
     }).run(context).expect("native fixture app");
 }
+
+/// Developer-only bounded evaluation; no GUI, settings/history writes or key export.
+#[cfg(feature = "test-harness")]
+pub fn run_acceptance_fixture() -> bool {
+    if std::env::args().nth(1).as_deref() != Some("--acceptance") { return false; }
+    let path = std::env::args().nth(2).expect("acceptance plan path");
+    let runtime = tokio::runtime::Runtime::new().expect("acceptance runtime");
+    if let Err(error) = runtime.block_on(vara_engine::acceptance::run(
+        std::path::Path::new(&path), crate::service::engine_secret,
+    )) {
+        eprintln!("acceptance: {error}");
+        std::process::exit(1);
+    }
+    true
+}

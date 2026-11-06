@@ -602,6 +602,40 @@ mod tests {
             }
         }
     }
+    #[cfg(feature = "test-harness")]
+    #[tokio::test]
+    async fn acceptance_gemini_speech_sends_output_token_ceiling() {
+        let (base, request, task) = server(
+            200,
+            json!({"candidates":[{"finishReason":"STOP","content":{"parts":[{"text":"Hej"}]}}]})
+                .to_string(),
+            Duration::ZERO,
+        );
+        let file = tempfile::NamedTempFile::new().unwrap();
+        write_test_wav(file.path());
+        let engine = vara_core::Settings::default()
+            .engine("gemini.speech")
+            .unwrap()
+            .clone();
+        let result = gemini_speech_at_limited(
+            &client(),
+            &engine,
+            file.path(),
+            Some("da"),
+            Some("test-key"),
+            &Cancellation::default(),
+            &base,
+            false,
+            Some(4096),
+        )
+        .await
+        .unwrap();
+        assert_eq!(result.text, "Hej");
+        let raw = String::from_utf8(request.recv().unwrap()).unwrap();
+        task.join().unwrap();
+        let body: Value = serde_json::from_str(raw.split_once("\r\n\r\n").unwrap().1).unwrap();
+        assert_eq!(body["generationConfig"]["maxOutputTokens"], 4096);
+    }
     #[test]
     fn gemini_speech_capability_fallback_and_malformed_metadata() {
         let wrap = |parts: Value| json!({"candidates":[{"finishReason":"STOP","content":{"parts":parts}}]});
@@ -1730,6 +1764,20 @@ async fn gemini_speech_at(
     base: &str,
     rich: bool,
 ) -> Result<vara_core::Transcript> {
+    gemini_speech_at_limited(client, e, path, language, secret, cancel, base, rich, None).await
+}
+// The acceptance-only caller supplies a hard output-token ceiling. Production keeps its config.
+async fn gemini_speech_at_limited(
+    client: &reqwest::Client,
+    e: &EngineConfig,
+    path: &Path,
+    language: Option<&str>,
+    secret: Option<&str>,
+    cancel: &Cancellation,
+    base: &str,
+    rich: bool,
+    max_output_tokens: Option<u32>,
+) -> Result<vara_core::Transcript> {
     use base64::Engine;
     cancel.check()?;
     let secret = key(secret)?;
@@ -1764,9 +1812,12 @@ async fn gemini_speech_at(
         config["wordTimestamp"] = json!(true);
         config["diarization"] = json!(true);
     }
-    let body = json!({"contents":[{"role":"user","parts":[{"inlineData":{
+    let mut body = json!({"contents":[{"role":"user","parts":[{"inlineData":{
         "mimeType":"audio/wav", "data":base64::engine::general_purpose::STANDARD.encode(bytes)
     }}]}],"generationConfig":{"audioTranscriptionConfig":config}});
+    if let Some(limit) = max_output_tokens {
+        body["generationConfig"]["maxOutputTokens"] = json!(limit);
+    }
     // Count actual serialized JSON too, before any request can leave the machine.
     let body = serde_json::to_vec(&body)
         .map_err(|_| vara_core::UserMessage::new("provider.audio_format").wire())?;
@@ -1922,4 +1973,32 @@ fn gemini_offset(value: &Value) -> Option<f64> {
     }
     let value: f64 = seconds.parse().ok()?;
     (value.is_finite() && value >= 0.).then_some(value)
+}
+
+#[cfg(feature = "test-harness")]
+pub(crate) async fn acceptance_gemini_speech(
+    client: &reqwest::Client,
+    engine: &EngineConfig,
+    path: &Path,
+    language: Option<&str>,
+    secret: Option<&str>,
+    cancel: &Cancellation,
+) -> Result<String> {
+    let result = gemini_speech_at_limited(
+        client,
+        engine,
+        path,
+        language,
+        secret,
+        cancel,
+        GEMINI_BASE,
+        false,
+        Some(4096),
+    )
+    .await?;
+    let text = result.text.trim().to_string();
+    if text.is_empty() {
+        return Err(vara_core::UserMessage::new("engine.no_speech").wire());
+    }
+    Ok(text)
 }

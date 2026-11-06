@@ -36,7 +36,7 @@ semver = "1"
 
 [features]
 # Developer fixture replay only. Excluded from normal debug/release builds and distributed apps.
-test-harness = ["vara-app/test-harness"]
+test-harness = ["vara-app/test-harness", "vara-engine/test-harness"]
 
 [dev-dependencies]
 tempfile = "3"
