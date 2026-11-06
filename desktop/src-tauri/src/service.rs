@@ -6,6 +6,9 @@ use tauri::{AppHandle, Emitter};
 use vara_core::*;
 use vara_engine::{Cancellation, Engines, Progress};
 use vara_platform as platform;
+#[cfg(feature = "test-harness")]
+#[path = "service_acceptance.rs"]
+mod acceptance;
 type Result<T> = std::result::Result<T, String>;
 pub fn now() -> i64 {
     std::time::SystemTime::now()
@@ -39,6 +42,8 @@ pub struct Service {
     app: AppHandle,
     #[cfg(feature = "test-harness")]
     fixture: Option<PathBuf>,
+    #[cfg(feature = "test-harness")]
+    scripted: Option<acceptance::Scripted>,
 }
 #[derive(Clone, Serialize)]
 pub struct Snapshot {
@@ -165,6 +170,8 @@ impl Service {
         let service = Arc::new(Self {
             #[cfg(feature = "test-harness")]
             fixture: std::env::var_os("VARA_TEST_WAV").map(PathBuf::from),
+            #[cfg(feature = "test-harness")]
+            scripted: None,
             settings_gate: Mutex::new(()),
             engines: Arc::new(Engines::new(root.join("models"))?),
             recorder: platform::Recorder::new(),
@@ -217,6 +224,10 @@ impl Service {
         })
     }
     fn show_hud(&self) {
+        #[cfg(feature = "test-harness")]
+        if self.scripted.is_some() {
+            return;
+        }
         let i = self.inner.lock();
         if let Some(active) = &i.active {
             let locale = resolve_ui_locale(i.settings.ui_locale, &platform::preferred_languages());
@@ -415,20 +426,40 @@ impl Service {
             && a.cancel.check().is_ok()
     }
     async fn pipeline(self: Arc<Self>, a: Active) {
-        let speech_key = engine_secret(&a.session.plan.speech);
-        let speech = match speech_key {
-            Ok(key) => {
-                self.engines
-                    .speech(
-                        &a.session.plan.speech,
-                        &a.path,
-                        a.session.plan.language.as_deref(),
-                        key.as_deref(),
-                        &a.cancel,
-                    )
-                    .await
+        #[cfg(feature = "test-harness")]
+        let scripted_speech = if let Some(script) = &self.scripted {
+            script
+                .started
+                .store(true, std::sync::atomic::Ordering::SeqCst);
+            tokio::time::sleep(std::time::Duration::from_millis(script.delay_ms)).await;
+            Some(script.speech.clone())
+        } else {
+            None
+        };
+        #[cfg(not(feature = "test-harness"))]
+        let scripted_speech: Option<Result<String>> = None;
+        let speech_key = if scripted_speech.is_some() {
+            Ok(None)
+        } else {
+            engine_secret(&a.session.plan.speech)
+        };
+        let speech = if let Some(output) = scripted_speech {
+            output
+        } else {
+            match speech_key {
+                Ok(key) => {
+                    self.engines
+                        .speech(
+                            &a.session.plan.speech,
+                            &a.path,
+                            a.session.plan.language.as_deref(),
+                            key.as_deref(),
+                            &a.cancel,
+                        )
+                        .await
+                }
+                Err(e) => Err(e),
             }
-            Err(e) => Err(e),
         };
         let original = match speech {
             Ok(text) => text,
@@ -498,14 +529,26 @@ impl Service {
         let processed = if let Some(plan) = &a.session.plan.text {
             self.show_hud();
             self.emit();
-            let key = engine_secret(&plan.engine);
-            let output = match key {
-                Ok(key) => {
-                    self.engines
-                        .text(plan, &original, key.as_deref(), &a.cancel)
-                        .await
+            #[cfg(feature = "test-harness")]
+            let scripted_text = self.scripted.as_ref().map(|s| s.text.clone());
+            #[cfg(not(feature = "test-harness"))]
+            let scripted_text: Option<Result<String>> = None;
+            let key = if scripted_text.is_some() {
+                Ok(None)
+            } else {
+                engine_secret(&plan.engine)
+            };
+            let output = if let Some(output) = scripted_text {
+                output
+            } else {
+                match key {
+                    Ok(key) => {
+                        self.engines
+                            .text(plan, &original, key.as_deref(), &a.cancel)
+                            .await
+                    }
+                    Err(error) => Err(error),
                 }
-                Err(error) => Err(error),
             };
             match output {
                 Ok(text) => Some(text),
@@ -541,6 +584,17 @@ impl Service {
         }
         // Gate serializes cancellation and commit. Unknown is durable BEFORE the OS call.
         if i.store.update_delivery(&r.id, Delivery::Unknown).is_ok() {
+            #[cfg(feature = "test-harness")]
+            let delivery = if let Some(script) = &self.scripted {
+                script
+                    .deliveries
+                    .lock()
+                    .push((r.origin.clone(), r.finished_text().to_owned()));
+                Delivery::ManualReady
+            } else {
+                platform::insert(&r.origin, r.finished_text())
+            };
+            #[cfg(not(feature = "test-harness"))]
             let delivery = platform::insert(&r.origin, r.finished_text());
             if let Err(error) = i.store.update_delivery(&r.id, delivery) {
                 i.message = Some(error.wire());
@@ -658,8 +712,10 @@ impl Service {
         Ok(())
     }
     pub fn maintenance(&self) -> Result<()> {
+        self.maintenance_at(now())
+    }
+    fn maintenance_at(&self, current_time: i64) -> Result<()> {
         let mut i = self.inner.lock();
-        let current_time = now();
         let days = i.settings.retention_days;
         i.store.retain(current_time, days).map_err(|e| e.wire())?;
         for mut r in i.store.recoveries().map_err(|e| e.wire())? {
@@ -960,4 +1016,9 @@ fn needs_key(p: Provider) -> bool {
             | Provider::Anthropic
             | Provider::Gemini
     )
+}
+
+#[cfg(feature = "test-harness")]
+pub(crate) fn test_fixture_entry() -> bool {
+    acceptance::entry()
 }

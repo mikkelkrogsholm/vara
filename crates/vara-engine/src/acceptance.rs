@@ -365,7 +365,7 @@ mod tests {
         let count = std::sync::atomic::AtomicUsize::new(0);
         run(file.path(), |_| {
             count.fetch_add(1, std::sync::atomic::Ordering::SeqCst);
-            Err(vara_core::UserMessage::new("credential.unavailable").wire())
+            Err(vara_core::UserMessage::new("credential.read").wire())
         })
         .await
         .unwrap();

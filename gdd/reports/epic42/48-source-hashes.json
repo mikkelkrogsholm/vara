@@ -1,0 +1,10 @@
+{
+  "desktop/src-tauri/src/service.rs": "4afed0e5a23c65fa46d6cb517f2074440200f82b241470cbe2b8d1b6fe1485c8",
+  "desktop/src-tauri/src/service_acceptance.rs": "5624d24f25a4d8cc75df4153d9cab6524fee0313a2dd6557de4c7775b11cb61a",
+  "desktop/src-tauri/src/lib.rs": "5aa01aa991560256f564d792fa0be3cc5943869e47da5f2b87b88cf12c832b40",
+  "desktop/src-tauri/src/transcription.rs": "ceff4eafda9bde58ac473d01084d40376875174632c59be92b515ff439a5b2b7",
+  "crates/vara-engine/src/acceptance.rs": "fa89b4926386666da153a2e9adaa6e4a5d868aeab7bf69896eda6417d503f3e0",
+  "scripts/tests/provider_file_acceptance.py": "522024b38b95dca91595ff9a617ee9f464d1304f24dc119ba3db82bd354c121c",
+  "scripts/tests/file_product_acceptance.py": "d6cbe62551c4458602afe6aeeffc2314ff051b13908292530c54c970943de6a3",
+  "scripts/tests/test_acceptance_provider_file_preflight.py": "9ceb38cdebd0c32310ab83cab053062d4e9de7db3c3a4f78f40b6c78ac733472"
+}

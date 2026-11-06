@@ -433,7 +433,7 @@ pub fn run() {
 /// Isolated native file adapter verification; excluded from normal builds.
 #[cfg(all(feature = "test-harness", target_os = "macos"))]
 pub fn run_native_file_fixture() -> bool {
-    transcription::test_fixture_entry()
+    service::test_fixture_entry() || transcription::test_fixture_entry()
 }
 
 /// Isolated native verification entry; never included in the release feature set.
