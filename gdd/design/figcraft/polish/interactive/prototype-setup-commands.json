@@ -1,0 +1,727 @@
+[
+  {
+    "command": "variable.createCollection",
+    "params": {
+      "name": "Prototype state only",
+      "modes": [
+        "Preview"
+      ]
+    }
+  },
+  {
+    "command": "variable.create",
+    "params": {
+      "collection": "Prototype state only",
+      "name": "app-engine",
+      "type": "string",
+      "value": "Qwen \u00b7 on device",
+      "description": "Prototype selection; source CSS remains design authority"
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "frame",
+      "name": "Choices \u00b7 app-engine",
+      "x": 0,
+      "y": 8000,
+      "width": 540,
+      "height": 433,
+      "props": {
+        "fill": "#fffcf7",
+        "cornerRadius": 12,
+        "clip": true
+      }
+    }
+  },
+  {
+    "command": "variable.create",
+    "params": {
+      "collection": "Prototype state only",
+      "name": "ui-locale",
+      "type": "string",
+      "value": "System language",
+      "description": "Prototype selection; source CSS remains design authority"
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "frame",
+      "name": "Choices \u00b7 ui-locale",
+      "x": 570,
+      "y": 8000,
+      "width": 540,
+      "height": 229,
+      "props": {
+        "fill": "#fffcf7",
+        "cornerRadius": 12,
+        "clip": true
+      }
+    }
+  },
+  {
+    "command": "variable.create",
+    "params": {
+      "collection": "Prototype state only",
+      "name": "activation",
+      "type": "string",
+      "value": "Hold to talk",
+      "description": "Prototype selection; source CSS remains design authority"
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "frame",
+      "name": "Choices \u00b7 activation",
+      "x": 1140,
+      "y": 8000,
+      "width": 540,
+      "height": 195,
+      "props": {
+        "fill": "#fffcf7",
+        "cornerRadius": 12,
+        "clip": true
+      }
+    }
+  },
+  {
+    "command": "variable.create",
+    "params": {
+      "collection": "Prototype state only",
+      "name": "input-device",
+      "type": "string",
+      "value": "System default",
+      "description": "Prototype selection; source CSS remains design authority"
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "frame",
+      "name": "Choices \u00b7 input-device",
+      "x": 1710,
+      "y": 8000,
+      "width": 540,
+      "height": 195,
+      "props": {
+        "fill": "#fffcf7",
+        "cornerRadius": 12,
+        "clip": true
+      }
+    }
+  },
+  {
+    "command": "variable.create",
+    "params": {
+      "collection": "Prototype state only",
+      "name": "speech-engine",
+      "type": "string",
+      "value": "Parakeet Redux \u00b7 on device",
+      "description": "Prototype selection; source CSS remains design authority"
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "frame",
+      "name": "Choices \u00b7 speech-engine",
+      "x": 2280,
+      "y": 8000,
+      "width": 540,
+      "height": 331,
+      "props": {
+        "fill": "#fffcf7",
+        "cornerRadius": 12,
+        "clip": true
+      }
+    }
+  },
+  {
+    "command": "variable.create",
+    "params": {
+      "collection": "Prototype state only",
+      "name": "engine-locality",
+      "type": "string",
+      "value": "On this device \u00b7 loopback only",
+      "description": "Prototype selection; source CSS remains design authority"
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "frame",
+      "name": "Choices \u00b7 engine-locality",
+      "x": 2850,
+      "y": 8000,
+      "width": 540,
+      "height": 229,
+      "props": {
+        "fill": "#fffcf7",
+        "cornerRadius": 12,
+        "clip": true
+      }
+    }
+  },
+  {
+    "command": "variable.create",
+    "params": {
+      "collection": "Prototype state only",
+      "name": "retention",
+      "type": "string",
+      "value": "Until I delete it",
+      "description": "Prototype selection; source CSS remains design authority"
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "frame",
+      "name": "Choices \u00b7 retention",
+      "x": 3420,
+      "y": 8000,
+      "width": 540,
+      "height": 297,
+      "props": {
+        "fill": "#fffcf7",
+        "cornerRadius": 12,
+        "clip": true
+      }
+    }
+  },
+  {
+    "command": "variable.create",
+    "params": {
+      "collection": "Prototype state only",
+      "name": "next-choice",
+      "type": "string",
+      "value": "Follow your settings",
+      "description": "Prototype selection; source CSS remains design authority"
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "frame",
+      "name": "Choices \u00b7 next-choice",
+      "x": 3990,
+      "y": 8000,
+      "width": 540,
+      "height": 229,
+      "props": {
+        "fill": "#fffcf7",
+        "cornerRadius": 12,
+        "clip": true
+      }
+    }
+  },
+  {
+    "command": "variable.create",
+    "params": {
+      "collection": "Prototype state only",
+      "name": "new-app",
+      "type": "string",
+      "value": "Mail",
+      "description": "Prototype selection; source CSS remains design authority"
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "frame",
+      "name": "Choices \u00b7 new-app",
+      "x": 4560,
+      "y": 8000,
+      "width": 540,
+      "height": 195,
+      "props": {
+        "fill": "#fffcf7",
+        "cornerRadius": 12,
+        "clip": true
+      }
+    }
+  },
+  {
+    "command": "variable.create",
+    "params": {
+      "collection": "Prototype state only",
+      "name": "tx-engine",
+      "type": "string",
+      "value": "Parakeet Redux \u00b7 on device",
+      "description": "Prototype selection; source CSS remains design authority"
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "frame",
+      "name": "Choices \u00b7 tx-engine",
+      "x": 5130,
+      "y": 8000,
+      "width": 540,
+      "height": 331,
+      "props": {
+        "fill": "#fffcf7",
+        "cornerRadius": 12,
+        "clip": true
+      }
+    }
+  },
+  {
+    "command": "variable.create",
+    "params": {
+      "collection": "Prototype state only",
+      "name": "tx-speed",
+      "type": "string",
+      "value": "0.75\u00d7",
+      "description": "Prototype selection; source CSS remains design authority"
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "frame",
+      "name": "Choices \u00b7 tx-speed",
+      "x": 5700,
+      "y": 8000,
+      "width": 540,
+      "height": 297,
+      "props": {
+        "fill": "#fffcf7",
+        "cornerRadius": 12,
+        "clip": true
+      }
+    }
+  },
+  {
+    "command": "variable.create",
+    "params": {
+      "collection": "Prototype state only",
+      "name": "tx-ai-engine",
+      "type": "string",
+      "value": "Qwen \u00b7 on device",
+      "description": "Prototype selection; source CSS remains design authority"
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "frame",
+      "name": "Choices \u00b7 tx-ai-engine",
+      "x": 6270,
+      "y": 8000,
+      "width": 540,
+      "height": 433,
+      "props": {
+        "fill": "#fffcf7",
+        "cornerRadius": 12,
+        "clip": true
+      }
+    }
+  },
+  {
+    "command": "variable.create",
+    "params": {
+      "collection": "Prototype state only",
+      "name": "tx-export-format",
+      "type": "string",
+      "value": "Text (.txt)",
+      "description": "Prototype selection; source CSS remains design authority"
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "frame",
+      "name": "Choices \u00b7 tx-export-format",
+      "x": 6840,
+      "y": 8000,
+      "width": 540,
+      "height": 297,
+      "props": {
+        "fill": "#fffcf7",
+        "cornerRadius": 12,
+        "clip": true
+      }
+    }
+  },
+  {
+    "command": "variable.create",
+    "params": {
+      "collection": "Prototype state only",
+      "name": "tx-export-original",
+      "type": "string",
+      "value": "Current text",
+      "description": "Prototype selection; source CSS remains design authority"
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "frame",
+      "name": "Choices \u00b7 tx-export-original",
+      "x": 7410,
+      "y": 8000,
+      "width": 540,
+      "height": 229,
+      "props": {
+        "fill": "#fffcf7",
+        "cornerRadius": 12,
+        "clip": true
+      }
+    }
+  },
+  {
+    "command": "variable.create",
+    "params": {
+      "collection": "Prototype state only",
+      "name": "tx-who-count",
+      "type": "string",
+      "value": "Automatic",
+      "description": "Prototype selection; source CSS remains design authority"
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "frame",
+      "name": "Choices \u00b7 tx-who-count",
+      "x": 7980,
+      "y": 8000,
+      "width": 540,
+      "height": 705,
+      "props": {
+        "fill": "#fffcf7",
+        "cornerRadius": 12,
+        "clip": true
+      }
+    }
+  },
+  {
+    "command": "variable.create",
+    "params": {
+      "collection": "Prototype state only",
+      "name": "field:30-endpoint-dialog:engine-label",
+      "type": "string",
+      "value": ""
+    }
+  },
+  {
+    "command": "variable.create",
+    "params": {
+      "collection": "Prototype state only",
+      "name": "field:30-endpoint-dialog:engine-endpoint",
+      "type": "string",
+      "value": ""
+    }
+  },
+  {
+    "command": "variable.create",
+    "params": {
+      "collection": "Prototype state only",
+      "name": "field:30-endpoint-dialog:engine-model",
+      "type": "string",
+      "value": ""
+    }
+  },
+  {
+    "command": "variable.create",
+    "params": {
+      "collection": "Prototype state only",
+      "name": "field:22-key-dialog:api-key",
+      "type": "string",
+      "value": ""
+    }
+  },
+  {
+    "command": "variable.create",
+    "params": {
+      "collection": "Prototype state only",
+      "name": "field:10-transcription-empty:tx-query",
+      "type": "string",
+      "value": ""
+    }
+  },
+  {
+    "command": "variable.create",
+    "params": {
+      "collection": "Prototype state only",
+      "name": "field:40-transcription-recent:tx-query",
+      "type": "string",
+      "value": ""
+    }
+  },
+  {
+    "command": "variable.create",
+    "params": {
+      "collection": "Prototype state only",
+      "name": "field:45-transcription-import-actions:tx-query",
+      "type": "string",
+      "value": ""
+    }
+  },
+  {
+    "command": "variable.create",
+    "params": {
+      "collection": "Prototype state only",
+      "name": "field:12-transcription-editor:tx-query",
+      "type": "string",
+      "value": ""
+    }
+  },
+  {
+    "command": "variable.create",
+    "params": {
+      "collection": "Prototype state only",
+      "name": "field:24-transcription-ai:tx-query",
+      "type": "string",
+      "value": ""
+    }
+  },
+  {
+    "command": "variable.create",
+    "params": {
+      "collection": "Prototype state only",
+      "name": "field:46-transcription-ai-result:tx-query",
+      "type": "string",
+      "value": ""
+    }
+  },
+  {
+    "command": "variable.create",
+    "params": {
+      "collection": "Prototype state only",
+      "name": "field:15-who-uncertainty:tx-query",
+      "type": "string",
+      "value": ""
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "frame",
+      "name": "Feedback \u00b7 Copied",
+      "x": 0,
+      "y": 9000,
+      "width": 360,
+      "height": 92,
+      "props": {
+        "fill": "#fffcf7",
+        "cornerRadius": 12,
+        "stroke": "#dcd6ca"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "frame",
+      "name": "Feedback \u00b7 Saved",
+      "x": 570,
+      "y": 9000,
+      "width": 360,
+      "height": 92,
+      "props": {
+        "fill": "#fffcf7",
+        "cornerRadius": 12,
+        "stroke": "#dcd6ca"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "frame",
+      "name": "Feedback \u00b7 File prepared",
+      "x": 1140,
+      "y": 9000,
+      "width": 360,
+      "height": 92,
+      "props": {
+        "fill": "#fffcf7",
+        "cornerRadius": 12,
+        "stroke": "#dcd6ca"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "frame",
+      "name": "Feedback \u00b7 Model is ready",
+      "x": 1710,
+      "y": 9000,
+      "width": 360,
+      "height": 92,
+      "props": {
+        "fill": "#fffcf7",
+        "cornerRadius": 12,
+        "stroke": "#dcd6ca"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "frame",
+      "name": "Feedback \u00b7 Playing preview",
+      "x": 2280,
+      "y": 9000,
+      "width": 360,
+      "height": 92,
+      "props": {
+        "fill": "#fffcf7",
+        "cornerRadius": 12,
+        "stroke": "#dcd6ca"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "frame",
+      "name": "Feedback \u00b7 Connection checked",
+      "x": 2850,
+      "y": 9000,
+      "width": 360,
+      "height": 92,
+      "props": {
+        "fill": "#fffcf7",
+        "cornerRadius": 12,
+        "stroke": "#dcd6ca"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "frame",
+      "name": "Feedback \u00b7 Selection updated",
+      "x": 3420,
+      "y": 9000,
+      "width": 360,
+      "height": 92,
+      "props": {
+        "fill": "#fffcf7",
+        "cornerRadius": 12,
+        "stroke": "#dcd6ca"
+      }
+    }
+  },
+  {
+    "command": "node.create",
+    "params": {
+      "type": "frame",
+      "name": "Feedback \u00b7 Deleted",
+      "x": 3990,
+      "y": 9000,
+      "width": 360,
+      "height": 92,
+      "props": {
+        "fill": "#fffcf7",
+        "cornerRadius": 12,
+        "stroke": "#dcd6ca"
+      }
+    }
+  },
+  {
+    "command": "proto.flow.add",
+    "params": {
+      "start": 885,
+      "name": "History \u00b7 start here"
+    }
+  },
+  {
+    "command": "proto.flow.rename",
+    "params": {
+      "start": 885,
+      "description": "Native click-through with fictional examples. Use PageDown / PageUp or the right scrollbar gutter for section continuations. Fields select examples; no free-form input, microphone, network, clipboard or file writes. Escape closes dialogs. Playback and downloads are visual demonstrations."
+    }
+  },
+  {
+    "command": "proto.flow.add",
+    "params": {
+      "start": 1200,
+      "name": "Settings"
+    }
+  },
+  {
+    "command": "proto.flow.rename",
+    "params": {
+      "start": 1200,
+      "description": "Native click-through with fictional examples. Use PageDown / PageUp or the right scrollbar gutter for section continuations. Fields select examples; no free-form input, microphone, network, clipboard or file writes. Escape closes dialogs. Playback and downloads are visual demonstrations."
+    }
+  },
+  {
+    "command": "proto.flow.add",
+    "params": {
+      "start": 1149,
+      "name": "AI per app"
+    }
+  },
+  {
+    "command": "proto.flow.rename",
+    "params": {
+      "start": 1149,
+      "description": "Native click-through with fictional examples. Use PageDown / PageUp or the right scrollbar gutter for section continuations. Fields select examples; no free-form input, microphone, network, clipboard or file writes. Escape closes dialogs. Playback and downloads are visual demonstrations."
+    }
+  },
+  {
+    "command": "proto.flow.add",
+    "params": {
+      "start": 1389,
+      "name": "Transcription"
+    }
+  },
+  {
+    "command": "proto.flow.rename",
+    "params": {
+      "start": 1389,
+      "description": "Native click-through with fictional examples. Use PageDown / PageUp or the right scrollbar gutter for section continuations. Fields select examples; no free-form input, microphone, network, clipboard or file writes. Escape closes dialogs. Playback and downloads are visual demonstrations."
+    }
+  },
+  {
+    "command": "proto.flow.add",
+    "params": {
+      "start": 3916,
+      "name": "Setup"
+    }
+  },
+  {
+    "command": "proto.flow.rename",
+    "params": {
+      "start": 3916,
+      "description": "Native click-through with fictional examples. Use PageDown / PageUp or the right scrollbar gutter for section continuations. Fields select examples; no free-form input, microphone, network, clipboard or file writes. Escape closes dialogs. Playback and downloads are visual demonstrations."
+    }
+  },
+  {
+    "command": "proto.flow.add",
+    "params": {
+      "start": 5228,
+      "name": "Recovery"
+    }
+  },
+  {
+    "command": "proto.flow.rename",
+    "params": {
+      "start": 5228,
+      "description": "Native click-through with fictional examples. Use PageDown / PageUp or the right scrollbar gutter for section continuations. Fields select examples; no free-form input, microphone, network, clipboard or file writes. Escape closes dialogs. Playback and downloads are visual demonstrations."
+    }
+  },
+  {
+    "command": "proto.settings",
+    "params": {
+      "device": "None",
+      "responsive": false
+    }
+  },
+  {
+    "command": "proto.presentOptions",
+    "params": {
+      "scale": "fit",
+      "hotspotHints": true,
+      "deviceFrame": false
+    }
+  }
+]

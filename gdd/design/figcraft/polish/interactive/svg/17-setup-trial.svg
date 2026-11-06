@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="820" viewBox="0 0 1280 820">
+<rect width="1280" height="820" fill="rgb(240, 235, 227)"/>
+<rect   x="0" y="-1" width="1280" height="820" rx="0" fill="rgb(255, 252, 247)"/>
+<rect   x="0" y="-1" width="1280" height="820" rx="0" fill="rgb(247, 244, 238)"/>
+<defs><clipPath id="clip-1"><rect x="0" y="-1" width="1280" height="820"/></clipPath></defs><g clip-path="url(#clip-1)">
+<rect   x="230.390625" y="-1" width="1049.609375" height="820" rx="0" fill="rgb(247, 244, 238)"/>
+<defs><clipPath id="clip-3"><rect x="230.390625" y="-1" width="1049.609375" height="820"/></clipPath></defs><g clip-path="url(#clip-3)">
+<rect x="415.6875" y="55.5" width="25" height="25" rx="50" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
+<svg x="420.6875" y="60.5" width="15" height="15" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(99, 100, 89)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"></path></svg>
+<text id="text-w400-n13" x="449.1875" y="72.9921875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="13px" font-weight="400">Prepare Vara</text>
+<rect x="650.359375" y="55.5" width="25" height="25" rx="50" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
+<svg x="655.359375" y="60.5" width="15" height="15" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(99, 100, 89)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"></path></svg>
+<text id="text-w400-n14" x="683.859375" y="72.9921875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="13px" font-weight="400">Grant access</text>
+<rect   x="884.53125" y="55" width="26" height="26" rx="50" fill="rgb(47, 53, 39)"/>
+<rect x="885.03125" y="55.5" width="25" height="25" rx="50" fill="none" stroke="rgb(47, 53, 39)" stroke-width="1"/>
+<text id="text-w600-n15" x="893.59375" y="72.5" fill="rgb(246, 244, 235)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="12px" font-weight="600">3</text>
+<text id="text-w600-n16" x="918.53125" y="72.9921875" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="13px" font-weight="600">Try your shortcut</text>
+<text id="text-w650-n17" x="415.1875" y="164.984375" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="-0.7" font-size="28px" font-weight="650">Say your first sentence.</text>
+<text id="text-w400-n18" x="415.1875" y="205.234375" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="400">Open a text field in another app. Hold your shortcut, speak and release.</text>
+<text id="text-w400-n19" x="415.1875" y="227.734375" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="400">The result appears in your history.</text>
+<line x1="415.1875" y1="265" x2="1095.1875" y2="265" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<line x1="415.1875" y1="367" x2="1095.1875" y2="367" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<rect   x="415.1875" y="290" width="110.171875" height="52" rx="8" fill="rgb(240, 235, 227)"/>
+<rect x="415.6875" y="290.5" width="109.171875" height="51" rx="8" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
+<text id="text-w500-n20" x="430.1875" y="323.4921875" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="20px" font-weight="500">⌥ Space</text>
+<text id="text-w400-n21" x="549.359375" y="321.984375" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="400">Hold → speak → release</text>
+<text id="text-w400-n22" x="415.1875" y="408.234375" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="400">You can also start here. The text will be ready to insert manually.</text>
+<text id="text-w600-n23" x="432.1930847167969" y="472" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="14px" font-weight="600">Back</text>
+<line x1="415.1875" y1="535.5" x2="1095.1875" y2="535.5" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<text id="text-w600-n25" x="416.1875" y="578.7890625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="14px" font-weight="600">Continue later</text>
+</g>
+</g>
+<defs><clipPath id="clip-4"><rect x="0" y="819" width="1" height="1"/></clipPath></defs><g clip-path="url(#clip-4)">
+</g>
+</svg>

@@ -1,0 +1,202 @@
+{
+  "status": "Native prototype; headless integrity verified; GUI presenter testing separate",
+  "tool_version": "figcraft-cli 0.15.1",
+  "native_sha256": "e5cab0844b0c92d2287f071f14d17f01e95c91cbdbadc398cd2dd24691e4d438",
+  "baseline_native_sha256": "a0b8d5d7739dace528e0854152ed5575f88e89182895bed866f25f5997fd1ab8",
+  "static_polish_sha256": "74c2b7a29fb6fd64cf523e5e8a3d3e3bca26c3b6044a61f1987b89aad35e8cff",
+  "original_frames_preserved": 41,
+  "frames": {
+    "01-history": 885,
+    "02-original": 1016,
+    "03-apps": 1149,
+    "04-dictation": 1200,
+    "05-connections": 1257,
+    "06-privacy": 1323,
+    "10-transcription-empty": 1389,
+    "11-transcription-import": 1431,
+    "12-transcription-editor": 1486,
+    "24-transcription-ai": 1608,
+    "26-dictation-permissions": 1730,
+    "27-custom-endpoints": 1787,
+    "28-cli-connections": 1863,
+    "29-api-providers": 1923,
+    "36-privacy-audio": 2009,
+    "37-recording-controls": 2054,
+    "38-speech-model": 2120,
+    "39-local-models": 2186,
+    "40-transcription-recent": 2270,
+    "41-app-rule-disabled": 2341,
+    "42-ai-defaults-enabled": 2377,
+    "43-history-selection": 2418,
+    "44-app-notes": 2540,
+    "45-transcription-import-actions": 2577,
+    "46-transcription-ai-result": 2664,
+    "07-processing-dialog": 2796,
+    "08-delete-dialog": 3010,
+    "13-who-download": 3219,
+    "14-who-known-count": 3498,
+    "15-who-uncertainty": 3782,
+    "09-setup-prepare": 3916,
+    "16-setup-permissions": 3956,
+    "17-setup-trial": 4007,
+    "21-shortcut-dialog": 4044,
+    "22-key-dialog": 4198,
+    "23-app-picker": 4370,
+    "25-transcription-export": 4499,
+    "30-endpoint-dialog": 4704,
+    "31-model-dialog": 4867,
+    "32-update-available": 5035,
+    "33-update-ready": 5103,
+    "34-update-error": 5171,
+    "35-recovery": 5228,
+    "18-hud-recording": 5363,
+    "19-hud-transcribing": 5392,
+    "20-hud-processing": 5431
+  },
+  "flows": [
+    {
+      "name": "History \u00b7 start here",
+      "start": 885,
+      "description": "Native click-through with fictional examples. Use PageDown / PageUp or the right scrollbar gutter for section continuations. Fields select examples; no free-form input, microphone, network, clipboard or file writes. Escape closes dialogs. Playback and downloads are visual demonstrations."
+    },
+    {
+      "name": "Settings",
+      "start": 1200,
+      "description": "Native click-through with fictional examples. Use PageDown / PageUp or the right scrollbar gutter for section continuations. Fields select examples; no free-form input, microphone, network, clipboard or file writes. Escape closes dialogs. Playback and downloads are visual demonstrations."
+    },
+    {
+      "name": "AI per app",
+      "start": 1149,
+      "description": "Native click-through with fictional examples. Use PageDown / PageUp or the right scrollbar gutter for section continuations. Fields select examples; no free-form input, microphone, network, clipboard or file writes. Escape closes dialogs. Playback and downloads are visual demonstrations."
+    },
+    {
+      "name": "Transcription",
+      "start": 1389,
+      "description": "Native click-through with fictional examples. Use PageDown / PageUp or the right scrollbar gutter for section continuations. Fields select examples; no free-form input, microphone, network, clipboard or file writes. Escape closes dialogs. Playback and downloads are visual demonstrations."
+    },
+    {
+      "name": "Setup",
+      "start": 3916,
+      "description": "Native click-through with fictional examples. Use PageDown / PageUp or the right scrollbar gutter for section continuations. Fields select examples; no free-form input, microphone, network, clipboard or file writes. Escape closes dialogs. Playback and downloads are visual demonstrations."
+    },
+    {
+      "name": "Recovery",
+      "start": 5228,
+      "description": "Native click-through with fictional examples. Use PageDown / PageUp or the right scrollbar gutter for section continuations. Fields select examples; no free-form input, microphone, network, clipboard or file writes. Escape closes dialogs. Playback and downloads are visual demonstrations."
+    }
+  ],
+  "prototype_interactions": 885,
+  "hotspot_nodes": 748,
+  "all_frames_reachable_from_history": true,
+  "external_actions": [],
+  "font_report": {
+    "embeddedFontFiles": 0,
+    "externalPenpotFontRefs": [],
+    "fontLicenseNotices": 0,
+    "fonts": [
+      {
+        "available": true,
+        "family": "-apple-system",
+        "layers": [
+          "text-w400-n130"
+        ]
+      },
+      {
+        "available": true,
+        "family": "Georgia",
+        "layers": [
+          "text-w400-n14",
+          "text-w400-n16",
+          "text-w400-n36",
+          "text-w400-n37",
+          "text-w400-n39",
+          "text-w400-n41",
+          "text-w400-n42",
+          "text-w400-n43",
+          "text-w400-n44",
+          "text-w400-n49",
+          "text-w400-n52",
+          "text-w400-n53",
+          "text-w400-n54",
+          "text-w500-n13",
+          "text-w500-n17",
+          "text-w500-n18",
+          "text-w500-n23",
+          "text-w500-n24",
+          "text-w500-n25",
+          "text-w500-n26",
+          "text-w500-n28",
+          "text-w500-n31",
+          "text-w500-n33",
+          "text-w500-n39",
+          "text-w600-n1"
+        ]
+      },
+      {
+        "available": true,
+        "family": "system-ui",
+        "layers": [
+          "text-w400-n10",
+          "text-w400-n11",
+          "text-w400-n2",
+          "text-w400-n24",
+          "text-w400-n3",
+          "text-w400-n31",
+          "text-w400-n36",
+          "text-w400-n4",
+          "text-w400-n41",
+          "text-w400-n43",
+          "text-w400-n5",
+          "text-w400-n6",
+          "text-w400-n8",
+          "text-w400-n9",
+          "text-w500-n2",
+          "text-w500-n4",
+          "text-w500-n5",
+          "text-w500-n7",
+          "text-w600-n12",
+          "text-w600-n33",
+          "text-w600-n38",
+          "text-w600-n43",
+          "text-w600-n44",
+          "text-w600-n45",
+          "text-w600-n46"
+        ]
+      }
+    ],
+    "missing": 0,
+    "total": 3
+  },
+  "editable_text_layers": 2347,
+  "components": 63,
+  "instances": 106,
+  "visual_comparison": {
+    "01-history": {
+      "pixel_identical_to_static_polish": true,
+      "difference_bounds": null,
+      "native_export_sha256": "a1f3cf87321a91d0f451bcd916cce905a413012fa9778fb86a87d9e9b36d0ea1"
+    },
+    "04-dictation": {
+      "pixel_identical_to_static_polish": true,
+      "difference_bounds": null,
+      "native_export_sha256": "7d4a4f141a336f88a9ce83a07dda37ed596de8d802c56a5037ba48a37ce589c9"
+    },
+    "12-transcription-editor": {
+      "pixel_identical_to_static_polish": true,
+      "difference_bounds": null,
+      "native_export_sha256": "29c8df5a90238e77b100352a0c28eda25c4b8b44798fba7c2661ba020cfa13ce"
+    }
+  },
+  "production_source_hashes": {
+    "gdd/design/styles/tokens.css": "7c9a9587c1e193a3d17a00b889bcdb11c08cf6a1086040482e0bb27db424750c",
+    "gdd/design/styles/app.css": "27451854d8449bba10c2f7ef23892dead38b10235adca5227f396a32567d9d4e",
+    "desktop/ui/app.js": "82968abc62937b0824a868e94228838d113e14cacb9d22436888ea8cbd05c184",
+    "desktop/ui/views.js": "77f6f312da61976f49f66605d027f0ca5f53fa5c94c7b7d6c814eb868d2c6e5b",
+    "desktop/ui/i18n.js": "e1f3ac7deb89c4e395c8e75d0348b978282048960e3c4246b55990c29ed04216",
+    "desktop/ui/transcription.js": "e0474bc441e8505dad9f80751a8dc36e2d30252ff4600f37247fffdd2e702389",
+    "desktop/ui/desktop.css": "f2f0bf4e6afb12921b46fa065daed1af2221cf0b4dd1166f9dd0876befdab393",
+    "crates/vara-platform/src/macos_hud.m": "85fd2101e6402958eeeadfdf3d310612d89ae471a3c7f0dd63ef63572479e88b",
+    "crates/vara-core/messages/runtime.json": "b30686e5a3a0c52c754841a30bd85dff31f22d9ae429271af5f28c80a06da54e"
+  },
+  "proposal_css_sha256": "dac99c8745dba0cf5dfce5284112e560bdada773e9fb2b695e6cc79c77a969ca"
+}

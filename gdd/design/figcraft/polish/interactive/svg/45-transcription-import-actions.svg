@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="820" viewBox="0 0 1280 820">
+<rect width="1280" height="820" fill="rgb(240, 235, 227)"/>
+<rect   x="0" y="-1" width="1280" height="820" rx="0" fill="rgb(255, 252, 247)"/>
+<rect   x="0" y="-1" width="1280" height="820" rx="0" fill="rgb(247, 244, 238)"/>
+<defs><clipPath id="clip-1"><rect x="0" y="-1" width="1280" height="820"/></clipPath></defs><g clip-path="url(#clip-1)">
+<rect   x="230.390625" y="-1" width="1049.609375" height="820" rx="0" fill="rgb(247, 244, 238)"/>
+<defs><clipPath id="clip-3"><rect x="230.390625" y="-1" width="1049.609375" height="820"/></clipPath></defs><g clip-path="url(#clip-3)">
+<defs><clipPath id="clip-4"><rect x="230.390625" y="-1" width="1049.609375" height="820"/></clipPath></defs><g clip-path="url(#clip-4)">
+<rect x="270.890625" y="-15.71875" width="968.609375" height="142" rx="10" fill="none" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<defs><clipPath id="clip-5"><rect x="270.390625" y="-16.21875" width="969.609375" height="143"/></clipPath></defs><g clip-path="url(#clip-5)">
+<line x1="271.390625" y1="55.78125" x2="1239" y2="55.78125" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<svg x="287.390625" y="9.78125" width="20" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(37, 37, 31)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"></path><path d="M14 2v6h6M8 13h8M8 17h6"></path></svg>
+<text id="text-w400-n14" x="323.390625" y="14.03125" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="400">Interview.m4a</text>
+<text id="text-w400-n15" x="323.390625" y="38.0234375" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="13px" font-weight="400">18 MB</text>
+<svg x="1195" y="9.28125" width="20" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(37, 37, 31)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 6 12 12M6 18 18 6"></path></svg>
+<svg x="287.390625" y="80.78125" width="20" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(37, 37, 31)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"></path><path d="M14 2v6h6M8 13h8M8 17h6"></path></svg>
+<text id="text-w400-n16" x="323.390625" y="85.03125" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="400">Workshop.mp4</text>
+<text id="text-w400-n17" x="323.390625" y="109.0234375" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="13px" font-weight="400">84 MB</text>
+<svg x="1195" y="80.28125" width="20" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(37, 37, 31)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 6 12 12M6 18 18 6"></path></svg>
+</g>
+<text id="text-w400-n18" x="270.390625" y="144.015625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="400">2 files ready</text>
+<text id="text-w600-n19" x="270.390625" y="189.2734375" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="14px" font-weight="600">Speech model</text>
+<svg x="270.390625" y="254.53125" width="16" height="16" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(37, 37, 31)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"></path></svg>
+<text id="text-w400-n21" x="292.390625" y="267.5234375" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="13px" font-weight="400">On this device · Ready</text>
+<text id="text-w600-n22" x="767.1875" y="189.28125" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="14px" font-weight="600">Language</text>
+<text id="text-w400-n24" x="270.390625" y="305.515625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="400">Files are processed on your device. The originals are not changed.</text>
+<text id="text-w400-n25" x="270.390625" y="331.5234375" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="13px" font-weight="400">Vara keeps an audio copy for playback and retry. Delete the document to remove the copy; cancellation clears the working audio. Up to 8 hours per file.</text>
+<text id="text-w400-n26" x="270.390625" y="349.765625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="12px" font-weight="400">Parakeet detects the language automatically.</text>
+<line x1="270.390625" y1="378.28125" x2="1240" y2="378.28125" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<text id="text-w600-n27" x="960.078125" y="423.5703125" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="14px" font-weight="600">Clear selection</text>
+<text id="text-w600-n29" x="270.390625" y="520.1171875" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="-0.27" font-size="18px" font-weight="600">Recent</text>
+<text id="text-w600-n30" x="1027.71875" y="486.8671875" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="14px" font-weight="600">Search transcriptions</text>
+<rect   x="1027.71875" y="499.875" width="212.28125" height="48.5" rx="10" fill="rgb(255, 252, 247)"/>
+<rect x="1028.21875" y="500.375" width="211.28125" height="47.5" rx="10" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
+<line x1="270.390625" y1="635.375" x2="1240" y2="635.375" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<svg x="284.390625" y="585.375" width="20" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(37, 37, 31)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"></path><path d="M14 2v6h6M8 13h8M8 17h6"></path></svg>
+<defs><clipPath id="clip-6"><rect x="318.390625" y="572.375" width="141.484375" height="22.5"/></clipPath></defs><g clip-path="url(#clip-6)">
+<text id="text-w600-n31" x="318.390625" y="589.609375" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="600">Interview with Anna</text>
+</g>
+<text id="text-w400-n32" x="318.390625" y="613.6171875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="13px" font-weight="400">en · 0:24 · Ready</text>
+<svg x="1204" y="584.875" width="20" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(37, 37, 31)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7m4-7v7"></path></svg>
+<line x1="270.390625" y1="714.375" x2="1240" y2="714.375" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<svg x="284.390625" y="664.375" width="20" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(37, 37, 31)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"></path><path d="M14 2v6h6M8 13h8M8 17h6"></path></svg>
+<defs><clipPath id="clip-7"><rect x="318.390625" y="651.375" width="150" height="22.5"/></clipPath></defs><g clip-path="url(#clip-7)">
+<text id="text-w600-n33" x="318.390625" y="668.625" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="600">Workshop.mp4</text>
+</g>
+<text id="text-w400-n34" x="318.390625" y="692.6171875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="13px" font-weight="400">en · 0:24 · Transcribing…</text>
+<svg x="1204" y="663.875" width="20" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(37, 37, 31)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 6 12 12M6 18 18 6"></path></svg>
+<line x1="270.390625" y1="793.375" x2="1240" y2="793.375" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<svg x="284.390625" y="743.375" width="20" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(37, 37, 31)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"></path><path d="M14 2v6h6M8 13h8M8 17h6"></path></svg>
+<defs><clipPath id="clip-8"><rect x="318.390625" y="730.375" width="100.203125" height="22.5"/></clipPath></defs><g clip-path="url(#clip-8)">
+<text id="text-w600-n35" x="318.390625" y="747.625" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="600">Notes.m4a</text>
+</g>
+<text id="text-w400-n36" x="318.390625" y="771.6171875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="13px" font-weight="400">en · 0:24 · Failed</text>
+<svg x="1204" y="742.875" width="20" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(37, 37, 31)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7m4-7v7"></path></svg>
+</g>
+</g>
+</g>
+<defs><clipPath id="clip-9"><rect x="0" y="819" width="1" height="1"/></clipPath></defs><g clip-path="url(#clip-9)">
+</g>
+</svg>

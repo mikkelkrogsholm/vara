@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="820" viewBox="0 0 1280 820">
+<rect width="1280" height="820" fill="rgb(240, 235, 227)"/>
+<rect   x="0" y="-1" width="1280" height="820" rx="0" fill="rgb(255, 252, 247)"/>
+<rect   x="0" y="-1" width="1280" height="820" rx="0" fill="rgb(247, 244, 238)"/>
+<defs><clipPath id="clip-1"><rect x="0" y="-1" width="1280" height="820"/></clipPath></defs><g clip-path="url(#clip-1)">
+<rect   x="230.390625" y="-1" width="1049.609375" height="820" rx="0" fill="rgb(247, 244, 238)"/>
+<defs><clipPath id="clip-3"><rect x="230.390625" y="-1" width="1049.609375" height="820"/></clipPath></defs><g clip-path="url(#clip-3)">
+<text id="text-w500-n13" x="270.390625" y="72.1953125" fill="rgb(37, 37, 31)" font-family="Georgia, Noto Serif, Liberation Serif, serif" letter-spacing="-0.9" font-size="36px" font-weight="500">Settings</text>
+<text id="text-w400-n14" x="270.390625" y="105.625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="400">A quiet helper, on your terms.</text>
+<line x1="270.390625" y1="192.390625" x2="1240" y2="192.390625" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<text id="text-w400-n15" x="270.390869140625" y="172.140625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="400">Dictation</text>
+<text id="text-w400-n16" x="355.921875" y="172.125" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="400">Models and keys</text>
+<line x1="494.46875" y1="191.390625" x2="547.390625" y2="191.390625" stroke="rgb(168, 68, 23)" stroke-width="2"/>
+<text id="text-w600-n17" x="494.4722595214844" y="172.140625" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="600">Privacy</text>
+<line x1="270.390625" y1="369.390625" x2="1240" y2="369.390625" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<text id="text-w500-n18" x="270.390625" y="239.8828125" fill="rgb(37, 37, 31)" font-family="Georgia, Noto Serif, Liberation Serif, serif" letter-spacing="-0.36" font-size="24px" font-weight="500">Interface language</text>
+<text id="text-w400-n19" x="270.390625" y="271.625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="400">Choose Vara’s interface</text>
+<text id="text-w400-n20" x="270.390625" y="294.125" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="400">language. This does not change</text>
+<text id="text-w400-n21" x="270.390625" y="316.625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="400">speech or transcription language</text>
+<text id="text-w400-n22" x="270.390625" y="339.125" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="400">or AI instructions.</text>
+<text id="text-w600-n23" x="529.6875" y="232.3828125" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="14px" font-weight="600">Interface language</text>
+<line x1="270.390625" y1="567.484375" x2="1240" y2="567.484375" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<text id="text-w500-n25" x="270.390625" y="416.890625" fill="rgb(37, 37, 31)" font-family="Georgia, Noto Serif, Liberation Serif, serif" letter-spacing="-0.36" font-size="24px" font-weight="500">Updates</text>
+<text id="text-w400-n26" x="270.390625" y="448.625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="400">Stable releases from GitHub.</text>
+<text id="text-w400-n27" x="270.390625" y="471.125" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="400">Checks contact GitHub, never</text>
+<text id="text-w400-n28" x="270.390625" y="493.625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="400">sending audio or text.</text>
+<text id="text-w400-n29" x="529.6875" y="410.625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="400">Running Vara 1.0.2</text>
+<rect   x="529.6875" y="431.890625" width="710.296875" height="53" rx="12" fill="rgb(233, 239, 240)"/>
+<svg x="545.6875" y="448.890625" width="20" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(63, 89, 98)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6m0-10v.1"></path></svg>
+<text id="text-w400-n30" x="575.6875" y="463.8828125" fill="rgb(63, 89, 98)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="14px" font-weight="400">Vara is up to date.</text>
+<rect x="529.6875" y="515.6875" width="12" height="12" rx="3" fill="#007AFF" stroke="#007AFF"/>
+<path d="M532.6875 521.6875 l3 3 l5 -6" fill="none" stroke="#fff" stroke-width="1.7"/>
+<text id="text-w400-n31" x="549.6875" y="527.671875" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="400">Check automatically</text>
+<rect   x="704.25" y="500.890625" width="157.875" height="41.59375" rx="10" fill="rgb(255, 252, 247)"/>
+<rect x="704.75" y="501.390625" width="156.875" height="40.59375" rx="10" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
+<text id="text-w600-n32" x="721.25" y="527.1796875" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="14px" font-weight="600">Check for updates</text>
+<line x1="270.390625" y1="857.484375" x2="1240" y2="857.484375" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<text id="text-w500-n33" x="270.390625" y="614.984375" fill="rgb(37, 37, 31)" font-family="Georgia, Noto Serif, Liberation Serif, serif" letter-spacing="-0.36" font-size="24px" font-weight="500">Processing</text>
+<text id="text-w400-n34" x="270.390625" y="646.71875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="400">You decide where your data is</text>
+<text id="text-w400-n35" x="270.390625" y="669.234375" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="400">processed.</text>
+<text id="text-w600-n36" x="529.6875" y="624.6015625" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="14px" font-weight="600">On-device processing only</text>
+<text id="text-w400-n37" x="529.6875" y="648.7265625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="13px" font-weight="400">When enabled, Vara can only use local models.</text>
+<rect   x="1203.984375" y="607.484375" width="36" height="22" rx="999" fill="rgb(129, 125, 114)"/>
+<circle cx="1214.984375" cy="618.484375" r="9" fill="#fff"/>
+<svg x="529.6875" y="695.484375" width="20" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(99, 100, 89)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2" width="6" height="13" rx="3"></rect><path d="M5 10v2a7 7 0 0 0 14 0v-2M12 19v3m-4 0h8"></path></svg>
+<text id="text-w400-n38" x="563.6875" y="710.71875" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="400">Audio: On this device</text>
+<svg x="529.6875" y="739.984375" width="20" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(99, 100, 89)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3c6 5 6 13 0 18-6-5-6-13 0-18Z"></path></svg>
+<text id="text-w400-n39" x="563.6875" y="755.21875" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="400">Text: Direct transcription by default</text>
+<text id="text-w400-n40" x="563.6875" y="782.71875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="400">Apps with custom rules use their selected AI.</text>
+<text id="text-w400-n41" x="529.6875" y="827.21875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="400">Cloud is used only for the features you choose.</text>
+</g>
+</g>
+<defs><clipPath id="clip-4"><rect x="0" y="819" width="1" height="1"/></clipPath></defs><g clip-path="url(#clip-4)">
+</g>
+</svg>

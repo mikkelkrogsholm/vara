@@ -1,0 +1,39 @@
+[
+  {
+    "command": "file.fontReport",
+    "params": {}
+  },
+  {
+    "command": "file.export",
+    "params": {
+      "ids": [
+        885
+      ],
+      "format": "png",
+      "scale": 2,
+      "path": "/Users/mikkelfreltoftkrogsholm/.codex/worktrees/who-long-recording/vara/gdd/design/figcraft/polish/interactive/exports/01-history.png"
+    }
+  },
+  {
+    "command": "file.export",
+    "params": {
+      "ids": [
+        1200
+      ],
+      "format": "png",
+      "scale": 2,
+      "path": "/Users/mikkelfreltoftkrogsholm/.codex/worktrees/who-long-recording/vara/gdd/design/figcraft/polish/interactive/exports/04-dictation.png"
+    }
+  },
+  {
+    "command": "file.export",
+    "params": {
+      "ids": [
+        1486
+      ],
+      "format": "png",
+      "scale": 2,
+      "path": "/Users/mikkelfreltoftkrogsholm/.codex/worktrees/who-long-recording/vara/gdd/design/figcraft/polish/interactive/exports/12-transcription-editor.png"
+    }
+  }
+]

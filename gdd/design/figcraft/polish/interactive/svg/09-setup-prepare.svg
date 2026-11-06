@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="820" viewBox="0 0 1280 820">
+<rect width="1280" height="820" fill="rgb(240, 235, 227)"/>
+<rect   x="0" y="-1" width="1280" height="820" rx="0" fill="rgb(255, 252, 247)"/>
+<rect   x="0" y="-1" width="1280" height="820" rx="0" fill="rgb(247, 244, 238)"/>
+<defs><clipPath id="clip-1"><rect x="0" y="-1" width="1280" height="820"/></clipPath></defs><g clip-path="url(#clip-1)">
+<rect   x="230.390625" y="-1" width="1049.609375" height="820" rx="0" fill="rgb(247, 244, 238)"/>
+<rect x="227.390625" y="-4" width="1055.609375" height="826" rx="3" fill="none" stroke="rgb(141, 61, 26)" stroke-width="2"/>
+<defs><clipPath id="clip-3"><rect x="230.390625" y="-1" width="1049.609375" height="820"/></clipPath></defs><g clip-path="url(#clip-3)">
+<rect   x="415.1875" y="55" width="26" height="26" rx="50" fill="rgb(47, 53, 39)"/>
+<rect x="415.6875" y="55.5" width="25" height="25" rx="50" fill="none" stroke="rgb(47, 53, 39)" stroke-width="1"/>
+<text id="text-w600-n13" x="425.203125" y="72.5" fill="rgb(246, 244, 235)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="12px" font-weight="600">1</text>
+<text id="text-w600-n14" x="449.1875" y="72.9921875" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="13px" font-weight="600">Prepare Vara</text>
+<rect x="650.359375" y="55.5" width="25" height="25" rx="50" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
+<text id="text-w400-n15" x="659.234375" y="72.5" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="12px" font-weight="400">2</text>
+<text id="text-w400-n16" x="683.859375" y="72.9921875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="13px" font-weight="400">Grant access</text>
+<rect x="885.03125" y="55.5" width="25" height="25" rx="50" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
+<text id="text-w400-n17" x="893.765625" y="72.5" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="12px" font-weight="400">3</text>
+<text id="text-w400-n18" x="918.53125" y="72.9921875" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="13px" font-weight="400">Try your shortcut</text>
+<text id="text-w650-n19" x="415.1875" y="164.984375" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="-0.7" font-size="28px" font-weight="650">Your words, where you work.</text>
+<text id="text-w400-n20" x="415.1875" y="205.234375" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="400">Hold a key, speak and release. We start with local transcription so your</text>
+<text id="text-w400-n21" x="415.1875" y="227.734375" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="400">audio stays on your device.</text>
+<line x1="415.1875" y1="359.34375" x2="1095.1875" y2="359.34375" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<text id="text-w700-n22" x="415.1875" y="306.234375" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="700">Parakeet Redux · speech</text>
+<text id="text-w400-n23" x="415.1875" y="329.9140625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="13px" font-weight="400">Multilingual · 179 MB</text>
+<text id="text-w400-n24" x="812.171875" y="318.6640625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="13px" font-weight="400">Installed on device</text>
+<rect   x="945.25" y="290.671875" width="149.9375" height="42" rx="10" fill="rgb(255, 252, 247)"/>
+<rect x="945.75" y="291.171875" width="148.9375" height="41" rx="10" fill="none" stroke="rgb(129, 125, 114)" stroke-width="1"/>
+<svg x="962.25" y="301.671875" width="20" height="20" class="icon " viewBox="0 0 24 24" fill="none" stroke="rgb(37, 37, 31)" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M4 17v4h16v-4"></path></svg>
+<text id="text-w600-n25" x="990.25" y="317.1640625" fill="rgb(37, 37, 31)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="14px" font-weight="600">Check model</text>
+<text id="text-w400-n26" x="415.1875" y="392.578125" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="15px" font-weight="400">The model is downloaded once. No account or extra installation.</text>
+<text id="text-w600-n28" x="539.171875" y="456.1328125" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="14px" font-weight="600">I prefer cloud</text>
+<line x1="415.1875" y1="519.4375" x2="1095.1875" y2="519.4375" stroke="rgb(220, 214, 202)" stroke-width="1"/>
+<text id="text-w600-n29" x="416.1875" y="562.7265625" fill="rgb(99, 100, 89)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" letter-spacing="0" font-size="14px" font-weight="600">Continue later</text>
+</g>
+</g>
+<defs><clipPath id="clip-4"><rect x="0" y="819" width="1" height="1"/></clipPath></defs><g clip-path="url(#clip-4)">
+</g>
+</svg>

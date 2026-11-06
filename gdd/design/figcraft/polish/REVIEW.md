@@ -78,3 +78,5 @@ node gdd/design/figcraft/polish/check.cjs
 Build/export automation roots are limited to the draft folder and its temporary native assembly directory. The adapters read the unchanged baseline scripts without running their baseline write paths. Review artifacts live only in this folder; the sole outside edit is a draft pointer in `gdd/DESIGN.md`. No GUI session is changed. No version change, app build/install, push or release action is part of this proposal.
 
 Final worker verification: all 38 bounded checks pass; all 12 native exports reopen with zero missing fonts. The owned source server was stopped after checks. All browser/build/export jobs terminated normally; no setup hook or GUI job was launched. No production file or baseline artifact changed.
+
+Native interaction draft: [Vara-interactive.figcraft](interactive/Vara-interactive.figcraft) · [Presenter walkthrough and limits](interactive/README.md) · [Route manifest](interactive/routes.json). Open in FigCraft and present the History flow.
