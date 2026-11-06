@@ -1,0 +1,22 @@
+{
+  "engine": "WebKit",
+  "browserVersion": "26.0",
+  "viewport": {
+    "width": 1280,
+    "height": 820
+  },
+  "deviceScaleFactor": 2,
+  "locale": "en-US",
+  "timezone": "Europe/Copenhagen",
+  "fixedTime": "2026-11-06T12:00:00Z",
+  "captures": [
+    "01-history",
+    "12-transcription-editor"
+  ],
+  "systemMedia": {
+    "colorScheme": "light",
+    "forcedColors": false,
+    "devicePixelRatio": 2,
+    "platform": "macos"
+  }
+}

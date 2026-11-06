@@ -1,0 +1,32 @@
+{
+  "engine": "WebKit",
+  "browserVersion": "26.0",
+  "viewport": {
+    "width": 1280,
+    "height": 820
+  },
+  "deviceScaleFactor": 2,
+  "locale": "en-US",
+  "timezone": "Europe/Copenhagen",
+  "fixedTime": "2026-11-06T12:00:00Z",
+  "captures": [
+    "01-history",
+    "03-apps",
+    "04-dictation",
+    "37-recording-controls",
+    "39-local-models",
+    "29-api-providers",
+    "36-privacy-audio",
+    "22-key-dialog",
+    "11-transcription-import",
+    "12-transcription-editor",
+    "24-transcription-ai",
+    "13-who-download"
+  ],
+  "systemMedia": {
+    "colorScheme": "light",
+    "forcedColors": false,
+    "devicePixelRatio": 2,
+    "platform": "macos"
+  }
+}

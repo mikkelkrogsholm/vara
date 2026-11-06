@@ -1,0 +1,323 @@
+{
+  "file": "/Users/mikkelfreltoftkrogsholm/.codex/worktrees/who-long-recording/vara/gdd/design/figcraft/polish/Vara-polish.figcraft",
+  "images": 1,
+  "missingFonts": [],
+  "name": "Vara",
+  "nodes": 1991,
+  "notes": [],
+  "pages": [
+    {
+      "frames": [
+        {
+          "height": 820.0,
+          "id": 407,
+          "name": "01-history",
+          "type": "FRAME",
+          "width": 1280.0
+        },
+        {
+          "height": 820.0,
+          "id": 538,
+          "name": "03-apps",
+          "type": "FRAME",
+          "width": 1280.0
+        },
+        {
+          "height": 820.0,
+          "id": 589,
+          "name": "04-dictation",
+          "type": "FRAME",
+          "width": 1280.0
+        },
+        {
+          "height": 820.0,
+          "id": 646,
+          "name": "37-recording-controls",
+          "type": "FRAME",
+          "width": 1280.0
+        },
+        {
+          "height": 820.0,
+          "id": 712,
+          "name": "39-local-models",
+          "type": "FRAME",
+          "width": 1280.0
+        },
+        {
+          "height": 820.0,
+          "id": 796,
+          "name": "29-api-providers",
+          "type": "FRAME",
+          "width": 1280.0
+        },
+        {
+          "height": 820.0,
+          "id": 882,
+          "name": "36-privacy-audio",
+          "type": "FRAME",
+          "width": 1280.0
+        },
+        {
+          "height": 820.0,
+          "id": 927,
+          "name": "11-transcription-import",
+          "type": "FRAME",
+          "width": 1280.0
+        },
+        {
+          "height": 820.0,
+          "id": 982,
+          "name": "12-transcription-editor",
+          "type": "FRAME",
+          "width": 1280.0
+        },
+        {
+          "height": 820.0,
+          "id": 1104,
+          "name": "24-transcription-ai",
+          "type": "FRAME",
+          "width": 1280.0
+        }
+      ],
+      "id": 406,
+      "name": "01 \u00b7 DRAFT polish screens",
+      "nodes": 1243,
+      "topLevel": 10
+    },
+    {
+      "frames": [
+        {
+          "height": 820.0,
+          "id": 1227,
+          "name": "22-key-dialog",
+          "type": "FRAME",
+          "width": 1280.0
+        },
+        {
+          "height": 820.0,
+          "id": 1399,
+          "name": "13-who-download",
+          "type": "FRAME",
+          "width": 1280.0
+        }
+      ],
+      "id": 1226,
+      "name": "02 \u00b7 DRAFT dialogs",
+      "nodes": 382,
+      "topLevel": 2
+    },
+    {
+      "frames": [
+        {
+          "height": 820.0,
+          "id": 2,
+          "name": "History sidebar \u00b7 01-history",
+          "type": "COMPONENT",
+          "width": 230.390625
+        },
+        {
+          "height": 42.0,
+          "id": 53,
+          "name": "Copy \u00b7 enabled \u00b7 01-history",
+          "type": "COMPONENT",
+          "width": 96.90625
+        },
+        {
+          "height": 820.0,
+          "id": 62,
+          "name": "AI per app sidebar \u00b7 03-apps",
+          "type": "COMPONENT",
+          "width": 230.390625
+        },
+        {
+          "height": 48.5,
+          "id": 113,
+          "name": "Text model select \u00b7 Qwen \u00b7 on device \u00b7 03-apps",
+          "type": "COMPONENT",
+          "width": 640.0
+        },
+        {
+          "height": 41.59375,
+          "id": 119,
+          "name": "Save app setting \u00b7 disabled \u00b7 03-apps",
+          "type": "COMPONENT",
+          "width": 146.3125
+        },
+        {
+          "height": 820.0,
+          "id": 123,
+          "name": "Settings sidebar \u00b7 04-dictation",
+          "type": "COMPONENT",
+          "width": 230.390625
+        },
+        {
+          "height": 48.5,
+          "id": 174,
+          "name": "Interface language select \u00b7 English \u00b7 04-dictation",
+          "type": "COMPONENT",
+          "width": 710.296875
+        },
+        {
+          "height": 48.5,
+          "id": 180,
+          "name": "Activation select \u00b7 Hold to talk \u00b7 04-dictation",
+          "type": "COMPONENT",
+          "width": 343.140625
+        },
+        {
+          "height": 48.5,
+          "id": 186,
+          "name": "Microphone select \u00b7 System default \u00b7 04-dictation",
+          "type": "COMPONENT",
+          "width": 343.140625
+        },
+        {
+          "height": 48.5,
+          "id": 192,
+          "name": "Dictation language \u00b7 disabled select \u00b7 Detect automatically \u00b7 04-dictation",
+          "type": "COMPONENT",
+          "width": 343.15625
+        },
+        {
+          "height": 74.59375,
+          "id": 198,
+          "name": "Settings actions \u00b7 Save disabled / Discard \u00b7 04-dictation",
+          "type": "COMPONENT",
+          "width": 969.609375
+        },
+        {
+          "height": 48.5,
+          "id": 205,
+          "name": "Activation select \u00b7 Hold to talk \u00b7 37-recording-controls",
+          "type": "COMPONENT",
+          "width": 343.140625
+        },
+        {
+          "height": 48.5,
+          "id": 211,
+          "name": "Microphone select \u00b7 System default \u00b7 37-recording-controls",
+          "type": "COMPONENT",
+          "width": 343.140625
+        },
+        {
+          "height": 48.5,
+          "id": 217,
+          "name": "Dictation language \u00b7 disabled select \u00b7 Detect automatically \u00b7 37-recording-controls",
+          "type": "COMPONENT",
+          "width": 343.15625
+        },
+        {
+          "height": 48.5,
+          "id": 223,
+          "name": "Speech model select \u00b7 Parakeet Redux \u00b7 on device \u00b7 37-recording-controls",
+          "type": "COMPONENT",
+          "width": 710.296875
+        },
+        {
+          "height": 74.59375,
+          "id": 229,
+          "name": "Settings actions \u00b7 Save disabled / Discard \u00b7 37-recording-controls",
+          "type": "COMPONENT",
+          "width": 969.609375
+        },
+        {
+          "height": 74.59375,
+          "id": 236,
+          "name": "Settings actions \u00b7 Save disabled / Discard \u00b7 39-local-models",
+          "type": "COMPONENT",
+          "width": 969.609375
+        },
+        {
+          "height": 820.0,
+          "id": 243,
+          "name": "Settings sidebar \u00b7 29-api-providers",
+          "type": "COMPONENT",
+          "width": 230.390625
+        },
+        {
+          "height": 74.59375,
+          "id": 295,
+          "name": "Settings actions \u00b7 Save disabled / Discard \u00b7 29-api-providers",
+          "type": "COMPONENT",
+          "width": 969.609375
+        },
+        {
+          "height": 48.5,
+          "id": 302,
+          "name": "History retention select \u00b7 Until I delete it \u00b7 36-privacy-audio",
+          "type": "COMPONENT",
+          "width": 710.296875
+        },
+        {
+          "height": 74.59375,
+          "id": 308,
+          "name": "Settings actions \u00b7 Save disabled / Discard \u00b7 36-privacy-audio",
+          "type": "COMPONENT",
+          "width": 969.609375
+        },
+        {
+          "height": 820.0,
+          "id": 315,
+          "name": "Transcription sidebar \u00b7 11-transcription-import",
+          "type": "COMPONENT",
+          "width": 230.390625
+        },
+        {
+          "height": 48.5,
+          "id": 368,
+          "name": "Speech model select \u00b7 Parakeet Redux \u00b7 on device \u00b7 11-transcription-import",
+          "type": "COMPONENT",
+          "width": 472.796875
+        },
+        {
+          "height": 48.5,
+          "id": 374,
+          "name": "Transcription language select \u00b7 Automatic \u00b7 11-transcription-import",
+          "type": "COMPONENT",
+          "width": 472.8125
+        },
+        {
+          "height": 41.59375,
+          "id": 380,
+          "name": "Export \u00b7 enabled \u00b7 12-transcription-editor",
+          "type": "COMPONENT",
+          "width": 78.53125
+        },
+        {
+          "height": 41.59375,
+          "id": 385,
+          "name": "Play \u00b7 enabled \u00b7 12-transcription-editor",
+          "type": "COMPONENT",
+          "width": 62.546875
+        },
+        {
+          "height": 48.5,
+          "id": 390,
+          "name": "Text model select \u00b7 Qwen \u00b7 on device \u00b7 24-transcription-ai",
+          "type": "COMPONENT",
+          "width": 693.609375
+        },
+        {
+          "height": 41.59375,
+          "id": 396,
+          "name": "Process text \u00b7 enabled \u00b7 24-transcription-ai",
+          "type": "COMPONENT",
+          "width": 117.921875
+        },
+        {
+          "height": 41.59375,
+          "id": 401,
+          "name": "Play \u00b7 enabled \u00b7 24-transcription-ai",
+          "type": "COMPONENT",
+          "width": 62.546875
+        }
+      ],
+      "id": 1,
+      "name": "03 \u00b7 Draft shared components",
+      "nodes": 363,
+      "topLevel": 29
+    }
+  ],
+  "styles": 0,
+  "variables": 0
+}

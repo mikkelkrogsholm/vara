@@ -1295,3 +1295,7 @@ Canonical tokens remain owned by `gdd/design/styles` and the actual app/UI sourc
 FigCraft is a derived editable reference, not a second token authority. The linked
 manifest records source hashes/frame IDs and distinguishes fixture WebKit evidence
 from source-rendered AppKit HUDs and separate native-app observations.
+
+## Draft spacing refinement — awaiting design review
+
+A separate, unapproved design-only proposal is available in [the polish review](design/figcraft/polish/review.html), with [its bounded contract and checks](design/figcraft/polish/REVIEW.md) and editable `Vara-polish.figcraft`. It preserves the accepted palette, typography and capabilities. Production tokens and the baseline `Vara.figcraft` remain unchanged. This pointer does not approve the proposal or authorize app implementation.

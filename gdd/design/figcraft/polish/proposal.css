@@ -1,0 +1,57 @@
+/* DRAFT review input only. Canonical production tokens and selectors are unchanged. */
+:root {
+  --draft-label-gap: 8px;
+  --draft-action-gap: 12px;
+  --draft-related-gap: 16px;
+  --draft-field-gap: 24px;
+  --draft-section-gap: 24px;
+}
+.field { gap: var(--draft-label-gap); margin-block: var(--draft-field-gap); }
+.field small { margin-top: 0; }
+.settings-section { padding-block: var(--draft-section-gap); }
+.settings-form > .settings-section:first-child { padding-top: var(--draft-section-gap); }
+.settings-field-grid { gap: var(--draft-field-gap); }
+.shortcut-field .field-label { margin-bottom:0; }
+.settings-page .settings-nav { margin-bottom: 24px; }
+/* Preserve the global blocks and current tabs. Wrap actions without a new container. */
+.settings-section-body:has(#update-automatic) { display:flex; flex-wrap:wrap; align-items:center; gap:16px; }
+.settings-section-body:has(#update-automatic) > p,
+.settings-section-body:has(#update-automatic) > .notice { flex-basis:100%; margin:0; }
+.settings-section-body:has(#update-automatic) > label { display:flex; align-items:center; gap:8px; flex:0 1 auto; min-width:0; }
+#update-automatic { margin:0; flex-shrink:0; }
+.settings-section-body:has(#update-automatic) > button { flex-shrink:0; }
+.settings-form .actions.sticky-save { padding-block:16px; margin-top:16px; }
+.settings-form > .settings-section:last-of-type { padding-bottom:32px; }
+.settings-page :is(input,select,textarea,button) { scroll-margin-block:24px 120px; }
+.settings-page .model-row { gap:16px; padding-block:16px; }
+.settings-page .model-row small { margin-top:4px; }
+.settings-page .model-row > *, .provider-row > * { min-width:0; overflow-wrap:anywhere; }
+.settings-page .provider-connection { padding-block:16px; }
+.settings-page .provider-connection .actions { gap:12px; flex-wrap:wrap; }
+#app-form .form-title { margin-bottom:16px; }
+#app-form > .toggle-row { padding:0; align-items:flex-start; margin-bottom:24px; }
+#app-ai-fields { display:flow-root; }
+#app-ai-fields[hidden] { display:none; }
+#app-form > .toggle-row .switch { margin-top:0; }
+#app-form .toggle-row p { margin-top:8px; max-width:64ch; }
+#app-form #app-ai-fields > .field { margin-block:24px; }
+#app-form #app-ai-fields > .field:first-child { margin-top:0; }
+#app-form > .actions { gap:12px; margin-top:24px; }
+#app-form .form-footnote { margin-top:24px; max-width:68ch; }
+.history-row .row-select { padding:12px; min-height:76px; }
+.history-row .row-meta { margin-top:4px; }
+.result-actions { gap:8px; }
+.history-row > .result-actions { margin-right:12px; }
+.tx-detail-header { gap:16px; padding:24px 28px; }
+.tx-detail-header .actions { gap:12px; }
+.tx-tabs { gap:16px; }
+.tx-player { gap:16px; }
+.tx-player-actions { gap:8px; }
+.tx-import-options { gap:24px; }
+.tx-library-controls .field { margin-block:16px; }
+.tx-staged small, .tx-file small { margin-top:4px; }
+/* Existing 32px dialog inset stays. Preserve legal text and its scroll container. */
+.dialog-content > h2 { margin-bottom:16px; padding-right:32px; }
+.dialog-content > .icon-button:first-child { min-width:32px; min-height:32px; }
+dialog .field { margin-block:24px; }
+dialog .actions { gap:12px; margin-top:24px; }

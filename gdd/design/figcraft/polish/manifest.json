@@ -1,0 +1,268 @@
+{
+  "status": "DRAFT \u2014 not approved or integrated",
+  "baseline_native_sha256": "a0b8d5d7739dace528e0854152ed5575f88e89182895bed866f25f5997fd1ab8",
+  "draft_native_sha256": "74c2b7a29fb6fd64cf523e5e8a3d3e3bca26c3b6044a61f1987b89aad35e8cff",
+  "tool_version": "figcraft-cli 0.15.1",
+  "font_report": {
+    "embeddedFontFiles": 0,
+    "externalPenpotFontRefs": [],
+    "fontLicenseNotices": 0,
+    "fonts": [
+      {
+        "available": true,
+        "family": "Georgia",
+        "layers": [
+          "10 works for me. Please send an invitation.",
+          "API keys",
+          "Add audio or video",
+          "After transcription",
+          "Audio",
+          "Hi Anna. Thanks for your email. Thursday at",
+          "History",
+          "Interface language",
+          "Local models",
+          "Permissions",
+          "Recording",
+          "Settings",
+          "Speech to text",
+          "Updates",
+          "We should make it easy to get started.",
+          "When I",
+          "a word, I want to hear the passage.",
+          "click",
+          "vara"
+        ]
+      },
+      {
+        "available": true,
+        "family": "system-ui",
+        "layers": [
+          "AI follows your app rules.",
+          "AI per app",
+          "Audio: on device",
+          "Copy",
+          "Detect automatically",
+          "Dictate",
+          "Dictation: on device",
+          "Discard changes",
+          "English",
+          "History",
+          "Hold to talk",
+          "Hold, speak and release.",
+          "Local transcription. Your",
+          "Parakeet Redux \u00b7 on device",
+          "Qwen \u00b7 on device",
+          "Save app setting",
+          "Save settings",
+          "Settings",
+          "System default",
+          "The shortcut starts",
+          "Transcription",
+          "Until I delete it",
+          "audio stays on this device.",
+          "dictation. The file model is",
+          "\u2325 Space"
+        ]
+      }
+    ],
+    "missing": 0,
+    "total": 2
+  },
+  "editable_text_layers": 694,
+  "components": 29,
+  "instances": 35,
+  "frames": [
+    {
+      "name": "01-history",
+      "frame_id": 407,
+      "frame_source_svg_sha256": "64b091033c8a91d0bab120049d30995cea12a3724e73d333c276cc3650a18b56",
+      "frame_component_fragments_sha256": "2aac5117763e82a212d01e06bdb847686699c0e6555506a1c932449a15caff55",
+      "logical_size": [
+        1280,
+        820
+      ],
+      "scale": 2,
+      "before_reference": "../references/01-history.png",
+      "before_reference_sha256": "0b0cb1366e54cd303fd38a3ee23e6541933f180bd4be8046e4a4399ae2a0ecd1",
+      "proposal_render_sha256": "7bd8c2adde23477749dda20dd2c9697ca459a4b65c3368a4faf4c6792715ba1b",
+      "native_export_sha256": "a1f3cf87321a91d0f451bcd916cce905a413012fa9778fb86a87d9e9b36d0ea1"
+    },
+    {
+      "name": "03-apps",
+      "frame_id": 538,
+      "frame_source_svg_sha256": "a7ea61d1770ddb1d27eb7dbe48e22f01351d3ddc0cebb834c1bde507584a6e6d",
+      "frame_component_fragments_sha256": "48282fb93617523f5d9913a1434f136e1bdab765b74673ee8851969dc7d8b55a",
+      "logical_size": [
+        1280,
+        820
+      ],
+      "scale": 2,
+      "before_reference": "../references/03-apps.png",
+      "before_reference_sha256": "f54a4646d223e7874dd2faa7277dcf15819dbb58c70a8c4e4bc6a26ce4cc0e55",
+      "proposal_render_sha256": "edb76bf348b63b6b27667648365f0750873854e4fdcc775ed00a9b3ccc7ecd86",
+      "native_export_sha256": "3d39b166d09f20dbb3976e8444986f6d68bb0db0c1a813e42e9b84d56be6e7d3"
+    },
+    {
+      "name": "04-dictation",
+      "frame_id": 589,
+      "frame_source_svg_sha256": "32f202f564544c811328445d0d66760714deba02da3bc809128dc23b54f24bcf",
+      "frame_component_fragments_sha256": "8c40a529d95a524ca37b1073c7916fb4cd8b5d30f69faa0daf310723d424c99a",
+      "logical_size": [
+        1280,
+        820
+      ],
+      "scale": 2,
+      "before_reference": "../references/04-dictation.png",
+      "before_reference_sha256": "138e7b293c2993b62a11c15a1c8656c6b07b64400c2ac7be630df86d2c1f130a",
+      "proposal_render_sha256": "29f0466d3634efccd7856149f3c79caa701f461c6dabfc8ead098d5af161108f",
+      "native_export_sha256": "7d4a4f141a336f88a9ce83a07dda37ed596de8d802c56a5037ba48a37ce589c9"
+    },
+    {
+      "name": "37-recording-controls",
+      "frame_id": 646,
+      "frame_source_svg_sha256": "4467e802cee4512f6f8bff3fdace94800368b636b5583052c21176bfb246bf0f",
+      "frame_component_fragments_sha256": "7b8a369cb6214ca24b774ea00511229cfdb609dd8d6f39a9aad8135aa15242d7",
+      "logical_size": [
+        1280,
+        820
+      ],
+      "scale": 2,
+      "before_reference": "../references/37-recording-controls.png",
+      "before_reference_sha256": "6b7ffc04ce35502321d64cdc2dc5d1402461a13e598c56e2fd7a00952f232537",
+      "proposal_render_sha256": "2c51e463b0557bb4e9d2200f1d9bc2518d63f99b348c20c8fe15dc602b29c3b1",
+      "native_export_sha256": "57d894ca8efe1165dc24dd61a7026eb8864f8f22bf555d39c93bb66e58bba317"
+    },
+    {
+      "name": "39-local-models",
+      "frame_id": 712,
+      "frame_source_svg_sha256": "04a91f36a2677009325d7093a233d15e02e2726e3c8fe07b72f90a1315bb3c25",
+      "frame_component_fragments_sha256": "3ebf8e71a9b5cf56fa73823dd9f5b8fa51901d5f50c29db467d4527150120c57",
+      "logical_size": [
+        1280,
+        820
+      ],
+      "scale": 2,
+      "before_reference": "../references/39-local-models.png",
+      "before_reference_sha256": "3238bc8214d12bcc0d30763613e1f839871f02d8de2d9ec63c4c989acd4bf225",
+      "proposal_render_sha256": "e66258e9280d0763cd30c07e3d9c2b4c639254b7b358e35c6da638a8b1158a99",
+      "native_export_sha256": "a19950c9a57b82509df6a1878c4a6ff28fdcb026a66c7a41d98f098209a2eea8"
+    },
+    {
+      "name": "29-api-providers",
+      "frame_id": 796,
+      "frame_source_svg_sha256": "5a5069ce5dbf5f2812cdb14761e66eaa954e03be784b5b92aaf791f48262d82e",
+      "frame_component_fragments_sha256": "44b8b48c44a1c31cd0bf20fc91306c2200897d12eb309a185f39c62abcef3e59",
+      "logical_size": [
+        1280,
+        820
+      ],
+      "scale": 2,
+      "before_reference": "../references/29-api-providers.png",
+      "before_reference_sha256": "321e0c81b8ed341a429ce95a489bfc7c0f15d5eef64f99ab9bc1f7f3a290389d",
+      "proposal_render_sha256": "1f85ea71b471d35591d46c398ba2844288a58ab54302fa62098482ab5809d3eb",
+      "native_export_sha256": "3223bf4fa1ddd5f70e84fb9922acef6dca21a192e4a38695612d109a6b723b0b"
+    },
+    {
+      "name": "36-privacy-audio",
+      "frame_id": 882,
+      "frame_source_svg_sha256": "9e0caa03fc05c515e6de9dce74ab66988b8c600acba29ac887213f972ac6b46e",
+      "frame_component_fragments_sha256": "734865bc1e0d59af146b04ef35f5fe497cc7155b627ff47a82f1d56bda456cf7",
+      "logical_size": [
+        1280,
+        820
+      ],
+      "scale": 2,
+      "before_reference": "../references/36-privacy-audio.png",
+      "before_reference_sha256": "5d18ad2ffe6e3260dfd1ce40792a2bc7a85f1d6621197ec3d7f6d2c4257dc03c",
+      "proposal_render_sha256": "687ecd564f9d7ca42ed1182f6059986b1aadd62b0cb07736e4e831c05ef79693",
+      "native_export_sha256": "41477b9a50c577fef04cec4c83127a485b9d2949cf97c3ef4287c760c8f55686"
+    },
+    {
+      "name": "11-transcription-import",
+      "frame_id": 927,
+      "frame_source_svg_sha256": "65ef56a81ec694a5cb37af039d2e588549953e3e4a87f14b9544a5b8ce1d7ba2",
+      "frame_component_fragments_sha256": "b3a3016363dc080eee80384b39b1172d66ab978785b4d479fd18c60e24564191",
+      "logical_size": [
+        1280,
+        820
+      ],
+      "scale": 2,
+      "before_reference": "../references/11-transcription-import.png",
+      "before_reference_sha256": "58febf9010209f23ac5d4d7c47b813f1a11f736df29472fe0f989e96d31ae38b",
+      "proposal_render_sha256": "1a6ce9af72889f41733ad8551e62ad9e5bee8b18cdc313e44cb6cc476fd94aad",
+      "native_export_sha256": "0ff47fbc17987dc047f8d9d27275c163152341eca724e7e1fa56f033480a6e4f"
+    },
+    {
+      "name": "12-transcription-editor",
+      "frame_id": 982,
+      "frame_source_svg_sha256": "43abcbc12a991cf39c3b33bfa80c0c63afe21e4c3f14184d8348b27dcc024da8",
+      "frame_component_fragments_sha256": "ec7ea151bfd61681d165576859ae2b629f03d9334ab0567310dd66b8e4fb91fb",
+      "logical_size": [
+        1280,
+        820
+      ],
+      "scale": 2,
+      "before_reference": "../references/12-transcription-editor.png",
+      "before_reference_sha256": "1e2eddc9ef482f82a874ccefa3b72eb7fff3e6816b722fab67969352881e6bb8",
+      "proposal_render_sha256": "8f03fccdfe3d69748a53361e619f57bd686d7e44a8c1aea3aa34d49ffc38727f",
+      "native_export_sha256": "29c8df5a90238e77b100352a0c28eda25c4b8b44798fba7c2661ba020cfa13ce"
+    },
+    {
+      "name": "24-transcription-ai",
+      "frame_id": 1104,
+      "frame_source_svg_sha256": "7d99af864ad45089f2847d871fd014666eed17192d0514292e410f9fdf9e600c",
+      "frame_component_fragments_sha256": "cdb7c97ab3633f7f1d7dd6f9b787330ca627759f0d482b73b2cad110c68c1e2c",
+      "logical_size": [
+        1280,
+        820
+      ],
+      "scale": 2,
+      "before_reference": "../references/24-transcription-ai.png",
+      "before_reference_sha256": "de0e56234ca5ade8786871a0c8d02ef10406a4b1761ec602e27cc254407499f5",
+      "proposal_render_sha256": "0435e421a6299b588929b0c2f9b68dda99006127442748d54a45c90944820fa2",
+      "native_export_sha256": "57f5f811007fa25c38e3a80419a0af6b4135fa090c97b7ebb4ae22aa02d64580"
+    },
+    {
+      "name": "22-key-dialog",
+      "frame_id": 1227,
+      "frame_source_svg_sha256": "3214fe7b2583bbb556e1c43589fad74eed76fa5e05a475738cd57554959bb4e6",
+      "frame_component_fragments_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "logical_size": [
+        1280,
+        820
+      ],
+      "scale": 2,
+      "before_reference": "../references/22-key-dialog.png",
+      "before_reference_sha256": "e8788f66ecd51e0e1e62bf41a81f51f5e8f894c82d52607931e51432a58ca394",
+      "proposal_render_sha256": "848535007afa6a2f1d610dd3b4f7a319db905e46d27935882b3e99e04bd2fbfa",
+      "native_export_sha256": "0f875f9300672b34a93d5fd78786c81ebad6cb7c2387a893c52e7ec62d5363fe"
+    },
+    {
+      "name": "13-who-download",
+      "frame_id": 1399,
+      "frame_source_svg_sha256": "f0ce7967d80b4ebf81ec46794e09820baccc5befb807e9d69d100d79cb1418c9",
+      "frame_component_fragments_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "logical_size": [
+        1280,
+        820
+      ],
+      "scale": 2,
+      "before_reference": "../references/13-who-download.png",
+      "before_reference_sha256": "df1b2b85810e084f1ab85e3bcc17555413791aa2374daea5ce592c37b0229e20",
+      "proposal_render_sha256": "02351f994a69a8916fbb3de4efe1d01fcf2fd3930470b2e7b538aca65c4aa3b9",
+      "native_export_sha256": "e872a9fa855837a7c5fd0b5925d268c8922dd3c545e847de17bafb937db5c9b9"
+    }
+  ],
+  "production_source_hashes": {
+    "gdd/design/styles/tokens.css": "7c9a9587c1e193a3d17a00b889bcdb11c08cf6a1086040482e0bb27db424750c",
+    "gdd/design/styles/app.css": "27451854d8449bba10c2f7ef23892dead38b10235adca5227f396a32567d9d4e",
+    "desktop/ui/app.js": "82968abc62937b0824a868e94228838d113e14cacb9d22436888ea8cbd05c184",
+    "desktop/ui/views.js": "77f6f312da61976f49f66605d027f0ca5f53fa5c94c7b7d6c814eb868d2c6e5b",
+    "desktop/ui/i18n.js": "e1f3ac7deb89c4e395c8e75d0348b978282048960e3c4246b55990c29ed04216",
+    "desktop/ui/transcription.js": "e0474bc441e8505dad9f80751a8dc36e2d30252ff4600f37247fffdd2e702389",
+    "desktop/ui/desktop.css": "f2f0bf4e6afb12921b46fa065daed1af2221cf0b4dd1166f9dd0876befdab393",
+    "crates/vara-platform/src/macos_hud.m": "85fd2101e6402958eeeadfdf3d310612d89ae471a3c7f0dd63ef63572479e88b",
+    "crates/vara-core/messages/runtime.json": "b30686e5a3a0c52c754841a30bd85dff31f22d9ae429271af5f28c80a06da54e"
+  },
+  "proposal_css_sha256": "dac99c8745dba0cf5dfce5284112e560bdada773e9fb2b695e6cc79c77a969ca"
+}

@@ -1,0 +1,16 @@
+{
+  "01-history": {
+    "pixel_identical": true,
+    "difference_bounds": null,
+    "group_header_identical": true
+  },
+  "12-transcription-editor": {
+    "pixel_identical": false,
+    "difference_bounds": [
+      1675,
+      1504,
+      2348,
+      1608
+    ]
+  }
+}
