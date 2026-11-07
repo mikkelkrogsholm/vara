@@ -130,6 +130,39 @@ fn run(app: &AppHandle, root: &std::path::Path, source: &std::path::Path) {
     assert_eq!(deliveries[0].0.app_id, "fixture.origin");
     assert_eq!(deliveries[0].1, "Processed fixture");
     drop(deliveries);
+    // The real engine's empty speech outcome must stop before AI, history, and
+    // delivery. Retained recovery/audio follows the existing speech-error policy.
+    for ai in [false, true] {
+        let no_speech = service(
+            app,
+            root.join(format!("no-speech-ai-{ai}")),
+            Err(UserMessage::new("engine.no_speech").wire()),
+            Ok("must never publish".into()),
+            0,
+        );
+        let a = active(&no_speech, ai);
+        tauri::async_runtime::block_on(no_speech.clone().pipeline(a.clone()));
+        let i = no_speech.inner.lock();
+        assert!(i.active.is_none());
+        assert!(i.store.history(None, None).unwrap().is_empty());
+        assert_eq!(
+            UserMessage::decode(i.message.as_ref().unwrap())
+                .unwrap()
+                .code,
+            "engine.no_speech"
+        );
+        let recovery = i.store.recovery(&a.session.recovery_id).unwrap().unwrap();
+        assert!(recovery.failed && !recovery.recognized && a.path.exists());
+        assert!(
+            no_speech
+                .scripted
+                .as_ref()
+                .unwrap()
+                .deliveries
+                .lock()
+                .is_empty()
+        );
+    }
     // A failed retry retains exactly the initial deadline. A successful retry
     // publishes once, clears audio, and forces manual delivery (no stale token).
     let mut retry = service(
@@ -388,7 +421,7 @@ fn run(app: &AppHandle, root: &std::path::Path, source: &std::path::Path) {
         1
     );
     println!(
-        "Service acceptance passed: 3 AI fallbacks, processed-first/origin, audio cleanup, retry identity/TTL/success, restart/manual-delete/staged-original, injected expiry, late-success cancellation, concurrent file/dictation; inference and OS insertion mocked"
+        "Service acceptance passed: no-speech rejects history/delivery with AI off/on, 3 AI fallbacks, processed-first/origin, audio cleanup, retry identity/TTL/success, restart/manual-delete/staged-original, injected expiry, late-success cancellation, concurrent file/dictation; inference and OS insertion mocked"
     );
 }
 fn wait_idle(service: &Arc<Service>) {
