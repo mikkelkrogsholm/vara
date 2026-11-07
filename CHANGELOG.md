@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.1.0 — prepared for release
+
+- Add Gemini speech transcription with its own provider configuration, explicit capability and privacy handling, and the shared dictation/file-transcription lifecycle. Existing provider selection is preserved.
+- Improve local Whisper segmentation with VAD and repair upstream no-speech detection, including coverage for repeated short Danish audio and long silence.
+- Prepare native Linux x86_64 `.deb`/AppImage and Windows x86_64 NSIS installers as **experimental previews**. Building a package does not verify recording, installation, upgrades or desktop integration on those platforms. Windows installers are not Authenticode signed.
+- Windows/Linux previews require manual text insertion and lack macOS app detection and recording HUD. The shared file-transcription backend and agent CLI operations are unavailable there (`backend.unsupported_platform`); Who diarization runtime is macOS only. No provider is silently substituted. macOS Apple Silicon remains the previously verified shipping platform; 1.1.0 acceptance is recorded separately after verification.
+
 ## 1.0.2 — 2026-11-05
 
 - Replace an authenticated older idle file-service owner after an app upgrade, so GUI and CLI use the running build. Preserve busy accepted jobs and defer handoff until idle; never replace a newer or unverified owner. The private protocol remains v2 and Ping now reports its build version.

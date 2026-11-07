@@ -6380,7 +6380,7 @@ dependencies = [
 
 [[package]]
 name = "vara-app"
-version = "1.0.2"
+version = "1.1.0"
 dependencies = [
  "parking_lot",
  "serde",
@@ -6394,7 +6394,7 @@ dependencies = [
 
 [[package]]
 name = "vara-core"
-version = "1.0.2"
+version = "1.1.0"
 dependencies = [
  "rusqlite",
  "serde",
@@ -6407,7 +6407,7 @@ dependencies = [
 
 [[package]]
 name = "vara-desktop"
-version = "1.0.2"
+version = "1.1.0"
 dependencies = [
  "cc",
  "dirs",
@@ -6435,7 +6435,7 @@ dependencies = [
 
 [[package]]
 name = "vara-engine"
-version = "1.0.2"
+version = "1.1.0"
 dependencies = [
  "base64 0.22.1",
  "candle-core",
@@ -6465,7 +6465,7 @@ dependencies = [
 
 [[package]]
 name = "vara-platform"
-version = "1.0.2"
+version = "1.1.0"
 dependencies = [
  "arboard",
  "cc",

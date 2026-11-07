@@ -1,7 +1,9 @@
 # Releasing Vara desktop
 
-The current delivery artifact is a Developer ID–signed macOS app built from the
-Rust/Tauri workspace. Its bundle identifier is `dk.vara.desktop`.
+The verified shipping platform is macOS Apple Silicon, built from the Rust/Tauri
+workspace and signed with Developer ID. Version 1.1.0 also prepares experimental
+Linux x86_64 and Windows x86_64 manual-install packages; their build and runtime
+acceptance must be recorded separately. The bundle identifier is `dk.vara.desktop`.
 
 ## Verify and build
 
@@ -60,7 +62,7 @@ sync. For an intentional version change:
    python3 scripts/check-version.py
    python3 -m unittest discover -s scripts/tests -p 'test_version.py'
    # For an explicit release, replace the example with the intended tag:
-   python3 scripts/check-version.py --tag v1.0.2
+   python3 scripts/check-version.py --tag v1.1.0
    ```
 
 Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html):
@@ -109,9 +111,61 @@ signed GUI upgrade acceptance is recorded below.
 After verification, generated `target` output can be removed to reclaim disk
 space. Keep the installed app and user profile; do not commit build output or keys.
 
+## Native Windows/Linux preview builds
+
+Manually dispatch `.github/workflows/native-preview-builds.yml` from a revision
+containing that workflow, supplying the full lowercase 40-character `commit` SHA
+of the source to build. No tag is required. The checkout verifies that exact SHA;
+all packages must be rebuilt if source changes before the final release tag.
+For example, after the workflow and source have been merged:
+
+```sh
+gh workflow run native-preview-builds.yml --ref main -f commit=FULL_COMMIT_SHA
+gh run watch RUN_ID
+gh run download RUN_ID --dir release-downloads
+```
+
+The workflow uses native `ubuntu-22.04` and `windows-2022` x86_64 runners, Rust
+from `rust-toolchain.toml` (1.99.1), the official prebuilt Tauri CLI via
+`npx --yes @tauri-apps/cli@2.12.4`, locked dependencies and
+normal production features. It builds Linux `.deb` and `.AppImage` packages and
+a Windows NSIS `.exe`. Linux prerequisites follow the
+[Tauri prerequisites](https://v2.tauri.app/start/prerequisites/) plus ALSA,
+D-Bus, udev, Clang/CMake and AppImage tools; Windows uses the hosted MSVC and
+LLVM installation. No writable build cache or model is uploaded.
+
+Each successful platform artifact contains the installers, `SHA256SUMS`,
+`build-metadata.json` with actual source SHA/version/toolchain, native library
+check logs, build log and `cli-version.log`. Artifacts expire after seven days;
+download them for review before then. The workflow has `contents: read` only,
+creates no tag/release, and does not upload assets to a GitHub release. It uses
+the existing `release` environment public updater key for compilation, requires
+no private signing key, creates no updater artifacts or `latest.json`, and does
+not activate automatic updates. Windows packages are not Authenticode signed.
+The existing macOS draft workflow is unchanged and still requires Apple CI
+credentials that have not been configured.
+
+**Windows/Linux are experimental previews.** A successful build, native library
+checks and the headless `cli --version` smoke check establish compilation and
+version provenance only. They do not establish successful installation, GUI,
+recording, model execution, desktop integration or upgrades. Test those paths
+on the destination OS before claiming platform acceptance. The File tab/shared
+file-transcription backend and agent CLI operations are currently unsupported
+there (`backend.unsupported_platform`). Text insertion is manual, app detection
+and recording HUD are unavailable, and Who's macOS runtime is excluded. The
+version smoke check does not open a profile or imply working agent operations.
+No alternative cloud provider is selected to bypass these limitations.
+
+Build the macOS Apple Silicon app locally with the existing Developer ID,
+notary profile, updater trust root and Who runtime. Review all final source SHAs
+and preview labels before creating an immutable release tag and draft; attach
+only source-matched assets. Publication and stable updater activation are
+separate maintainer actions after acceptance.
+
 ## GitHub updates and release configuration
 
-The workspace and public app are **1.0.2, released 2026-11-05**. The retired Swift
+The workspace is **1.1.0, prepared for release**; the last verified public app is
+**1.0.2, released 2026-11-05**. The retired Swift
 distribution and its Sparkle feed are unrelated. Stable discovery uses only
 `https://github.com/mikkelkrogsholm/vara/releases/latest/download/latest.json`.
 Drafts and prereleases do not activate this endpoint. Until a stable release
