@@ -170,13 +170,15 @@ mod tests {
             whisper(&whisper_rs::WhisperError::FailedToDecode).code,
             whisper(&whisper_rs::WhisperError::FailedToEncode).code
         );
-        let e = voxrt::Error::Io(std::io::Error::from_raw_os_error(13));
+        let e = voxrt::Error::Io(std::io::Error::from(std::io::ErrorKind::PermissionDenied));
         assert_eq!(voxrt(&e).code, "io.permission_denied");
         let format = voxrt::Error::Format("secret /private/path".into());
         assert_eq!(voxrt(&format).code, "voxrt.format");
         assert!(!voxrt(&format).wire().contains("secret"));
         let c = candle_core::Error::WithPath {
-            inner: Box::new(candle_core::Error::Io(std::io::Error::from_raw_os_error(2))),
+            inner: Box::new(candle_core::Error::Io(std::io::Error::from(
+                std::io::ErrorKind::NotFound,
+            ))),
             path: "/secret".into(),
         };
         assert_eq!(candle(&c).code, "io.not_found");
