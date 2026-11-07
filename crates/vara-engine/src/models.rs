@@ -39,12 +39,20 @@ const PARAKEET: &[Artifact] = &[
         sha256: "bd321b096832a3f270bd3b2a88823957920f1a5c5ada71114a26ea729d0cbe91",
     },
 ];
-const SPEECH: &[Artifact] = &[Artifact {
-    name: "ggml-base.bin",
-    url: "https://huggingface.co/ggerganov/whisper.cpp/resolve/5359861c739e955e79d9a303bcbc70fb988958b1/ggml-base.bin",
-    bytes: 147951465,
-    sha256: "60ed5bc3dd14eea856493d334349b405782ddcaf0028d4b5df4088345fba2efe",
-}];
+const SPEECH: &[Artifact] = &[
+    Artifact {
+        name: "ggml-base.bin",
+        url: "https://huggingface.co/ggerganov/whisper.cpp/resolve/5359861c739e955e79d9a303bcbc70fb988958b1/ggml-base.bin",
+        bytes: 147951465,
+        sha256: "60ed5bc3dd14eea856493d334349b405782ddcaf0028d4b5df4088345fba2efe",
+    },
+    Artifact {
+        name: "ggml-silero-v5.1.2.bin",
+        url: "https://huggingface.co/ggml-org/whisper-vad/resolve/9ffd54a1e1ee413ddf265af9913beaf518d1639b/ggml-silero-v5.1.2.bin",
+        bytes: 885098,
+        sha256: "29940d98d42b91fbd05ce489f3ecf7c72f0a42f027e4875919a28fb4c04ea2cf",
+    },
+];
 const TEXT: &[Artifact] = &[
     Artifact {
         name: "Qwen3-0.6B-Q8_0.gguf",

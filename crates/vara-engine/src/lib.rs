@@ -192,8 +192,13 @@ impl Engines {
     pub fn ready(&self, id: &str) -> bool {
         models::artifacts(id).is_some_and(|a| {
             a.iter().all(|a| {
-                std::fs::metadata(models::model_directory(&self.models, id).join(a.name))
-                    .is_ok_and(|m| m.len() == a.bytes)
+                let path = models::model_directory(&self.models, id).join(a.name);
+                if id == "local.whisper" && a.name == "ggml-silero-v5.1.2.bin" {
+                    // The small required helper must be intact before offering Whisper.
+                    models::verified(&path, a).unwrap_or(false)
+                } else {
+                    std::fs::metadata(path).is_ok_and(|m| m.len() == a.bytes)
+                }
             })
         })
     }

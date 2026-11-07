@@ -67,6 +67,30 @@ Four pinned, size/SHA-256-verified Redux artifacts install under
 `models/parakeet-redux/`. Its tokenizer cannot overwrite Qwen's tokenizer.
 Downloads, privacy, retry expiry and text delivery use the existing contracts.
 
+## Local Whisper speech regions
+
+`local.whisper` requires the pinned Whisper Base model and the 885,098-byte MIT
+Silero VAD 5.1.2 helper from `ggml-org/whisper-vad`. The existing explicit Download
+action completes an older Base-only installation; inference never downloads or
+falls back. Both hashes are verified when loading the cached CPU runtime pair;
+readiness also verifies the small helper. Removing the disposable model files
+after loading does not invalidate the already cached runtime.
+
+The real neural detector receives a peak-normalized copy with a 0.5 probability
+threshold, 100-ms minimum speech (matching the existing input minimum),
+1-second silence separation and 200-ms speech padding. Whisper receives
+the original PCM in each detected region with its existing ASR parameters and
+0.85 no-speech policy. Direct dictation and file recognition share this path.
+File segment times remain native ASR times, checked against each region with the
+existing 100-ms native quantization tolerance before
+adding its original audio offset. IDs include region and outer file chunk.
+Empty regions remain skippable; an entirely empty file reports `speech.file_empty`.
+Cancellation is checked around detection and every region, and retains the cached
+pair; native VAD clears recurrent state for each call. The native `FullParams` VAD
+flag is insufficient because whisper-rs uses `whisper_full_with_state`, which
+bypasses the wrapper's VAD preprocessing. Actual regression evidence and known
+Base Danish recognition limits are recorded in `reports/epic42/45-whisper-long-fix.md`.
+
 ## Groq cloud choices and credential check
 
 Groq remains optional cloud treatment: `groq.speech` is Whisper Large-v3 Turbo,

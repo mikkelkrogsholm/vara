@@ -206,3 +206,23 @@ async fn missing_and_corrupt_local_models_return_explicit_errors_without_fallbac
         }
     }
 }
+
+#[test]
+fn whisper_readiness_requires_the_intact_managed_vad_helper() {
+    let root = tempfile::tempdir().unwrap();
+    let files = artifacts("local.whisper").unwrap();
+    assert_eq!(files.len(), 2);
+    let base = std::fs::File::create(root.path().join(files[0].name)).unwrap();
+    base.set_len(files[0].bytes).unwrap();
+    let engines = Engines::new(root.path().into()).unwrap();
+    assert!(
+        !engines.ready("local.whisper"),
+        "base-only install needs explicit download completion"
+    );
+    let helper = std::fs::File::create(root.path().join(files[1].name)).unwrap();
+    helper.set_len(files[1].bytes).unwrap();
+    assert!(
+        !engines.ready("local.whisper"),
+        "same-size corrupt helper must not be offered as ready"
+    );
+}

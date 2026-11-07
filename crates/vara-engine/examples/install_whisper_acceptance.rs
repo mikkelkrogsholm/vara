@@ -1,4 +1,4 @@
-//! Explicit opt-in pinned Whisper Base installer into a new disposable directory.
+//! Explicit opt-in pinned Whisper installer into a disposable directory.
 use vara_engine::{Cancellation, install};
 #[tokio::main]
 async fn main() {
@@ -7,7 +7,11 @@ async fn main() {
             .nth(1)
             .expect("temporary model directory"),
     );
-    assert!(!root.exists(), "use a new task-owned directory");
+    let complete_existing = std::env::args().any(|arg| arg == "--complete-existing");
+    assert!(
+        !root.exists() || complete_existing,
+        "use a new task-owned directory or explicit --complete-existing"
+    );
     let cancel = Cancellation::default();
     let interrupt = std::env::args().any(|arg| arg == "--cancel-after-progress");
     let result = install("local.whisper", &root, &cancel, |progress| {
@@ -27,6 +31,14 @@ async fn main() {
         println!("interrupted download left no final or partial model");
         return;
     }
-    result.expect("pinned SHA256-verified Whisper Base");
-    println!("verified {}", root.join("ggml-base.bin").display());
+    result.expect("pinned SHA256-verified Whisper Base and VAD");
+    assert!(
+        vara_engine::Engines::new(root.clone())
+            .unwrap()
+            .ready("local.whisper")
+    );
+    println!(
+        "verified Whisper Base + VAD; ready=true at {}",
+        root.display()
+    );
 }
