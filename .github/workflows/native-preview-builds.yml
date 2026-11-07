@@ -85,9 +85,11 @@ jobs:
           $vs = & $vswhere -latest -products '*' -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
           if (-not $vs) { throw 'Visual Studio C++ build tools are missing' }
           $devcmd = Join-Path $vs 'Common7\Tools\VsDevCmd.bat'
+          $msvcTools = $null
           cmd /c "`"$devcmd`" -arch=x64 -host_arch=x64 >nul && set" | ForEach-Object {
             if ($_ -match '^([^=]+)=(.*)$') {
               $name, $value = $matches[1], $matches[2]
+              if ($name -eq 'VCToolsInstallDir') { $msvcTools = $value }
               # Persist only the compiler/SDK environment, never runner metadata.
               if ($name -match '^(Path|INCLUDE|LIB|LIBPATH|VCINSTALLDIR|VCToolsInstallDir|VCToolsVersion|VSINSTALLDIR|VisualStudioVersion|DevEnvDir|WindowsSdkDir|WindowsSDKVersion|WindowsSdkBinPath|WindowsSdkVerBinPath|WindowsSDKLibVersion|UniversalCRTSdkDir|UCRTVersion|ExtensionSdkDir|FrameworkDir|FrameworkDir64|FrameworkVersion|FrameworkVersion64|Platform|VSCMD_ARG_TGT_ARCH|VSCMD_ARG_HOST_ARCH)$') {
                 "$name=$value" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
@@ -95,6 +97,14 @@ jobs:
             }
           }
           if ($LASTEXITCODE -ne 0) { throw 'MSVC environment initialization failed' }
+          if (-not $msvcTools) { throw 'MSVC tools directory is missing' }
+          $msvcBin = Join-Path $msvcTools 'bin\Hostx64\x64'
+          foreach ($tool in @('cl.exe', 'link.exe', 'lib.exe')) {
+            if (-not (Test-Path (Join-Path $msvcBin $tool))) { throw "Missing MSVC tool: $tool" }
+          }
+          "VARA_MSVC_BIN=$msvcBin" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          "CARGO_TARGET_X86_64_PC_WINDOWS_MSVC_LINKER=$(Join-Path $msvcBin 'link.exe')" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          $msvcBin | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
           $llvm = 'C:\Program Files\LLVM\bin'
           if (-not (Test-Path "$llvm\libclang.dll")) { throw 'Hosted runner LLVM/libclang is missing' }
           "LIBCLANG_PATH=$llvm" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
@@ -102,6 +112,13 @@ jobs:
       - name: Prepare pinned Rust and prebuilt Tauri CLI
         run: |
           set -euo pipefail
+          if [[ "$RUNNER_OS" == Windows ]]; then
+            # Git Bash prepends usr/bin; restore compiler precedence inside this shell.
+            export PATH="$(cygpath -u "$VARA_MSVC_BIN"):$PATH"
+            test "$(command -v link.exe)" = "$(cygpath -u "$VARA_MSVC_BIN")/link.exe"
+            echo "MSVC linker: $CARGO_TARGET_X86_64_PC_WINDOWS_MSVC_LINKER"
+            command -v cl.exe link.exe lib.exe
+          fi
           # rustup reads the checked-in rust-toolchain.toml (currently 1.99.1).
           rustup show
           mkdir -p release-assets
@@ -109,6 +126,9 @@ jobs:
       - name: Run native library checks with normal features
         run: |
           set -euo pipefail
+          if [[ "$RUNNER_OS" == Windows ]]; then
+            export PATH="$(cygpath -u "$VARA_MSVC_BIN"):$PATH"
+          fi
           mkdir -p release-assets
           if [[ "$RUNNER_OS" == Linux ]]; then
             xvfb-run -a cargo test --release --workspace --lib --locked 2>&1 | tee release-assets/native-tests.log
@@ -119,6 +139,9 @@ jobs:
         working-directory: desktop/src-tauri
         run: |
           set -euo pipefail
+          if [[ "$RUNNER_OS" == Windows ]]; then
+            export PATH="$(cygpath -u "$VARA_MSVC_BIN"):$PATH"
+          fi
           npx --yes @tauri-apps/cli@2.12.4 build --config ../../native-preview.conf.json --bundles "$BUILD_BUNDLES" -- --locked 2>&1 | tee ../../release-assets/native-build.log
       - name: Check CLI version and collect packages with provenance
         run: python scripts/collect-native-preview.py
