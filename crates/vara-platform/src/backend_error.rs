@@ -84,10 +84,15 @@ mod tests {
         let err = keyring::Error::BadEncoding(b"private-key".to_vec());
         assert_eq!(keyring(&err).code, "keyring.encoding");
         assert!(!keyring(&err).wire().contains("private-key"));
-        let err = keyring::Error::NoStorageAccess(Box::new(std::io::Error::from_raw_os_error(13)));
+        let err = keyring::Error::NoStorageAccess(Box::new(std::io::Error::from(
+            std::io::ErrorKind::PermissionDenied,
+        )));
         assert_eq!(keyring(&err).cause.unwrap().code, "io.permission_denied");
         assert_eq!(
-            hound(&hound::Error::IoError(std::io::Error::from_raw_os_error(2))).code,
+            hound(&hound::Error::IoError(std::io::Error::from(
+                std::io::ErrorKind::NotFound
+            )))
+            .code,
             "io.not_found"
         );
     }
