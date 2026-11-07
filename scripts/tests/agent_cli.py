@@ -54,6 +54,9 @@ def js(p):
 root=profile('live')
 m=js(run(root,'models','--json')); assert m['default_speech_engine']=='openai.speech'
 assert all(x['ready'] is not True for x in m['models'] if x['locality']=='cloud')
+gemini=next(x for x in m['models'] if x['id']=='gemini.speech')
+assert gemini['kind']=='speech'
+assert gemini['locality']=='cloud' and gemini['timing_capability']=='word_requested'
 p=run(root,'transcribe',audio.name,'--no-wait','--request-id','same',cwd=base)
 a=js(p); job=a['job_id']; assert a['document_id']==job and ('job_id: '+job).encode() in p.stderr
 pending_path=base/'not-yet.txt'; pending=js(run(root,'transcribe',audio,'--no-wait','--request-id','same','--format','txt')); assert pending['job_id']==job
@@ -117,10 +120,18 @@ assert p.returncode==7 and time.monotonic()-t<1.5 and json.loads(out)['job_id']=
 p=subprocess.Popen([exe,'cli','job','wait',slowid],env=env(slow, **e),stdout=subprocess.PIPE,stderr=subprocess.PIPE)
 time.sleep(.2); t=time.monotonic(); p.stdout.close(); assert p.wait(timeout=2)==7 and time.monotonic()-t<1.5
 
+# Gemini is selected through the same shared queue and strict-local policy.
+gemini_root=profile('gemini', default='gemini.speech')
+gemini_job=js(run(gemini_root,'transcribe',audio,'--no-wait','--request-id','gemini-fixture'))['job_id']
+assert js(run(gemini_root,'job','status',gemini_job))['timing_capability']=='word_requested'
+assert js(run(gemini_root,'job','cancel',gemini_job))['job_id']==gemini_job
+gemini_strict=profile('gemini-strict', default='gemini.speech', strict=True)
+assert js(run(gemini_strict,'transcribe',audio,expected=3))['error']['code']=='file.privacy_only'
+
 # A persisted ready document exercises shared core.export through the real CLI/backend.
 # This text/timing is a deliberately seeded fixture, never a claim of inference.
 ready=profile('ready'); rid=str(uuid.uuid4())
-engine={'id':'groq.speech','label':'Fixture','kind':'speech','provider':'groq','model':'fixture','endpoint':'https://secret.example/?token=private-value','locality':'cloud'}
+engine={'id':'gemini.speech','label':'Fixture','kind':'speech','provider':'gemini','model':'fixture','endpoint':'https://secret.example/?token=private-value','locality':'cloud'}
 doc={'id':rid,'title':'Fixture','source_name':audio.name,'source_path':str(audio),'created_at':1,'engine':engine,'language':None,'stage':'ready','error':'raw-provider-secret','duration':1.0,'completed_seconds':1.0,'waveform':[],
      'transcript':{'text':'Fixture words','timing':'word','timing_source':'fixture','segments':[{'id':'s','text':'Fixture words','start':0.0,'end':0.9,'speaker':None,'words':[{'id':'w','text':'Fixture words','start':0.0,'end':0.9,'speaker':None}]}]},
      'edited_text':None,'revision':0,'ai_text':None,'ai_engine':engine,'speakers':{},'auto_speakers':{'who-0':1},'diarization':None,'diarization_error':'raw-who-secret'}
@@ -288,7 +299,7 @@ f=js(run(restart,'job','status',jid,expected=4,extra=fixture_env)); assert f['st
 db=sqlite3.connect(restart/'transcriptions.sqlite3'); saved=json.loads(db.execute('SELECT value FROM documents WHERE id=?',(jid,)).fetchone()[0]); db.close(); assert saved['stage']=='ready' and saved['transcript']['text']=='Fixture words'
 
 # Wait for every actual fixture backend to finish work and exit on idle.
-roots=[root,strict,late,sig,pipe,slow,ready,who,asr_failed,retry_root,retry_who_root,unsaved_root,failed,cancel,pending_root,restart]
+roots=[root,strict,late,sig,pipe,slow,gemini_root,gemini_strict,ready,who,asr_failed,retry_root,retry_who_root,unsaved_root,failed,cancel,pending_root,restart]
 deadline=time.monotonic()+15
 while True:
     sockets=[pathlib.Path('/tmp')/f'vara-{os.getuid()}'/(hashlib.sha256(str(r.resolve()).encode()).digest()[:16].hex()+'.sock') for r in roots]

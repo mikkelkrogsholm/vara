@@ -1,0 +1,18 @@
+{
+  "policy_version": "1.0.0",
+  "corpus_version": "0.2.1",
+  "basis": "Initial MAIN gates selected after freezing the baseline; baseline-informed, not independent validation or production acceptance",
+  "raw_wer_max_by_case": {"da-000": 0.10, "da-001": 0.10, "en-000": 0.10, "da-paused": 0.10, "mixed-spliced": 0.30, "da-fast-structural": 0.30},
+  "non_speech_cases": ["silence", "noise"],
+  "no_speech_errors": ["engine.no_speech", "speech.file_empty"],
+  "structural_cases": ["long-boundaries", "four-speakers"],
+  "short_latency_cases": ["da-000", "da-001", "en-000", "da-paused", "mixed-spliced", "da-fast-structural", "text-names-amount-date", "text-instruction-as-data", "text-similar-numbers"],
+  "local_first_use_seconds_max": 5.0,
+  "local_warm_seconds_max": 2.0,
+  "cloud_seconds_max": 10.0,
+  "latency_cpu": "Apple M3 Max",
+  "critical_fact_violations_max": 0,
+  "punctuation_only_word_edits_max": 0,
+  "email_first_line": "Hej,",
+  "email_last_line": "Venlig hilsen"
+}

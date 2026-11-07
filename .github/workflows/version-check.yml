@@ -15,6 +15,8 @@ jobs:
         shell: bash
         run: |
           python3 scripts/check-version.py
+          python3 scripts/validate-acceptance-corpus.py
+          python3 -m unittest discover -s scripts/tests -p 'test_acceptance*.py'
           python3 -m unittest discover -s scripts/tests -p 'test_version.py'
           python3 -m unittest discover -s scripts/tests -p 'test_updater_manifest.py'
           python3 -m unittest discover -s scripts/tests -p 'test_release_config.py'

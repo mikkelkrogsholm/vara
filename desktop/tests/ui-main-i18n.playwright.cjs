@@ -98,7 +98,17 @@ const server = http.createServer((req, res) => {
       assert.match(await page.locator('#speech-engine option[value="local.parakeet"]').textContent(),t(/på enheden/,/on device/));
       await page.evaluate(()=>{testState.settings.engines.find(e=>e.id==='local.whisper').label='Mine Ændrede';emit();});
       assert.equal(await page.locator('#speech-engine option[value="local.whisper"]').textContent(),'Mine Ændrede');
+      assert.match(await page.locator('#speech-engine option[value="gemini.speech"]').textContent(),t(/Gemini · tale/,/Gemini · speech/));
+      await page.locator('#speech-engine').selectOption('gemini.speech');
+      await page.locator('[data-action=save-settings]').click();
+      assert.equal(await page.evaluate(()=>testState.settings.speech_engine),'gemini.speech');
+      assert.equal(await page.evaluate(()=>testState.settings.general_engine),fixture.settings.general_engine);
       await page.locator('[data-action=settings-tab][data-id=connections]').click();
+      const geminiRow=page.locator('.provider-row').filter({hasText:'Gemini'}).first();
+      assert.match(await geminiRow.textContent(),t(/Tale og tekst/,/Speech and text/));
+      await geminiRow.locator('[data-action=open-key]').click();
+      assert.equal(await page.locator('#api-key').count(),1);
+      await page.locator('dialog [data-action=close-modal]').first().click();
       await page.locator('[data-action=open-key][data-id=open_ai]').first().click();
       await page.locator('#api-key').fill('fixture-key');
       const modal=page.locator('dialog');

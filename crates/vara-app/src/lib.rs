@@ -1358,6 +1358,153 @@ mod tests {
         }
     }
     #[test]
+    fn cloud_ai_missing_key_preserves_original_edits_and_previous_ai_on_disk() {
+        for engine_id in ["openai.text", "groq.text", "gemini.text"] {
+            let dir = tempfile::tempdir().unwrap();
+            let selected = Arc::new(Mutex::new(Vec::new()));
+            let observed = selected.clone();
+            let service = Files::new(
+                Host {
+                    resource_dir: None,
+                    secret: Box::new(move |engine| {
+                        observed.lock().push(engine.id.clone());
+                        Ok(None)
+                    }),
+                    notify: Box::new(|_| {}),
+                },
+                dir.path().to_path_buf(),
+            )
+            .unwrap();
+            let original = fixture(FileStage::Ready);
+            let id = original.id.clone();
+            Files::save(&mut service.inner.lock(), original.clone()).unwrap();
+            let before = serde_json::to_value(&original).unwrap();
+            let error = service
+                .command(
+                    "file_ai",
+                    json!({"id":id,"engine":engine_id,"prompt":"Frozen instructions"}),
+                    &Settings::default(),
+                )
+                .unwrap_err();
+            assert_eq!(
+                UserMessage::decode(&error).unwrap().code,
+                "provider.missing_key"
+            );
+            assert_eq!(*selected.lock(), vec![engine_id]);
+            assert_eq!(
+                serde_json::to_value(service.status(&id).unwrap()).unwrap(),
+                before
+            );
+            assert!(
+                !service
+                    .inner
+                    .lock()
+                    .cancel
+                    .contains_key(&format!("ai:{id}"))
+            );
+            drop(service);
+            let reopened =
+                TranscriptionStore::open(&dir.path().join("transcriptions.sqlite3")).unwrap();
+            assert_eq!(
+                serde_json::to_value(
+                    reopened
+                        .all()
+                        .unwrap()
+                        .into_iter()
+                        .find(|d| d.id == id)
+                        .unwrap()
+                )
+                .unwrap(),
+                before
+            );
+        }
+    }
+    #[test]
+    fn accepted_ai_cancel_prevents_later_processing_and_document_publication() {
+        let dir = tempfile::tempdir().unwrap();
+        let (started_tx, started_rx) = std::sync::mpsc::channel();
+        let (release_tx, release_rx) = std::sync::mpsc::channel();
+        let release_rx = Mutex::new(release_rx);
+        let service = Files::new(
+            Host {
+                resource_dir: None,
+                secret: Box::new(move |engine| {
+                    started_tx.send(engine.id.clone()).unwrap();
+                    release_rx
+                        .lock()
+                        .recv_timeout(std::time::Duration::from_secs(5))
+                        .unwrap();
+                    Ok(Some("offline-test-key".into()))
+                }),
+                notify: Box::new(|_| {}),
+            },
+            dir.path().to_path_buf(),
+        )
+        .unwrap();
+        let original = fixture(FileStage::Ready);
+        let id = original.id.clone();
+        Files::save(&mut service.inner.lock(), original.clone()).unwrap();
+        let before = serde_json::to_value(&original).unwrap();
+        let worker_service = service.clone();
+        let worker_id = id.clone();
+        let work = std::thread::spawn(move || {
+            worker_service.command(
+                "file_ai",
+                json!({"id":worker_id,"engine":"gemini.text","prompt":"Frozen instructions"}),
+                &Settings::default(),
+            )
+        });
+        assert_eq!(
+            started_rx
+                .recv_timeout(std::time::Duration::from_secs(5))
+                .unwrap(),
+            "gemini.text"
+        );
+        let token = service
+            .inner
+            .lock()
+            .cancel
+            .get(&format!("ai:{id}"))
+            .unwrap()
+            .clone();
+        service
+            .command("file_ai_cancel", json!({"id":id}), &Settings::default())
+            .unwrap();
+        assert!(token.check().is_err());
+        release_tx.send(()).unwrap();
+        let error = work.join().unwrap().unwrap_err();
+        assert_eq!(
+            UserMessage::decode(&error).unwrap().code,
+            "runtime.cancelled"
+        );
+        assert_eq!(
+            serde_json::to_value(service.status(&id).unwrap()).unwrap(),
+            before
+        );
+        assert!(
+            !service
+                .inner
+                .lock()
+                .cancel
+                .contains_key(&format!("ai:{id}"))
+        );
+        drop(service);
+        let reopened =
+            TranscriptionStore::open(&dir.path().join("transcriptions.sqlite3")).unwrap();
+        assert_eq!(
+            serde_json::to_value(
+                reopened
+                    .all()
+                    .unwrap()
+                    .into_iter()
+                    .find(|d| d.id == id)
+                    .unwrap()
+            )
+            .unwrap(),
+            before
+        );
+    }
+    #[test]
     fn planned_who_failure_and_cancel_preserve_annotations_and_independent_ai() {
         let dir = tempfile::tempdir().unwrap();
         let service = Files::new(host(), dir.path().to_path_buf()).unwrap();
@@ -1422,6 +1569,46 @@ mod tests {
         assert_eq!(cancelled.stage, FileStage::Ready);
         assert_eq!(cancelled.who_plan.unwrap().stage, WhoStage::Cancelled);
         assert_eq!(cancelled.diarization.unwrap().model, "prior");
+    }
+    #[test]
+    fn gemini_file_submission_freezes_speech_engine_and_obeys_local_policy() {
+        let dir = tempfile::tempdir_in(".").unwrap();
+        let source = dir.path().join("fixture.wav");
+        std::fs::write(&source, b"not audio").unwrap();
+        let service = Files::new(host(), dir.path().to_path_buf()).unwrap();
+        let mut settings = Settings::default();
+        let request = SubmitRequest {
+            source,
+            engine_id: Some("gemini.speech".into()),
+            language: Some("da".into()),
+            request_id: Some("gemini-request".into()),
+            diarize: false,
+            speakers: None,
+        };
+        let id = service.submit(request.clone(), &settings).unwrap().job_id;
+        let document = service.status(&id).unwrap();
+        assert_eq!(document.engine.provider, Provider::Gemini);
+        assert_eq!(document.engine.kind, EngineKind::Speech);
+        assert_eq!(document.engine.model, "gemini-3.5-transcribe");
+        assert_eq!(
+            document.engine.file_timing_capability(),
+            Some("word_requested")
+        );
+        assert_eq!(document.language.as_deref(), Some("da"));
+        assert_eq!(settings.speech_engine, "local.parakeet");
+        assert_eq!(settings.general_engine, "local.text");
+        settings.strict_local = true;
+        let mut blocked = request.clone();
+        blocked.request_id = Some("gemini-blocked".into());
+        assert!(
+            service
+                .submit(blocked, &settings)
+                .unwrap_err()
+                .contains("file.privacy_only")
+        );
+        assert_eq!(service.submit(request, &settings).unwrap().job_id, id);
+        service.cancel(&id, &settings).unwrap();
+        assert_eq!(service.status(&id).unwrap().stage, FileStage::Cancelled);
     }
     #[test]
     fn default_model_request_identity_survives_setting_changes() {

@@ -433,7 +433,7 @@ pub fn run() {
 /// Isolated native file adapter verification; excluded from normal builds.
 #[cfg(all(feature = "test-harness", target_os = "macos"))]
 pub fn run_native_file_fixture() -> bool {
-    transcription::test_fixture_entry()
+    service::test_fixture_entry() || transcription::test_fixture_entry()
 }
 
 /// Isolated native verification entry; never included in the release feature set.
@@ -495,4 +495,19 @@ pub fn run_native_localization_fixture() {
         })?;
         Ok(())
     }).run(context).expect("native fixture app");
+}
+
+/// Developer-only bounded evaluation; no GUI, settings/history writes or key export.
+#[cfg(feature = "test-harness")]
+pub fn run_acceptance_fixture() -> bool {
+    if std::env::args().nth(1).as_deref() != Some("--acceptance") { return false; }
+    let path = std::env::args().nth(2).expect("acceptance plan path");
+    let runtime = tokio::runtime::Runtime::new().expect("acceptance runtime");
+    if let Err(error) = runtime.block_on(vara_engine::acceptance::run(
+        std::path::Path::new(&path), crate::service::engine_secret,
+    )) {
+        eprintln!("acceptance: {error}");
+        std::process::exit(1);
+    }
+    true
 }

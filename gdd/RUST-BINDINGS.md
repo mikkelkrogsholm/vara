@@ -67,6 +67,30 @@ Four pinned, size/SHA-256-verified Redux artifacts install under
 `models/parakeet-redux/`. Its tokenizer cannot overwrite Qwen's tokenizer.
 Downloads, privacy, retry expiry and text delivery use the existing contracts.
 
+## Local Whisper speech regions
+
+`local.whisper` requires the pinned Whisper Base model and the 885,098-byte MIT
+Silero VAD 5.1.2 helper from `ggml-org/whisper-vad`. The existing explicit Download
+action completes an older Base-only installation; inference never downloads or
+falls back. Both hashes are verified when loading the cached CPU runtime pair;
+readiness also verifies the small helper. Removing the disposable model files
+after loading does not invalidate the already cached runtime.
+
+The real neural detector receives a peak-normalized copy with a 0.5 probability
+threshold, 100-ms minimum speech (matching the existing input minimum),
+1-second silence separation and 200-ms speech padding. Whisper receives
+the original PCM in each detected region with its existing ASR parameters and
+0.85 no-speech policy. Direct dictation and file recognition share this path.
+File segment times remain native ASR times, checked against each region with the
+existing 100-ms native quantization tolerance before
+adding its original audio offset. IDs include region and outer file chunk.
+Empty regions remain skippable; an entirely empty file reports `speech.file_empty`.
+Cancellation is checked around detection and every region, and retains the cached
+pair; native VAD clears recurrent state for each call. The native `FullParams` VAD
+flag is insufficient because whisper-rs uses `whisper_full_with_state`, which
+bypasses the wrapper's VAD preprocessing. Actual regression evidence and known
+Base Danish recognition limits are recorded in `reports/epic42/45-whisper-long-fix.md`.
+
 ## Groq cloud choices and credential check
 
 Groq remains optional cloud treatment: `groq.speech` is Whisper Large-v3 Turbo,
@@ -230,7 +254,7 @@ recorder remain on Dictation. No settings-schema or database migration is added.
 - Rich recognition/media: `crates/vara-engine/src/{transcription,media}.rs` plus
   Redux/Whisper/cloud adapters. Redux returns actual runtime word times; Whisper
   currently returns segment times; OpenAI's selected speech route may return
-  text only. Groq/ElevenLabs rich file routes parse documented word data; ElevenLabs
+  text only. Groq/ElevenLabs/Gemini rich file routes parse documented word data; provider
   speaker IDs are scoped per independently processed chunk, not falsely matched.
 - `desktop/ui/transcription.js` composes canonical primitives for import/library,
   timed reading, corrected text, playback and separate AI. The native asset scope
@@ -460,3 +484,49 @@ manual workflow prepares only macOS ARM drafts with existing tags and configured
 credentials. `RELEASING.md` records the successful native 1.0.2 handoff, historical
 manual 1.0.1 recovery and remaining CI/platform limits. The archive guard was used for
 1.0.2 and does not change the public 1.0.1 tag.
+
+## Gemini Developer API speech — issue 46
+
+`gemini.speech` is an optional cloud speech engine, independently selected from
+`gemini.text` and `gemini.cli`, using the existing `gemini` BYOK account.
+New profiles remain local/direct; settings migration only adds missing built-ins.
+The default `gemini-3.5-transcribe` has bounded live evidence: one public Danish
+clip passed the direct speech source-reference checks in the
+[frozen cloud baseline](reports/epic42/47-cloud-run.md). That Danish clip and a
+public four-speaker fixture also returned real word timing and provider speaker
+IDs through saved-key production CLI and native desktop adapter paths in
+[automated product acceptance](reports/epic42/48-product-acceptance.md).
+These observations do not establish broad Danish accuracy, cross-chunk speaker
+identity, native OS insertion or UI behavior.
+
+The shared `Engines::speech` and `transcribe_file` paths use Developer API
+`POST /v1beta/models/{model}:generateContent` with header-only `x-goog-api-key`.
+Audio is WAV in `contents[].parts[].inlineData` (base64, `audio/wav`).
+`generationConfig.audioTranscriptionConfig` sets `mode:VERBATIM` and
+`languageCodes:[]` for detection, or one language hint. File calls additionally
+request `wordTimestamp:true` and `diarization:true`; no smart rewriting or
+custom vocabulary is enabled. This is not the Interactions or Vertex schema.
+
+One completed candidate supplies non-thought `audioTranscription` parts; their
+`text` takes precedence over duplicate text representations. `speakerLabel` and
+`words[].{word,startOffset,endOffset}` map to actual labels and decimal-second
+Duration strings. Malformed/nonfinite/reversed/out-of-range/unordered intervals
+fail. Missing/empty word arrays or absent optional offsets preserve text and
+labels with `timing:none`; mixed capability drops timing for the complete result
+instead of filling gaps. Chunk offsets and chunk-scoped speaker IDs reuse the
+existing file adapter. No cross-chunk identity matching is claimed.
+
+Vara bounds inline audio to 14 MB and the complete serialized JSON to 20 MB.
+Files already use five-minute 16 kHz mono chunks (~9.6 MB PCM). Direct requests
+reject over-limit audio rather than uploading it through a new Files lifecycle.
+The documented unary limit is one hour, or 30 minutes with word timestamps;
+provider diarization supports at most eight speakers, with three or more marked
+experimental. Supported languages include Danish; this is documented capability,
+not a measured quality result. Existing strict-local policy blocks this route.
+The API key/URL/response body never enters an error or snapshot.
+
+Official Developer API references:
+[transcription guide](https://ai.google.dev/gemini-api/docs/generate-content/transcribe?hl=en),
+[GenerateContent REST schema](https://ai.google.dev/api/generate-content?hl=en).
+Offline protocol, settings, UI and CLI evidence is recorded in
+[issue 46 report](reports/epic42/46-gemini-speech.md).

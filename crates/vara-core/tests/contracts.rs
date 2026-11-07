@@ -296,3 +296,64 @@ fn groq_is_optional_cloud_and_strict_local_rejects_it() {
     settings.speech_engine = "groq.speech".into();
     assert!(Plan::resolve(&settings, &origin(), ProcessingChoice::Default).is_err());
 }
+
+#[test]
+fn gemini_speech_is_optional_cloud_and_migrates_without_replacing_choices() {
+    let dir = tempfile::tempdir().unwrap();
+    let path = dir.path().join("settings.sqlite3");
+    let db = Store::open(&path).unwrap();
+    let mut saved = Settings::default();
+    saved.engines.retain(|e| e.id != "gemini.speech");
+    saved.speech_engine = "groq.speech".into();
+    saved.general_engine = "gemini.text".into();
+    saved.general_ai_enabled = true;
+    saved.app_rules.insert(
+        origin().app_id.clone(),
+        AppRule {
+            app_id: origin().app_id,
+            app_name: "Editor".into(),
+            enabled: true,
+            prompt: "Keep my rule".into(),
+            engine_id: "gemini.text".into(),
+        },
+    );
+    saved
+        .engines
+        .iter_mut()
+        .find(|e| e.id == "gemini.text")
+        .unwrap()
+        .model = "custom-text-model".into();
+    db.save_settings(&saved).unwrap();
+    for mut restored in [db.settings().unwrap(), Store::read_settings(&path).unwrap()] {
+        assert_eq!(restored.speech_engine, saved.speech_engine);
+        assert_eq!(restored.general_engine, saved.general_engine);
+        assert_eq!(
+            restored.engine("gemini.text").unwrap().model,
+            "custom-text-model"
+        );
+        let engine = restored.engine("gemini.speech").unwrap();
+        assert_eq!(engine.kind, EngineKind::Speech);
+        assert_eq!(engine.provider, Provider::Gemini);
+        assert_eq!(engine.model, "gemini-3.5-transcribe");
+        assert_eq!(engine.file_timing_capability(), Some("word_requested"));
+        restored.speech_engine = "gemini.speech".into();
+        restored.validate().unwrap();
+        let plan = Plan::resolve(&restored, &origin(), ProcessingChoice::Direct).unwrap();
+        assert_eq!(plan.speech.id, "gemini.speech");
+        assert!(plan.text.is_none());
+        restored.strict_local = true;
+        assert!(restored.validate().is_err());
+        let mut bad = restored.engine("gemini.speech").unwrap().clone();
+        bad.locality = Locality::OnDevice;
+        assert!(bad.validate().is_err());
+    }
+    let mut custom = saved;
+    let mut engine = Settings::default().engine("gemini.speech").unwrap().clone();
+    engine.model = "custom-speech-model".into();
+    custom.engines.push(engine.clone());
+    db.save_settings(&custom).unwrap();
+    assert_eq!(
+        db.settings().unwrap().engine("gemini.speech").unwrap(),
+        &engine
+    );
+}

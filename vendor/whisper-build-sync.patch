@@ -1,0 +1,50 @@
+--- a/build.rs
++++ b/build.rs
+@@ -101,20 +101,15 @@
+     }
+ 
+     println!("cargo:rerun-if-changed=wrapper.h");
++    println!("cargo:rerun-if-changed=whisper.cpp");
+ 
+     let out = PathBuf::from(env::var("OUT_DIR").unwrap());
+     let whisper_root = out.join("whisper.cpp");
+ 
+-    if !whisper_root.exists() {
+-        std::fs::create_dir_all(&whisper_root).unwrap();
+-        fs_extra::dir::copy("./whisper.cpp", &out, &Default::default()).unwrap_or_else(|e| {
+-            panic!(
+-                "Failed to copy whisper sources into {}: {}",
+-                whisper_root.display(),
+-                e
+-            )
+-        });
+-    }
++    // Keep the build's source copy current without rewriting unchanged files or
++    // discarding CMake's compiler intermediates on each Cargo rerun.
++    sync_source_tree(std::path::Path::new("whisper.cpp"), &whisper_root)
++        .expect("Failed to refresh whisper sources");
+ 
+     if env::var("WHISPER_DONT_GENERATE_BINDINGS").is_ok() {
+         let _: u64 = std::fs::copy("src/bindings.rs", out.join("bindings.rs"))
+@@ -379,6 +374,21 @@
+     Ok(())
+ }
+ 
++fn sync_source_tree(source: &std::path::Path, destination: &std::path::Path) -> std::io::Result<()> {
++    std::fs::create_dir_all(destination)?;
++    for entry in std::fs::read_dir(source)? {
++        let entry = entry?;
++        let path = entry.path();
++        let copied = destination.join(entry.file_name());
++        if entry.file_type()?.is_dir() {
++            sync_source_tree(&path, &copied)?;
++        } else if !copied.exists() || std::fs::read(&path)? != std::fs::read(&copied)? {
++            std::fs::copy(path, copied)?;
++        }
++    }
++    Ok(())
++}
++
+ fn get_whisper_cpp_version(whisper_root: &std::path::Path) -> std::io::Result<Option<String>> {
+     let cmake_lists = BufReader::new(File::open(whisper_root.join("CMakeLists.txt"))?);
+ 

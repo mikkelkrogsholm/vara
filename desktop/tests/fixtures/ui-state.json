@@ -94,6 +94,15 @@
         "locality": "cloud"
       },
       {
+        "id": "gemini.speech",
+        "label": "Gemini · speech",
+        "kind": "speech",
+        "provider": "gemini",
+        "model": "gemini-3.5-transcribe",
+        "endpoint": null,
+        "locality": "cloud"
+      },
+      {
         "id": "gemini.text",
         "label": "Gemini · tekst",
         "kind": "text",

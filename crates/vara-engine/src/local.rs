@@ -3,10 +3,17 @@ use candle_core::{Device, Tensor, quantized::gguf_file};
 use candle_transformers::{generation::LogitsProcessor, models::quantized_qwen3::ModelWeights};
 use parking_lot::Mutex;
 use std::{fs::File, path::Path};
-use whisper_rs::{FullParams, SamplingStrategy, WhisperContext, WhisperContextParameters};
+use whisper_rs::{
+    FullParams, SamplingStrategy, WhisperContext, WhisperContextParameters, WhisperVadContext,
+    WhisperVadContextParams, WhisperVadParams,
+};
+struct SpeechRuntime {
+    whisper: WhisperContext,
+    vad: WhisperVadContext,
+}
 #[derive(Default)]
 pub struct Local {
-    speech: Mutex<Option<WhisperContext>>,
+    speech: Mutex<Option<SpeechRuntime>>,
     text: Mutex<Option<(ModelWeights, tokenizers::Tokenizer)>>,
 }
 impl Local {
@@ -45,82 +52,163 @@ impl Local {
         if guard.is_none() {
             let mut params = WhisperContextParameters::default();
             params.use_gpu(false);
-            *guard = Some(
-                WhisperContext::new_with_params(
-                    model
-                        .to_str()
-                        .ok_or(vara_core::UserMessage::new("model.invalid_path").wire())?,
-                    params,
-                )
-                .map_err(|e| {
-                    vara_core::UserMessage::new("whisper.load")
-                        .caused_by(crate::backend_error::whisper(&e))
-                        .wire()
-                })?,
-            );
-        }
-        let mut state = guard.as_ref().unwrap().create_state().map_err(|e| {
-            vara_core::UserMessage::new("whisper.start")
-                .caused_by(crate::backend_error::whisper(&e))
-                .wire()
-        })?;
-        let mut params = FullParams::new(SamplingStrategy::Greedy { best_of: 1 });
-        params.set_n_threads(
-            std::thread::available_parallelism()
-                .map(|n| n.get().min(8))
-                .unwrap_or(4) as i32,
-        );
-        params.set_language(language);
-        params.set_translate(false);
-        params.set_no_context(true);
-        params.set_no_timestamps(!timed);
-        params.set_print_progress(false);
-        params.set_print_realtime(false);
-        params.set_print_timestamps(false);
-        params.set_print_special(false);
-        // whisper_full is synchronous; cancel's Arc outlives every callback. No ownership crosses FFI.
-        unsafe extern "C" fn abort(data: *mut std::ffi::c_void) -> bool {
-            unsafe {
-                (*(data as *const std::sync::atomic::AtomicBool))
-                    .load(std::sync::atomic::Ordering::SeqCst)
+            let directory = model
+                .parent()
+                .ok_or_else(|| vara_core::UserMessage::new("whisper.load").wire())?;
+            // Verify both managed weights once per cached runtime. Inference never downloads.
+            for artifact in crate::artifacts("local.whisper").unwrap() {
+                if !crate::verified(&directory.join(artifact.name), artifact)? {
+                    return Err(vara_core::UserMessage::new("whisper.load")
+                        .caused_by(vara_core::UserMessage::new("model.verification"))
+                        .wire());
+                }
+                cancel.check()?;
             }
+            let whisper = WhisperContext::new_with_params(
+                model
+                    .to_str()
+                    .ok_or(vara_core::UserMessage::new("model.invalid_path").wire())?,
+                params,
+            )
+            .map_err(|e| {
+                vara_core::UserMessage::new("whisper.load")
+                    .caused_by(crate::backend_error::whisper(&e))
+                    .wire()
+            })?;
+            let mut vad_params = WhisperVadContextParams::default();
+            vad_params.set_use_gpu(false);
+            vad_params.set_n_threads(8);
+            let vad = WhisperVadContext::new(
+                directory
+                    .join("ggml-silero-v5.1.2.bin")
+                    .to_str()
+                    .ok_or_else(|| vara_core::UserMessage::new("model.invalid_path").wire())?,
+                vad_params,
+            )
+            .map_err(|e| {
+                vara_core::UserMessage::new("whisper.load")
+                    .caused_by(crate::backend_error::whisper(&e))
+                    .wire()
+            })?;
+            *guard = Some(SpeechRuntime { whisper, vad });
         }
-        unsafe {
-            params.set_abort_callback(Some(abort));
-            params.set_abort_callback_user_data(
-                std::sync::Arc::as_ptr(&cancel.0) as *mut std::ffi::c_void
-            );
-        }
-        state.full(params, &samples).map_err(|e| {
+        let runtime = guard.as_mut().unwrap();
+        cancel.check()?;
+        // VAD sees a peak-normalized copy so quiet speech has the same detection
+        // boundary. Whisper always receives the original, unchanged PCM samples.
+        let peak = samples.iter().map(|x| x.abs()).fold(0f32, f32::max);
+        let detector_samples: Vec<_> = samples
+            .iter()
+            .map(|x| if peak > 0. { x / peak } else { *x })
+            .collect();
+        runtime.vad.detect_speech(&detector_samples).map_err(|e| {
             vara_core::UserMessage::new("whisper.transcription")
                 .caused_by(crate::backend_error::whisper(&e))
                 .wire()
         })?;
         cancel.check()?;
+        let mut vad_params = WhisperVadParams::default();
+        // Match the existing 100-ms audio minimum instead of adding VAD's
+        // default 250-ms hard gate for short utterances.
+        vad_params.set_min_speech_duration(100);
+        vad_params.set_min_silence_duration(1000);
+        vad_params.set_speech_pad(200);
+        let regions = runtime
+            .vad
+            .segments_from_probabilities(vad_params)
+            .map_err(|e| {
+                vara_core::UserMessage::new("whisper.transcription")
+                    .caused_by(crate::backend_error::whisper(&e))
+                    .wire()
+            })?;
         let mut text = String::new();
         let mut segments = Vec::new();
-        for i in 0..state.full_n_segments() {
-            if let Some(s) = state.get_segment(i) {
-                if s.no_speech_probability() < 0.85 {
-                    let part = s.to_str().map_err(|e| {
-                        vara_core::UserMessage::new("local.text_decode")
-                            .caused_by(crate::backend_error::whisper(&e))
-                            .wire()
-                    })?;
-                    text.push_str(part);
-                    if timed {
-                        segments.push(vara_core::TranscriptSegment {
-                            id: format!("s{i}"),
-                            text: part.trim().into(),
-                            start: Some(s.start_timestamp() as f64 / 100.),
-                            end: Some(s.end_timestamp() as f64 / 100.),
-                            speaker: None,
-                            words: vec![],
-                        });
+        for (region_id, region) in regions.enumerate() {
+            cancel.check()?;
+            // Native VAD coordinates are centiseconds. Bound the source extraction
+            // because its final frame can include padding beyond the PCM length.
+            let start = (region.start as f64 * 160.).round() as usize;
+            let end = ((region.end as f64 * 160.).round() as usize).min(samples.len());
+            if start >= end {
+                return Err(vara_core::UserMessage::new("transcription.invalid_times").wire());
+            }
+            let mut state = runtime.whisper.create_state().map_err(|e| {
+                vara_core::UserMessage::new("whisper.start")
+                    .caused_by(crate::backend_error::whisper(&e))
+                    .wire()
+            })?;
+            let mut params = FullParams::new(SamplingStrategy::Greedy { best_of: 1 });
+            params.set_n_threads(
+                std::thread::available_parallelism()
+                    .map(|n| n.get().min(8))
+                    .unwrap_or(4) as i32,
+            );
+            params.set_language(language);
+            params.set_translate(false);
+            params.set_no_context(true);
+            params.set_no_timestamps(!timed);
+            params.set_print_progress(false);
+            params.set_print_realtime(false);
+            params.set_print_timestamps(false);
+            params.set_print_special(false);
+            // whisper_full is synchronous; cancel's Arc outlives every callback. No ownership crosses FFI.
+            unsafe extern "C" fn abort(data: *mut std::ffi::c_void) -> bool {
+                unsafe {
+                    (*(data as *const std::sync::atomic::AtomicBool))
+                        .load(std::sync::atomic::Ordering::SeqCst)
+                }
+            }
+            unsafe {
+                params.set_abort_callback(Some(abort));
+                params.set_abort_callback_user_data(
+                    std::sync::Arc::as_ptr(&cancel.0) as *mut std::ffi::c_void
+                );
+            }
+            let inference = state.full(params, &samples[start..end]);
+            // The native abort callback reports a backend error. Accepted cancellation
+            // owns the outcome, including when that abort caused full() to fail.
+            cancel.check()?;
+            inference.map_err(|e| {
+                vara_core::UserMessage::new("whisper.transcription")
+                    .caused_by(crate::backend_error::whisper(&e))
+                    .wire()
+            })?;
+            for i in 0..state.full_n_segments() {
+                if let Some(s) = state.get_segment(i) {
+                    if s.no_speech_probability() < 0.85 {
+                        let part = s.to_str().map_err(|e| {
+                            vara_core::UserMessage::new("local.text_decode")
+                                .caused_by(crate::backend_error::whisper(&e))
+                                .wire()
+                        })?;
+                        if !text.is_empty() {
+                            text.push(' ');
+                        }
+                        text.push_str(part.trim());
+                        if timed {
+                            // Validate local ASR times before offsetting: a bad local
+                            // timestamp must not become valid inside a longer file.
+                            let local_start = s.start_timestamp() as f64 / 100.;
+                            let local_end = s.end_timestamp() as f64 / 100.;
+                            validate_region_times(
+                                local_start,
+                                local_end,
+                                (end - start) as f64 / 16000.,
+                            )?;
+                            segments.push(vara_core::TranscriptSegment {
+                                id: format!("r{region_id}-s{i}"),
+                                text: part.trim().into(),
+                                start: Some(start as f64 / 16000. + local_start),
+                                end: Some(start as f64 / 16000. + local_end),
+                                speaker: None,
+                                words: vec![],
+                            });
+                        }
                     }
                 }
             }
         }
+        cancel.check()?;
         if timed {
             Ok(vara_core::Transcript {
                 text: text.trim().into(),
@@ -273,4 +361,32 @@ pub(crate) fn read_audio(path: &Path) -> Result<(Vec<f32>, f64)> {
         out.push(source[lo] * (1. - f) + source[hi] * f);
     }
     Ok((out, duration))
+}
+
+fn validate_region_times(start: f64, end: f64, duration: f64) -> Result<()> {
+    // Match Transcript::validate's existing 100-ms native timestamp tolerance.
+    // Preserve reported times; never clamp out-of-region decoder output.
+    if !start.is_finite() || !end.is_finite() || start < 0. || end <= start || end > duration + 0.1
+    {
+        return Err(vara_core::UserMessage::new("transcription.invalid_times").wire());
+    }
+    Ok(())
+}
+#[cfg(test)]
+mod region_tests {
+    use super::validate_region_times;
+    #[test]
+    fn local_times_must_fit_region_before_original_timeline_offset() {
+        assert!(validate_region_times(0., 8.36, 8.36).is_ok());
+        assert!(validate_region_times(0., 8.45, 8.36).is_ok());
+        for (start, end) in [
+            (0., 8.47),
+            (-0.01, 8.),
+            (8., 8.),
+            (f64::NAN, 8.),
+            (0., f64::INFINITY),
+        ] {
+            assert!(validate_region_times(start, end, 8.36).is_err());
+        }
+    }
 }

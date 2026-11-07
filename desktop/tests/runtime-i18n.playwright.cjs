@@ -35,6 +35,7 @@ try {
    ['local.whisper','Whisper · on device','Whisper · på enheden','engine.whisper'],
    ['local.text','Qwen · on device','Qwen · på enheden','engine.qwen'],
    ['openai.speech','OpenAI · speech','OpenAI · tale','engine.openai.speech'],
+   ['gemini.speech','Gemini · speech','Gemini · tale','engine.gemini.speech'],
    ['elevenlabs.speech','ElevenLabs · speech','ElevenLabs · tale','engine.elevenlabs.speech'],
    ['openai.text','OpenAI · text','OpenAI · tekst','engine.openai.text'],
    ['anthropic.text','Anthropic · text','Anthropic · tekst','engine.anthropic.text'],

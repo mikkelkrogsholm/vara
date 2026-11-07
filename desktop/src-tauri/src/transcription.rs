@@ -309,6 +309,26 @@ pub fn test_fixture_entry() -> bool {
     let mut args = std::env::args_os();
     let _ = args.next();
     let mode = args.next();
+    if mode.as_deref() == Some(std::ffi::OsStr::new("--vara-test-file-snapshot")) {
+        let root = PathBuf::from(args.next().expect("isolated profile"));
+        let mut context = crate::app_context();
+        context.config_mut().app.windows.clear();
+        tauri::Builder::default().setup(move |app| {
+            let handle = app.handle().clone();
+            allow_media(&handle, &root)?;
+            let files = Files::new(handle.clone(), root.clone()).map_err(std::io::Error::other)?;
+            std::thread::spawn(move || {
+                let outcome = files.command("file_list", Value::Null, &Settings::default());
+                files.stop();
+                match outcome {
+                    Ok(value) => { println!("{value}"); handle.exit(0); }
+                    Err(error) => { eprintln!("{error}"); handle.exit(1); }
+                }
+            });
+            Ok(())
+        }).build(context).expect("snapshot fixture app").run(|_, _| {});
+        return true;
+    }
     if mode.as_deref() == Some(std::ffi::OsStr::new("--vara-test-adapter-client")) {
         let root = PathBuf::from(args.next().expect("profile"));
         let source = PathBuf::from(args.next().expect("source"));

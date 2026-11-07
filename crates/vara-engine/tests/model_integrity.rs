@@ -106,3 +106,123 @@ async fn unavailable_redux_returns_error_without_switching_provider() {
         "parakeet.load"
     );
 }
+
+#[test]
+fn same_size_corruption_is_rejected_by_hash() {
+    let dir = tempfile::tempdir().unwrap();
+    let path = dir.path().join("model");
+    std::fs::write(&path, b"bad").unwrap();
+    let artifact = Artifact {
+        name: "model",
+        url: "https://example.invalid",
+        bytes: 3,
+        sha256: "770e607624d689265ca6c44884d0807d9b054d23c473c106c72be9de08b7376c8",
+    };
+    assert!(!verified(&path, &artifact).unwrap());
+}
+
+#[tokio::test]
+async fn interrupted_install_cancellation_preserves_existing_files_and_cleans_parts() {
+    for id in ["local.parakeet", "local.whisper", "local.text"] {
+        let root = tempfile::tempdir().unwrap();
+        let directory = model_directory(root.path(), id);
+        std::fs::create_dir_all(&directory).unwrap();
+        for a in artifacts(id).unwrap() {
+            std::fs::write(directory.join(a.name), b"existing damaged file").unwrap();
+            std::fs::write(directory.join(format!("{}.part", a.name)), b"interrupted").unwrap();
+        }
+        let cancel = Cancellation::default();
+        cancel.cancel();
+        assert_eq!(
+            install(id, root.path(), &cancel, |_| panic!("no ready publication"))
+                .await
+                .unwrap_err(),
+            vara_core::UserMessage::new("runtime.cancelled").wire()
+        );
+        for a in artifacts(id).unwrap() {
+            assert_eq!(
+                std::fs::read(directory.join(a.name)).unwrap(),
+                b"existing damaged file"
+            );
+            assert!(!directory.join(format!("{}.part", a.name)).exists());
+        }
+    }
+}
+
+#[tokio::test]
+async fn missing_and_corrupt_local_models_return_explicit_errors_without_fallback() {
+    let settings = vara_core::Settings::default();
+    let audio = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("../../Samples/acceptance/audio/da-000.wav");
+    for corrupt in [false, true] {
+        for (id, expected) in [
+            ("local.parakeet", "parakeet.load"),
+            ("local.whisper", "whisper.load"),
+            (
+                "local.text",
+                if corrupt {
+                    "local.model_corrupt"
+                } else {
+                    "local.model_missing"
+                },
+            ),
+        ] {
+            let root = tempfile::tempdir().unwrap();
+            if corrupt {
+                let directory = model_directory(root.path(), id);
+                std::fs::create_dir_all(&directory).unwrap();
+                for a in artifacts(id).unwrap() {
+                    std::fs::write(directory.join(a.name), b"not a model").unwrap();
+                }
+            }
+            let engines = Engines::new(root.path().into()).unwrap();
+            assert!(!engines.ready(id));
+            let engine = settings.engine(id).unwrap().clone();
+            let result = if id == "local.text" {
+                engines
+                    .text(
+                        &vara_core::TextPlan {
+                            engine,
+                            system_prompt: "Fix punctuation".into(),
+                            app_specific: false,
+                        },
+                        "test",
+                        None,
+                        &Cancellation::default(),
+                    )
+                    .await
+            } else {
+                engines
+                    .speech(&engine, &audio, Some("da"), None, &Cancellation::default())
+                    .await
+            };
+            assert_eq!(
+                vara_core::UserMessage::decode(&result.unwrap_err())
+                    .unwrap()
+                    .code,
+                expected,
+                "{id} corrupt={corrupt}"
+            );
+        }
+    }
+}
+
+#[test]
+fn whisper_readiness_requires_the_intact_managed_vad_helper() {
+    let root = tempfile::tempdir().unwrap();
+    let files = artifacts("local.whisper").unwrap();
+    assert_eq!(files.len(), 2);
+    let base = std::fs::File::create(root.path().join(files[0].name)).unwrap();
+    base.set_len(files[0].bytes).unwrap();
+    let engines = Engines::new(root.path().into()).unwrap();
+    assert!(
+        !engines.ready("local.whisper"),
+        "base-only install needs explicit download completion"
+    );
+    let helper = std::fs::File::create(root.path().join(files[1].name)).unwrap();
+    helper.set_len(files[1].bytes).unwrap();
+    assert!(
+        !engines.ready("local.whisper"),
+        "same-size corrupt helper must not be offered as ready"
+    );
+}

@@ -1,0 +1,38 @@
+Command: ['codesign', '--verify', '--strict', '--verbose=2', '-R=identifier "dk.vara.desktop" and anchor apple generic and certificate leaf[subject.OU] = "3B7KHK6C9K"', '/tmp/vara-epic42-47-cloud-live/vara-desktop']
+Exit: 0
+
+/tmp/vara-epic42-47-cloud-live/vara-desktop: valid on disk
+/tmp/vara-epic42-47-cloud-live/vara-desktop: satisfies its Designated Requirement
+/tmp/vara-epic42-47-cloud-live/vara-desktop: explicit requirement satisfied
+
+Command: ['codesign', '-d', '--verbose=4', '-r-', '/tmp/vara-epic42-47-cloud-live/vara-desktop']
+Exit: 0
+designated => identifier "dk.vara.desktop" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "3B7KHK6C9K"
+
+Executable=/private/tmp/vara-epic42-47-cloud-live/vara-desktop
+Identifier=dk.vara.desktop
+Format=Mach-O thin (arm64)
+CodeDirectory v=20500 size=66011 flags=0x10000(runtime) hashes=2052+7 location=embedded
+VersionPlatform=1
+VersionMin=720896
+VersionSDK=1705216
+Hash type=sha256 size=32
+CandidateCDHash sha256=c9b662df2c4be93df505613a74ad2cfd97756424
+CandidateCDHashFull sha256=c9b662df2c4be93df505613a74ad2cfd9775642461551e1bdd5ddf410e359db8
+Hash choices=sha256
+CMSDigest=c9b662df2c4be93df505613a74ad2cfd9775642461551e1bdd5ddf410e359db8
+CMSDigestType=2
+Executable Segment base=0
+Executable Segment limit=23494656
+Executable Segment flags=0x1
+Page size=16384
+CDHash=c9b662df2c4be93df505613a74ad2cfd97756424
+Signature size=8983
+Authority=Developer ID Application: Mikkel Krogsholm (3B7KHK6C9K)
+Authority=Developer ID Certification Authority
+Authority=Apple Root CA
+Timestamp=6 Nov 2026 at 18.36.45
+Info.plist entries=4
+TeamIdentifier=3B7KHK6C9K
+Runtime Version=26.5.0
+Sealed Resources=none

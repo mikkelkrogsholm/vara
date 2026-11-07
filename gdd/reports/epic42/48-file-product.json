@@ -1,0 +1,67 @@
+[
+  {
+    "case": "wav",
+    "status": "pass",
+    "job_id": "c8c7f6c2-40a0-4cad-8f35-706a4afe2832",
+    "duration": 12.84,
+    "source_sha256": "823386a11c070104e26aaa6761cc7db68159a6d2e4e4fd83f16ebfbccb2542f7"
+  },
+  {
+    "case": "mp3",
+    "status": "pass",
+    "job_id": "df787aa8-48d1-46d0-bac2-9b71e5ddfc82",
+    "duration": 12.924,
+    "source_sha256": "0d3477e6e260d8a908bded3b3dc3d92f36e79fba248495abadc24e11678a3344"
+  },
+  {
+    "case": "video",
+    "status": "pass",
+    "job_id": "82ceb082-c51f-4260-9057-b4f5044272e9",
+    "duration": 12.928,
+    "source_sha256": "065a99836510bbd54b7de4ef1976405a3ebcb8106923613894f121d1fe29f11c"
+  },
+  {
+    "case": "long",
+    "status": "pass",
+    "job_id": "994ec2bb-05e1-446c-8dec-6460d25ad9f1",
+    "duration": 321.0,
+    "source_sha256": "cdb0470416ea0baba96101246016eceff17370fe63c65d536b35c73d2d7b7538"
+  },
+  {
+    "case": "no-audio.mp4",
+    "status": "pass",
+    "error": {
+      "code": "media.unreadable_audio",
+      "message": {
+        "cause": {
+          "code": "process.exit_code",
+          "params": {
+            "code": 234
+          }
+        },
+        "code": "media.unreadable_audio"
+      }
+    }
+  },
+  {
+    "case": "invalid.bin",
+    "status": "pass",
+    "error": {
+      "code": "media.unreadable_audio",
+      "message": {
+        "cause": {
+          "code": "process.exit_code",
+          "params": {
+            "code": 183
+          }
+        },
+        "code": "media.unreadable_audio"
+      }
+    }
+  },
+  {
+    "case": "cancel-retry-restart-no-duplicates",
+    "status": "pass",
+    "job_id": "c9fc347b-a09c-472e-b18f-15d250613e7a"
+  }
+]

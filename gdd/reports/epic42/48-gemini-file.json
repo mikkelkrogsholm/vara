@@ -1,0 +1,985 @@
+{
+  "execution": {
+    "base_revision": "4ac7860c1be038be40de102f4f4ab74d79560eb3",
+    "binary_source": "base plus windowless file snapshot fixture in transcription.rs (before Service fixture changes)",
+    "signed_identifier": "dk.vara.desktop",
+    "signing_team": "3B7KHK6C9K",
+    "requests_issued": 2,
+    "retries": 0,
+    "reserve_usd": 0.2,
+    "prior_epic_reserve_usd": 0.6,
+    "total_epic_reserve_usd": 0.8,
+    "remaining_cap_usd": 1.2,
+    "cost_note": "Conservative reservation, not observed billing; no invoice/API usage fetched",
+    "inference": "Production CLI/shared backend/engine_secret/Gemini Developer API; no ASR fixture",
+    "native_scope": "Real windowless Tauri AppHandle/Files adapter; no WebView rendering or OS insertion",
+    "signed_binary_sha256": "555518511c9d16830b87ac1b1906ba588a37efe1a26379d71213dfa9e7e80fbf",
+    "unsigned_binary_sha256": "not_recorded_before_signing",
+    "live_source_overrides": {
+      "desktop/src-tauri/src/transcription.rs": "ceff4eafda9bde58ac473d01084d40376875174632c59be92b515ff439a5b2b7"
+    },
+    "source_note": "Other live source files are unchanged base revision. Service fixture/lib entry and canonical test literal changes were made afterward; no paid rerun. Final uploader preflight guard was verified offline after the two live calls.",
+    "both_source_hashes_revalidated_against_compiled_pins_and_manifest_offline": true
+  },
+  "observations": [
+    {
+      "case": "da-000",
+      "requests_issued": 1,
+      "exit_code": 0,
+      "elapsed_seconds": 1.8385219580377452,
+      "source_sha256": "823386a11c070104e26aaa6761cc7db68159a6d2e4e4fd83f16ebfbccb2542f7",
+      "source_unchanged": true,
+      "job_id": "ddcd158d-d3ff-4148-b644-7395783b446e",
+      "document_id": "ddcd158d-d3ff-4148-b644-7395783b446e",
+      "status": "ready",
+      "error": null,
+      "duration": 12.84,
+      "timing": "word",
+      "timing_source": "asr",
+      "words": 19,
+      "segments": 1,
+      "speakers": [
+        "0:spk:0"
+      ],
+      "exports": {
+        "txt": {
+          "exit_code": 0,
+          "bytes": 124
+        },
+        "json": {
+          "exit_code": 0,
+          "bytes": 5065
+        },
+        "srt": {
+          "exit_code": 0,
+          "bytes": 191
+        },
+        "vtt": {
+          "exit_code": 0,
+          "bytes": 199
+        }
+      },
+      "native_adapter_same_document_and_transcript": true,
+      "document": {
+        "ai_engine": null,
+        "ai_text": null,
+        "completed_seconds": 12.84,
+        "created_at": 1793987305,
+        "diarization": null,
+        "diarization_error": null,
+        "duration": 12.84,
+        "edited_text": null,
+        "engine": {
+          "endpoint": null,
+          "id": "gemini.speech",
+          "kind": "speech",
+          "label": "Gemini \u00b7 speech",
+          "locality": "cloud",
+          "model": "gemini-3.5-transcribe",
+          "provider": "gemini"
+        },
+        "error": null,
+        "id": "ddcd158d-d3ff-4148-b644-7395783b446e",
+        "language": null,
+        "original_selected": false,
+        "revision": 0,
+        "selected_text": "Gamle romerske m\u00e5ltider kunne ikke have indeholdt f\u00f8devarer som kom til Europa fra Amerika eller Asien i senere \u00e5rhundre.",
+        "source_name": "da-000.wav",
+        "source_path": "/Users/mikkelfreltoftkrogsholm/.codex/worktrees/who-long-recording/vara/Samples/acceptance/audio/da-000.wav",
+        "speaker_transcript": null,
+        "speakers": {
+          "0:spk:0": "Taler 1"
+        },
+        "stage": "ready",
+        "title": "da-000",
+        "transcript": {
+          "segments": [
+            {
+              "end": 9.9,
+              "id": "c0-s0",
+              "speaker": "0:spk:0",
+              "start": 2.0,
+              "text": "Gamle romerske m\u00e5ltider kunne ikke have indeholdt f\u00f8devarer som kom til Europa fra Amerika eller Asien i senere \u00e5rhundre.",
+              "words": [
+                {
+                  "end": 2.3,
+                  "id": "c0-s0-w0",
+                  "speaker": "0:spk:0",
+                  "start": 2.0,
+                  "text": "Gamle"
+                },
+                {
+                  "end": 2.8,
+                  "id": "c0-s0-w1",
+                  "speaker": "0:spk:0",
+                  "start": 2.3,
+                  "text": "romerske"
+                },
+                {
+                  "end": 3.4,
+                  "id": "c0-s0-w2",
+                  "speaker": "0:spk:0",
+                  "start": 2.8,
+                  "text": "m\u00e5ltider"
+                },
+                {
+                  "end": 3.8,
+                  "id": "c0-s0-w3",
+                  "speaker": "0:spk:0",
+                  "start": 3.4,
+                  "text": "kunne"
+                },
+                {
+                  "end": 4.1,
+                  "id": "c0-s0-w4",
+                  "speaker": "0:spk:0",
+                  "start": 3.8,
+                  "text": "ikke"
+                },
+                {
+                  "end": 4.5,
+                  "id": "c0-s0-w5",
+                  "speaker": "0:spk:0",
+                  "start": 4.1,
+                  "text": "have"
+                },
+                {
+                  "end": 5.0,
+                  "id": "c0-s0-w6",
+                  "speaker": "0:spk:0",
+                  "start": 4.5,
+                  "text": "indeholdt"
+                },
+                {
+                  "end": 5.6,
+                  "id": "c0-s0-w7",
+                  "speaker": "0:spk:0",
+                  "start": 5.0,
+                  "text": "f\u00f8devarer"
+                },
+                {
+                  "end": 5.8,
+                  "id": "c0-s0-w8",
+                  "speaker": "0:spk:0",
+                  "start": 5.6,
+                  "text": "som"
+                },
+                {
+                  "end": 6.1,
+                  "id": "c0-s0-w9",
+                  "speaker": "0:spk:0",
+                  "start": 5.8,
+                  "text": "kom"
+                },
+                {
+                  "end": 6.3,
+                  "id": "c0-s0-w10",
+                  "speaker": "0:spk:0",
+                  "start": 6.1,
+                  "text": "til"
+                },
+                {
+                  "end": 6.8,
+                  "id": "c0-s0-w11",
+                  "speaker": "0:spk:0",
+                  "start": 6.3,
+                  "text": "Europa"
+                },
+                {
+                  "end": 7.0,
+                  "id": "c0-s0-w12",
+                  "speaker": "0:spk:0",
+                  "start": 6.8,
+                  "text": "fra"
+                },
+                {
+                  "end": 7.6,
+                  "id": "c0-s0-w13",
+                  "speaker": "0:spk:0",
+                  "start": 7.0,
+                  "text": "Amerika"
+                },
+                {
+                  "end": 7.8,
+                  "id": "c0-s0-w14",
+                  "speaker": "0:spk:0",
+                  "start": 7.6,
+                  "text": "eller"
+                },
+                {
+                  "end": 8.4,
+                  "id": "c0-s0-w15",
+                  "speaker": "0:spk:0",
+                  "start": 7.8,
+                  "text": "Asien"
+                },
+                {
+                  "end": 8.6,
+                  "id": "c0-s0-w16",
+                  "speaker": "0:spk:0",
+                  "start": 8.4,
+                  "text": "i"
+                },
+                {
+                  "end": 9.2,
+                  "id": "c0-s0-w17",
+                  "speaker": "0:spk:0",
+                  "start": 8.6,
+                  "text": "senere"
+                },
+                {
+                  "end": 9.9,
+                  "id": "c0-s0-w18",
+                  "speaker": "0:spk:0",
+                  "start": 9.2,
+                  "text": "\u00e5rhundre."
+                }
+              ]
+            }
+          ],
+          "text": "Gamle romerske m\u00e5ltider kunne ikke have indeholdt f\u00f8devarer som kom til Europa fra Amerika eller Asien i senere \u00e5rhundre.",
+          "timing": "word",
+          "timing_source": "asr"
+        },
+        "waveform": [
+          0.0,
+          0.0,
+          0.0,
+          0.0009765625,
+          0.0003662109375,
+          0.00030517578125,
+          0.000823974609375,
+          0.003662109375,
+          0.000579833984375,
+          0.002349853515625,
+          0.001678466796875,
+          0.00054931640625,
+          0.00030517578125,
+          0.000244140625,
+          0.00048828125,
+          0.000335693359375,
+          0.00018310546875,
+          0.000152587890625,
+          0.000335693359375,
+          0.154754638671875,
+          0.272796630859375,
+          0.1700439453125,
+          0.268035888671875,
+          0.215789794921875,
+          0.176361083984375,
+          0.17047119140625,
+          0.073638916015625,
+          0.02862548828125,
+          0.087493896484375,
+          0.239532470703125,
+          0.1212158203125,
+          0.0311279296875,
+          0.05255126953125,
+          0.075958251953125,
+          0.01446533203125,
+          0.08526611328125,
+          0.132415771484375,
+          0.14056396484375,
+          0.133941650390625,
+          0.148284912109375,
+          0.2025146484375,
+          0.084075927734375,
+          0.10125732421875,
+          0.071746826171875,
+          0.02587890625,
+          0.143707275390625,
+          0.15948486328125,
+          0.142364501953125,
+          0.139801025390625,
+          0.052886962890625,
+          0.022674560546875,
+          0.146514892578125,
+          0.12103271484375,
+          0.1484375,
+          0.111328125,
+          0.063751220703125,
+          0.02508544921875,
+          0.063568115234375,
+          0.01983642578125,
+          0.13311767578125,
+          0.09271240234375,
+          0.01934814453125,
+          0.040496826171875,
+          0.044586181640625,
+          0.144561767578125,
+          0.16790771484375,
+          0.0340576171875,
+          0.0435791015625,
+          0.01019287109375,
+          0.07110595703125,
+          0.052947998046875,
+          0.119110107421875,
+          0.12017822265625,
+          0.01947021484375,
+          0.02789306640625,
+          0.0958251953125,
+          0.171600341796875,
+          0.25885009765625,
+          0.433013916015625,
+          0.185882568359375,
+          0.066864013671875,
+          0.06494140625,
+          0.008148193359375,
+          0.01007080078125,
+          0.0328369140625,
+          0.027587890625,
+          0.028350830078125,
+          0.07208251953125,
+          0.0767822265625,
+          0.085845947265625,
+          0.090850830078125,
+          0.080108642578125,
+          0.16455078125,
+          0.13690185546875,
+          0.158966064453125,
+          0.15899658203125,
+          0.197784423828125,
+          0.11737060546875,
+          0.039642333984375,
+          0.003387451171875,
+          0.00067138671875,
+          0.000396728515625,
+          0.000335693359375,
+          0.00042724609375,
+          0.000518798828125,
+          0.000457763671875,
+          0.000396728515625,
+          0.007049560546875,
+          0.00030517578125,
+          0.000579833984375,
+          0.000335693359375,
+          0.0003662109375,
+          0.001251220703125,
+          0.000335693359375,
+          0.00091552734375,
+          0.002532958984375,
+          0.0010986328125,
+          0.0003662109375,
+          0.000274658203125,
+          0.00030517578125,
+          0.000579833984375,
+          0.000762939453125,
+          0.000823974609375,
+          0.000579833984375,
+          0.000335693359375,
+          0.00042724609375,
+          0.013763427734375,
+          0.03131103515625
+        ]
+      },
+      "cli_stdout_sha256": "77a9df0df6d898ff48f972888750c4813ea3d2f1ac5eb64fafc5ef59a20c538e",
+      "adapter_stdout_sha256": "1ff3b10dc4f7609ca80e0ff958d47fd30d9adbc734b46c7d907de88991e68c02",
+      "exports_content": {
+        "txt": "Gamle romerske m\u00e5ltider kunne ikke have indeholdt f\u00f8devarer som kom til Europa fra Amerika eller Asien i senere \u00e5rhundre.",
+        "srt": "1\n00:00:02,000 --> 00:00:06,300\nGamle romerske m\u00e5ltider kunne ikke have indeholdt f\u00f8devarer som kom til\n\n2\n00:00:06,300 --> 00:00:09,900\nEuropa fra Amerika eller Asien i senere \u00e5rhundre.\n\n",
+        "vtt": "WEBVTT\n\n1\n00:00:02.000 --> 00:00:06.300\nGamle romerske m\u00e5ltider kunne ikke have indeholdt f\u00f8devarer som kom til\n\n2\n00:00:06.300 --> 00:00:09.900\nEuropa fra Amerika eller Asien i senere \u00e5rhundre.\n\n"
+      }
+    },
+    {
+      "case": "four-speakers",
+      "requests_issued": 1,
+      "exit_code": 0,
+      "elapsed_seconds": 2.9423386250273325,
+      "source_sha256": "0ca72524098483a45f31bfab45ec4aeb17f8bf2b6a30525941858e2e6e62823c",
+      "source_unchanged": true,
+      "job_id": "a402a794-33f6-453b-b23e-63384bd29e84",
+      "document_id": "a402a794-33f6-453b-b23e-63384bd29e84",
+      "status": "ready",
+      "error": null,
+      "duration": 23.215,
+      "timing": "word",
+      "timing_source": "asr",
+      "words": 49,
+      "segments": 4,
+      "speakers": [
+        "0:spk:0",
+        "0:spk:1",
+        "0:spk:2",
+        "0:spk:3"
+      ],
+      "exports": {
+        "txt": {
+          "exit_code": 0,
+          "bytes": 292
+        },
+        "json": {
+          "exit_code": 0,
+          "bytes": 8046
+        },
+        "srt": {
+          "exit_code": 0,
+          "bytes": 491
+        },
+        "vtt": {
+          "exit_code": 0,
+          "bytes": 499
+        }
+      },
+      "native_adapter_same_document_and_transcript": true,
+      "document": {
+        "ai_engine": null,
+        "ai_text": null,
+        "completed_seconds": 23.215,
+        "created_at": 1793987308,
+        "diarization": null,
+        "diarization_error": null,
+        "duration": 23.215,
+        "edited_text": null,
+        "engine": {
+          "endpoint": null,
+          "id": "gemini.speech",
+          "kind": "speech",
+          "label": "Gemini \u00b7 speech",
+          "locality": "cloud",
+          "model": "gemini-3.5-transcribe",
+          "provider": "gemini"
+        },
+        "error": null,
+        "id": "a402a794-33f6-453b-b23e-63384bd29e84",
+        "language": null,
+        "original_selected": false,
+        "revision": 0,
+        "selected_text": "Concord returned to its place amidst the tents. The Delawares are children of the tortoise, and they outstrip the deer. Saturday, August 15th. The sea unbroken all round. No land in sight. The inmates being removed, at the appointed hour, a few cannonballs were fired through the stone walls.",
+        "source_name": "four-speakers.wav",
+        "source_path": "/Users/mikkelfreltoftkrogsholm/.codex/worktrees/who-long-recording/vara/Samples/acceptance/audio/four-speakers.wav",
+        "speaker_transcript": null,
+        "speakers": {
+          "0:spk:0": "Taler 1",
+          "0:spk:1": "Taler 2",
+          "0:spk:2": "Taler 3",
+          "0:spk:3": "Taler 4"
+        },
+        "stage": "ready",
+        "title": "four-speakers",
+        "transcript": {
+          "segments": [
+            {
+              "end": 3.4,
+              "id": "c0-s0",
+              "speaker": "0:spk:0",
+              "start": 0.6,
+              "text": "Concord returned to its place amidst the tents.",
+              "words": [
+                {
+                  "end": 1.2,
+                  "id": "c0-s0-w0",
+                  "speaker": "0:spk:0",
+                  "start": 0.6,
+                  "text": "Concord"
+                },
+                {
+                  "end": 1.7,
+                  "id": "c0-s0-w1",
+                  "speaker": "0:spk:0",
+                  "start": 1.2,
+                  "text": "returned"
+                },
+                {
+                  "end": 1.8,
+                  "id": "c0-s0-w2",
+                  "speaker": "0:spk:0",
+                  "start": 1.7,
+                  "text": "to"
+                },
+                {
+                  "end": 1.9,
+                  "id": "c0-s0-w3",
+                  "speaker": "0:spk:0",
+                  "start": 1.8,
+                  "text": "its"
+                },
+                {
+                  "end": 2.3,
+                  "id": "c0-s0-w4",
+                  "speaker": "0:spk:0",
+                  "start": 1.9,
+                  "text": "place"
+                },
+                {
+                  "end": 2.7,
+                  "id": "c0-s0-w5",
+                  "speaker": "0:spk:0",
+                  "start": 2.3,
+                  "text": "amidst"
+                },
+                {
+                  "end": 2.8,
+                  "id": "c0-s0-w6",
+                  "speaker": "0:spk:0",
+                  "start": 2.7,
+                  "text": "the"
+                },
+                {
+                  "end": 3.4,
+                  "id": "c0-s0-w7",
+                  "speaker": "0:spk:0",
+                  "start": 2.8,
+                  "text": "tents."
+                }
+              ]
+            },
+            {
+              "end": 7.3,
+              "id": "c0-s1",
+              "speaker": "0:spk:1",
+              "start": 4.2,
+              "text": "The Delawares are children of the tortoise, and they outstrip the deer.",
+              "words": [
+                {
+                  "end": 4.2,
+                  "id": "c0-s1-w0",
+                  "speaker": "0:spk:1",
+                  "start": 4.2,
+                  "text": "The"
+                },
+                {
+                  "end": 4.9,
+                  "id": "c0-s1-w1",
+                  "speaker": "0:spk:1",
+                  "start": 4.2,
+                  "text": "Delawares"
+                },
+                {
+                  "end": 5.0,
+                  "id": "c0-s1-w2",
+                  "speaker": "0:spk:1",
+                  "start": 4.9,
+                  "text": "are"
+                },
+                {
+                  "end": 5.4,
+                  "id": "c0-s1-w3",
+                  "speaker": "0:spk:1",
+                  "start": 5.0,
+                  "text": "children"
+                },
+                {
+                  "end": 5.5,
+                  "id": "c0-s1-w4",
+                  "speaker": "0:spk:1",
+                  "start": 5.4,
+                  "text": "of"
+                },
+                {
+                  "end": 5.5,
+                  "id": "c0-s1-w5",
+                  "speaker": "0:spk:1",
+                  "start": 5.5,
+                  "text": "the"
+                },
+                {
+                  "end": 6.0,
+                  "id": "c0-s1-w6",
+                  "speaker": "0:spk:1",
+                  "start": 5.5,
+                  "text": "tortoise,"
+                },
+                {
+                  "end": 6.1,
+                  "id": "c0-s1-w7",
+                  "speaker": "0:spk:1",
+                  "start": 6.0,
+                  "text": "and"
+                },
+                {
+                  "end": 6.3,
+                  "id": "c0-s1-w8",
+                  "speaker": "0:spk:1",
+                  "start": 6.1,
+                  "text": "they"
+                },
+                {
+                  "end": 6.8,
+                  "id": "c0-s1-w9",
+                  "speaker": "0:spk:1",
+                  "start": 6.3,
+                  "text": "outstrip"
+                },
+                {
+                  "end": 6.8,
+                  "id": "c0-s1-w10",
+                  "speaker": "0:spk:1",
+                  "start": 6.8,
+                  "text": "the"
+                },
+                {
+                  "end": 7.3,
+                  "id": "c0-s1-w11",
+                  "speaker": "0:spk:1",
+                  "start": 6.8,
+                  "text": "deer."
+                }
+              ]
+            },
+            {
+              "end": 15.1,
+              "id": "c0-s2",
+              "speaker": "0:spk:2",
+              "start": 9.0,
+              "text": "Saturday, August 15th. The sea unbroken all round. No land in sight.",
+              "words": [
+                {
+                  "end": 9.5,
+                  "id": "c0-s2-w0",
+                  "speaker": "0:spk:2",
+                  "start": 9.0,
+                  "text": "Saturday,"
+                },
+                {
+                  "end": 10.2,
+                  "id": "c0-s2-w1",
+                  "speaker": "0:spk:2",
+                  "start": 9.8,
+                  "text": "August"
+                },
+                {
+                  "end": 10.8,
+                  "id": "c0-s2-w2",
+                  "speaker": "0:spk:2",
+                  "start": 10.2,
+                  "text": "15th."
+                },
+                {
+                  "end": 11.9,
+                  "id": "c0-s2-w3",
+                  "speaker": "0:spk:2",
+                  "start": 11.8,
+                  "text": "The"
+                },
+                {
+                  "end": 12.3,
+                  "id": "c0-s2-w4",
+                  "speaker": "0:spk:2",
+                  "start": 11.9,
+                  "text": "sea"
+                },
+                {
+                  "end": 12.9,
+                  "id": "c0-s2-w5",
+                  "speaker": "0:spk:2",
+                  "start": 12.3,
+                  "text": "unbroken"
+                },
+                {
+                  "end": 13.1,
+                  "id": "c0-s2-w6",
+                  "speaker": "0:spk:2",
+                  "start": 12.9,
+                  "text": "all"
+                },
+                {
+                  "end": 13.5,
+                  "id": "c0-s2-w7",
+                  "speaker": "0:spk:2",
+                  "start": 13.1,
+                  "text": "round."
+                },
+                {
+                  "end": 14.3,
+                  "id": "c0-s2-w8",
+                  "speaker": "0:spk:2",
+                  "start": 14.2,
+                  "text": "No"
+                },
+                {
+                  "end": 14.6,
+                  "id": "c0-s2-w9",
+                  "speaker": "0:spk:2",
+                  "start": 14.3,
+                  "text": "land"
+                },
+                {
+                  "end": 14.7,
+                  "id": "c0-s2-w10",
+                  "speaker": "0:spk:2",
+                  "start": 14.6,
+                  "text": "in"
+                },
+                {
+                  "end": 15.1,
+                  "id": "c0-s2-w11",
+                  "speaker": "0:spk:2",
+                  "start": 14.7,
+                  "text": "sight."
+                }
+              ]
+            },
+            {
+              "end": 22.4,
+              "id": "c0-s3",
+              "speaker": "0:spk:3",
+              "start": 16.4,
+              "text": "The inmates being removed, at the appointed hour, a few cannonballs were fired through the stone walls.",
+              "words": [
+                {
+                  "end": 16.5,
+                  "id": "c0-s3-w0",
+                  "speaker": "0:spk:3",
+                  "start": 16.4,
+                  "text": "The"
+                },
+                {
+                  "end": 17.0,
+                  "id": "c0-s3-w1",
+                  "speaker": "0:spk:3",
+                  "start": 16.5,
+                  "text": "inmates"
+                },
+                {
+                  "end": 17.2,
+                  "id": "c0-s3-w2",
+                  "speaker": "0:spk:3",
+                  "start": 17.0,
+                  "text": "being"
+                },
+                {
+                  "end": 17.9,
+                  "id": "c0-s3-w3",
+                  "speaker": "0:spk:3",
+                  "start": 17.2,
+                  "text": "removed,"
+                },
+                {
+                  "end": 18.5,
+                  "id": "c0-s3-w4",
+                  "speaker": "0:spk:3",
+                  "start": 18.3,
+                  "text": "at"
+                },
+                {
+                  "end": 18.6,
+                  "id": "c0-s3-w5",
+                  "speaker": "0:spk:3",
+                  "start": 18.5,
+                  "text": "the"
+                },
+                {
+                  "end": 19.1,
+                  "id": "c0-s3-w6",
+                  "speaker": "0:spk:3",
+                  "start": 18.6,
+                  "text": "appointed"
+                },
+                {
+                  "end": 19.7,
+                  "id": "c0-s3-w7",
+                  "speaker": "0:spk:3",
+                  "start": 19.2,
+                  "text": "hour,"
+                },
+                {
+                  "end": 19.8,
+                  "id": "c0-s3-w8",
+                  "speaker": "0:spk:3",
+                  "start": 19.8,
+                  "text": "a"
+                },
+                {
+                  "end": 20.1,
+                  "id": "c0-s3-w9",
+                  "speaker": "0:spk:3",
+                  "start": 19.8,
+                  "text": "few"
+                },
+                {
+                  "end": 20.8,
+                  "id": "c0-s3-w10",
+                  "speaker": "0:spk:3",
+                  "start": 20.1,
+                  "text": "cannonballs"
+                },
+                {
+                  "end": 21.0,
+                  "id": "c0-s3-w11",
+                  "speaker": "0:spk:3",
+                  "start": 20.8,
+                  "text": "were"
+                },
+                {
+                  "end": 21.4,
+                  "id": "c0-s3-w12",
+                  "speaker": "0:spk:3",
+                  "start": 21.0,
+                  "text": "fired"
+                },
+                {
+                  "end": 21.5,
+                  "id": "c0-s3-w13",
+                  "speaker": "0:spk:3",
+                  "start": 21.4,
+                  "text": "through"
+                },
+                {
+                  "end": 21.6,
+                  "id": "c0-s3-w14",
+                  "speaker": "0:spk:3",
+                  "start": 21.5,
+                  "text": "the"
+                },
+                {
+                  "end": 22.0,
+                  "id": "c0-s3-w15",
+                  "speaker": "0:spk:3",
+                  "start": 21.6,
+                  "text": "stone"
+                },
+                {
+                  "end": 22.4,
+                  "id": "c0-s3-w16",
+                  "speaker": "0:spk:3",
+                  "start": 22.0,
+                  "text": "walls."
+                }
+              ]
+            }
+          ],
+          "text": "Concord returned to its place amidst the tents. The Delawares are children of the tortoise, and they outstrip the deer. Saturday, August 15th. The sea unbroken all round. No land in sight. The inmates being removed, at the appointed hour, a few cannonballs were fired through the stone walls.",
+          "timing": "word",
+          "timing_source": "asr"
+        },
+        "waveform": [
+          0.013702392578125,
+          0.0174560546875,
+          0.011688232421875,
+          0.2901611328125,
+          0.10626220703125,
+          0.153961181640625,
+          0.108428955078125,
+          0.231597900390625,
+          0.110382080078125,
+          0.130157470703125,
+          0.13970947265625,
+          0.233367919921875,
+          0.191162109375,
+          0.216949462890625,
+          0.0697021484375,
+          0.14984130859375,
+          0.1837158203125,
+          0.225341796875,
+          0.2086181640625,
+          0.014923095703125,
+          0.0,
+          0.0,
+          0.02593994140625,
+          0.482086181640625,
+          0.57806396484375,
+          0.502593994140625,
+          0.34686279296875,
+          0.277740478515625,
+          0.540771484375,
+          0.279754638671875,
+          0.1915283203125,
+          0.456451416015625,
+          0.20538330078125,
+          0.42083740234375,
+          0.517852783203125,
+          0.248260498046875,
+          0.287384033203125,
+          0.264404296875,
+          0.3118896484375,
+          0.2396240234375,
+          0.02264404296875,
+          0.00830078125,
+          0.008392333984375,
+          0.003662109375,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.468109130859375,
+          0.44873046875,
+          0.125762939453125,
+          0.022613525390625,
+          0.009979248046875,
+          0.42706298828125,
+          0.367462158203125,
+          0.3050537109375,
+          0.17333984375,
+          0.146270751953125,
+          0.03424072265625,
+          0.0045166015625,
+          0.00042724609375,
+          0.005767822265625,
+          0.008087158203125,
+          0.00079345703125,
+          0.183563232421875,
+          0.3204345703125,
+          0.328125,
+          0.421630859375,
+          0.4608154296875,
+          0.154266357421875,
+          0.297698974609375,
+          0.273193359375,
+          0.187042236328125,
+          0.03936767578125,
+          0.0069580078125,
+          0.004791259765625,
+          0.00067138671875,
+          0.3436279296875,
+          0.447967529296875,
+          0.40283203125,
+          0.3590087890625,
+          0.174896240234375,
+          0.06414794921875,
+          0.002105712890625,
+          0.0,
+          0.0,
+          0.001220703125,
+          0.001129150390625,
+          0.0018310546875,
+          0.2537841796875,
+          0.422576904296875,
+          0.372650146484375,
+          0.342498779296875,
+          0.344757080078125,
+          0.40118408203125,
+          0.3570556640625,
+          0.17919921875,
+          0.0130615234375,
+          0.001220703125,
+          0.003326416015625,
+          0.31304931640625,
+          0.35723876953125,
+          0.301422119140625,
+          0.330474853515625,
+          0.244293212890625,
+          0.342010498046875,
+          0.1912841796875,
+          0.00213623046875,
+          0.154022216796875,
+          0.253570556640625,
+          0.26715087890625,
+          0.217864990234375,
+          0.288726806640625,
+          0.219085693359375,
+          0.15618896484375,
+          0.3419189453125,
+          0.213104248046875,
+          0.2431640625,
+          0.137176513671875,
+          0.191741943359375,
+          0.22515869140625,
+          0.203094482421875,
+          0.059539794921875,
+          0.00250244140625,
+          0.001922607421875,
+          0.0,
+          0.0
+        ]
+      },
+      "cli_stdout_sha256": "b679cbb21fa111f5f7c8f9d7450144b9ccaf224101a09b94798ebcf40626e0a7",
+      "adapter_stdout_sha256": "c1f06d635d49466453772a7316dc6c236be7b2bffe73ac438352e5356b71c557",
+      "exports_content": {
+        "txt": "Concord returned to its place amidst the tents. The Delawares are children of the tortoise, and they outstrip the deer. Saturday, August 15th. The sea unbroken all round. No land in sight. The inmates being removed, at the appointed hour, a few cannonballs were fired through the stone walls.",
+        "srt": "1\n00:00:00,600 --> 00:00:03,400\nConcord returned to its place amidst the tents.\n\n2\n00:00:04,200 --> 00:00:07,300\nThe Delawares are children of the tortoise, and they outstrip the deer.\n\n3\n00:00:09,000 --> 00:00:13,500\nSaturday, August 15th. The sea unbroken all round.\n\n4\n00:00:14,200 --> 00:00:15,100\nNo land in sight.\n\n5\n00:00:16,400 --> 00:00:21,000\nThe inmates being removed, at the appointed hour, a few cannonballs were\n\n6\n00:00:21,000 --> 00:00:22,400\nfired through the stone walls.\n\n",
+        "vtt": "WEBVTT\n\n1\n00:00:00.600 --> 00:00:03.400\nConcord returned to its place amidst the tents.\n\n2\n00:00:04.200 --> 00:00:07.300\nThe Delawares are children of the tortoise, and they outstrip the deer.\n\n3\n00:00:09.000 --> 00:00:13.500\nSaturday, August 15th. The sea unbroken all round.\n\n4\n00:00:14.200 --> 00:00:15.100\nNo land in sight.\n\n5\n00:00:16.400 --> 00:00:21.000\nThe inmates being removed, at the appointed hour, a few cannonballs were\n\n6\n00:00:21.000 --> 00:00:22.400\nfired through the stone walls.\n\n"
+      }
+    }
+  ]
+}

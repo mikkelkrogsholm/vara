@@ -11,6 +11,10 @@ fn main() {
     if vara_platform::credential_worker_entry() {
         return;
     }
+    #[cfg(feature = "test-harness")]
+    if vara_desktop::run_acceptance_fixture() {
+        return;
+    }
     if vara_desktop::local_backend::worker_entry() {
         return;
     }
