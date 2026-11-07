@@ -87,8 +87,11 @@ jobs:
           $devcmd = Join-Path $vs 'Common7\Tools\VsDevCmd.bat'
           cmd /c "`"$devcmd`" -arch=x64 -host_arch=x64 >nul && set" | ForEach-Object {
             if ($_ -match '^([^=]+)=(.*)$') {
-              [Environment]::SetEnvironmentVariable($matches[1], $matches[2], 'Process')
-              "$($matches[1])=$($matches[2])" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+              $name, $value = $matches[1], $matches[2]
+              # Persist only the compiler/SDK environment, never runner metadata.
+              if ($name -match '^(Path|INCLUDE|LIB|LIBPATH|VCINSTALLDIR|VCToolsInstallDir|VCToolsVersion|VSINSTALLDIR|VisualStudioVersion|DevEnvDir|WindowsSdkDir|WindowsSDKVersion|WindowsSdkBinPath|WindowsSdkVerBinPath|WindowsSDKLibVersion|UniversalCRTSdkDir|UCRTVersion|ExtensionSdkDir|FrameworkDir|FrameworkDir64|FrameworkVersion|FrameworkVersion64|Platform|VSCMD_ARG_TGT_ARCH|VSCMD_ARG_HOST_ARCH)$') {
+                "$name=$value" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+              }
             }
           }
           if ($LASTEXITCODE -ne 0) { throw 'MSVC environment initialization failed' }
