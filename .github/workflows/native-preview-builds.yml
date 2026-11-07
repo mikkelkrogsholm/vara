@@ -1,0 +1,139 @@
+name: Build native Windows and Linux previews
+on:
+  workflow_dispatch:
+    inputs:
+      commit:
+        description: Full 40-character commit SHA to build; never creates a tag or release
+        required: true
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: vara-native-preview-${{ inputs.commit }}
+  cancel-in-progress: false
+jobs:
+  packages:
+    name: ${{ matrix.platform }} preview
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: linux-x86_64
+            runner: ubuntu-22.04
+            bundles: deb,appimage
+          - platform: windows-x86_64
+            runner: windows-2022
+            bundles: nsis
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 120
+    environment: release
+    defaults:
+      run:
+        shell: bash
+    env:
+      SOURCE_COMMIT: ${{ inputs.commit }}
+      BUILD_PLATFORM: ${{ matrix.platform }}
+      BUILD_BUNDLES: ${{ matrix.bundles }}
+      VARA_RELEASE_BUILD: '1'
+      VARA_UPDATER_PUBLIC_KEY: ${{ vars.VARA_UPDATER_PUBLIC_KEY }}
+      CARGO_INCREMENTAL: '0'
+      CARGO_PROFILE_RELEASE_DEBUG: '0'
+      GGML_NATIVE: 'OFF'
+      # AppImage creation on hosted runners without a FUSE mount.
+      APPIMAGE_EXTRACT_AND_RUN: '1'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.commit }}
+          persist-credentials: false
+      - uses: actions/setup-python@e797f83bcb11b83ae66e0230d6156d7c80228e7c # v6.0.0
+        with:
+          python-version: '3.13'
+      - name: Validate source and package configuration
+        run: |
+          set -euo pipefail
+          python - <<'PYTHON'
+          import json, os, re, subprocess
+          from pathlib import Path
+          expected = os.environ['SOURCE_COMMIT']
+          assert re.fullmatch(r'[0-9a-f]{40}', expected), 'Use a full lowercase commit SHA'
+          assert subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip() == expected
+          assert os.environ['VARA_UPDATER_PUBLIC_KEY'].strip(), 'Missing existing updater public key'
+          # Manual-install previews: no updater private key or Apple runtime is needed.
+          Path('native-preview.conf.json').write_text(json.dumps({'bundle': {
+              'targets': os.environ['BUILD_BUNDLES'].split(','),
+              'createUpdaterArtifacts': False, 'resources': ['notices/']
+          }}))
+          PYTHON
+          python scripts/check-version.py
+      - name: Install Linux native dependencies
+        if: runner.os == 'Linux'
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            build-essential curl wget file pkg-config cmake clang libclang-dev \
+            libwebkit2gtk-4.1-dev libgtk-3-dev libxdo-dev libssl-dev \
+            libayatana-appindicator3-dev librsvg2-dev patchelf libfuse2 \
+            libasound2-dev libdbus-1-dev libudev-dev xvfb xauth
+      - name: Configure Windows MSVC and LLVM
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
+          $vs = & $vswhere -latest -products '*' -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
+          if (-not $vs) { throw 'Visual Studio C++ build tools are missing' }
+          $devcmd = Join-Path $vs 'Common7\Tools\VsDevCmd.bat'
+          cmd /c "`"$devcmd`" -arch=x64 -host_arch=x64 >nul && set" | ForEach-Object {
+            if ($_ -match '^([^=]+)=(.*)$') {
+              $name, $value = $matches[1], $matches[2]
+              # Persist only the compiler/SDK environment, never runner metadata.
+              if ($name -match '^(Path|INCLUDE|LIB|LIBPATH|VCINSTALLDIR|VCToolsInstallDir|VCToolsVersion|VSINSTALLDIR|VisualStudioVersion|DevEnvDir|WindowsSdkDir|WindowsSDKVersion|WindowsSdkBinPath|WindowsSdkVerBinPath|WindowsSDKLibVersion|UniversalCRTSdkDir|UCRTVersion|ExtensionSdkDir|FrameworkDir|FrameworkDir64|FrameworkVersion|FrameworkVersion64|Platform|VSCMD_ARG_TGT_ARCH|VSCMD_ARG_HOST_ARCH)$') {
+                "$name=$value" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+              }
+            }
+          }
+          if ($LASTEXITCODE -ne 0) { throw 'MSVC environment initialization failed' }
+          $llvm = 'C:\Program Files\LLVM\bin'
+          if (-not (Test-Path "$llvm\libclang.dll")) { throw 'Hosted runner LLVM/libclang is missing' }
+          "LIBCLANG_PATH=$llvm" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          $llvm | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+      - name: Prepare pinned Rust and prebuilt Tauri CLI
+        run: |
+          set -euo pipefail
+          # rustup reads the checked-in rust-toolchain.toml (currently 1.99.1).
+          rustup show
+          mkdir -p release-assets
+          npx --yes @tauri-apps/cli@2.12.4 --version | tee release-assets/tauri-cli-version.log
+      - name: Run native library checks with normal features
+        run: |
+          set -euo pipefail
+          mkdir -p release-assets
+          if [[ "$RUNNER_OS" == Linux ]]; then
+            xvfb-run -a cargo test --release --workspace --lib --locked 2>&1 | tee release-assets/native-tests.log
+          else
+            cargo test --release --workspace --lib --locked 2>&1 | tee release-assets/native-tests.log
+          fi
+      - name: Build manual-install packages
+        working-directory: desktop/src-tauri
+        run: |
+          set -euo pipefail
+          npx --yes @tauri-apps/cli@2.12.4 build --config ../../native-preview.conf.json --bundles "$BUILD_BUNDLES" -- --locked 2>&1 | tee ../../release-assets/native-build.log
+      - name: Check CLI version and collect packages with provenance
+        run: python scripts/collect-native-preview.py
+      - name: Upload preview packages and evidence
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        with:
+          name: vara-preview-${{ matrix.platform }}-${{ inputs.commit }}
+          path: release-assets/
+          if-no-files-found: error
+          retention-days: 7
+      - name: Upload failure logs
+        if: failure()
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        with:
+          name: vara-preview-failure-${{ matrix.platform }}-${{ inputs.commit }}
+          path: release-assets/*.log
+          if-no-files-found: ignore
+          retention-days: 7
