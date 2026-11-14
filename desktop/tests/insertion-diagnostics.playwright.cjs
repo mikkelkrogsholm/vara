@@ -100,6 +100,14 @@ const server = http.createServer((req,res) => {
       await page.locator('.insertion-details summary').click();
       assert.equal(await page.locator('.insertion-details p').innerText(), 'field_unavailable · accessibility · AX -25204');
       assert.equal(await page.locator('.insertion-details summary').innerText(), language === 'en' ? 'Insertion details' : 'Oplysninger om indsættelse');
+      assert.equal(await page.evaluate(() => {
+        const copy = document.querySelector('.copy-bar'), details = document.querySelector('.insertion-details');
+        const summary = details.querySelector('summary');
+        return Boolean(copy.compareDocumentPosition(details) & Node.DOCUMENT_POSITION_FOLLOWING)
+          && !details.classList.contains('settings-disclosure')
+          && getComputedStyle(summary).fontWeight === '500';
+      }), true, 'Copy precedes compact secondary diagnostics');
+      assert.equal(await page.locator('.original-disclosure:not(.insertion-details)').getAttribute('open'), null, 'Technical details do not open the original transcript');
       assert.doesNotMatch(await page.content(), /PRIVATE_/);
       await page.screenshot({path:path.join(shots, `${language}-manual.png`)});
       await mutate({delivery:'unknown',insertion_diagnostic:{reason:'focus_changed',method:'keyboard',os_error:null}});
@@ -136,10 +144,14 @@ const server = http.createServer((req,res) => {
     await permissions({accessibility:true,post_event_access:false});
     assert.match(await insertion.innerText(), /Direct insertion through Accessibility is available.*Insertion by keyboard is blocked/s);
     assert.equal(await insertion.locator('[data-kind=post_event]').count(), 1);
+    assert.match(await insertion.innerText(), /System Settings → Privacy & Security → Accessibility/);
+    assert.match(await insertion.innerText(), /If Vara is already enabled, quit and reopen Vara/);
     await page.screenshot({path:path.join(shots,'en-partial-permissions.png')});
     await insertion.locator('[data-action=permission]').click();
     await locale('da');
     assert.match(await insertion.innerText(), /Direkte indsættelse.*Tastaturindsættelse er blokeret/s);
+    assert.match(await insertion.innerText(), /Systemindstillinger → Anonymitet & sikkerhed → Tilgængelighed/);
+    assert.match(await insertion.innerText(), /Hvis Vara allerede er slået til, så afslut og åbn Vara igen/);
     await page.screenshot({path:path.join(shots,'da-partial-permissions.png')});
     await locale('en');
     for (const missing of [undefined,null]) {

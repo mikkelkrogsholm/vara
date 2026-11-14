@@ -2,7 +2,7 @@
 
 Date: 2026-11-14. Scope: core/store, macOS native adapter and Rust bridge,
 Service orchestration, deterministic tests. UI recovery presentation is separate.
-No claim is made about the cause on Peter's computer or compatibility with a
+No claim is made about the cause on the reporting user's computer or compatibility with a
 specific editor; no personal application was controlled for this delivery.
 
 The prior backend collapsed capture, focus, permission and unsupported-target
@@ -137,3 +137,18 @@ Native computer control was unavailable for this worker. Actual cross-app insert
 permission grant/revocation, keyboard event delivery, and editor-specific behavior
 remain separate native acceptance. No backend, version, release, signing, workflow,
 push or publication change is part of this UI delivery.
+
+
+MAIN visual review requested one bounded follow-up: put the primary Copy action
+before secondary diagnostic details and use the existing compact original-text
+disclosure presentation instead of Settings disclosure spacing. Technical details
+now follow Copy. The original-text toggle/focus handler explicitly excludes this
+secondary disclosure so opening diagnostics cannot relabel or open the original
+transcript. No styles or backend behavior changed. The focused browser regression
+asserts ordering, compact presentation and independent disclosure behavior; its
+existing screenshot paths above were refreshed for the corrected layout.
+
+Missing/partial access recovery names the concrete Accessibility pane in both
+languages and suggests quitting and reopening Vara if its permission is already
+enabled. This is troubleshooting guidance, not a promise to fix unsupported fields
+or changed focus; no permission toggles, reset or retry are automatic.

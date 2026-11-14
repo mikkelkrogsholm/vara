@@ -105,9 +105,14 @@
     const manualReason = status.reason && !["confirmed", "handoff_unconfirmed"].includes(status.reason) ? status.reason : "generic";
     const message = status.delivery === "manual_ready" ? Vara.i18n.bind(`insertion.reason.${manualReason}`) : Vara.i18n.bind(`insertion.${status.delivery}`);
     const help = status.permission ? button(Vara.i18n.bind("insertion.permission-help"), "permission", { attrs: `data-kind="${status.permission}"` }) : "";
+    return `<div class="insertion-feedback">${Vara.ui.notice(message, status.delivery === "unknown" ? "warning" : "info", help)}</div>`;
+  };
+  const insertionDetails = (record) => {
+    const status = insertionStatus(record);
+    if (status.delivery === "inserted") return "";
     // Never expose arbitrary fields, target identifiers, text or native messages.
     const details = [status.reason, status.method, status.osError === null ? null : `AX ${status.osError}`].filter(value => value !== null);
-    return `<div class="insertion-feedback">${Vara.ui.notice(message, status.delivery === "unknown" ? "warning" : "info", help)}${details.length ? `<details class="settings-disclosure insertion-details" id="insertion-details-${e(record.id)}"><summary><span>${Vara.i18n.bind("insertion.details")}</span>${icon("chevron")}</summary><p class="muted">${details.map(e).join(" · ")}</p></details>` : ""}</div>`;
+    return details.length ? `<details class="original-disclosure insertion-details" id="insertion-details-${e(record.id)}"><summary id="insertion-details-summary-${e(record.id)}">${icon("chevron")}<span>${Vara.i18n.bind("insertion.details")}</span></summary><p class="muted">${details.map(e).join(" · ")}</p></details>` : "";
   };
   const insertionPermission = (permissions) => {
     const supported = permissions.automatic_insertion === true;
@@ -123,5 +128,5 @@
   };
   const disclosure = (id, title, description, content, open = false) =>
     `<details id="${e(id)}" class="settings-disclosure" ${open ? "open" : ""}><summary><span>${e(title)}</span>${icon("chevron")}</summary><p class="muted">${e(description)}</p><div>${content}</div></details>`;
-  Vara.desktopUi = { binding, appArtwork, setAppArtwork, resultActions, shortcut, permissionRow, insertionStatus, insertionNotice, insertionPermission, disclosure, settingsSection, policyRow, processingChoice, modelSelect, modelLabel, displayEngineName };
+  Vara.desktopUi = { binding, appArtwork, setAppArtwork, resultActions, shortcut, permissionRow, insertionStatus, insertionNotice, insertionDetails, insertionPermission, disclosure, settingsSection, policyRow, processingChoice, modelSelect, modelLabel, displayEngineName };
 })();
