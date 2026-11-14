@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.1.0 — prepared for release
+## 1.1.0 — 2026-11-14
 
 - Explain macOS insertion refusals and uncertain delivery in English and Danish, with explicit permission recovery and live Accessibility/keyboard access status. Preserve manual copy and avoid automatic retries; support still depends on the target app and field.
 - Add Gemini speech transcription with its own provider configuration, explicit capability and privacy handling, and the shared dictation/file-transcription lifecycle. Existing provider selection is preserved.

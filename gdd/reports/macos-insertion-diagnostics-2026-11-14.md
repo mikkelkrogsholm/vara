@@ -1,9 +1,10 @@
-# macOS insertion diagnostics: bounded backend evidence
+# macOS insertion diagnostics: bounded acceptance evidence
 
 Date: 2026-11-14. Scope: core/store, macOS native adapter and Rust bridge,
-Service orchestration, deterministic tests. UI recovery presentation is separate.
-No claim is made about the cause on the reporting user's computer or compatibility with a
-specific editor; no personal application was controlled for this delivery.
+Service orchestration, UI recovery, deterministic tests, and the final bounded
+TextEdit acceptance below. No claim is made that this establishes or fixes Peter's
+reported root cause or verifies compatibility with other editors. The initial
+backend and browser phases did not control personal applications.
 
 The prior backend collapsed capture, focus, permission and unsupported-target
 refusals into a missing token or `manual_ready`. This delivery retains a closed
@@ -51,13 +52,14 @@ made the bounded acceptance pass. No product workaround was added for that setup
 mistake. Existing Security-framework deprecation warnings and a desktop dead-code
 warning remain in build output.
 
-## Remaining acceptance
+## Acceptance remaining after the initial backend phase
 
-No real target-field insertion, TCC grant/revocation, editor-specific behavior,
-clipboard observation, or user-facing diagnostic recovery was manually exercised.
-No release, signing, version change, push or GitHub update was performed. Windows
-and Linux were not run locally; their adapter continues to return manual-ready
-with `platform_unsupported` and nullable post-event capability.
+At the end of that phase, no real target-field insertion, TCC grant/revocation,
+editor-specific behavior, clipboard observation, or user-facing diagnostic recovery
+had been manually exercised. No release, signing, version change, push or GitHub
+update was part of that phase. Windows and Linux were not run locally; their
+adapter continues to return manual-ready with `platform_unsupported` and nullable
+post-event capability. Later native and packaging evidence is recorded below.
 
 
 ## Agreed UI delivery and evidence
@@ -133,10 +135,11 @@ Screenshots for MAIN visual review (1440 × 950):
 - `/tmp/vara-insertion-ui-screens/en-partial-permissions.png`
 - `/tmp/vara-insertion-ui-screens/da-partial-permissions.png`
 
-Native computer control was unavailable for this worker. Actual cross-app insertion,
-permission grant/revocation, keyboard event delivery, and editor-specific behavior
-remain separate native acceptance. No backend, version, release, signing, workflow,
-push or publication change is part of this UI delivery.
+Native computer control was unavailable to the UI worker during that phase.
+Actual cross-app insertion, permission grant/revocation, keyboard event delivery,
+and editor-specific behavior therefore remained separate native acceptance at that
+point. No backend, version, release, signing, workflow, push or publication change
+was part of that UI delivery. The subsequent bounded native run is recorded below.
 
 
 MAIN visual review requested one bounded follow-up: put the primary Copy action
@@ -152,3 +155,71 @@ Missing/partial access recovery names the concrete Accessibility pane in both
 languages and suggests quitting and reopening Vara if its permission is already
 enabled. This is troubleshooting guidance, not a promise to fix unsupported fields
 or changed focus; no permission toggles, reset or retry are automatic.
+
+
+## Final bounded native acceptance and release preparation
+
+The tested runtime code is frozen at
+`303455926cca3a20dfa64bd5315dae345f8ae6d2`; the subsequent report/date commit
+changes documentation only. MAIN exercised the current-source, Developer ID signed
+Tauri test-harness app through CUA with the real UI assets. Its executable SHA256 is
+`202a4fa98f5775a1229953cca643187c5e09cac80c3dbd7ca52f367f81218774`.
+This test app is separate from the normal production artifacts and must not be
+published.
+
+The existing guarded GUI fixture used a 15-second start delay and six-second
+recording interval. Recognition used real local Parakeet Redux on the public
+`Samples/acceptance/audio/da-000.wav` fixture (12.84 seconds of audio), not the
+microphone. The fresh `/tmp/vara-native-acceptance-20261114/profile` used strict
+local settings, no AI, no app rules and no cloud requests. Its models symlink reused
+the existing models without downloading or copying them; all four Parakeet hashes
+matched the source manifest. No personal history, recordings or credentials were
+copied into the profile.
+
+The first CUA background-focus attempt was rejected by the fixture guard, showing
+a generic unknown message and producing no result. For the second trial, after an
+asynchronous question, the user physically foregrounded TextEdit. CUA observed an
+initially empty TextEdit document receive the public transcript once, and observed
+the same transcript in Vara history. Success is not attributed to CUA coordinate
+clicking alone. The native receipt at
+`/tmp/vara-native-acceptance-20261114/native-receipt.json` records:
+
+- Result `e5ff119f-7c43-4e96-8826-d3829a2da27d`, origin `com.apple.TextEdit`.
+- Delivery `inserted`; diagnostic reason `confirmed`, method `accessibility`,
+  `os_error: null`; no serialized `target_token`.
+- Zero recovery records, staging records and retained audio files after completion.
+
+The live native Settings snapshot reported Microphone, Input Monitoring,
+Accessibility and keyboard access granted. This observes existing permission state;
+it does not test granting or revoking permissions. MAIN quit the test app through
+Vara → Quit in CUA and verified zero remaining test-app processes.
+
+This run verifies one stable empty TextEdit field using direct Accessibility
+insertion. It does not verify focus-change safety in an actual native trial,
+preservation of a nonempty clipboard, keyboard-event OS delivery, permission
+recovery, an upgrade, or the requested four-app editor coverage. Word, Outlook and
+Claude were not installed; Mail was not exercised. These limits remain even though
+the deterministic and browser suites cover their corresponding policy and UI
+branches.
+
+Normal production 1.1.0 artifacts from the same runtime revision were Developer ID
+signed, strictly verified and checked to exclude test-harness markers. App
+notarization initially failed while the Mac was locked. After unlock, the same
+existing `vara-notary` profile was accessible without credential changes; Apple
+accepted submission `cf9837e7-b1ad-497f-a89e-c655388ee1a2`. MAIN stapled and validated
+the extracted normal app, and Gatekeeper accepted it as Notarized Developer ID.
+Apple also accepted DMG submission `14f47204-ba0f-416a-a85a-a1e6e513585f`.
+DMG stapling was initially pending; at 22:17:23 UTC MAIN completed `xcrun stapler
+staple` and `validate`, and Gatekeeper assessed the DMG as accepted with source
+Notarized Developer ID (`spctl --assess --type open --context
+context:primary-signature --verbose=2`). Logs:
+`/tmp/vara-insertion-notary-unlocked.json` and
+`/tmp/vara-insertion-dmg-notary.json`. Normal artifacts are under
+`~/.local/share/vara-release/artifacts/1.1.0-insertion-review`.
+
+MAIN previously verified 67 normal release workspace library tests. Native
+Windows/Linux build run `43620194390` passed all jobs; MAIN verified artifact
+checksums, source revision and packaged CLI version. Those packages remain
+experimental previews: no native GUI installation, recording, upgrade or desktop
+integration acceptance is claimed. No release had been published when this report
+was updated; MAIN retains final integration and publication review.
