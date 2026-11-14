@@ -8,7 +8,7 @@ mod recorder;
 pub use recorder::*;
 use serde::Serialize;
 use std::ffi::{CStr, CString};
-use vara_core::{Delivery, Destination};
+use vara_core::{Delivery, Destination, InsertionDiagnostic, InsertionOutcome, InsertionReason};
 pub type Result<T> = std::result::Result<T, String>;
 #[derive(Clone, Serialize)]
 pub struct Permissions {
@@ -16,6 +16,7 @@ pub struct Permissions {
     pub accessibility: bool,
     pub automatic_insertion: bool,
     pub input_monitoring: Option<bool>,
+    pub post_event_access: Option<bool>,
 }
 #[cfg(target_os = "macos")]
 unsafe extern "C" {
@@ -23,12 +24,17 @@ unsafe extern "C" {
     fn vara_applications() -> *mut std::ffi::c_char;
     fn vara_application_icons(ids: *const std::ffi::c_char) -> *mut std::ffi::c_char;
     fn vara_capture_target() -> *mut std::ffi::c_char;
-    fn vara_insert(token: *const std::ffi::c_char, text: *const std::ffi::c_char) -> i32;
+    fn vara_insert(
+        token: *const std::ffi::c_char,
+        text: *const std::ffi::c_char,
+    ) -> *mut std::ffi::c_char;
+    fn vara_post_event_access() -> bool;
     fn vara_release_target(token: *const std::ffi::c_char);
     fn vara_accessibility() -> i32;
     fn vara_input_monitoring() -> bool;
     fn vara_request_input_monitoring();
     fn vara_request_accessibility();
+    fn vara_request_post_event();
     fn vara_microphone() -> i32;
     fn vara_request_microphone();
     fn vara_hud(
@@ -138,21 +144,54 @@ pub fn capture_target() -> Result<Destination> {
             app_id: "unknown".into(),
             app_name: "Ukendt app".into(),
             target_token: None,
+            capture_diagnostic: None,
         })
     }
 }
-pub fn insert(origin: &Destination, text: &str) -> Delivery {
+pub fn insert(origin: &Destination, text: &str) -> InsertionOutcome {
     #[cfg(target_os = "macos")]
-    if let (Some(token), Ok(text)) = (&origin.target_token, CString::new(text)) {
-        if let Ok(token) = CString::new(token.as_str()) {
-            return match unsafe { vara_insert(token.as_ptr(), text.as_ptr()) } {
-                1 => Delivery::Inserted,
-                -1 => Delivery::Unknown,
-                _ => Delivery::ManualReady,
+    {
+        if unsafe { vara_accessibility() } != 1 {
+            return InsertionOutcome {
+                delivery: Delivery::ManualReady,
+                diagnostic: InsertionDiagnostic::new(InsertionReason::AccessibilityMissing),
             };
         }
+        if let Some(diagnostic) = origin.capture_diagnostic {
+            return InsertionOutcome {
+                delivery: Delivery::ManualReady,
+                diagnostic,
+            };
+        }
+        if let (Some(token), Ok(text)) = (&origin.target_token, CString::new(text)) {
+            if let Ok(token) = CString::new(token.as_str()) {
+                unsafe {
+                    let raw = vara_insert(token.as_ptr(), text.as_ptr());
+                    // A failed bridge response may follow dispatch: never claim no insertion.
+                    if raw.is_null() {
+                        return InsertionOutcome::unconfirmed();
+                    }
+                    let outcome = serde_json::from_slice(CStr::from_ptr(raw).to_bytes())
+                        .unwrap_or_else(|_| InsertionOutcome::unconfirmed());
+                    vara_free(raw);
+                    return outcome;
+                }
+            }
+        }
+        InsertionOutcome {
+            delivery: Delivery::ManualReady,
+            diagnostic: InsertionDiagnostic::new(if origin.target_token.is_none() {
+                InsertionReason::TargetGone
+            } else {
+                InsertionReason::DispatchFailed
+            }),
+        }
     }
-    Delivery::ManualReady
+    #[cfg(not(target_os = "macos"))]
+    InsertionOutcome {
+        delivery: Delivery::ManualReady,
+        diagnostic: InsertionDiagnostic::new(InsertionReason::PlatformUnsupported),
+    }
 }
 pub fn release_target(origin: &Destination) {
     #[cfg(target_os = "macos")]
@@ -179,6 +218,7 @@ pub fn permissions() -> Permissions {
             accessibility: vara_accessibility() == 1,
             automatic_insertion: true,
             input_monitoring: Some(vara_input_monitoring()),
+            post_event_access: Some(vara_post_event_access()),
         };
     }
     #[cfg(not(target_os = "macos"))]
@@ -187,6 +227,7 @@ pub fn permissions() -> Permissions {
         accessibility: false,
         automatic_insertion: false,
         input_monitoring: None,
+        post_event_access: None,
     }
 }
 pub fn request_permission(kind: &str) -> Result<()> {
@@ -195,6 +236,7 @@ pub fn request_permission(kind: &str) -> Result<()> {
         match kind {
             "microphone" => vara_request_microphone(),
             "accessibility" => vara_request_accessibility(),
+            "post_event" => vara_request_post_event(),
             "input_monitoring" => vara_request_input_monitoring(),
             _ => return Err(vara_core::UserMessage::new("platform.permission").wire()),
         };

@@ -32,6 +32,7 @@ fn active(service: &Arc<Service>, ai: bool) -> Active {
         app_id: "fixture.origin".into(),
         app_name: "Origin fixture".into(),
         target_token: None,
+        capture_diagnostic: None,
     };
     let mut settings = Settings::default();
     settings.speech_engine = "gemini.speech".into();
@@ -45,6 +46,7 @@ fn active(service: &Arc<Service>, ai: bool) -> Active {
                 app_id: "fixture.origin".into(),
                 app_name: "Origin fixture".into(),
                 target_token: None,
+                capture_diagnostic: None,
             },
             ProcessingChoice::Default,
         )
@@ -98,6 +100,10 @@ fn run(app: &AppHandle, root: &std::path::Path, source: &std::path::Path) {
         assert_eq!(doc.finished_text(), "Original fixture");
         assert!(doc.fallback && doc.processed.is_none());
         assert_eq!(doc.delivery, Delivery::ManualReady);
+        assert_eq!(
+            doc.insertion_diagnostic,
+            Some(InsertionDiagnostic::new(InsertionReason::NotAttempted))
+        );
         assert!(i.store.recoveries().unwrap().is_empty());
         let message = UserMessage::decode(i.message.as_ref().unwrap()).unwrap();
         assert_eq!(message.code, "host.ai_fallback");
@@ -130,6 +136,31 @@ fn run(app: &AppHandle, root: &std::path::Path, source: &std::path::Path) {
     assert_eq!(deliveries[0].0.app_id, "fixture.origin");
     assert_eq!(deliveries[0].1, "Processed fixture");
     drop(deliveries);
+    // A repeated completion of the same generation after an uncertain handoff
+    // must return its original saved text and never dispatch a second time.
+    {
+        let mut i = success.inner.lock();
+        i.store
+            .update_insertion(&history[0].id, InsertionOutcome::unconfirmed())
+            .unwrap();
+        i.active = Some(a.clone());
+    }
+    tauri::async_runtime::block_on(success.clone().pipeline(a.clone()));
+    assert_eq!(
+        success.scripted.as_ref().unwrap().deliveries.lock().len(),
+        1
+    );
+    {
+        let i = success.inner.lock();
+        let saved = i.store.result(&history[0].id).unwrap().unwrap();
+        assert_eq!(saved.delivery, Delivery::Unknown);
+        assert_eq!(
+            saved.insertion_diagnostic,
+            Some(InsertionOutcome::unconfirmed().diagnostic)
+        );
+        assert_eq!(saved.finished_text(), "Processed fixture");
+        assert!(i.store.staged().unwrap().is_empty());
+    }
     // The real engine's empty speech outcome must stop before AI, history, and
     // delivery. Retained recovery/audio follows the existing speech-error policy.
     for ai in [false, true] {
@@ -249,6 +280,7 @@ fn run(app: &AppHandle, root: &std::path::Path, source: &std::path::Path) {
         app_id: "fixture.origin".into(),
         app_name: "Origin fixture".into(),
         target_token: None,
+        capture_diagnostic: None,
     };
     let mut settings = Settings::default();
     settings.general_ai_enabled = true;
@@ -421,7 +453,7 @@ fn run(app: &AppHandle, root: &std::path::Path, source: &std::path::Path) {
         1
     );
     println!(
-        "Service acceptance passed: no-speech rejects history/delivery with AI off/on, 3 AI fallbacks, processed-first/origin, audio cleanup, retry identity/TTL/success, restart/manual-delete/staged-original, injected expiry, late-success cancellation, concurrent file/dictation; inference and OS insertion mocked"
+        "Service acceptance passed: no-speech rejects history/delivery with AI off/on, 3 AI fallbacks, processed-first/origin, durable pre-dispatch Unknown, uncertain-handoff no-replay, audio cleanup, retry identity/TTL/success, restart/manual-delete/staged-original, injected expiry, late-success cancellation, concurrent file/dictation; inference and OS insertion mocked"
     );
 }
 fn wait_idle(service: &Arc<Service>) {

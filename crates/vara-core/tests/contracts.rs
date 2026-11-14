@@ -4,6 +4,7 @@ fn origin() -> Destination {
         app_id: "test.editor".into(),
         app_name: "Editor".into(),
         target_token: Some("opaque-field".into()),
+        capture_diagnostic: None,
     }
 }
 fn record(generation: &str, at: i64) -> Dictation {
@@ -16,6 +17,7 @@ fn record(generation: &str, at: i64) -> Dictation {
         processed: Some("Send ikke pakken den 12.".into()),
         fallback: false,
         delivery: Delivery::Pending,
+        insertion_diagnostic: None,
         plan: Plan::resolve(&Settings::default(), &origin(), ProcessingChoice::Default).unwrap(),
         duration_secs: 4.,
     }
@@ -356,4 +358,114 @@ fn gemini_speech_is_optional_cloud_and_migrates_without_replacing_choices() {
         db.settings().unwrap().engine("gemini.speech").unwrap(),
         &engine
     );
+}
+
+#[test]
+fn insertion_metadata_is_optional_and_runtime_tokens_are_not_serialized() {
+    let mut value = serde_json::to_value(record("legacy-insertion", 1)).unwrap();
+    value
+        .as_object_mut()
+        .unwrap()
+        .remove("insertion_diagnostic");
+    value["origin"]
+        .as_object_mut()
+        .unwrap()
+        .remove("capture_diagnostic");
+    assert!(value["origin"].get("target_token").is_none());
+    let old: Dictation = serde_json::from_value(value.clone()).unwrap();
+    assert!(old.insertion_diagnostic.is_none());
+    assert!(old.origin.capture_diagnostic.is_none());
+    assert!(old.origin.target_token.is_none());
+    // Native capture and old stored records can still deserialize a token; never reserialize it.
+    value["origin"]["target_token"] = "legacy-runtime-token".into();
+    let old: Dictation = serde_json::from_value(value).unwrap();
+    assert_eq!(
+        old.origin.target_token.as_deref(),
+        Some("legacy-runtime-token")
+    );
+    assert!(
+        serde_json::to_value(old).unwrap()["origin"]
+            .get("target_token")
+            .is_none()
+    );
+}
+
+#[test]
+fn insertion_diagnostics_survive_restart_and_final_storage_failure_without_replay() {
+    let dir = tempfile::tempdir().unwrap();
+    let path = dir.path().join("insertion.db");
+    let mut store = Store::open(&path).unwrap();
+    let record = record("insertion-once", 1);
+    store.commit(&record).unwrap();
+    store
+        .update_insertion(&record.id, InsertionOutcome::unconfirmed())
+        .unwrap();
+    let connection = rusqlite::Connection::open(&path).unwrap();
+    connection.execute_batch("CREATE TRIGGER fail_delivery BEFORE UPDATE ON results BEGIN SELECT RAISE(FAIL, 'fixture storage failure'); END;").unwrap();
+    let attempted = InsertionOutcome {
+        delivery: Delivery::Inserted,
+        diagnostic: InsertionDiagnostic {
+            reason: InsertionReason::Confirmed,
+            method: Some(InsertionMethod::Accessibility),
+            os_error: None,
+        },
+    };
+    assert!(store.update_insertion(&record.id, attempted).is_err());
+    drop(store);
+    let mut store = Store::open(&path).unwrap();
+    let saved = store.result(&record.id).unwrap().unwrap();
+    assert_eq!(saved.delivery, Delivery::Unknown);
+    assert_eq!(
+        saved.insertion_diagnostic,
+        Some(InsertionOutcome::unconfirmed().diagnostic)
+    );
+    assert!(saved.origin.target_token.is_none());
+    assert_eq!(saved.original, record.original);
+    assert_eq!(saved.processed, record.processed);
+    // A repeated commit must return the durable Unknown result, never reset it to Pending.
+    assert_eq!(store.commit(&record).unwrap().delivery, Delivery::Unknown);
+    assert!(
+        store
+            .update_insertion("missing-result", InsertionOutcome::unconfirmed())
+            .is_err()
+    );
+    connection
+        .execute_batch("DROP TRIGGER fail_delivery;")
+        .unwrap();
+    let refused = InsertionOutcome {
+        delivery: Delivery::ManualReady,
+        diagnostic: InsertionDiagnostic {
+            reason: InsertionReason::FieldUnavailable,
+            method: Some(InsertionMethod::Keyboard),
+            os_error: Some(-25202),
+        },
+    };
+    store.update_insertion(&record.id, refused).unwrap();
+    drop(store);
+    let saved = Store::open(&path)
+        .unwrap()
+        .result(&record.id)
+        .unwrap()
+        .unwrap();
+    assert_eq!(saved.delivery, refused.delivery);
+    assert_eq!(saved.insertion_diagnostic, Some(refused.diagnostic));
+}
+
+#[test]
+fn ignored_delivery_update_cannot_authorize_an_os_handoff() {
+    let dir = tempfile::tempdir().unwrap();
+    let path = dir.path().join("ignored-update.db");
+    let mut store = Store::open(&path).unwrap();
+    let record = record("ignored-update", 1);
+    store.commit(&record).unwrap();
+    let connection = rusqlite::Connection::open(&path).unwrap();
+    connection.execute_batch("CREATE TRIGGER ignore_delivery BEFORE UPDATE ON results BEGIN SELECT RAISE(IGNORE); END;").unwrap();
+    assert!(
+        store
+            .update_insertion(&record.id, InsertionOutcome::unconfirmed())
+            .is_err()
+    );
+    let saved = store.result(&record.id).unwrap().unwrap();
+    assert_eq!(saved.delivery, Delivery::Pending);
+    assert!(saved.insertion_diagnostic.is_none());
 }

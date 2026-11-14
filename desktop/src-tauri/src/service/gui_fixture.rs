@@ -132,6 +132,7 @@ mod tests {
             app_id: "com.apple.TextEdit".into(),
             app_name: "TextEdit".into(),
             target_token: Some("actual-native-token".into()),
+            capture_diagnostic: None,
         };
         assert!(textedit_target(&origin));
         origin.app_id = "dk.vara.desktop".into();

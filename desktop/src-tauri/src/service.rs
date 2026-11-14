@@ -165,6 +165,7 @@ impl Service {
                     processed: None,
                     fallback: true,
                     delivery: Delivery::ManualReady,
+                    insertion_diagnostic: None,
                     plan: stage.plan,
                     duration_secs: 0.,
                 })
@@ -594,23 +595,41 @@ impl Service {
             }
         }
         // Gate serializes cancellation and commit. Unknown is durable BEFORE the OS call.
-        if i.store.update_delivery(&r.id, Delivery::Unknown).is_ok() {
+        if r.delivery == Delivery::Pending
+            && i.store
+                .update_insertion(&r.id, InsertionOutcome::unconfirmed())
+                .is_ok()
+        {
             #[cfg(feature = "test-harness")]
             let delivery = if let Some(script) = &self.scripted {
+                let durable = i
+                    .store
+                    .result(&r.id)
+                    .expect("fixture durable result")
+                    .unwrap();
+                assert_eq!(durable.delivery, Delivery::Unknown);
+                assert_eq!(
+                    durable.insertion_diagnostic,
+                    Some(InsertionOutcome::unconfirmed().diagnostic)
+                );
                 script
                     .deliveries
                     .lock()
                     .push((r.origin.clone(), r.finished_text().to_owned()));
-                Delivery::ManualReady
+                InsertionOutcome {
+                    delivery: Delivery::ManualReady,
+                    diagnostic: InsertionDiagnostic::new(InsertionReason::NotAttempted),
+                }
             } else {
                 platform::insert(&r.origin, r.finished_text())
             };
             #[cfg(not(feature = "test-harness"))]
             let delivery = platform::insert(&r.origin, r.finished_text());
-            if let Err(error) = i.store.update_delivery(&r.id, delivery) {
+            if let Err(error) = i.store.update_insertion(&r.id, delivery) {
                 i.message = Some(error.wire());
             }
-        } else {
+        } else if r.delivery == Delivery::Pending {
+            // The durable pre-dispatch write failed, so no OS handoff was attempted.
             i.message = Some(crate::host_message("host.manual_ready").into());
         }
         i.active = None;
@@ -677,6 +696,7 @@ impl Service {
         // A retry cannot safely infer that the old field has stayed focused across failure/restart.
         let mut origin = r.origin.clone();
         origin.target_token = None;
+        origin.capture_diagnostic = Some(InsertionDiagnostic::new(InsertionReason::NotAttempted));
         let active = Active {
             session: Session {
                 generation: uuid::Uuid::new_v4().to_string(),
@@ -1000,6 +1020,7 @@ fn result(a: &Active, original: String, processed: Option<String>, fallback: boo
         processed,
         fallback,
         delivery: Delivery::Pending,
+        insertion_diagnostic: None,
         plan: a.session.plan.clone(),
         duration_secs: a.duration,
     }
