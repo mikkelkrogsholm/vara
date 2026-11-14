@@ -1,6 +1,7 @@
 use std::{env, fs, path::PathBuf};
 fn main() {
     println!("cargo:rerun-if-changed=src/macos_text_input.h");
+    println!("cargo:rerun-if-changed=src/macos_insertion_policy.h");
     for file in [
         "src/macos.m",
         "src/macos_hud.m",

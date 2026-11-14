@@ -530,3 +530,42 @@ Official Developer API references:
 [GenerateContent REST schema](https://ai.google.dev/api/generate-content?hl=en).
 Offline protocol, settings, UI and CLI evidence is recorded in
 [issue 46 report](reports/epic42/46-gemini-speech.md).
+
+## macOS insertion diagnostics (2026-11-14)
+
+`vara_core::InsertionOutcome` carries `delivery` and a privacy-safe `diagnostic`.
+The host persists the latter as optional `Dictation.insertion_diagnostic` together
+with the delivery status. `Destination.capture_diagnostic` retains a capture-time
+refusal, so a missing target handle does not erase its cause. Old history lacking
+these fields continues to load. `target_token` remains readable from the native
+capture bridge, but is never serialized into new history, staging, recovery or UI
+state. It is a process-local handle, not a durable insertion destination.
+
+Diagnostics contain only a closed `reason`, optional `method` (`accessibility` or
+`keyboard`), and optional numeric `os_error` (AX error). Reasons distinguish
+`accessibility_missing`, `capture_failed`, `target_gone`, `field_unavailable`,
+`app_changed`, `focus_changed`, `unsupported_role`, `post_event_access_missing`,
+`dispatch_failed`, `handoff_unconfirmed`, `confirmed`, `not_attempted`, and
+`platform_unsupported`. No field text, selection text, window title, target token,
+keystrokes, secret, or raw error display is included in diagnostics.
+
+Interpret `delivery` before the reason: interruption after any keyboard submission
+is `unknown`, even when its reason identifies a later focus or permission change.
+`manual_ready` means this attempt stopped before sending. AX setter success or
+observed keyboard caret advancement gives `inserted`; neither proves every target
+application's internal editor state. An AX setter error remains `unknown` without
+keyboard fallback. Exact captured PID/field guards remain in place. Keyboard
+fallback retains its text-role allowlist; explicit writable AXSelectedText remains
+available to other roles as before.
+
+Before OS dispatch the host writes `unknown` plus `handoff_unconfirmed` in one
+SQLite write with FULL synchronous WAL. A failed final write leaves that durable
+uncertainty intact. Repeated completion of an already committed generation never
+dispatches again. Recovery/retry clears the old target and does not auto-insert.
+
+Live permissions independently expose `accessibility` and `post_event_access`
+(nullable outside macOS). `automatic_insertion` retains its existing platform-support meaning (true on
+macOS); missing post-event access does not disable the direct AX route. Explicit
+`permission` actions accept kind `accessibility` or `post_event`; these may request
+OS permission and open Accessibility settings. Capability reads and startup do not
+request either permission. See [bounded evidence](reports/macos-insertion-diagnostics-2026-11-14.md).

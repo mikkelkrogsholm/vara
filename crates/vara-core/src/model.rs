@@ -533,7 +533,10 @@ impl Settings {
 pub struct Destination {
     pub app_id: String,
     pub app_name: String,
+    #[serde(default, skip_serializing)]
     pub target_token: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub capture_diagnostic: Option<InsertionDiagnostic>,
 }
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
@@ -615,6 +618,58 @@ pub enum Delivery {
     ManualReady,
     Unknown,
 }
+/// Closed, privacy-safe diagnostic vocabulary. Never include target content or raw errors.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum InsertionReason {
+    AccessibilityMissing,
+    CaptureFailed,
+    TargetGone,
+    FieldUnavailable,
+    AppChanged,
+    FocusChanged,
+    UnsupportedRole,
+    PostEventAccessMissing,
+    DispatchFailed,
+    HandoffUnconfirmed,
+    Confirmed,
+    NotAttempted,
+    PlatformUnsupported,
+}
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum InsertionMethod {
+    Accessibility,
+    Keyboard,
+}
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub struct InsertionDiagnostic {
+    pub reason: InsertionReason,
+    pub method: Option<InsertionMethod>,
+    pub os_error: Option<i32>,
+}
+impl InsertionDiagnostic {
+    pub fn new(reason: InsertionReason) -> Self {
+        Self {
+            reason,
+            method: None,
+            os_error: None,
+        }
+    }
+}
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub struct InsertionOutcome {
+    pub delivery: Delivery,
+    pub diagnostic: InsertionDiagnostic,
+}
+impl InsertionOutcome {
+    pub fn unconfirmed() -> Self {
+        Self {
+            delivery: Delivery::Unknown,
+            diagnostic: InsertionDiagnostic::new(InsertionReason::HandoffUnconfirmed),
+        }
+    }
+}
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Dictation {
     pub id: String,
@@ -625,6 +680,8 @@ pub struct Dictation {
     pub processed: Option<String>,
     pub fallback: bool,
     pub delivery: Delivery,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub insertion_diagnostic: Option<InsertionDiagnostic>,
     pub plan: Plan,
     pub duration_secs: f64,
 }

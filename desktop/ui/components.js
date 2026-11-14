@@ -80,7 +80,53 @@
     available = true,
   }) =>
     `<div class="permission-row"><div><strong>${e(title)}</strong><p class="muted">${e(description)}</p></div>${granted ? `<span class="permission-granted">${icon("check")}${Vara.i18n.bind("permission.granted")}</span>` : available ? button(Vara.i18n.bind("ui.grant-access"), "permission", { attrs: `data-kind="${e(kind)}"` }) : ("<span class=\"status-pill\">"+Vara.i18n.bind("ui.manual-insertion")+"</span>")}</div>`;
+  // Delivery is authoritative. Diagnostic metadata can explain a refusal, never
+  // downgrade an uncertain handoff into permission to insert a second time.
+  const insertionReasons = new Set([
+    "accessibility_missing", "capture_failed", "target_gone", "field_unavailable",
+    "app_changed", "focus_changed", "unsupported_role", "post_event_access_missing",
+    "dispatch_failed", "handoff_unconfirmed", "confirmed", "not_attempted", "platform_unsupported",
+  ]);
+  const insertionStatus = (record) => {
+    const delivery = ["inserted", "manual_ready", "unknown", "pending"].includes(record.delivery)
+      ? record.delivery : "manual_ready";
+    const diagnostic = record.insertion_diagnostic;
+    const reason = insertionReasons.has(diagnostic?.reason) ? diagnostic.reason : null;
+    return { delivery, reason,
+      method: ["accessibility", "keyboard"].includes(diagnostic?.method) ? diagnostic.method : null,
+      osError: Number.isInteger(diagnostic?.os_error) && diagnostic.os_error >= -2147483648 && diagnostic.os_error <= 2147483647 ? diagnostic.os_error : null,
+      permission: reason === "accessibility_missing" ? "accessibility" : reason === "post_event_access_missing" ? "post_event" : null,
+      row: delivery === "inserted" ? "" : Vara.i18n.bind(`insertion.row.${delivery}`),
+    };
+  };
+  const insertionNotice = (record) => {
+    const status = insertionStatus(record);
+    if (status.delivery === "inserted") return "";
+    const manualReason = status.reason && !["confirmed", "handoff_unconfirmed"].includes(status.reason) ? status.reason : "generic";
+    const message = status.delivery === "manual_ready" ? Vara.i18n.bind(`insertion.reason.${manualReason}`) : Vara.i18n.bind(`insertion.${status.delivery}`);
+    const help = status.permission ? button(Vara.i18n.bind("insertion.permission-help"), "permission", { attrs: `data-kind="${status.permission}"` }) : "";
+    return `<div class="insertion-feedback">${Vara.ui.notice(message, status.delivery === "unknown" ? "warning" : "info", help)}</div>`;
+  };
+  const insertionDetails = (record) => {
+    const status = insertionStatus(record);
+    if (status.delivery === "inserted") return "";
+    // Never expose arbitrary fields, target identifiers, text or native messages.
+    const details = [status.reason, status.method, status.osError === null ? null : `AX ${status.osError}`].filter(value => value !== null);
+    return details.length ? `<details class="original-disclosure insertion-details" id="insertion-details-${e(record.id)}"><summary id="insertion-details-summary-${e(record.id)}">${icon("chevron")}<span>${Vara.i18n.bind("insertion.details")}</span></summary><p class="muted">${details.map(e).join(" · ")}</p></details>` : "";
+  };
+  const insertionPermission = (permissions) => {
+    const supported = permissions.automatic_insertion === true;
+    const accessibility = permissions.accessibility === true;
+    const keyboardBlocked = supported && accessibility && permissions.post_event_access === false;
+    const description = !supported ? "ui.on-this-platform-the-text-is-ready-to-insert-manually"
+      : !accessibility ? "insertion.access.required"
+      : keyboardBlocked ? "insertion.access.partial"
+      : permissions.post_event_access === true ? "insertion.access.granted" : "insertion.access.legacy";
+    return permissionRow({ title: Vara.i18n.bind("ui.insertion-in-other-apps"),
+      description: Vara.i18n.bind(description), kind: keyboardBlocked ? "post_event" : "accessibility",
+      granted: supported && accessibility && !keyboardBlocked, available: supported });
+  };
   const disclosure = (id, title, description, content, open = false) =>
     `<details id="${e(id)}" class="settings-disclosure" ${open ? "open" : ""}><summary><span>${e(title)}</span>${icon("chevron")}</summary><p class="muted">${e(description)}</p><div>${content}</div></details>`;
-  Vara.desktopUi = { binding, appArtwork, setAppArtwork, resultActions, shortcut, permissionRow, disclosure, settingsSection, policyRow, processingChoice, modelSelect, modelLabel, displayEngineName };
+  Vara.desktopUi = { binding, appArtwork, setAppArtwork, resultActions, shortcut, permissionRow, insertionStatus, insertionNotice, insertionDetails, insertionPermission, disclosure, settingsSection, policyRow, processingChoice, modelSelect, modelLabel, displayEngineName };
 })();

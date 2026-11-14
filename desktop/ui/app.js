@@ -72,8 +72,8 @@
   function focusIdentity(node = document.activeElement) {
     if (!node || node === document.body) return null;
     if (node.id) return { selector: "#" + CSS.escape(node.id), index: 0 };
-    if (node.matches(".original-disclosure summary"))
-      return { selector: ".original-disclosure summary", index: 0 };
+    if (node.matches(".original-disclosure:not(.insertion-details) summary"))
+      return { selector: ".original-disclosure:not(.insertion-details) summary", index: 0 };
     if (node.dataset.action) {
       let selector = '[data-action="' + CSS.escape(node.dataset.action) + '"]';
       for (const key of ["id", "page", "kind"])
@@ -838,7 +838,7 @@
   document.addEventListener(
     "toggle",
     (event) => {
-      if (event.target.matches?.(".original-disclosure")) {
+      if (event.target.matches?.(".original-disclosure:not(.insertion-details)")) {
         state.originalOpen = event.target.open;
         event.target.querySelector("summary span").textContent = event.target
           .open

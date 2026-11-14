@@ -14,7 +14,7 @@ impl Store {
         Ok(store)
     }
     fn initialize(&self) -> Result<()> {
-        self.db.execute_batch("PRAGMA journal_mode=WAL; PRAGMA secure_delete=ON; PRAGMA foreign_keys=ON;
+        self.db.execute_batch("PRAGMA journal_mode=WAL; PRAGMA synchronous=FULL; PRAGMA secure_delete=ON; PRAGMA foreign_keys=ON;
             CREATE TABLE IF NOT EXISTS preferences (id INTEGER PRIMARY KEY CHECK(id=1), value TEXT NOT NULL);
             CREATE TABLE IF NOT EXISTS results (id TEXT PRIMARY KEY,generation TEXT NOT NULL UNIQUE,created_at INTEGER NOT NULL,origin_app TEXT NOT NULL,value TEXT NOT NULL);
             CREATE INDEX IF NOT EXISTS results_date ON results(created_at DESC);
@@ -134,7 +134,14 @@ impl Store {
             .optional()
             .map_err(Error::Storage)?;
         if let Some(v) = existing {
-            return Ok(serde_json::from_str(&v)?);
+            let saved = serde_json::from_str(&v)?;
+            tx.execute(
+                "DELETE FROM staging WHERE generation=?1",
+                [&result.generation],
+            )
+            .map_err(Error::Storage)?;
+            tx.commit().map_err(Error::Storage)?;
+            return Ok(saved);
         }
         tx.execute(
             "INSERT INTO results(id,generation,created_at,origin_app,value) VALUES(?1,?2,?3,?4,?5)",
@@ -184,14 +191,34 @@ impl Store {
             .transpose()
     }
     pub fn update_delivery(&self, id: &str, status: Delivery) -> Result<()> {
-        if let Some(mut r) = self.result(id)? {
-            r.delivery = status;
-            self.db
-                .execute(
-                    "UPDATE results SET value=?2 WHERE id=?1",
-                    params![id, serde_json::to_string(&r)?],
-                )
-                .map_err(Error::Storage)?;
+        self.write_delivery(id, status, None)
+    }
+    /// Status and diagnostic are one durable write, including the pre-dispatch Unknown marker.
+    pub fn update_insertion(&self, id: &str, outcome: InsertionOutcome) -> Result<()> {
+        self.write_delivery(id, outcome.delivery, Some(outcome.diagnostic))
+    }
+    fn write_delivery(
+        &self,
+        id: &str,
+        status: Delivery,
+        diagnostic: Option<InsertionDiagnostic>,
+    ) -> Result<()> {
+        let mut r = self
+            .result(id)?
+            .ok_or_else(|| Error::Storage(rusqlite::Error::QueryReturnedNoRows))?;
+        r.delivery = status;
+        if diagnostic.is_some() {
+            r.insertion_diagnostic = diagnostic;
+        }
+        let updated = self
+            .db
+            .execute(
+                "UPDATE results SET value=?2 WHERE id=?1",
+                params![id, serde_json::to_string(&r)?],
+            )
+            .map_err(Error::Storage)?;
+        if updated != 1 {
+            return Err(Error::Storage(rusqlite::Error::QueryReturnedNoRows));
         }
         Ok(())
     }
