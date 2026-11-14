@@ -58,3 +58,82 @@ clipboard observation, or user-facing diagnostic recovery was manually exercised
 No release, signing, version change, push or GitHub update was performed. Windows
 and Linux were not run locally; their adapter continues to return manual-ready
 with `platform_unsupported` and nullable post-event capability.
+
+
+## Agreed UI delivery and evidence
+
+The bounded UI plan preserves the current reading layout, history selection, Copy,
+original text, microphone and global shortcut flows. One shared interpreter uses
+`delivery` as the primary status in history and detail; diagnostic reasons explain
+manual-ready results without downgrading Unknown. Unknown warns that text may
+already have been sent and asks the user to check the target before pasting again.
+Inserted results receive no error notice. Pending and historical records without
+metadata remain readable. Unrecognized diagnostics use the generic manual-copy
+explanation. There is no automatic retry or clipboard fallback.
+
+Manual-ready explanations cover missing Accessibility, failed capture, vanished
+target, unavailable field, changed app/focus, unsupported field, denied keyboard
+insertion, failed dispatch, no attempt, and unsupported platform. Historical access
+refusals describe that attempt; Settings and onboarding use live permission values.
+Only permission-related reasons offer the existing explicit permission action.
+Collapsed secondary details contain only whitelisted reason/method codes and
+signed 32-bit numeric AX errors. Arbitrary diagnostic properties never enter the DOM.
+No support export or new dependency was introduced.
+
+The shared Settings/onboarding insertion row distinguishes missing Accessibility
+from direct Accessibility insertion being available while keyboard insertion is
+blocked. The latter offers `permission {kind: "post_event"}`; missing Accessibility
+offers `permission {kind: "accessibility"}`. Both are invoked only on click. Null or
+missing post-event data is explained as unavailable information from this version,
+not denied access. Unsupported platforms retain manual insertion.
+
+Browser verification uses a local HTTP fixture server, an in-memory IPC host,
+headless Chrome, and isolated browser contexts. It does not use personal profiles,
+credentials, cloud requests, real target apps, or OS permission controls. This is UI
+and IPC contract evidence, not proof of native insertion or TCC recovery.
+
+Commands run from the repository root:
+
+```sh
+node desktop/tests/i18n.test.cjs
+node desktop/tests/runtime-messages.test.cjs
+```
+
+Browser commands use:
+
+```sh
+export PLAYWRIGHT_MODULE=/opt/homebrew/lib/node_modules/@playwright/cli/node_modules/playwright
+export PLAYWRIGHT_CHROMIUM='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+node desktop/tests/insertion-diagnostics.playwright.cjs
+node desktop/tests/runtime-i18n.playwright.cjs
+node desktop/tests/ui-main-i18n.playwright.cjs
+node desktop/tests/legacy-runner.cjs
+```
+
+Results: catalog parity and 453 runtime codes passed; the focused insertion suite
+passed in both languages; runtime localization and main UI localization passed;
+legacy UI passed 23 checks and transcription passed 17 checks. Logs:
+`/tmp/vara-insertion-i18n-unit.log`, `/tmp/vara-insertion-runtime-unit.log`,
+`/tmp/vara-insertion-ui.log`, `/tmp/vara-insertion-runtime-i18n.log`,
+`/tmp/vara-insertion-main-i18n.log`, `/tmp/vara-insertion-legacy-ui.log`.
+
+The focused suite exercises every closed reason family, Unknown combined with
+changed focus or revoked access, inserted/pending states, old history without
+metadata, malformed/future diagnostic fields, numeric-detail whitelisting, live
+partial permissions, old-host missing/null post-event data, explicit correct
+permission calls, no retry, retained text selection and row selection while copying,
+and the onboarding Grant access path. Both locale catalogs resolve all new labels.
+
+Screenshots for MAIN visual review (1440 × 950):
+
+- `/tmp/vara-insertion-ui-screens/en-manual.png`
+- `/tmp/vara-insertion-ui-screens/da-manual.png`
+- `/tmp/vara-insertion-ui-screens/en-unknown.png`
+- `/tmp/vara-insertion-ui-screens/da-unknown.png`
+- `/tmp/vara-insertion-ui-screens/en-partial-permissions.png`
+- `/tmp/vara-insertion-ui-screens/da-partial-permissions.png`
+
+Native computer control was unavailable for this worker. Actual cross-app insertion,
+permission grant/revocation, keyboard event delivery, and editor-specific behavior
+remain separate native acceptance. No backend, version, release, signing, workflow,
+push or publication change is part of this UI delivery.

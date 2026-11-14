@@ -2,6 +2,7 @@
 
 ## 1.1.0 — prepared for release
 
+- Explain macOS insertion refusals and uncertain delivery in English and Danish, with explicit permission recovery and live Accessibility/keyboard access status. Preserve manual copy and avoid automatic retries; support still depends on the target app and field.
 - Add Gemini speech transcription with its own provider configuration, explicit capability and privacy handling, and the shared dictation/file-transcription lifecycle. Existing provider selection is preserved.
 - Improve local Whisper segmentation with VAD and repair upstream no-speech detection, including coverage for repeated short Danish audio and long silence.
 - Prepare native Linux x86_64 `.deb`/AppImage and Windows x86_64 NSIS installers as **experimental previews**. Building a package does not verify recording, installation, upgrades or desktop integration on those platforms. Windows installers are not Authenticode signed.
